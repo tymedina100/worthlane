@@ -1,0 +1,11 @@
+.claude/
+node_modules/
+.next/
+dist/
+.expo/
+.env
+*.local
+.turbo/
+.DS_Store
+Thumbs.db
+*.tsbuildinfo

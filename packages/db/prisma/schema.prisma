@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String        @id @default(cuid())
+  email            String        @unique
+  passwordHash     String
+  biometricEnabled Boolean       @default(false)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  accounts         Account[]
+  transactions     Transaction[]
+  categories       Category[]
+  budgets          Budget[]
+  goals            Goal[]
+  streaks          Streak[]
+  nudges           Nudge[]
+}
+
+enum AccountType {
+  CHECKING
+  SAVINGS
+  CREDIT
+  INVESTMENT
+  LOAN
+  OTHER
+}
+
+model Account {
+  id              String      @id @default(cuid())
+  userId          String
+  plaidAccountId  String?     @unique
+  plaidItemId     String?
+  plaidCursor     String?     // for transactions sync
+  name            String
+  institutionName String?
+  type            AccountType
+  currentBalance  Decimal     @db.Decimal(12, 2)
+  lastSyncedAt    DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions    Transaction[]
+}
+
+model Category {
+  id       String  @id @default(cuid())
+  name     String
+  icon     String  // emoji or icon name
+  color    String  // hex color
+  isSystem Boolean @default(false) // system defaults (userId = null)
+  userId   String?
+
+  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  budgets      Budget[]
+
+  @@unique([userId, name])
+}
+
+model Transaction {
+  id                  String    @id @default(cuid())
+  userId              String
+  accountId           String
+  plaidTransactionId  String?   @unique
+  amount              Decimal   @db.Decimal(12, 2) // positive = expense, negative = income
+  date                DateTime
+  merchantName        String?
+  categoryId          String?
+  isManual            Boolean   @default(false)
+  isImpulse           Boolean   @default(false) // user-flagged impulse purchase
+  note                String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account  Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id])
+
+  @@index([userId, date])
+  @@index([accountId])
+}
+
+enum BudgetPeriodType {
+  MONTHLY
+  WEEKLY
+}
+
+model Budget {
+  id         String           @id @default(cuid())
+  userId     String
+  categoryId String
+  amount     Decimal          @db.Decimal(12, 2)
+  period     BudgetPeriodType @default(MONTHLY)
+  rollover   Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id])
+  periods  BudgetPeriod[]
+
+  @@unique([userId, categoryId])
+}
+
+model BudgetPeriod {
+  id        String   @id @default(cuid())
+  budgetId  String
+  startDate DateTime
+  endDate   DateTime
+  spent     Decimal  @db.Decimal(12, 2) @default(0)
+
+  budget Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  @@unique([budgetId, startDate])
+}
+
+enum GoalType {
+  SAVINGS
+  DEBT_PAYOFF
+  PURCHASE
+  EMERGENCY_FUND
+}
+
+model Goal {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  targetAmount  Decimal  @db.Decimal(12, 2)
+  currentAmount Decimal  @db.Decimal(12, 2) @default(0)
+  targetDate    DateTime?
+  type          GoalType
+  icon          String?
+  linkedBudgetCategoryId String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum StreakType {
+  DAILY_CHECKIN
+  WEEKLY_ON_BUDGET
+  NO_IMPULSE_PURCHASES
+}
+
+model Streak {
+  id              String     @id @default(cuid())
+  userId          String
+  type            StreakType
+  currentCount    Int        @default(0)
+  longestCount    Int        @default(0)
+  lastActivityAt  DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type])
+}
+
+enum NudgeType {
+  BUDGET_WARNING
+  STREAK_AT_RISK
+  GOAL_MILESTONE
+  WEEKLY_SUMMARY
+  IMPULSE_FLAG
+}
+
+model Nudge {
+  id        String    @id @default(cuid())
+  userId    String
+  type      NudgeType
+  message   String
+  sentAt    DateTime  @default(now())
+  dismissed Boolean   @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, dismissed])
+}
+
+// Stores Plaid access tokens per institution (item)
+model PlaidItem {
+  id          String   @id @default(cuid())
+  userId      String
+  itemId      String   @unique // Plaid item_id
+  accessToken String   // encrypted at app level
+  institution String?
+  createdAt   DateTime @default(now())
+}
