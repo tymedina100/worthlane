@@ -91,6 +91,7 @@ export interface DashboardSummary {
   goals: GoalWithProgress[];
   streaks: StreakStatus[];
   topCategories: { name: string; amount: number; color: string }[];
+  impulse: { count: number; total: number; previousWeekTotal: number };
 }
 
 // Plaid link

@@ -225,6 +225,45 @@ export default function DashboardScreen() {
           ))}
         </View>
       )}
+
+      {/* Impulse Spending */}
+      {d?.impulse != null && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Impulse Spending</Text>
+          <View style={styles.impulseCard}>
+            <View style={styles.impulseRow}>
+              <View>
+                <Text style={styles.impulseCount}>
+                  {d.impulse.count} impulse {d.impulse.count === 1 ? "purchase" : "purchases"}
+                </Text>
+                <Text style={styles.impulseTotal}>{formatCurrency(d.impulse.total)} this month</Text>
+              </View>
+              {d.impulse.previousWeekTotal > 0 || d.impulse.total > 0 ? (
+                <View style={styles.impulseTrend}>
+                  <Text style={[
+                    styles.impulseTrendArrow,
+                    { color: d.impulse.total >= d.impulse.previousWeekTotal ? colors.danger : colors.success },
+                  ]}>
+                    {d.impulse.total >= d.impulse.previousWeekTotal ? "▲" : "▼"}
+                  </Text>
+                  <Text style={[
+                    styles.impulseTrendLabel,
+                    { color: d.impulse.total >= d.impulse.previousWeekTotal ? colors.danger : colors.success },
+                  ]}>
+                    {formatCurrency(Math.abs(d.impulse.total - d.impulse.previousWeekTotal))}{" "}
+                    {d.impulse.total >= d.impulse.previousWeekTotal ? "more" : "less"} than last week
+                  </Text>
+                </View>
+              ) : null}
+            </View>
+            {d.impulse.count > 0 && (
+              <Text style={styles.impulseNote}>
+                That&apos;s {formatCurrency(d.impulse.total)} that didn&apos;t go toward your goals.
+              </Text>
+            )}
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 }
@@ -316,4 +355,20 @@ const styles = StyleSheet.create({
   goalName: { ...typography.label },
   goalProgress: { ...typography.caption, marginTop: 2 },
   goalPercent: { ...typography.h3, color: colors.primary },
+  impulseCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    padding: spacing.md,
+  },
+  impulseRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+  },
+  impulseCount: { ...typography.label },
+  impulseTotal: { ...typography.bodySmall, marginTop: 2 },
+  impulseTrend: { alignItems: "flex-end" },
+  impulseTrendArrow: { fontSize: 18, fontWeight: "700" },
+  impulseTrendLabel: { ...typography.caption, marginTop: 2, textAlign: "right" },
+  impulseNote: { ...typography.caption, marginTop: spacing.sm, fontStyle: "italic" },
 });

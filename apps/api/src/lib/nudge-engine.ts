@@ -85,6 +85,31 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
     }
   }
 
+  // --- Weekly summary nudge (impulse spending) ---
+  const sevenDaysAgo = new Date(now);
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+  const impulseAgg = await prisma.transaction.aggregate({
+    where: {
+      userId,
+      isImpulse: true,
+      date: { gte: sevenDaysAgo, lte: now },
+      amount: { gt: 0 },
+    },
+    _sum: { amount: true },
+    _count: { id: true },
+  });
+
+  const impulseCount = impulseAgg._count.id;
+  const impulseTotal = Number(impulseAgg._sum.amount ?? 0);
+
+  if (impulseTotal > 0) {
+    nudges.push({
+      type: NudgeType.WEEKLY_SUMMARY,
+      message: `You made ${impulseCount} impulse ${impulseCount === 1 ? "buy" : "buys"} this week totaling $${impulseTotal.toFixed(0)}. That's $${impulseTotal.toFixed(0)} that didn't go toward your goals.`,
+    });
+  }
+
   // Write nudges to DB (deduplicate by type + day)
   const today = now.toDateString();
   for (const nudge of nudges) {

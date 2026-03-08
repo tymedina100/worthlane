@@ -16,7 +16,12 @@ export async function GET(req: NextRequest) {
   const periodStart = startOfMonth(now);
   const periodEnd = endOfMonth(now);
 
-  const [accounts, budgets, goals, streaks, topCategories, incomeAgg] =
+  const thisWeekStart = new Date(now);
+  thisWeekStart.setDate(thisWeekStart.getDate() - 7);
+  const prevWeekStart = new Date(now);
+  prevWeekStart.setDate(prevWeekStart.getDate() - 14);
+
+  const [accounts, budgets, goals, streaks, topCategories, incomeAgg, impulseMonth, impulseThisWeek, impulsePrevWeek] =
     await Promise.all([
       prisma.account.findMany({ where: { userId } }),
       prisma.budget.findMany({ where: { userId }, include: { category: true } }),
@@ -41,6 +46,22 @@ export async function GET(req: NextRequest) {
           date: { gte: periodStart, lte: periodEnd },
           amount: { lt: 0 }, // negative = income in Plaid convention
         },
+        _sum: { amount: true },
+      }),
+      // Impulse this month
+      prisma.transaction.aggregate({
+        where: { userId, isImpulse: true, date: { gte: periodStart, lte: periodEnd }, amount: { gt: 0 } },
+        _sum: { amount: true },
+        _count: { id: true },
+      }),
+      // Impulse this week (last 7 days)
+      prisma.transaction.aggregate({
+        where: { userId, isImpulse: true, date: { gte: thisWeekStart, lte: now }, amount: { gt: 0 } },
+        _sum: { amount: true },
+      }),
+      // Impulse previous week (7-14 days ago)
+      prisma.transaction.aggregate({
+        where: { userId, isImpulse: true, date: { gte: prevWeekStart, lt: thisWeekStart }, amount: { gt: 0 } },
         _sum: { amount: true },
       }),
     ]);
@@ -140,5 +161,10 @@ export async function GET(req: NextRequest) {
     goals: goalsResult,
     streaks: streaksResult,
     topCategories: topCategoriesResult,
+    impulse: {
+      count: impulseMonth._count.id,
+      total: Number(impulseMonth._sum.amount ?? 0),
+      previousWeekTotal: Number(impulsePrevWeek._sum.amount ?? 0),
+    },
   });
 }

@@ -1,11 +1,13 @@
 {
   "name": "finance-app",
   "private": true,
+  "packageManager": "pnpm@10.31.0",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
+    "test": "pnpm --filter @finance/api test",
     "db:generate": "turbo run db:generate",
     "db:migrate": "turbo run db:migrate",
     "db:studio": "turbo run db:studio"

@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start --port 3001",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@finance/db": "workspace:*",
@@ -23,6 +26,8 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.0.0",
     "@types/react": "^18.0.0",
-    "typescript": "^5.4.0"
+    "@vitest/coverage-v8": "^2.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
   }
 }
