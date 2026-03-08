@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "@finance/db";
 import { getAuthUser } from "@/lib/auth";
 import { ok, err, unauthorized } from "@/lib/response";
-import { startOfMonth, endOfMonth } from "@/lib/dates";
+import { startOfMonth, endOfMonth, addMonths } from "@/lib/dates";
 
 const createSchema = z.object({
   categoryId: z.string(),
@@ -23,6 +23,8 @@ export async function GET(req: NextRequest) {
   const now = new Date();
   const periodStart = startOfMonth(now);
   const periodEnd = endOfMonth(now);
+  const prevStart = startOfMonth(addMonths(now, -1));
+  const prevEnd = endOfMonth(addMonths(now, -1));
 
   const budgets = await prisma.budget.findMany({
     where: { userId },
@@ -32,14 +34,39 @@ export async function GET(req: NextRequest) {
   // Calculate spent per budget for current period
   const result = await Promise.all(
     budgets.map(async (b) => {
-      const spent = await prisma.transaction.aggregate({
-        where: {
-          userId,
-          categoryId: b.categoryId,
-          date: { gte: periodStart, lte: periodEnd },
-          amount: { gt: 0 }, // positive = expense
-        },
-        _sum: { amount: true },
+      const [spent, prevSpentAgg, history] = await Promise.all([
+        prisma.transaction.aggregate({
+          where: {
+            userId,
+            categoryId: b.categoryId,
+            date: { gte: periodStart, lte: periodEnd },
+            amount: { gt: 0 },
+          },
+          _sum: { amount: true },
+        }),
+        prisma.transaction.aggregate({
+          where: {
+            userId,
+            categoryId: b.categoryId,
+            date: { gte: prevStart, lte: prevEnd },
+            amount: { gt: 0 },
+          },
+          _sum: { amount: true },
+        }),
+        prisma.budgetPeriod.findMany({
+          where: { budgetId: b.id },
+          orderBy: { startDate: "desc" },
+          take: 3,
+        }),
+      ]);
+
+      const prevSpent = Number(prevSpentAgg._sum.amount ?? 0);
+
+      // Lazy snapshot: upsert previous month's spending
+      await prisma.budgetPeriod.upsert({
+        where: { budgetId_startDate: { budgetId: b.id, startDate: prevStart } },
+        create: { budgetId: b.id, startDate: prevStart, endDate: prevEnd, spent: prevSpent },
+        update: { spent: prevSpent },
       });
 
       const spentAmount = Number(spent._sum.amount ?? 0);
@@ -58,6 +85,11 @@ export async function GET(req: NextRequest) {
         percentUsed: budgetAmount > 0 ? (spentAmount / budgetAmount) * 100 : 0,
         period: b.period,
         rollover: b.rollover,
+        history: history.map((h) => ({
+          startDate: h.startDate.toISOString(),
+          spent: Number(h.spent),
+          amount: budgetAmount,
+        })),
       };
     })
   );

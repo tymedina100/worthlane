@@ -67,6 +67,22 @@ function BudgetCard({ budget }: { budget: BudgetWithSpent }) {
 
       <Text style={[styles.message, urgent && styles.messageUrgent]}>{text}</Text>
       <Text style={styles.spent}>{formatCurrency(budget.spent)} spent of {formatCurrency(budget.amount)}</Text>
+
+      {budget.history.length > 0 && (
+        <View style={styles.historyRow}>
+          {budget.history.map((h) => {
+            const over = h.spent > h.amount;
+            const label = new Date(h.startDate).toLocaleDateString("en-US", { month: "short" });
+            return (
+              <View key={h.startDate} style={styles.historyChip}>
+                <Text style={[styles.historyLabel, { color: over ? colors.danger : colors.success }]}>
+                  {label} {over ? "✗" : "✓"}
+                </Text>
+              </View>
+            );
+          })}
+        </View>
+      )}
     </View>
   );
 }
@@ -223,6 +239,9 @@ const styles = StyleSheet.create({
   message: { ...typography.bodySmall, lineHeight: 20, marginBottom: spacing.xs },
   messageUrgent: { color: colors.danger },
   spent: { ...typography.caption },
+  historyRow: { flexDirection: "row", gap: spacing.sm, marginTop: spacing.sm },
+  historyChip: { paddingHorizontal: spacing.sm, paddingVertical: 2, borderRadius: radius.sm, backgroundColor: colors.surfaceAlt },
+  historyLabel: { fontSize: 12, fontWeight: "600" },
   emptyState: { alignItems: "center", paddingTop: spacing.xxl, gap: spacing.md },
   // Modal
   modalOverlay: { flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.6)" },

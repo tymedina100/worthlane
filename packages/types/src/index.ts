@@ -48,6 +48,7 @@ export interface BudgetWithSpent {
   remaining: number;
   percentUsed: number;
   period: "MONTHLY" | "WEEKLY";
+  history: { startDate: string; spent: number; amount: number }[];
 }
 
 // Goal progress
