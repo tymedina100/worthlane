@@ -55,7 +55,6 @@ export async function GET(req: NextRequest) {
     orderBy: { createdAt: "desc" },
   });
 
-  // Calculate avg monthly contribution over last 3 months for each goal type
   const now = new Date();
   const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 3, 1);
 
@@ -66,8 +65,13 @@ export async function GET(req: NextRequest) {
           ? Math.min(100, (g.currentAmount.toNumber() / g.targetAmount.toNumber()) * 100)
           : 0;
 
-      // Estimate monthly contribution from savings account transfers or manual input
-      const monthlyContribution = 0; // Will be updated as goal contributions are tracked
+      // Avg monthly contribution over last 3 months
+      const recentContributions = await prisma.goalContribution.aggregate({
+        where: { goalId: g.id, createdAt: { gte: threeMonthsAgo } },
+        _sum: { amount: true },
+      });
+      const totalRecent = recentContributions._sum.amount?.toNumber() ?? 0;
+      const monthlyContribution = totalRecent / 3;
 
       const { projectedCompletionDate, monthlyNeeded } = computeGoalProjection(
         g.currentAmount.toNumber(),

@@ -1,11 +1,18 @@
+import { useState } from "react";
 import {
   View,
   Text,
   ScrollView,
   StyleSheet,
   RefreshControl,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
 } from "react-native";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { colors, spacing, radius, typography } from "@/lib/theme";
 import type { GoalWithProgress } from "@finance/types";
@@ -25,7 +32,6 @@ const GOAL_TYPE_COLORS: Record<string, string> = {
   EMERGENCY_FUND: colors.warning,
 };
 
-// Circular progress ring using SVG approximation with View
 function ProgressRing({
   percent,
   color,
@@ -36,9 +42,6 @@ function ProgressRing({
   size?: number;
 }) {
   const strokeWidth = 8;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const filled = (percent / 100) * circumference;
 
   return (
     <View
@@ -53,7 +56,6 @@ function ProgressRing({
         position: "relative",
       }}
     >
-      {/* Overlay arc (approximated) */}
       <View
         style={{
           position: "absolute",
@@ -75,63 +77,168 @@ function ProgressRing({
   );
 }
 
+function ContributionModal({
+  goal,
+  visible,
+  onClose,
+}: {
+  goal: GoalWithProgress;
+  visible: boolean;
+  onClose: () => void;
+}) {
+  const [amount, setAmount] = useState("");
+  const [note, setNote] = useState("");
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (data: { amount: number; note?: string }) =>
+      api.post(`/goals/${goal.id}/contributions`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
+      setAmount("");
+      setNote("");
+      onClose();
+    },
+    onError: (e: unknown) => {
+      Alert.alert("Error", e instanceof Error ? e.message : "Could not add contribution.");
+    },
+  });
+
+  const handleSubmit = () => {
+    const parsed = parseFloat(amount);
+    if (!parsed || parsed <= 0) {
+      Alert.alert("Invalid amount", "Please enter a positive amount.");
+      return;
+    }
+    mutation.mutate({ amount: parsed, note: note.trim() || undefined });
+  };
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.modalOverlay}
+      >
+        <View style={styles.modalSheet}>
+          <Text style={styles.modalTitle}>Add to {goal.name}</Text>
+          <Text style={styles.modalSubtitle}>
+            {formatCurrency(goal.currentAmount)} saved · {formatCurrency(goal.targetAmount)} goal
+          </Text>
+
+          <Text style={styles.inputLabel}>Amount</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="0"
+            placeholderTextColor={colors.textDim}
+            keyboardType="decimal-pad"
+            value={amount}
+            onChangeText={setAmount}
+            autoFocus
+          />
+
+          <Text style={styles.inputLabel}>Note (optional)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="e.g. monthly transfer"
+            placeholderTextColor={colors.textDim}
+            value={note}
+            onChangeText={setNote}
+          />
+
+          <TouchableOpacity
+            style={[styles.submitButton, mutation.isPending && styles.buttonDisabled]}
+            onPress={handleSubmit}
+            disabled={mutation.isPending}
+          >
+            <Text style={styles.submitButtonText}>
+              {mutation.isPending ? "Saving..." : "Add Contribution"}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+            <Text style={styles.cancelButtonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </Modal>
+  );
+}
+
 function GoalCard({ goal }: { goal: GoalWithProgress }) {
+  const [modalVisible, setModalVisible] = useState(false);
   const color = GOAL_TYPE_COLORS[goal.type] ?? colors.primary;
   const remaining = goal.targetAmount - goal.currentAmount;
 
   return (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <ProgressRing percent={goal.percentComplete} color={color} />
-        <View style={styles.cardInfo}>
-          <Text style={styles.goalIcon}>{goal.icon ?? "🎯"}</Text>
-          <Text style={styles.goalName}>{goal.name}</Text>
-          <Text style={styles.goalType}>{goal.type.replace("_", " ")}</Text>
+    <>
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <ProgressRing percent={goal.percentComplete} color={color} />
+          <View style={styles.cardInfo}>
+            <Text style={styles.goalIcon}>{goal.icon ?? "🎯"}</Text>
+            <Text style={styles.goalName}>{goal.name}</Text>
+            <Text style={styles.goalType}>{goal.type.replace("_", " ")}</Text>
+          </View>
         </View>
+
+        <View style={styles.amountRow}>
+          <View>
+            <Text style={styles.amountLabel}>Saved</Text>
+            <Text style={[styles.amountValue, { color }]}>{formatCurrency(goal.currentAmount)}</Text>
+          </View>
+          <View style={{ alignItems: "flex-end" }}>
+            <Text style={styles.amountLabel}>Target</Text>
+            <Text style={styles.amountValue}>{formatCurrency(goal.targetAmount)}</Text>
+          </View>
+        </View>
+
+        {remaining > 0 && (
+          <Text style={styles.remainingText}>
+            {formatCurrency(remaining)} to go
+            {goal.targetDate && ` · Due ${formatDate(goal.targetDate)}`}
+          </Text>
+        )}
+
+        {goal.monthlyNeeded && goal.monthlyNeeded > 0 && (
+          <View style={styles.projectionBox}>
+            <Text style={styles.projectionText}>
+              Save {formatCurrency(goal.monthlyNeeded)}/month to hit your target on time.
+            </Text>
+          </View>
+        )}
+
+        {goal.projectedCompletionDate && !goal.monthlyNeeded && (
+          <View style={styles.projectionBox}>
+            <Text style={styles.projectionText}>
+              At this rate, you'll reach your goal by {formatDate(goal.projectedCompletionDate)}.
+            </Text>
+          </View>
+        )}
+
+        {goal.percentComplete >= 100 && (
+          <View style={[styles.projectionBox, { backgroundColor: "rgba(34,197,94,0.1)" }]}>
+            <Text style={[styles.projectionText, { color: colors.success }]}>
+              Goal complete! Time to set a new one.
+            </Text>
+          </View>
+        )}
+
+        {goal.percentComplete < 100 && (
+          <TouchableOpacity
+            style={[styles.contributeButton, { borderColor: color }]}
+            onPress={() => setModalVisible(true)}
+          >
+            <Text style={[styles.contributeButtonText, { color }]}>+ Add Contribution</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
-      <View style={styles.amountRow}>
-        <View>
-          <Text style={styles.amountLabel}>Saved</Text>
-          <Text style={[styles.amountValue, { color }]}>{formatCurrency(goal.currentAmount)}</Text>
-        </View>
-        <View style={{ alignItems: "flex-end" }}>
-          <Text style={styles.amountLabel}>Target</Text>
-          <Text style={styles.amountValue}>{formatCurrency(goal.targetAmount)}</Text>
-        </View>
-      </View>
-
-      {remaining > 0 && (
-        <Text style={styles.remainingText}>
-          {formatCurrency(remaining)} to go
-          {goal.targetDate && ` · Due ${formatDate(goal.targetDate)}`}
-        </Text>
-      )}
-
-      {goal.monthlyNeeded && goal.monthlyNeeded > 0 && (
-        <View style={styles.projectionBox}>
-          <Text style={styles.projectionText}>
-            Save {formatCurrency(goal.monthlyNeeded)}/month to hit your target on time.
-          </Text>
-        </View>
-      )}
-
-      {goal.projectedCompletionDate && !goal.monthlyNeeded && (
-        <View style={styles.projectionBox}>
-          <Text style={styles.projectionText}>
-            At this rate, you'll reach your goal by {formatDate(goal.projectedCompletionDate)}.
-          </Text>
-        </View>
-      )}
-
-      {goal.percentComplete >= 100 && (
-        <View style={[styles.projectionBox, { backgroundColor: "rgba(34,197,94,0.1)" }]}>
-          <Text style={[styles.projectionText, { color: colors.success }]}>
-            Goal complete! Time to set a new one.
-          </Text>
-        </View>
-      )}
-    </View>
+      <ContributionModal
+        goal={goal}
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
+    </>
   );
 }
 
@@ -209,9 +316,64 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   projectionText: { ...typography.bodySmall, lineHeight: 20 },
+  contributeButton: {
+    marginTop: spacing.md,
+    borderWidth: 1,
+    borderRadius: radius.md,
+    padding: spacing.sm,
+    alignItems: "center",
+  },
+  contributeButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
   emptyState: {
     alignItems: "center",
     paddingTop: spacing.xxl,
     gap: spacing.md,
   },
+  // Modal
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.6)",
+  },
+  modalSheet: {
+    backgroundColor: colors.surface,
+    borderTopLeftRadius: radius.xl,
+    borderTopRightRadius: radius.xl,
+    padding: spacing.xl,
+    paddingBottom: spacing.xxl,
+    gap: spacing.sm,
+  },
+  modalTitle: { ...typography.h2, marginBottom: spacing.xs },
+  modalSubtitle: { ...typography.bodySmall, marginBottom: spacing.md },
+  inputLabel: { ...typography.label, marginTop: spacing.sm },
+  input: {
+    backgroundColor: colors.bg,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    color: colors.text,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  submitButton: {
+    backgroundColor: colors.primary,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    alignItems: "center",
+    marginTop: spacing.md,
+  },
+  submitButtonText: {
+    color: colors.bg,
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  buttonDisabled: { opacity: 0.5 },
+  cancelButton: {
+    alignItems: "center",
+    padding: spacing.sm,
+  },
+  cancelButtonText: { ...typography.body, color: colors.textDim },
 });

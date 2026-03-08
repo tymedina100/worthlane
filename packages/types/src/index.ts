@@ -55,6 +55,15 @@ export interface GoalWithProgress {
   monthlyNeeded: number | null;
 }
 
+// Goal contribution
+export interface GoalContribution {
+  id: string;
+  goalId: string;
+  amount: number;
+  note: string | null;
+  createdAt: string;
+}
+
 // Streak
 export interface StreakStatus {
   type: string;
