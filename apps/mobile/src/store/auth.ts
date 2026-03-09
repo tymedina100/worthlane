@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import * as SecureStore from "expo-secure-store";
 import * as LocalAuthentication from "expo-local-authentication";
+import * as Notifications from "expo-notifications";
+import { Platform } from "react-native";
 import { api } from "@/lib/api";
 
 interface AuthState {
@@ -17,6 +19,7 @@ interface AuthState {
   disableBiometric: () => Promise<void>;
   loginWithBiometric: () => Promise<void>;
   setRememberedEmail: (email: string | null) => Promise<void>;
+  registerPushToken: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -51,6 +54,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     await SecureStore.setItemAsync("userId", user.id);
     await SecureStore.setItemAsync("userEmail", user.email);
     set({ userId: user.id, email: user.email });
+    // Fire-and-forget — don't block login on push permission
+    useAuthStore.getState().registerPushToken().catch(() => {});
   },
 
   register: async (email: string, password: string) => {
@@ -65,6 +70,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     await SecureStore.setItemAsync("userId", user.id);
     await SecureStore.setItemAsync("userEmail", user.email);
     set({ userId: user.id, email: user.email });
+    useAuthStore.getState().registerPushToken().catch(() => {});
   },
 
   logout: async () => {
@@ -113,5 +119,26 @@ export const useAuthStore = create<AuthState>((set) => ({
       await SecureStore.deleteItemAsync("rememberedEmail");
     }
     set({ rememberedEmail: email });
+  },
+
+  registerPushToken: async () => {
+    // Android requires a notification channel; iOS shows a permission dialog
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+      });
+    }
+
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") return;
+
+    const { data: token } = await Notifications.getExpoPushTokenAsync();
+    await api.post("/push/register", { token });
   },
 }));

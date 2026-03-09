@@ -1,5 +1,6 @@
 import { prisma, NudgeType } from "@finance/db";
 import { startOfMonth, endOfMonth } from "./dates";
+import { sendPushToUser } from "./push";
 
 /**
  * Generates loss-aversion nudges for a user based on their current financial state.
@@ -137,6 +138,7 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
     });
     if (!existing) {
       await prisma.nudge.create({ data: { userId, ...nudge } });
+      await sendPushToUser(userId, nudge.message);
     }
   }
 }

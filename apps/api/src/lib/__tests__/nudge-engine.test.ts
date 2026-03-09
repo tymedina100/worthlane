@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 // vi.hoisted ensures mockPrisma is available inside the vi.mock factory (which is hoisted to top)
 const { mockPrisma } = vi.hoisted(() => {
   const mockPrisma = {
+    user: { findUnique: vi.fn(), update: vi.fn() },
     budget: { findMany: vi.fn() },
     streak: { findMany: vi.fn() },
     goal: { findMany: vi.fn() },
@@ -49,6 +50,8 @@ function aggResult(amount: number, count = 0) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  // No push token by default → sendPushToUser is a no-op in tests
+  mockPrisma.user.findUnique.mockResolvedValue(null);
   mockPrisma.nudge.findFirst.mockResolvedValue(null);
   mockPrisma.nudge.create.mockResolvedValue({});
   mockPrisma.transaction.aggregate.mockResolvedValue(aggResult(0));
