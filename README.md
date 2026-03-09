@@ -64,6 +64,16 @@ In the Metro terminal press:
 |---|---|
 | `EXPO_PUBLIC_API_URL` | `http://localhost:3001/api` |
 
+## Useful commands
+
+```bash
+pnpm typecheck       # type-check all packages
+pnpm test            # run API unit tests (Vitest)
+pnpm db:generate     # regenerate Prisma client after schema changes
+pnpm db:migrate      # apply pending migrations
+pnpm db:studio       # open Prisma Studio in browser
+```
+
 ## Stack
 
 | Layer | Tech |
@@ -84,4 +94,6 @@ In the Metro terminal press:
 - **Goals** — CRUD with progress tracking and projection
 - **Plaid** — bank linking, account sync, transaction import
 - **Nudge engine** — loss-aversion nudges for budget warnings, streak risk, goal milestones
+- **Push notifications** — Expo Push + FCM/APNs; nudges delivered to device
+- **Cron job** — daily proactive nudge delivery via `/api/cron/nudges`
 - **Streaks** — daily check-in, on-budget, no-impulse tracking
