@@ -7,7 +7,6 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  Alert,
 } from "react-native";
 import { router } from "expo-router";
 import * as LocalAuthentication from "expo-local-authentication";
@@ -25,21 +24,28 @@ function getBiometricLabel(types: LocalAuthentication.AuthenticationType[]): str
 }
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState("");
+  const { login, loginWithBiometric, enableBiometric, biometricEnabled, rememberedEmail, setRememberedEmail } = useAuthStore();
+
+  const [email, setEmail] = useState(rememberedEmail ?? "");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(!!rememberedEmail);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricHardwareAvailable, setBiometricHardwareAvailable] = useState(false);
   const [biometricLabel, setBiometricLabel] = useState("Biometrics");
-  const { login, loginWithBiometric, biometricEnabled } = useAuthStore();
 
   const checkBiometrics = useCallback(async () => {
     const hasHardware = await LocalAuthentication.hasHardwareAsync();
     const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-    if (hasHardware && isEnrolled && biometricEnabled) {
+    if (hasHardware && isEnrolled) {
       const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
       setBiometricLabel(getBiometricLabel(types));
-      setBiometricAvailable(true);
-      return true;
+      setBiometricHardwareAvailable(true);
+      if (biometricEnabled) {
+        setBiometricAvailable(true);
+        return true;
+      }
     }
     return false;
   }, [biometricEnabled]);
@@ -50,8 +56,6 @@ export default function LoginScreen() {
       await loginWithBiometric();
       router.replace("/(tabs)/dashboard");
     } catch (e: unknown) {
-      // Silently fail auto-prompt so the user can fall back to password.
-      // Only show alert on explicit button tap (handled by callers).
       throw e;
     } finally {
       setLoading(false);
@@ -72,11 +76,13 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     if (!email || !password) return;
     setLoading(true);
+    setError(null);
     try {
       await login(email.trim().toLowerCase(), password);
+      await setRememberedEmail(rememberMe ? email.trim().toLowerCase() : null);
       router.replace("/(tabs)/dashboard");
     } catch (e: unknown) {
-      Alert.alert("Login failed", e instanceof Error ? e.message : "Please try again.");
+      setError(e instanceof Error ? e.message : "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -84,17 +90,27 @@ export default function LoginScreen() {
 
   const handleBiometricTap = async () => {
     setLoading(true);
+    setError(null);
     try {
       await loginWithBiometric();
       router.replace("/(tabs)/dashboard");
     } catch (e: unknown) {
-      Alert.alert(
-        `${biometricLabel} failed`,
-        e instanceof Error ? e.message : "Please sign in with your password."
-      );
+      setError(e instanceof Error ? e.message : "Please sign in with your password.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEnableBiometric = async () => {
+    const result = await LocalAuthentication.authenticateAsync({
+      promptMessage: `Enable ${biometricLabel} for Finance`,
+      fallbackLabel: "Cancel",
+      disableDeviceFallback: true,
+    });
+    if (!result.success) return;
+    await enableBiometric();
+    setBiometricAvailable(true);
+    await handleBiometricTap();
   };
 
   return (
@@ -113,7 +129,7 @@ export default function LoginScreen() {
           placeholder="Email"
           placeholderTextColor={colors.textDim}
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(v) => { setEmail(v); setError(null); }}
           keyboardType="email-address"
           autoCapitalize="none"
           autoComplete="email"
@@ -123,10 +139,27 @@ export default function LoginScreen() {
           placeholder="Password"
           placeholderTextColor={colors.textDim}
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(v) => { setPassword(v); setError(null); }}
           secureTextEntry
           autoComplete="current-password"
         />
+
+        <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.checkboxRow}
+            onPress={() => setRememberMe((v) => !v)}
+            activeOpacity={0.7}
+          >
+            <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
+              {rememberMe && <Text style={styles.checkmark}>✓</Text>}
+            </View>
+            <Text style={styles.checkboxLabel}>Remember me</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => router.push("/(auth)/forgot-password")}>
+            <Text style={styles.forgotText}>Forgot password?</Text>
+          </TouchableOpacity>
+        </View>
 
         <TouchableOpacity
           style={[styles.button, loading && styles.buttonDisabled]}
@@ -136,6 +169,8 @@ export default function LoginScreen() {
           <Text style={styles.buttonText}>{loading ? "Signing in..." : "Sign In"}</Text>
         </TouchableOpacity>
 
+        {error && <Text style={styles.errorText}>{error}</Text>}
+
         {biometricAvailable && (
           <TouchableOpacity
             style={[styles.biometricButton, loading && styles.buttonDisabled]}
@@ -143,6 +178,16 @@ export default function LoginScreen() {
             disabled={loading}
           >
             <Text style={styles.biometricButtonText}>Sign in with {biometricLabel}</Text>
+          </TouchableOpacity>
+        )}
+
+        {biometricHardwareAvailable && !biometricEnabled && (
+          <TouchableOpacity
+            style={[styles.biometricButton, loading && styles.buttonDisabled]}
+            onPress={handleEnableBiometric}
+            disabled={loading}
+          >
+            <Text style={styles.biometricButtonText}>Enable {biometricLabel}</Text>
           </TouchableOpacity>
         )}
 
@@ -190,6 +235,43 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
   },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  checkboxRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: colors.border,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  checkboxChecked: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  checkmark: {
+    color: colors.white,
+    fontSize: 12,
+    fontWeight: "700",
+    lineHeight: 14,
+  },
+  checkboxLabel: {
+    ...typography.bodySmall,
+    color: colors.textMuted,
+  },
+  forgotText: {
+    ...typography.bodySmall,
+    color: colors.primary,
+  },
   button: {
     backgroundColor: colors.primary,
     borderRadius: radius.md,
@@ -204,6 +286,11 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 16,
     fontWeight: "600",
+  },
+  errorText: {
+    color: colors.danger,
+    fontSize: 14,
+    textAlign: "center",
   },
   biometricButton: {
     backgroundColor: colors.surface,

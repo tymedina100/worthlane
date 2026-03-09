@@ -1,13 +1,8 @@
 import { NextRequest } from "next/server";
-import { prisma, StreakType } from "@finance/db";
+import { prisma } from "@finance/db";
 import { getAuthUser } from "@/lib/auth";
 import { ok, unauthorized } from "@/lib/response";
-
-function isYesterday(date: Date): boolean {
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  return date.toDateString() === yesterday.toDateString();
-}
+import { evaluateDailyCheckin, evaluateWeeklyOnBudget, evaluateNoImpulsePurchases } from "@/lib/streaks";
 
 function isToday(date: Date): boolean {
   return date.toDateString() === new Date().toDateString();
@@ -21,37 +16,14 @@ export async function POST(req: NextRequest) {
     return unauthorized();
   }
 
-  const streak = await prisma.streak.upsert({
-    where: { userId_type: { userId, type: StreakType.DAILY_CHECKIN } },
-    create: {
-      userId,
-      type: StreakType.DAILY_CHECKIN,
-      currentCount: 1,
-      longestCount: 1,
-      lastActivityAt: new Date(),
-    },
-    update: {},
-  });
+  const now = new Date();
+  const [daily] = await Promise.all([
+    evaluateDailyCheckin(userId, now),
+    evaluateWeeklyOnBudget(userId, now),
+    evaluateNoImpulsePurchases(userId, now),
+  ]);
 
-  // Check if already checked in today
-  if (streak.lastActivityAt && isToday(streak.lastActivityAt)) {
-    return ok({ streak, alreadyCheckedIn: true });
-  }
-
-  const isContinuing = streak.lastActivityAt && isYesterday(streak.lastActivityAt);
-  const newCount = isContinuing ? streak.currentCount + 1 : 1;
-  const newLongest = Math.max(newCount, streak.longestCount);
-
-  const updated = await prisma.streak.update({
-    where: { userId_type: { userId, type: StreakType.DAILY_CHECKIN } },
-    data: {
-      currentCount: newCount,
-      longestCount: newLongest,
-      lastActivityAt: new Date(),
-    },
-  });
-
-  return ok({ streak: updated, alreadyCheckedIn: false, streakExtended: isContinuing });
+  return ok({ streak: daily.streak, alreadyCheckedIn: daily.alreadyCheckedIn });
 }
 
 export async function GET(req: NextRequest) {

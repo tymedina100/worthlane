@@ -6,7 +6,7 @@ const { mockPrisma } = vi.hoisted(() => {
     budget: { findMany: vi.fn() },
     streak: { findMany: vi.fn() },
     goal: { findMany: vi.fn() },
-    transaction: { aggregate: vi.fn() },
+    transaction: { aggregate: vi.fn(), findFirst: vi.fn() },
     nudge: { findFirst: vi.fn(), create: vi.fn() },
   };
   return { mockPrisma };
@@ -19,6 +19,7 @@ vi.mock("@finance/db", () => ({
     STREAK_AT_RISK: "STREAK_AT_RISK",
     GOAL_MILESTONE: "GOAL_MILESTONE",
     WEEKLY_SUMMARY: "WEEKLY_SUMMARY",
+    IMPULSE_FLAG: "IMPULSE_FLAG",
   },
 }));
 
@@ -51,6 +52,7 @@ beforeEach(() => {
   mockPrisma.nudge.findFirst.mockResolvedValue(null);
   mockPrisma.nudge.create.mockResolvedValue({});
   mockPrisma.transaction.aggregate.mockResolvedValue(aggResult(0));
+  mockPrisma.transaction.findFirst.mockResolvedValue(null);
 });
 
 describe("BUDGET_WARNING nudge", () => {
@@ -191,6 +193,52 @@ describe("WEEKLY_SUMMARY nudge", () => {
 
   it("does not generate nudge when impulse total is $0", async () => {
     mockPrisma.transaction.aggregate.mockResolvedValue(aggResult(0, 0));
+
+    await generateNudgesForUser(USER_ID);
+
+    expect(mockPrisma.nudge.create).not.toHaveBeenCalled();
+  });
+});
+
+describe("IMPULSE_FLAG nudge", () => {
+  beforeEach(() => {
+    mockPrisma.budget.findMany.mockResolvedValue([]);
+    mockPrisma.streak.findMany.mockResolvedValue([]);
+    mockPrisma.goal.findMany.mockResolvedValue([]);
+    mockPrisma.transaction.aggregate.mockResolvedValue(aggResult(0));
+  });
+
+  it("generates nudge with merchant name when impulse transaction exists today", async () => {
+    mockPrisma.transaction.findFirst.mockResolvedValue({
+      merchantName: "Starbucks",
+      amount: 7,
+    });
+
+    await generateNudgesForUser(USER_ID);
+
+    expect(mockPrisma.nudge.create).toHaveBeenCalledOnce();
+    const call = mockPrisma.nudge.create.mock.calls[0][0];
+    expect(call.data.type).toBe("IMPULSE_FLAG");
+    expect(call.data.message).toContain("Starbucks");
+    expect(call.data.message).toContain("$7");
+  });
+
+  it("generates nudge with 'a purchase' fallback when merchantName is null", async () => {
+    mockPrisma.transaction.findFirst.mockResolvedValue({
+      merchantName: null,
+      amount: 15,
+    });
+
+    await generateNudgesForUser(USER_ID);
+
+    expect(mockPrisma.nudge.create).toHaveBeenCalledOnce();
+    const call = mockPrisma.nudge.create.mock.calls[0][0];
+    expect(call.data.type).toBe("IMPULSE_FLAG");
+    expect(call.data.message).toContain("a purchase");
+  });
+
+  it("does not generate nudge when no impulse transactions today", async () => {
+    mockPrisma.transaction.findFirst.mockResolvedValue(null);
 
     await generateNudgesForUser(USER_ID);
 

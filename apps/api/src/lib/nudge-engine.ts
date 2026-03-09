@@ -110,6 +110,21 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
     });
   }
 
+  // --- Impulse flag nudge (same-day feedback) ---
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const impulseFlaggedToday = await prisma.transaction.findFirst({
+    where: { userId, isImpulse: true, date: { gte: todayStart } },
+    orderBy: { date: "desc" },
+    select: { merchantName: true, amount: true },
+  });
+
+  if (impulseFlaggedToday) {
+    nudges.push({
+      type: NudgeType.IMPULSE_FLAG,
+      message: `You flagged ${impulseFlaggedToday.merchantName ?? "a purchase"} as an impulse buy today ($${Number(impulseFlaggedToday.amount).toFixed(0)}). That's awareness — now use it.`,
+    });
+  }
+
   // Write nudges to DB (deduplicate by type + day)
   const today = now.toDateString();
   for (const nudge of nudges) {

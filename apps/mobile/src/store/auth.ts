@@ -8,6 +8,7 @@ interface AuthState {
   email: string | null;
   isLoading: boolean;
   biometricEnabled: boolean;
+  rememberedEmail: string | null;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -15,6 +16,7 @@ interface AuthState {
   enableBiometric: () => Promise<void>;
   disableBiometric: () => Promise<void>;
   loginWithBiometric: () => Promise<void>;
+  setRememberedEmail: (email: string | null) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -22,16 +24,18 @@ export const useAuthStore = create<AuthState>((set) => ({
   email: null,
   isLoading: true,
   biometricEnabled: false,
+  rememberedEmail: null,
 
   hydrate: async () => {
     const token = await SecureStore.getItemAsync("accessToken");
     const email = await SecureStore.getItemAsync("userEmail");
     const userId = await SecureStore.getItemAsync("userId");
     const biometricEnabled = (await SecureStore.getItemAsync("biometricEnabled")) === "true";
+    const rememberedEmail = (await SecureStore.getItemAsync("rememberedEmail")) ?? null;
     if (token && userId) {
-      set({ userId, email, isLoading: false, biometricEnabled });
+      set({ userId, email, isLoading: false, biometricEnabled, rememberedEmail });
     } else {
-      set({ isLoading: false, biometricEnabled });
+      set({ isLoading: false, biometricEnabled, rememberedEmail });
     }
   },
 
@@ -100,5 +104,14 @@ export const useAuthStore = create<AuthState>((set) => ({
       throw new Error("No stored credentials. Please sign in with your password.");
     }
     set({ userId, email });
+  },
+
+  setRememberedEmail: async (email: string | null) => {
+    if (email) {
+      await SecureStore.setItemAsync("rememberedEmail", email);
+    } else {
+      await SecureStore.deleteItemAsync("rememberedEmail");
+    }
+    set({ rememberedEmail: email });
   },
 }));

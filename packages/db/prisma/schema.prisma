@@ -23,6 +23,7 @@ model User {
   goalContributions     GoalContribution[]
   streaks               Streak[]
   nudges                Nudge[]
+  passwordResetTokens   PasswordResetToken[]
 }
 
 enum AccountType {
@@ -203,6 +204,17 @@ model Nudge {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, dismissed])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // Stores Plaid access tokens per institution (item)

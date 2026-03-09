@@ -10,7 +10,7 @@ import {
   Platform,
 } from "react-native";
 import { router } from "expo-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import * as LocalAuthentication from "expo-local-authentication";
 import { useAuthStore } from "@/store/auth";
 import { api } from "@/lib/api";
@@ -33,7 +33,17 @@ export default function ProfileScreen() {
   const { email, logout, biometricEnabled, enableBiometric, disableBiometric } = useAuthStore();
   const [biometricSupported, setBiometricSupported] = useState(false);
   const [biometricLabel, setBiometricLabel] = useState("Biometrics");
-  const syncMutation = { isPending: false }; // placeholder
+  const queryClient = useQueryClient();
+  const syncMutation = useMutation({
+    mutationFn: () => api.post("/plaid/sync"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["accounts"] });
+      Alert.alert("Synced", "Your accounts have been updated.");
+    },
+    onError: () => {
+      Alert.alert("Sync failed", "Could not sync accounts. Please try again.");
+    },
+  });
 
   useEffect(() => {
     (async () => {
@@ -71,14 +81,7 @@ export default function ProfileScreen() {
     queryFn: () => api.get<Account[]>("/accounts"),
   });
 
-  const handleSync = async () => {
-    try {
-      await api.post("/plaid/sync");
-      Alert.alert("Synced", "Your accounts have been updated.");
-    } catch {
-      Alert.alert("Sync failed", "Could not sync accounts. Please try again.");
-    }
-  };
+  const handleSync = () => syncMutation.mutate();
 
   const handleLogout = () => {
     Alert.alert("Sign Out", "Are you sure?", [
@@ -121,8 +124,14 @@ export default function ProfileScreen() {
         {accounts?.length === 0 && (
           <Text style={typography.bodySmall}>No accounts connected yet.</Text>
         )}
-        <TouchableOpacity style={styles.syncButton} onPress={handleSync}>
-          <Text style={styles.syncButtonText}>Sync Accounts</Text>
+        <TouchableOpacity
+          style={[styles.syncButton, syncMutation.isPending && { opacity: 0.6 }]}
+          onPress={handleSync}
+          disabled={syncMutation.isPending}
+        >
+          <Text style={styles.syncButtonText}>
+            {syncMutation.isPending ? "Syncing…" : "Sync Accounts"}
+          </Text>
         </TouchableOpacity>
       </View>
 
