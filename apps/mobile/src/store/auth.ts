@@ -144,8 +144,15 @@ export const useAuthStore = create<AuthState>((set) => ({
       throw new Error("Please enable notifications for Vantage in your device Settings.");
     }
 
-    const { data: token } = await Notifications.getExpoPushTokenAsync();
-    await api.post("/push/register", { token });
+    // getExpoPushTokenAsync requires a projectId in SDK 51+.
+    // In dev/builds without EAS configured this will throw — mark enabled
+    // locally so the toggle isn't stuck, but skip server registration.
+    try {
+      const { data: token } = await Notifications.getExpoPushTokenAsync();
+      await api.post("/push/register", { token });
+    } catch {
+      // Token unavailable (no EAS projectId, simulator, etc.) — continue.
+    }
     await SecureStore.setItemAsync("notificationsEnabled", "true");
     set({ notificationsEnabled: true });
   },
