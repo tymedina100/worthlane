@@ -11,6 +11,23 @@ const updateSchema = z.object({
   merchantName: z.string().optional(),
 });
 
+export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
+  let userId: string;
+  try {
+    ({ sub: userId } = getAuthUser(_req));
+  } catch {
+    return unauthorized();
+  }
+
+  const tx = await prisma.transaction.findFirst({
+    where: { id: params.id, userId },
+    include: { category: true },
+  });
+  if (!tx) return notFound();
+
+  return ok(tx);
+}
+
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   let userId: string;
   try {

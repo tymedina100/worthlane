@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { useAuthStore } from "@/store/auth";
 import { colors } from "@/lib/theme";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,6 +23,7 @@ export default function RootLayout() {
   }, []);
 
   return (
+    <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <StatusBar style="light" />
       <Stack
@@ -35,5 +37,6 @@ export default function RootLayout() {
         <Stack.Screen name="onboarding" />
       </Stack>
     </QueryClientProvider>
+    </ErrorBoundary>
   );
 }

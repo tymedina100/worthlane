@@ -4,6 +4,7 @@ import { prisma, AccountType } from "@finance/db";
 import { getAuthUser } from "@/lib/auth";
 import { exchangePublicToken, getAccounts } from "@/lib/plaid";
 import { ok, err, unauthorized } from "@/lib/response";
+import { encrypt } from "@/lib/encrypt";
 
 const schema = z.object({
   publicToken: z.string(),
@@ -37,12 +38,12 @@ export async function POST(req: NextRequest) {
   const existing = await prisma.plaidItem.findUnique({ where: { itemId } });
   if (existing) return err("This account is already connected", 409);
 
-  // Persist the item
+  // Persist the item with encrypted access token
   await prisma.plaidItem.create({
-    data: { userId, itemId, accessToken, institution: institutionName },
+    data: { userId, itemId, accessToken: encrypt(accessToken), institution: institutionName },
   });
 
-  // Fetch and persist accounts
+  // Fetch and persist accounts (use plaintext token for API call)
   const plaidAccounts = await getAccounts(accessToken);
   const accounts = await Promise.all(
     plaidAccounts.map((a) =>

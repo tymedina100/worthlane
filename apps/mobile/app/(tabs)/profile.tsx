@@ -209,7 +209,11 @@ export default function ProfileScreen() {
                 </Text>
               </View>
               <View style={styles.accountRight}>
-                <Text style={styles.accountBalance}>{formatCurrency(a.currentBalance)}</Text>
+                <Text style={styles.accountBalance}>
+                  {a.currentBalance === 0 && (a.type === "CREDIT" || a.type === "LOAN")
+                    ? "—"
+                    : formatCurrency(a.currentBalance)}
+                </Text>
                 <TouchableOpacity
                   onPress={() => handleDisconnect(a)}
                   disabled={disconnectMutation.isPending}

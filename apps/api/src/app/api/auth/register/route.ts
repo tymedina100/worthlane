@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@finance/db";
 import { hashPassword, signAccessToken, signRefreshToken } from "@/lib/auth";
 import { ok, err } from "@/lib/response";
+import { checkRateLimit, ipKey } from "@/lib/rate-limit";
 
 const schema = z.object({
   email: z.string().email(),
@@ -10,6 +11,9 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const limited = checkRateLimit(ipKey(req, "register"), 5, 60 * 60 * 1000);
+  if (limited) return limited;
+
   const body = await req.json().catch(() => null);
   const parsed = schema.safeParse(body);
   if (!parsed.success) return err("Invalid request body");

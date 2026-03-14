@@ -4,6 +4,7 @@ import { getAuthUser } from "@/lib/auth";
 import { syncTransactions } from "@/lib/plaid";
 import { ok, unauthorized } from "@/lib/response";
 import { mapPlaidCategory } from "@/lib/categories";
+import { decrypt } from "@/lib/encrypt";
 
 export async function POST(req: NextRequest) {
   let userId: string;
@@ -28,7 +29,8 @@ export async function POST(req: NextRequest) {
       });
 
       const cursor = account?.plaidCursor ?? undefined;
-      const data = await syncTransactions(item.accessToken, cursor);
+      const plainAccessToken = decrypt(item.accessToken);
+      const data = await syncTransactions(plainAccessToken, cursor);
 
       // Upsert added/modified transactions
       for (const tx of [...data.added, ...data.modified]) {
@@ -82,7 +84,7 @@ export async function POST(req: NextRequest) {
 
       // Refresh account balances
       const { getAccounts } = await import("@/lib/plaid");
-      const plaidAccounts = await getAccounts(item.accessToken);
+      const plaidAccounts = await getAccounts(plainAccessToken);
       for (const pa of plaidAccounts) {
         await prisma.account.updateMany({
           where: { plaidAccountId: pa.account_id },
