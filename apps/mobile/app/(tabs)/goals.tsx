@@ -294,7 +294,13 @@ function GoalCard({ goal, onEdit, onDelete }: { goal: GoalWithProgress; onEdit: 
           </Text>
         )}
 
-        {goal.monthlyNeeded && goal.monthlyNeeded > 0 && (
+        {goal.targetDate && new Date(goal.targetDate) < new Date() && goal.percentComplete < 100 && (
+          <View style={[styles.projectionBox, { backgroundColor: "rgba(239,68,68,0.1)" }]}>
+            <Text style={[styles.projectionText, { color: colors.danger }]}>Past due — target date has passed.</Text>
+          </View>
+        )}
+
+        {goal.monthlyNeeded && goal.monthlyNeeded > 0 && !(goal.targetDate && new Date(goal.targetDate) < new Date()) && (
           <View style={styles.projectionBox}>
             <Text style={styles.projectionText}>Save {formatCurrency(goal.monthlyNeeded)}/month to hit your target on time.</Text>
           </View>

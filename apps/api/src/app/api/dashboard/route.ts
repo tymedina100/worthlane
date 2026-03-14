@@ -14,7 +14,8 @@ export async function GET(req: NextRequest) {
 
   const now = new Date();
   const periodStart = startOfMonth(now);
-  const periodEnd = endOfMonth(now);
+  // Cap period end at now to exclude future-dated transactions
+  const periodEnd = now;
 
   const thisWeekStart = new Date(now);
   thisWeekStart.setDate(thisWeekStart.getDate() - 7);

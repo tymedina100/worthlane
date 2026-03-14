@@ -26,6 +26,12 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   const { amount, note } = parsed.data;
 
+  const remaining = goal.targetAmount.toNumber() - goal.currentAmount.toNumber();
+  if (remaining <= 0) return err("Goal is already complete", 400);
+  if (amount > remaining) {
+    return err(`Contribution exceeds remaining goal amount of $${remaining.toFixed(2)}`, 400);
+  }
+
   const [contribution, updatedGoal] = await prisma.$transaction([
     prisma.goalContribution.create({
       data: { goalId: params.id, userId, amount, note },

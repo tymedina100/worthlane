@@ -140,7 +140,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
-    if (finalStatus !== "granted") return;
+    if (finalStatus !== "granted") {
+      throw new Error("Please enable notifications for Vantage in your device Settings.");
+    }
 
     const { data: token } = await Notifications.getExpoPushTokenAsync();
     await api.post("/push/register", { token });

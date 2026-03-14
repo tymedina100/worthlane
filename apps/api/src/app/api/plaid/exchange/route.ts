@@ -33,6 +33,10 @@ export async function POST(req: NextRequest) {
 
   const { accessToken, itemId } = await exchangePublicToken(publicToken);
 
+  // Check for duplicate item
+  const existing = await prisma.plaidItem.findUnique({ where: { itemId } });
+  if (existing) return err("This account is already connected", 409);
+
   // Persist the item
   await prisma.plaidItem.create({
     data: { userId, itemId, accessToken, institution: institutionName },
@@ -42,14 +46,19 @@ export async function POST(req: NextRequest) {
   const plaidAccounts = await getAccounts(accessToken);
   const accounts = await Promise.all(
     plaidAccounts.map((a) =>
-      prisma.account.create({
-        data: {
+      prisma.account.upsert({
+        where: { plaidAccountId: a.account_id },
+        create: {
           userId,
           plaidAccountId: a.account_id,
           plaidItemId: itemId,
           name: a.name,
           institutionName,
           type: plaidTypeMap[a.type] ?? AccountType.OTHER,
+          currentBalance: a.balances.current ?? 0,
+          lastSyncedAt: new Date(),
+        },
+        update: {
           currentBalance: a.balances.current ?? 0,
           lastSyncedAt: new Date(),
         },
