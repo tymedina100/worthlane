@@ -21,10 +21,11 @@ export const plaidClient = new PlaidApi(config);
 export async function createLinkToken(userId: string) {
   const response = await plaidClient.linkTokenCreate({
     user: { client_user_id: userId },
-    client_name: "Finance App",
+    client_name: "Vantage",
     products: [Products.Transactions],
     country_codes: [CountryCode.Us],
     language: "en",
+    ...(process.env.PLAID_REDIRECT_URI ? { redirect_uri: process.env.PLAID_REDIRECT_URI } : {}),
   });
   return response.data.link_token;
 }
