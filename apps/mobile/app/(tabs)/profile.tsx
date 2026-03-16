@@ -295,6 +295,15 @@ export default function ProfileScreen() {
           </View>
         </View>
 
+        {/* Preferences */}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Preferences</Text>
+          <TouchableOpacity style={styles.navRow} onPress={() => router.push("/categories")}>
+            <Text style={styles.navRowLabel}>Manage Categories</Text>
+            <Text style={styles.navRowChevron}>›</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Sign Out */}
         <View style={styles.section}>
           <TouchableOpacity style={styles.dangerButton} onPress={handleLogout}>
@@ -378,6 +387,16 @@ const styles = StyleSheet.create({
     borderColor: colors.danger,
   },
   dangerButtonText: { color: colors.danger, fontWeight: "600" },
+  navRow: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  navRowLabel: { ...typography.label },
+  navRowChevron: { fontSize: 20, color: colors.textMuted },
   version: {
     ...typography.caption,
     color: colors.textDim,

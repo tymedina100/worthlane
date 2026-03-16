@@ -34,6 +34,7 @@ export interface Category {
   icon: string;
   color: string;
   isSystem: boolean;
+  userId?: string | null;
 }
 
 // Budget
