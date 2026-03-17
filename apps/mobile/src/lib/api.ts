@@ -64,62 +64,75 @@ export const api = {
 
   /**
    * SSE streaming: yields string tokens from a POST endpoint.
-   * The server sends `data: {"token":"..."}\n\n` lines.
-   * Throws on auth failure (auto-refreshes once) or network errors.
+   * Uses XMLHttpRequest + onprogress because React Native's fetch
+   * does not expose response.body as a readable stream.
    */
   async *stream(path: string, body: unknown): AsyncGenerator<string> {
-    let token = await getAccessToken();
+    let authToken = await getAccessToken();
 
-    const makeReq = (t: string | null) =>
-      fetch(`${API_URL}${path}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(t ? { Authorization: `Bearer ${t}` } : {}),
-        },
-        body: JSON.stringify(body),
-      });
+    // Run one XHR attempt, collecting all tokens incrementally via onprogress
+    const attempt = (t: string | null) =>
+      new Promise<{ status: number; tokens: string[]; error?: string }>(
+        (resolve) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", `${API_URL}${path}`, true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          if (t) xhr.setRequestHeader("Authorization", `Bearer ${t}`);
+          xhr.timeout = 60_000;
 
-    let res = await makeReq(token);
+          const tokens: string[] = [];
+          let consumed = 0;
+          let buffer = "";
+          let settled = false;
 
-    if (res.status === 401) {
-      token = await refreshTokens();
-      if (!token) throw new Error("Session expired");
-      res = await makeReq(token);
-    }
+          const flush = () => {
+            const newText = xhr.responseText.slice(consumed);
+            consumed = xhr.responseText.length;
+            buffer += newText;
+            const lines = buffer.split("\n");
+            buffer = lines.pop() ?? "";
+            for (const line of lines) {
+              if (!line.startsWith("data: ")) continue;
+              const payload = line.slice(6).trim();
+              if (!payload) continue;
+              try {
+                const parsed = JSON.parse(payload) as {
+                  token?: string;
+                  done?: boolean;
+                  error?: string;
+                };
+                if (parsed.error) {
+                  if (!settled) { settled = true; resolve({ status: xhr.status, tokens, error: parsed.error }); }
+                  return;
+                }
+                if (parsed.done) return;
+                if (parsed.token) tokens.push(parsed.token);
+              } catch { /* skip malformed */ }
+            }
+          };
 
-    if (!res.ok) {
-      const json = await res.json().catch(() => ({}));
-      throw new Error((json as { error?: { message?: string } }).error?.message ?? "Request failed");
-    }
+          xhr.onprogress = flush;
+          xhr.onload = () => { flush(); if (!settled) { settled = true; resolve({ status: xhr.status, tokens }); } };
+          xhr.onerror = () => { if (!settled) { settled = true; resolve({ status: 0, tokens, error: "Network error" }); } };
+          xhr.ontimeout = () => { if (!settled) { settled = true; resolve({ status: 0, tokens, error: "Request timed out" }); } };
 
-    if (!res.body) throw new Error("No response body");
-
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = "";
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split("\n");
-      buffer = lines.pop() ?? "";
-
-      for (const line of lines) {
-        if (!line.startsWith("data: ")) continue;
-        const payload = line.slice(6).trim();
-        if (!payload) continue;
-        try {
-          const parsed = JSON.parse(payload) as { token?: string; done?: boolean; error?: string };
-          if (parsed.error) throw new Error(parsed.error);
-          if (parsed.done) return;
-          if (parsed.token) yield parsed.token;
-        } catch {
-          // skip malformed lines
+          xhr.send(JSON.stringify(body));
         }
-      }
+      );
+
+    let result = await attempt(authToken);
+
+    // Auto-refresh on 401
+    if (result.status === 401) {
+      authToken = await refreshTokens();
+      if (!authToken) throw new Error("Session expired");
+      result = await attempt(authToken);
+    }
+
+    if (result.error) throw new Error(result.error);
+
+    for (const t of result.tokens) {
+      yield t;
     }
   },
 };
