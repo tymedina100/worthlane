@@ -122,7 +122,7 @@ The user's current financial snapshot:
     async start(controller) {
       try {
         const response = anthropic.messages.stream({
-          model: "claude-3-5-haiku-20241022",
+          model: "claude-3-haiku-20240307",
           max_tokens: 512,
           system: systemPrompt,
           messages,
