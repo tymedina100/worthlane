@@ -144,8 +144,9 @@ export default function ProfileScreen() {
     setConnecting(true);
     try {
       const { linkToken: token } = await api.post<{ linkToken: string }>("/plaid/link-token", {});
+      const baseUrl = (process.env.EXPO_PUBLIC_API_URL ?? "https://financeapi-production-1853.up.railway.app/api").replace(/\/api$/, "");
       openLink({
-        tokenConfig: { token, noLoadingState: false, redirectUri: "vantage://plaid-oauth" },
+        tokenConfig: { token, noLoadingState: false, redirectUri: `${baseUrl}/api/plaid/oauth-return` },
         onSuccess: async (success: LinkSuccess) => {
           try {
             await api.post("/plaid/exchange", {
