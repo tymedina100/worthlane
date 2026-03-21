@@ -1,118 +1,265 @@
 # UX & UI Testing Tasks
 
-These tasks are designed for a UX/UI tester to evaluate key user flows and visual design in the Vantage mobile app.
+These tasks are designed to gather detailed feedback on the Vantage app's UX and visual design. For each step, write down your honest first impressions, any moments of confusion, and anything that delighted or frustrated you. There are no wrong answers — your feedback is the goal.
 
 ---
 
-## Task 1: Loss-Aversion Budget Messaging
+## Task 1: First Impressions — Sign Up & Login
 
-**Goal:** Verify that budget progress messaging effectively motivates users without feeling punishing, and that all color states render correctly.
+**Context:** You're a new user downloading a personal finance app for the first time. You've never seen this app before.
 
-**Screens:** Budgets tab, Dashboard budget preview cards
-
-**Steps:**
-1. Create a budget for any category (e.g. Dining, $200/month).
-2. Add transactions to move through each threshold:
-   - >50% remaining → should show green card with calm, encouraging message
-   - 20–50% remaining → should show amber card with urgency message (e.g. *"only $X stands between you and blowing this"*)
-   - <20% remaining → should show red card with high-urgency message (e.g. *"every dollar here is a dollar stolen from your savings"*)
-   - Over budget → should show over-limit state
-3. Check the same budget card on the Dashboard for consistent color and messaging.
-4. Review the monthly history chips (✓/✗) on each card — verify they're readable on small screen sizes.
-
-**Pass Criteria:**
-- [ ] All 3 color states (green/amber/red) render at the correct thresholds
-- [ ] Messages are grammatically correct and match the intended tone at each level
-- [ ] Progress bar color is always consistent with the card's state
-- [ ] Spent vs. total amounts are accurate and clearly formatted
-- [ ] Monthly history chips are legible on all tested device sizes
+**What we want to know:** Does the onboarding feel welcoming and trustworthy? Is it obvious what to do at each step? Does anything feel broken, confusing, or off-brand?
 
 ---
 
-## Task 2: Onboarding & Authentication Flow
+### Step 1 — Open the app for the first time
 
-**Goal:** Confirm the full auth flow (register → login → biometric) works smoothly, handles errors gracefully, and presents a polished first impression.
-
-**Screens:** Register, Login
-
-**Steps:**
-1. **Registration:**
-   - Attempt to register with a password fewer than 8 characters — verify the validation error appears.
-   - Attempt to register with mismatched "Confirm password" — verify the error message.
-   - Complete a successful registration and confirm redirection to the main app.
-2. **Login:**
-   - Attempt login with incorrect credentials — verify a clear error message is shown.
-   - Log in successfully with valid credentials.
-3. **Biometric (if device supports it):**
-   - Enable biometric login from the Profile screen.
-   - Force-close the app and reopen — verify the biometric prompt appears automatically.
-   - Authenticate with biometrics and confirm you land on the Dashboard.
-4. **Remember Me:**
-   - Log out, then log back in with "Remember me" checked.
-   - Close and reopen the app — confirm the session is preserved.
-
-**Pass Criteria:**
-- [ ] All validation errors are shown inline, clearly describing the issue
-- [ ] Successful registration lands user in the app (not back at login)
-- [ ] Biometric prompt appears on app launch when enabled
-- [ ] "Remember me" persists the session across app restarts
-- [ ] Keyboard-aware layout prevents input fields from being obscured on all tested devices
+- You land on the Login screen. Before doing anything, take 5–10 seconds to look at it.
+- **Write down:** What is your first impression? Does it feel like a premium app? What's the first thing your eye goes to? Does the dark color scheme feel appropriate for a finance app?
 
 ---
 
-## Task 3: Transaction Filtering & Detail Editing
+### Step 2 — Try to register with bad inputs (intentionally)
 
-**Goal:** Confirm that the transaction list is easy to navigate, filters work correctly, and editing a transaction (category, impulse flag, note) saves and reflects immediately.
-
-**Screen:** Transactions tab
-
-**Steps:**
-1. Open the Transactions tab — verify the list loads with merchant name, date, category, and amount for each item.
-2. **Search:** Type a merchant name in the search bar — verify results filter in real time. Clear the search and confirm the full list returns.
-3. **Date range pills:** Tap "Last Month" then "All Time" — confirm the list updates for each selection.
-4. **Category chips:** Tap a category chip (e.g. "Dining") — confirm only matching transactions appear. Tap another category to switch filters.
-5. **Transaction detail:**
-   - Tap any transaction to open the bottom sheet.
-   - Change the category using the horizontal picker — verify the new selection is highlighted.
-   - Add a note in the text field.
-   - Toggle the Impulse switch on — verify the description text appears below it.
-   - Tap Save — confirm the bottom sheet closes and the transaction now shows the ⚡ badge and updated category in the list.
-6. **Impulse badge:** Confirm the ⚡ badge is visually distinct and doesn't overlap the amount or category label.
-7. **Pagination:** If more than one page of transactions is available, tap "Load more" and confirm additional items append to the list (no duplicates, no layout shift).
-
-**Pass Criteria:**
-- [ ] Search and category filters produce accurate results
-- [ ] Date range pills update the list correctly for all 3 options
-- [ ] Edited transaction data (category, note, impulse flag) saves and reflects immediately in the list
-- [ ] ⚡ impulse badge is legible and doesn't overlap other content
-- [ ] Empty state (search returns no results) shows the 🔍 icon with a helpful message
-- [ ] "Load more" appends items without duplicates or visible layout shift
+- Tap "Create an account" (or the register link).
+- Type a password that is only 5 characters long and try to submit.
+  - **Write down:** Where does the error appear? Is it immediately obvious what went wrong and what you need to do to fix it?
+- Now type a password in the first field and a *different* password in the "Confirm password" field, then try to submit.
+  - **Write down:** Does the error message make it clear which field is wrong? Is the wording clear?
+- Tap into the email field, then tap into the password field. Does the keyboard cover any input fields?
+  - **Write down:** Can you see what you're typing at all times, or does the keyboard push content off screen?
 
 ---
 
-## Task 4: Dashboard Information Hierarchy & Navigation
+### Step 3 — Complete registration successfully
 
-**Goal:** Evaluate whether the Dashboard communicates financial health at a glance, and that all interactive elements (nudge dismiss, "See all" links, pull-to-refresh) work correctly.
+- Fill in a valid email and a password of 8+ characters and submit.
+- **Write down:** Is there any loading indicator while the request is in flight? After success, where do you land? Does it feel like a smooth transition into the app, or is it abrupt?
 
-**Screen:** Dashboard tab
+---
 
-**Steps:**
-1. **Loading state:** Navigate away and back to the Dashboard — verify skeleton loaders animate smoothly before data appears.
-2. **Net worth card:** Confirm the net worth figure, month-over-month delta badge (up/down arrow + color), and sparkline chart all render correctly.
-3. **Nudges:** If nudges are present (max 2 shown):
-   - Read the nudge message — confirm it uses loss-aversion language and is grammatically correct.
-   - Tap the dismiss button — verify the nudge disappears without a full page reload.
-4. **Streaks:** Scroll the streak row horizontally — confirm all 3 streak types (Daily Checkin, Weekly On-Budget, No Impulse) are visible and show a count. If a streak is "at risk," confirm the warning is visually distinct.
-5. **Budget overview:** Confirm the top 3 budgets show color-coded progress bars and loss-aversion messages consistent with the Budgets tab.
-6. **"See all" links:** Tap each "See all" link (Budgets, Goals, Transactions) — verify they navigate to the correct tab.
-7. **Pull-to-refresh:** Pull down on the scroll view — confirm a refresh indicator appears and data reloads.
-8. **Impulse spending card:** Confirm the impulse purchase count and trend vs. previous week are displayed. If impulse count is 0, verify a neutral or positive message is shown.
+### Step 4 — Log out and log back in
 
-**Pass Criteria:**
-- [ ] Skeleton loaders display during data fetch and transition smoothly to real content
-- [ ] Net worth delta badge uses correct color (green for positive, red for negative)
-- [ ] Dismissing a nudge removes it immediately without reloading the page
-- [ ] Streak "at risk" state is visually distinct from a healthy streak
-- [ ] All "See all" navigation links route to the correct tab
-- [ ] Pull-to-refresh works and updates stale data
-- [ ] Impulse spending card is present and accurately reflects transaction data
+- Go to the Profile tab and tap "Sign Out." Confirm the alert prompt.
+  - **Write down:** Does the sign-out confirmation feel necessary, or is it annoying? Is the button labeled clearly?
+- Log back in with your credentials.
+  - **Write down:** Does anything feel different the second time you log in vs. the first? Is the login experience fast?
+
+---
+
+### Step 5 — Biometric login (skip if your device doesn't support it)
+
+- From Profile, find the Face ID / Touch ID / Fingerprint toggle and enable it.
+- Force-close the app and reopen it.
+  - **Write down:** Does the biometric prompt appear automatically or do you have to tap something first? Does it feel seamless, or does it interrupt the app opening experience?
+- Authenticate with biometrics.
+  - **Write down:** Is the transition into the app instant? Or is there a delay?
+
+---
+
+**Overall feedback for Task 1:**
+- On a scale of 1–5, how smooth did the auth flow feel? (1 = very frustrating, 5 = completely seamless)
+- Was there any moment where you weren't sure what to do next?
+- Is there anything about the visual design on these screens you'd change?
+
+---
+
+## Task 2: Dashboard — Understanding Your Financial Picture
+
+**Context:** You've just logged in. The Dashboard is the first thing you see every time you open the app.
+
+**What we want to know:** Within 30 seconds, can a user understand their financial health? Is the information hierarchy clear? Does the page feel overwhelming or just right?
+
+---
+
+### Step 1 — First look at the Dashboard (30 seconds, no scrolling)
+
+- When you land on the Dashboard, stop and look at only what's visible without scrolling.
+- **Write down:** What information did you notice first? What did you notice second? What is the single most important thing this screen is trying to tell you? Is that the right thing to lead with?
+
+---
+
+### Step 2 — Net worth card
+
+- Look at the large card at the top (your net worth, sparkline chart, and income/spending row).
+- **Write down:** Is the net worth number easy to find? Do you understand what the up/down badge next to it means? Does the sparkline chart add useful information or just visual noise? Is the "Income vs. Spending" breakdown below it clear at a glance?
+
+---
+
+### Step 3 — Nudges (AI-generated messages)
+
+- Look at the nudge cards (if present — they appear below the accounts section).
+- Read the message on one of the nudge cards out loud.
+  - **Write down:** Does the message feel personal and relevant, or does it feel generic? Is the tone motivating or anxiety-inducing? Is the language clear and natural?
+- Tap the dismiss button on a nudge.
+  - **Write down:** Did it disappear immediately? Did the cards below it animate up smoothly, or was there a jarring jump?
+
+---
+
+### Step 4 — Streaks row
+
+- Find the horizontal streak row (Daily Checkin, Weekly On-Budget, No Impulse).
+- **Write down:** Do you immediately understand what each streak represents? Is the streak count displayed prominently enough? If a streak shows "at risk," does that warning stand out visually? Does swiping the row horizontally feel natural, or did you not know it was scrollable?
+
+---
+
+### Step 5 — Scroll the full Dashboard
+
+- Scroll all the way to the bottom without tapping anything.
+- **Write down:** How long does the page feel? Does it feel like too much information on one screen, or about right? Which sections feel most useful? Which feel least useful or could be removed?
+
+---
+
+### Step 6 — Tap each "See all" link
+
+- Tap the "See all" link next to Budgets, Goals, and the Transactions section.
+- **Write down:** Do you land on the right screen each time? Is the navigation instant, or is there a noticeable delay?
+
+---
+
+### Step 7 — Pull to refresh
+
+- Pull down from the top of the Dashboard scroll view.
+- **Write down:** Does the refresh indicator appear and feel native to the platform? Does the data visibly update after the refresh completes?
+
+---
+
+**Overall feedback for Task 2:**
+- On a scale of 1–5, how clearly does the Dashboard communicate your financial health? (1 = very confusing, 5 = crystal clear)
+- What's the one thing on the Dashboard you would remove to reduce clutter?
+- What's the one thing missing that you'd want to see here?
+
+---
+
+## Task 3: Budgets — Setting Limits & Reacting to Warnings
+
+**Context:** You want to track your spending in a few categories this month and get warnings before you overspend.
+
+**What we want to know:** Is the budget creation flow intuitive? Do the warning messages feel helpful or alarming? Does the visual design make it easy to spot which budgets need attention?
+
+---
+
+### Step 1 — Create your first budget
+
+- Tap the Budgets tab. Look at the empty state screen.
+  - **Write down:** Does the empty state make it obvious what to do? Is the call-to-action button easy to find?
+- Tap "+ New" and create a budget:
+  - Pick a category (e.g. Dining or Shopping) from the scrollable chip row.
+  - Set a monthly amount (e.g. $200).
+  - Tap Save.
+  - **Write down:** Was the category picker easy to use? Did you have to scroll to find the category you wanted? Was the amount input obvious (no confusion about currency format, decimal, etc.)? Did anything feel unnecessarily complicated?
+
+---
+
+### Step 2 — Read the budget card at a healthy level (>50% remaining)
+
+- After creating the budget with no spending, look at the card.
+- **Write down:** Can you immediately tell how much you have left? What does the progress bar and color communicate to you? Read the small message below the progress bar — does it feel encouraging, neutral, or confusing? Does the card feel visually clean or cluttered?
+
+---
+
+### Step 3 — Simulate a warning state (20–50% remaining)
+
+- Add transactions (or ask the test coordinator to adjust spending) so the budget is between 20–50% remaining (amber state).
+- **Write down:** Does the color change feel noticeable compared to the green state? Read the loss-aversion message (e.g. *"only $X stands between you and blowing this"*) — does this phrasing feel motivating, annoying, or dramatic? Does the urgency feel appropriate at this level?
+
+---
+
+### Step 4 — Simulate a critical state (<20% remaining)
+
+- Adjust spending so less than 20% of the budget remains (red state).
+- **Write down:** Does the red state feel alarming or just informational? Read the message at this level (e.g. *"every dollar here is a dollar stolen from your savings"*) — does this feel too aggressive, just right, or not strong enough? Would this message make you change your behavior?
+
+---
+
+### Step 5 — Review the monthly history chips
+
+- Look at the row of ✓ and ✗ chips at the bottom of a budget card (showing whether you stayed on budget in past months).
+- **Write down:** Did you notice these chips without being told to look for them? Is the pattern easy to read at a glance? Do you understand what they represent without any label?
+
+---
+
+### Step 6 — Edit and delete a budget
+
+- Tap the edit icon (pencil emoji) on a budget card. Change the amount and save.
+  - **Write down:** Did the card update immediately? Was the edit flow as simple as the create flow?
+- Tap the delete icon (trash emoji) on a budget card. Confirm the deletion.
+  - **Write down:** Was there a confirmation prompt? Did it feel appropriately cautious without being annoying?
+
+---
+
+**Overall feedback for Task 3:**
+- On a scale of 1–5, how motivating did the budget messaging feel overall? (1 = not motivating at all, 5 = I want to stay on budget)
+- Did any of the loss-aversion messages feel too harsh or off-putting?
+- Is there anything missing from the budget card that would make it more useful to you?
+
+---
+
+## Task 4: Transactions — Finding & Understanding Your Spending
+
+**Context:** You want to review your recent spending, find a specific purchase, and correct a transaction that was categorized wrong.
+
+**What we want to know:** Is the transaction list easy to scan? Are the filters intuitive? Does editing a transaction feel quick and painless?
+
+---
+
+### Step 1 — First look at the Transactions tab
+
+- Open the Transactions tab without using any filters.
+- **Write down:** Is it immediately clear what each row represents? Can you tell the difference between income (green amounts) and expenses (red amounts) at a glance? Is the merchant name, date, and category readable without squinting? Does the layout feel dense or comfortable?
+
+---
+
+### Step 2 — Use the search bar
+
+- Tap the search bar and type the name of a merchant you know exists (e.g. "Starbucks" or "Amazon").
+  - **Write down:** Do results filter as you type, or only after submitting? How fast does the list update? Is it obvious the list is filtered (i.e., does it clearly show you're in "search mode")?
+- Clear the search.
+  - **Write down:** Does the full list come back immediately?
+
+---
+
+### Step 3 — Use the date range pills
+
+- Tap "Last Month."
+  - **Write down:** Does the list update instantly? Is it obvious which pill is currently active?
+- Tap "All Time."
+  - **Write down:** Same questions — does it feel responsive?
+
+---
+
+### Step 4 — Use the category filter chips
+
+- Tap one of the colored category chips (e.g. "Dining").
+  - **Write down:** Does the list immediately filter? Is the active chip visually distinct from the unselected ones? Was it obvious the row of chips was scrollable before you tried?
+- Tap a different category chip to switch filters.
+  - **Write down:** Does the previous filter clear automatically, or do chips stack? Is the behavior intuitive?
+
+---
+
+### Step 5 — Open and edit a transaction
+
+- Tap on any transaction row to open the detail bottom sheet.
+  - **Write down:** Does the bottom sheet animate up smoothly? Is it immediately obvious what you can do in this view?
+- Change the category using the horizontal category picker.
+  - **Write down:** Is the currently selected category visually obvious? Is the picker easy to scroll and tap?
+- Type a short note in the note field (e.g. "business lunch").
+  - **Write down:** Does the keyboard appear and position the text field in view, or does the keyboard cover the input?
+- Toggle the "Impulse" switch on.
+  - **Write down:** Is it obvious what "Impulse" means in this context? Does a description appear to explain it? Does the toggle feel satisfying to interact with?
+- Tap Save.
+  - **Write down:** Does the bottom sheet close smoothly? Is the ⚡ badge now visible on that transaction in the list? Did the category label update immediately?
+
+---
+
+### Step 6 — Overall list scan
+
+- Scroll through the transaction list without filters applied.
+- **Write down:** Is there any information you'd want to see on each row that isn't there? Is there anything on each row that feels unnecessary? Does the ⚡ impulse badge stand out clearly next to impulse purchases?
+
+---
+
+**Overall feedback for Task 4:**
+- On a scale of 1–5, how easy was it to find a specific transaction? (1 = very hard, 5 = very easy)
+- Did the category filter chips feel like a natural way to filter, or would you prefer a different pattern (e.g. a dropdown)?
+- Was there anything about the transaction editing experience that felt slow or clunky?
