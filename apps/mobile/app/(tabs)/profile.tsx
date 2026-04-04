@@ -528,7 +528,7 @@ export default function ProfileScreen() {
                         <View style={{ flex: 1 }}>
                           <Text style={styles.accountName}>{account.name}</Text>
                           <Text style={styles.accountMeta}>
-                            {accountTypeLabel(account.type)} · {formatCurrency(account.currentBalance)}
+                            {accountTypeLabel(account.type)} - {formatCurrency(account.currentBalance)}
                           </Text>
                         </View>
                       </View>
@@ -563,7 +563,7 @@ export default function ProfileScreen() {
                   <View style={{ flex: 1 }}>
                     <Text style={styles.accountName}>{account.name}</Text>
                     <Text style={styles.accountMeta}>
-                      {account.institutionName ?? "Manual account"} · {accountTypeLabel(account.type)}
+                      {account.institutionName ?? "Manual account"} - {accountTypeLabel(account.type)}
                     </Text>
                   </View>
                   <View style={styles.accountRight}>
