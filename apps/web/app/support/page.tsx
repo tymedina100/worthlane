@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Support — Vantage",
-  description: "Get help with Vantage. Find answers to common questions or contact our support team.",
+  title: "Support — Worthlane",
+  description: "Get help with Worthlane. Find answers to common questions or contact our support team.",
 };
 
 const CONTACT_EMAIL = "support@getvantage.app";
@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     q: "Is my banking information secure?",
-    a: "Yes. Vantage uses Plaid to connect to your bank — your bank credentials are never shared with or stored by us. Bank access tokens are encrypted at rest using AES-256-GCM. All data is transmitted over HTTPS.",
+    a: "Yes. Worthlane uses Plaid to connect to your bank — your bank credentials are never shared with or stored by us. Bank access tokens are encrypted at rest using AES-256-GCM. All data is transmitted over HTTPS.",
   },
   {
     q: "Why is Schwab (or another bank) showing an error?",
@@ -44,7 +44,7 @@ const faqs = [
   },
   {
     q: "How do I flag a transaction as an impulse purchase?",
-    a: "On the Transactions tab, tap any transaction and toggle the 'Impulse' flag. This helps Vantage track your impulse spending patterns and includes it in your no-impulse streak calculations.",
+    a: "On the Transactions tab, tap any transaction and toggle the 'Impulse' flag. This helps Worthlane track your impulse spending patterns and includes it in your no-impulse streak calculations.",
   },
   {
     q: "The app isn't working — how do I get help?",
@@ -58,7 +58,7 @@ export default function SupportPage() {
       {/* Nav */}
       <nav className="border-b border-border/50">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-primary">Vantage</Link>
+          <Link href="/" className="text-xl font-bold text-primary">Worthlane</Link>
           <a
             href={TESTFLIGHT_URL}
             target="_blank"
@@ -129,7 +129,7 @@ export default function SupportPage() {
 
       <footer className="border-t border-border mt-16">
         <div className="max-w-3xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-dim">
-          <Link href="/" className="font-bold text-primary text-base">Vantage</Link>
+          <Link href="/" className="font-bold text-primary text-base">Worthlane</Link>
           <div className="flex gap-6">
             <Link href="/" className="hover:text-muted transition-colors">Home</Link>
             <Link href="/privacy" className="hover:text-muted transition-colors">Privacy Policy</Link>

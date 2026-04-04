@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
-import { prisma } from "@finance/db";
+import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
 import { ok, err, unauthorized } from "@/lib/response";
 

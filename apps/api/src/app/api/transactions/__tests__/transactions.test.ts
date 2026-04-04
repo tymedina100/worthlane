@@ -10,7 +10,7 @@ const { mockPrisma, mockGetAuthUser } = vi.hoisted(() => {
   return { mockPrisma, mockGetAuthUser };
 });
 
-vi.mock("@finance/db", () => ({ prisma: mockPrisma }));
+vi.mock("@worthlane/db", () => ({ prisma: mockPrisma }));
 vi.mock("@/lib/auth", () => ({ getAuthUser: mockGetAuthUser }));
 
 import { GET, POST } from "../route";

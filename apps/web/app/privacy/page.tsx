@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — Vantage",
-  description: "Vantage privacy policy. Learn how we collect, use, and protect your data.",
+  title: "Privacy Policy — Worthlane",
+  description: "Worthlane privacy policy. Learn how we collect, use, and protect your data.",
 };
 
 const EFFECTIVE_DATE = "March 18, 2026";
@@ -15,7 +15,7 @@ export default function PrivacyPage() {
       {/* Nav */}
       <nav className="border-b border-border/50">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-primary">Vantage</Link>
+          <Link href="/" className="text-xl font-bold text-primary">Worthlane</Link>
           <Link href="/support" className="text-sm text-muted hover:text-text transition-colors">Support</Link>
         </div>
       </nav>
@@ -29,13 +29,13 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-xl font-semibold text-text mb-3">1. Overview</h2>
             <p>
-              Vantage (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is a personal finance application that helps users
+              Worthlane (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is a personal finance application that helps users
               track spending, manage budgets, and build better financial habits. This Privacy Policy
-              describes how we collect, use, and protect your information when you use the Vantage
+              describes how we collect, use, and protect your information when you use the Worthlane
               mobile application and related services.
             </p>
             <p className="mt-3">
-              By using Vantage, you agree to the collection and use of information in accordance
+              By using Worthlane, you agree to the collection and use of information in accordance
               with this policy.
             </p>
           </section>
@@ -47,10 +47,10 @@ export default function PrivacyPage() {
 
             <h3 className="font-semibold text-text mt-5 mb-2">Financial data via Plaid</h3>
             <p>
-              Vantage uses Plaid Technologies, Inc. to connect to your financial institutions.
+              Worthlane uses Plaid Technologies, Inc. to connect to your financial institutions.
               When you link a bank account, Plaid retrieves your account balances and transaction
               history on your behalf. We store this data to power your dashboard, budgets, and
-              insights. Your bank credentials are never shared with or stored by Vantage —
+              insights. Your bank credentials are never shared with or stored by Worthlane —
               they are handled entirely by Plaid.
             </p>
             <p className="mt-3">
@@ -78,7 +78,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-xl font-semibold text-text mb-3">3. How We Use Your Information</h2>
             <ul className="list-disc list-inside space-y-2">
-              <li>To provide and operate the Vantage app and its features</li>
+              <li>To provide and operate the Worthlane app and its features</li>
               <li>To sync and display your bank account balances and transactions</li>
               <li>To calculate your budgets, goals, and financial insights</li>
               <li>To send push notifications you&apos;ve opted into</li>
@@ -147,7 +147,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-xl font-semibold text-text mb-3">8. Children&apos;s Privacy</h2>
             <p>
-              Vantage is not intended for users under the age of 13. We do not knowingly collect
+              Worthlane is not intended for users under the age of 13. We do not knowingly collect
               personal information from children under 13. If you believe we have inadvertently
               collected such information, please contact us immediately.
             </p>
@@ -176,7 +176,7 @@ export default function PrivacyPage() {
 
       <footer className="border-t border-border mt-16">
         <div className="max-w-3xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-dim">
-          <Link href="/" className="font-bold text-primary text-base">Vantage</Link>
+          <Link href="/" className="font-bold text-primary text-base">Worthlane</Link>
           <div className="flex gap-6">
             <Link href="/" className="hover:text-muted transition-colors">Home</Link>
             <Link href="/support" className="hover:text-muted transition-colors">Support</Link>

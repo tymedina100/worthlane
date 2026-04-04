@@ -15,7 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { colors, spacing, radius, typography } from "@/lib/theme";
-import type { Category } from "@finance/types";
+import type { Category } from "@worthlane/types";
 
 function ProgressDots({ current, total }: { current: number; total: number }) {
   return (

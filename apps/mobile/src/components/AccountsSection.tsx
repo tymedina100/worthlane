@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, spacing, radius, typography } from "@/lib/theme";
-import type { AccountSummary } from "@finance/types";
+import type { AccountSummary } from "@worthlane/types";
 
 function formatCurrency(amount: number): string {
   return new Intl.NumberFormat("en-US", {

@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import Svg, { Path, Defs, LinearGradient, Stop, Line } from "react-native-svg";
 import { colors, typography } from "@/lib/theme";
-import type { NetWorthPoint } from "@finance/types";
+import type { NetWorthPoint } from "@worthlane/types";
 
 interface NetWorthChartProps {
   data: NetWorthPoint[];

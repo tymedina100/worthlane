@@ -16,7 +16,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { api } from "@/lib/api";
 import { colors, spacing, radius, typography } from "@/lib/theme";
-import type { Category } from "@finance/types";
+import type { Category } from "@worthlane/types";
 
 const PRESET_COLORS = [
   "#34D399", "#22C55E", "#3B82F6", "#8B5CF6",

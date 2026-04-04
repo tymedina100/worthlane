@@ -90,7 +90,7 @@ export default function OnboardingGoal() {
           <View style={styles.header}>
             <Text style={styles.heading}>What are you{"\n"}saving for?</Text>
             <Text style={styles.subtitle}>
-              Set a goal and Vantage will track your progress automatically.
+              Set a goal and Worthlane will track your progress automatically.
             </Text>
           </View>
 

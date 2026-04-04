@@ -31,7 +31,10 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.worthlane.mobile"
+      "bundleIdentifier": "com.worthlane.mobile",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {

@@ -111,7 +111,7 @@ export default function AssistantScreen() {
               <Ionicons name="sparkles" size={16} color={colors.primary} />
             </View>
             <View>
-              <Text style={styles.headerTitle}>Vantage AI</Text>
+              <Text style={styles.headerTitle}>Worthlane AI</Text>
               <Text style={styles.headerSub}>Your financial assistant</Text>
             </View>
           </View>

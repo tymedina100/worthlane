@@ -22,7 +22,7 @@ const features = [
     icon: "✨",
     title: "AI financial assistant",
     description:
-      "Ask Vantage anything about your money. Get personalized, plain-English answers grounded in your actual spending data.",
+      "Ask Worthlane anything about your money. Get personalized, plain-English answers grounded in your actual spending data.",
   },
   {
     icon: "🔥",
@@ -41,7 +41,7 @@ const steps = [
   {
     number: "02",
     title: "Set your budgets",
-    description: "Create budgets by category. Vantage tracks them in real time and nudges you before you overspend — not after.",
+    description: "Create budgets by category. Worthlane tracks them in real time and nudges you before you overspend — not after.",
   },
   {
     number: "03",
@@ -80,7 +80,7 @@ export default function HomePage() {
       {/* Nav */}
       <nav className="border-b border-border/50">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <span className="text-xl font-bold text-primary">Vantage</span>
+          <span className="text-xl font-bold text-primary">Worthlane</span>
           <div className="flex items-center gap-6 text-sm text-muted">
             <Link href="#features" className="hover:text-text transition-colors">Features</Link>
             <Link href="#how-it-works" className="hover:text-text transition-colors">How it works</Link>
@@ -110,7 +110,7 @@ export default function HomePage() {
         </h1>
 
         <p className="text-xl text-muted max-w-2xl mx-auto mb-12 leading-relaxed">
-          Vantage connects to your bank, tracks your spending in real time, and uses
+          Worthlane connects to your bank, tracks your spending in real time, and uses
           behavioral science to help you actually save — not just feel good about trying.
         </p>
 
@@ -139,7 +139,7 @@ export default function HomePage() {
         <div className="text-center mb-14">
           <h2 className="text-3xl font-bold mb-4">Built different</h2>
           <p className="text-muted text-lg max-w-xl mx-auto">
-            Most finance apps show you what happened. Vantage changes what&apos;s about to happen.
+            Most finance apps show you what happened. Worthlane changes what&apos;s about to happen.
           </p>
         </div>
 
@@ -215,13 +215,13 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t border-border">
         <div className="max-w-5xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-dim">
-          <span className="font-bold text-primary text-base">Vantage</span>
+          <span className="font-bold text-primary text-base">Worthlane</span>
           <div className="flex items-center gap-6">
             <Link href="/privacy" className="hover:text-muted transition-colors">Privacy Policy</Link>
             <Link href="/support" className="hover:text-muted transition-colors">Support</Link>
             <a href={TESTFLIGHT_URL} target="_blank" rel="noopener noreferrer" className="hover:text-muted transition-colors">TestFlight</a>
           </div>
-          <span>© {new Date().getFullYear()} Vantage. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} Worthlane. All rights reserved.</span>
         </div>
       </footer>
     </div>

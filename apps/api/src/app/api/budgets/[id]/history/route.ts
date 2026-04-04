@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { prisma } from "@finance/db";
+import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
 import { ok, unauthorized, notFound } from "@/lib/response";
 
