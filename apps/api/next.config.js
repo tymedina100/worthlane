@@ -2,7 +2,7 @@ const { withSentryConfig } = require("@sentry/nextjs");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // API-only — no pages needed beyond API routes.
+  // API-only; no pages needed beyond API routes.
   experimental: {
     instrumentationHook: true,
     serverComponentsExternalPackages: ["@prisma/client", "bcryptjs"],
