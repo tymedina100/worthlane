@@ -32,6 +32,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.worthlane.mobile",
+      "buildNumber": "7",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
