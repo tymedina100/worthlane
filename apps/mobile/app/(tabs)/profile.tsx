@@ -205,7 +205,8 @@ export default function ProfileScreen() {
       if (!hasHardware || !isEnrolled) return;
 
       setBiometricSupported(true);
-      const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
+      const supportedTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
+      const types = Array.isArray(supportedTypes) ? supportedTypes : [];
       if (types.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
         setBiometricLabel("Face ID");
       } else if (types.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
