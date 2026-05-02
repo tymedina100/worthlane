@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Linking,
 } from "react-native";
 import { router } from "expo-router";
 import { useAuthStore } from "@/store/auth";
@@ -96,6 +97,24 @@ export default function RegisterScreen() {
             Already have an account? <Text style={{ color: colors.primary }}>Sign in</Text>
           </Text>
         </TouchableOpacity>
+
+        <Text style={styles.legalNotice}>
+          By continuing, you agree to our{" "}
+          <Text
+            style={styles.legalLink}
+            onPress={() => Linking.openURL(process.env.EXPO_PUBLIC_TERMS_URL ?? "")}
+          >
+            Terms of Service
+          </Text>
+          {" "}and{" "}
+          <Text
+            style={styles.legalLink}
+            onPress={() => Linking.openURL(process.env.EXPO_PUBLIC_PRIVACY_URL ?? "")}
+          >
+            Privacy Policy
+          </Text>
+          .
+        </Text>
       </View>
     </KeyboardAvoidingView>
   );
@@ -132,4 +151,6 @@ const styles = StyleSheet.create({
   buttonText: { color: colors.white, fontSize: 16, fontWeight: "600" },
   linkButton: { alignItems: "center", paddingVertical: spacing.sm },
   linkText: { color: colors.textMuted, fontSize: 14 },
+  legalNotice: { textAlign: "center", fontSize: 12, color: colors.textDim, lineHeight: 18, marginTop: spacing.sm },
+  legalLink: { color: colors.primary },
 });

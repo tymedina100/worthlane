@@ -6,6 +6,10 @@ import type { JwtPayload } from "@worthlane/types";
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
 
+if (!JWT_SECRET || JWT_SECRET.length < 32 || !JWT_REFRESH_SECRET || JWT_REFRESH_SECRET.length < 32) {
+  throw new Error("JWT_SECRET and JWT_REFRESH_SECRET must each be at least 32 characters");
+}
+
 export function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 12);
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Linking,
   Modal,
   Platform,
   Pressable,
@@ -599,6 +600,25 @@ export default function ProfileScreen() {
         ) : null}
 
         <View style={styles.section}>
+          <SectionHeader title="Legal" />
+          <View style={styles.card}>
+            <TouchableOpacity
+              style={styles.legalRow}
+              onPress={() => Linking.openURL(process.env.EXPO_PUBLIC_PRIVACY_URL ?? "")}
+            >
+              <Text style={styles.legalLink}>Privacy Policy</Text>
+            </TouchableOpacity>
+            <View style={styles.legalDivider} />
+            <TouchableOpacity
+              style={styles.legalRow}
+              onPress={() => Linking.openURL(process.env.EXPO_PUBLIC_TERMS_URL ?? "")}
+            >
+              <Text style={styles.legalLink}>Terms of Service</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.section}>
           <TouchableOpacity style={styles.dangerButton} onPress={handleLogout}>
             <Text style={styles.dangerButtonText}>Sign Out</Text>
           </TouchableOpacity>
@@ -767,6 +787,11 @@ const styles = StyleSheet.create({
   },
   settingLabel: { ...typography.label },
   settingDescription: { ...typography.caption, marginTop: spacing.xs },
+  legalRow: {
+    paddingVertical: spacing.sm,
+  },
+  legalLink: { ...typography.body, color: colors.primary },
+  legalDivider: { height: 1, backgroundColor: colors.border },
   dangerButton: {
     backgroundColor: "rgba(239,68,68,0.1)",
     borderRadius: radius.md,

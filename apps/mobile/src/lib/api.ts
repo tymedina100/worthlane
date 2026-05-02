@@ -94,6 +94,74 @@ export async function apiRequest<T>(
   return json.data as T;
 }
 
+async function* apiStreamGenerator(
+  path: string,
+  body: unknown
+): AsyncGenerator<string, void, unknown> {
+  let token = await getAccessToken();
+
+  const makeRequest = (t: string | null) =>
+    fetch(`${API_URL}${path}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(t ? { Authorization: `Bearer ${t}` } : {}),
+      },
+      body: JSON.stringify(body),
+    });
+
+  let res = await makeRequest(token);
+
+  if (res.status === 401) {
+    token = await refreshTokens();
+    if (!token) throw new Error("Session expired");
+    res = await makeRequest(token);
+  }
+
+  if (!res.ok) {
+    const json = await res.json().catch(() => ({})) as { error?: { message?: string; code?: string } };
+    throw new ApiError(
+      json.error?.message ?? "Request failed",
+      res.status,
+      json.error?.code
+    );
+  }
+
+  const reader = res.body?.getReader();
+  if (!reader) throw new Error("No response body");
+
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() ?? "";
+
+      for (const line of lines) {
+        if (!line.startsWith("data: ")) continue;
+        const payload = line.slice(6).trim();
+        if (!payload) continue;
+        try {
+          const parsed = JSON.parse(payload) as { token?: string; done?: boolean; error?: string };
+          if (parsed.error) throw new Error(parsed.error);
+          if (parsed.done) return;
+          if (typeof parsed.token === "string") yield parsed.token;
+        } catch (e) {
+          if (e instanceof SyntaxError) continue;
+          throw e;
+        }
+      }
+    }
+  } finally {
+    reader.releaseLock();
+  }
+}
+
 export const api = {
   get: <T>(path: string) => apiRequest<T>(path, { method: "GET" }),
   post: <T>(path: string, body?: unknown) =>
@@ -102,4 +170,5 @@ export const api = {
     apiRequest<T>(path, { method: "PATCH", ...(body !== undefined ? { body: JSON.stringify(body) } : {}) }),
   delete: <T>(path: string, body?: unknown) =>
     apiRequest<T>(path, { method: "DELETE", ...(body !== undefined ? { body: JSON.stringify(body) } : {}) }),
+  stream: (path: string, body: unknown) => apiStreamGenerator(path, body),
 };

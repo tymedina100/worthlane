@@ -12,11 +12,15 @@ import {
 type PlaidPlatform = "ios" | "android";
 type PlaidLinkMode = "create" | "update";
 
+const plaidEnv = process.env.PLAID_ENV;
+if (!plaidEnv || !(plaidEnv in PlaidEnvironments)) {
+  throw new Error(
+    `PLAID_ENV must be set to one of: ${Object.keys(PlaidEnvironments).join(", ")}. Got: ${JSON.stringify(plaidEnv)}`
+  );
+}
+
 const config = new Configuration({
-  basePath:
-    PlaidEnvironments[
-      (process.env.PLAID_ENV as keyof typeof PlaidEnvironments | undefined) ?? "sandbox"
-    ],
+  basePath: PlaidEnvironments[plaidEnv as keyof typeof PlaidEnvironments],
   baseOptions: {
     headers: {
       "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID!,

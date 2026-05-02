@@ -27,15 +27,21 @@ export async function POST(req: NextRequest) {
     data: { usedAt: new Date() },
   });
 
-  const token = crypto.randomBytes(32).toString("hex");
+  // 8-char uppercase hex code — typeable, ~4B possibilities, safe with rate limiting
+  const token = crypto.randomBytes(4).toString("hex").toUpperCase();
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
   await prisma.passwordResetToken.create({
     data: { userId: user.id, token, expiresAt },
   });
 
-  // TODO: Send email with reset token. For now, log to console in dev.
-  console.log(`[DEV] Password reset token for ${email}: ${token}`);
+  try {
+    const { sendPasswordResetEmail } = await import("@/lib/email");
+    await sendPasswordResetEmail(email, token);
+  } catch (emailErr) {
+    const { captureServerException } = await import("@/lib/sentry");
+    captureServerException(emailErr, { tags: { route: "/api/auth/forgot-password" } });
+  }
 
   return ok({ message: "If that email exists, a reset code has been sent." });
 }
