@@ -36,7 +36,11 @@ export function configureRevenueCat() {
 }
 
 export function useSubscription() {
-  const [isPremium, setIsPremium] = useState(false);
+  // While RevenueCat isn't configured, treat everyone as premium so the AI
+  // assistant and bank-connection limit aren't locked behind a paywall
+  // nobody can actually pay through. Flip on by setting
+  // EXPO_PUBLIC_REVENUECAT_IOS_KEY in the EAS environment.
+  const [isPremium, setIsPremium] = useState(!REVENUECAT_ENABLED);
   const [isLoading, setIsLoading] = useState(REVENUECAT_ENABLED);
 
   useEffect(() => {
