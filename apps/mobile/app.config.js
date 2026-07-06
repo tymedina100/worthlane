@@ -19,16 +19,22 @@ module.exports = () => {
   const sentryProject = process.env.SENTRY_PROJECT?.trim();
   const sentryUrl = process.env.SENTRY_URL?.trim() || "https://sentry.io/";
 
+  const plaidEnabled = process.env.EXPO_PUBLIC_PLAID_ENABLED !== "false";
+
   if (isReleaseProfile) {
     const releaseApiUrl = requireReleaseEnv("EXPO_PUBLIC_API_URL", apiUrl);
     if (/localhost|127\.0\.0\.1|0\.0\.0\.0/.test(releaseApiUrl)) {
       throw new Error("EXPO_PUBLIC_API_URL must point to a deployed API in preview and production builds.");
     }
-    requireReleaseEnv("PLAID_IOS_ASSOCIATED_DOMAIN", associatedDomain);
-    requireReleaseEnv("EXPO_PUBLIC_SENTRY_DSN", sentryDsn);
-    requireReleaseEnv("SENTRY_AUTH_TOKEN", sentryAuthToken);
-    requireReleaseEnv("SENTRY_ORG", sentryOrganization);
-    requireReleaseEnv("SENTRY_PROJECT", sentryProject);
+    // The Plaid OAuth associated domain only matters once bank linking is
+    // actually enabled; Sentry is observability, not a functional
+    // requirement — both are optional so a release build isn't blocked on
+    // integrations that haven't been set up yet (see the optional
+    // sentryPlugin/associatedDomains handling below, which already treats
+    // them as optional).
+    if (plaidEnabled) {
+      requireReleaseEnv("PLAID_IOS_ASSOCIATED_DOMAIN", associatedDomain);
+    }
   }
 
   const normalizedAssociatedDomain = associatedDomain
