@@ -119,15 +119,6 @@ export interface StreakStatus {
   isActiveToday: boolean;
 }
 
-// Account summary
-export interface AccountSummary {
-  id: string;
-  name: string;
-  type: "CHECKING" | "SAVINGS" | "CREDIT" | "INVESTMENT" | "LOAN" | "OTHER";
-  currentBalance: number;
-  institutionName: string | null;
-}
-
 // Net worth history point
 export interface NetWorthPoint {
   date: string; // YYYY-MM-DD
@@ -142,6 +133,15 @@ export interface NetWorthResponse {
   range: number;
   history: NetWorthPoint[];
   breakdown: { assets: number; liabilities: number };
+}
+
+// Simplified account shape used only by the dashboard summary
+export interface AccountSummary {
+  id: string;
+  name: string;
+  type: "CHECKING" | "SAVINGS" | "CREDIT" | "INVESTMENT" | "LOAN" | "OTHER";
+  currentBalance: number;
+  institutionName: string | null;
 }
 
 // Dashboard summary

@@ -1,15 +1,13 @@
-import type { ExpoConfig } from "expo/config";
+const baseConfig = require("./app.json").expo;
 
-const baseConfig = require("./app.json").expo as ExpoConfig;
-
-function requireReleaseEnv(name: string, value: string | undefined) {
-  if (!value?.trim()) {
+function requireReleaseEnv(name, value) {
+  if (!value || !value.trim()) {
     throw new Error(`${name} is required for preview and production builds.`);
   }
   return value.trim();
 }
 
-export default (): ExpoConfig => {
+module.exports = () => {
   const easBuildProfile = process.env.EAS_BUILD_PROFILE ?? "development";
   const isReleaseProfile = easBuildProfile === "preview" || easBuildProfile === "production";
   const apiUrl = process.env.EXPO_PUBLIC_API_URL?.trim();
@@ -37,7 +35,7 @@ export default (): ExpoConfig => {
     ? `applinks:${associatedDomain.replace(/^applinks:/, "")}`
     : undefined;
 
-  const sentryPlugin: NonNullable<ExpoConfig["plugins"]> =
+  const sentryPlugin =
     sentryOrganization && sentryProject
       ? [
           [
@@ -59,7 +57,7 @@ export default (): ExpoConfig => {
       associatedDomains: normalizedAssociatedDomain
         ? Array.from(
             new Set([
-              ...((baseConfig.ios?.associatedDomains as string[] | undefined) ?? []),
+              ...(baseConfig.ios?.associatedDomains ?? []),
               normalizedAssociatedDomain,
             ])
           )

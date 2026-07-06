@@ -7,6 +7,7 @@ import { isPostHogEnabled, posthog } from "@/lib/posthog";
 import { useAuthStore } from "@/store/auth";
 import { ThemeProvider, useTheme } from "@/lib/ThemeContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { configureRevenueCat } from "@/hooks/useSubscription";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +35,7 @@ function ThemedApp() {
           <Stack.Screen name="(auth)" />
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="onboarding" />
+          <Stack.Screen name="paywall" options={{ presentation: "modal", headerShown: false }} />
         </Stack>
       </QueryClientProvider>
     </ErrorBoundary>
@@ -45,6 +47,7 @@ function RootLayout() {
 
   useEffect(() => {
     hydrate();
+    configureRevenueCat();
   }, []);
 
   return (

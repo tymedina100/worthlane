@@ -12,9 +12,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { api } from "@/lib/api";
 import { spacing, radius } from "@/lib/theme";
 import { useTheme, useThemedStyles, type Theme } from "@/lib/ThemeContext";
+import { useSubscription } from "@/hooks/useSubscription";
 
 interface Message {
   id: string;
@@ -33,6 +35,7 @@ const SUGGESTED_PROMPTS = [
 export default function AssistantScreen() {
   const { colors } = useTheme();
   const styles = useThemedStyles(createStyles);
+  const { isPremium, isLoading: subLoading } = useSubscription();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
@@ -99,6 +102,37 @@ export default function AssistantScreen() {
   }, [isStreaming, messages, scrollToBottom]);
 
   const isEmpty = messages.length === 0;
+
+  if (!subLoading && !isPremium) {
+    return (
+      <SafeAreaView style={styles.container} edges={["top"]}>
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <View style={styles.avatarWrap}>
+              <Ionicons name="sparkles" size={16} color={colors.primary} />
+            </View>
+            <View>
+              <Text style={styles.headerTitle}>Worthlane AI</Text>
+              <Text style={styles.headerSub}>Your financial assistant</Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.paywallGate}>
+          <View style={styles.paywallIconWrap}>
+            <Ionicons name="lock-closed" size={36} color={colors.primary} />
+          </View>
+          <Text style={styles.paywallTitle}>Premium feature</Text>
+          <Text style={styles.paywallBody}>
+            Get instant answers to your financial questions with Worthlane AI — included in Premium.
+          </Text>
+          <TouchableOpacity style={styles.paywallCta} onPress={() => router.push("/paywall" as any)} activeOpacity={0.85}>
+            <Text style={styles.paywallCtaText}>Unlock Premium</Text>
+          </TouchableOpacity>
+          <Text style={styles.paywallHint}>Also unlocks unlimited bank connections</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -326,4 +360,32 @@ const createStyles = ({ colors, typography }: Theme) =>
   sendButtonDisabled: {
     backgroundColor: colors.surfaceAlt,
   },
+
+  paywallGate: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: spacing.xl,
+    gap: spacing.md,
+  },
+  paywallIconWrap: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: colors.primaryDim,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: spacing.sm,
+  },
+  paywallTitle: { ...typography.h3, textAlign: "center" },
+  paywallBody: { ...typography.bodySmall, textAlign: "center", lineHeight: 22 },
+  paywallCta: {
+    backgroundColor: colors.primary,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.md,
+    marginTop: spacing.sm,
+  },
+  paywallCtaText: { fontSize: 16, fontWeight: "700", color: colors.bg },
+  paywallHint: { ...typography.caption, textAlign: "center" },
 });
