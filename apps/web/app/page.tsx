@@ -7,10 +7,10 @@ const TESTFLIGHT_URL = "https://testflight.apple.com/join/placeholder";
 
 const features = [
   {
-    icon: "🏦",
-    title: "Real bank sync",
+    icon: "📊",
+    title: "Track every account",
     description:
-      "Connect all your accounts in seconds via Plaid. Your balances and transactions update automatically — no manual entry.",
+      "Add your accounts and transactions and see your full net worth, budgets, and goals in one place. Automatic bank sync is coming soon.",
   },
   {
     icon: "🧠",
@@ -35,8 +35,8 @@ const features = [
 const steps = [
   {
     number: "01",
-    title: "Connect your bank",
-    description: "Securely link your accounts in under a minute. We use bank-level encryption and never store your credentials.",
+    title: "Add your accounts",
+    description: "Set up your accounts and transactions in minutes. Everything is encrypted, and your data is always yours.",
   },
   {
     number: "02",
@@ -110,7 +110,7 @@ export default function HomePage() {
         </h1>
 
         <p className="text-xl text-muted max-w-2xl mx-auto mb-12 leading-relaxed">
-          Worthlane connects to your bank, tracks your spending in real time, and uses
+          Worthlane tracks your spending, budgets, and goals in one place, and uses
           behavioral science to help you actually save — not just feel good about trying.
         </p>
 
@@ -159,7 +159,7 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-14">
             <h2 className="text-3xl font-bold mb-4">Up and running in 3 minutes</h2>
-            <p className="text-muted text-lg">No spreadsheets. No manual entry. Just connect and go.</p>
+            <p className="text-muted text-lg">No spreadsheets. Set up your accounts and start building better habits.</p>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-8">
