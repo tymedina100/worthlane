@@ -1,9 +1,6 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 
-const TESTFLIGHT_URL = "https://testflight.apple.com/join/placeholder";
+const APP_STORE_URL = "https://apps.apple.com/app/id6766112205";
 
 const features = [
   {
@@ -51,30 +48,6 @@ const steps = [
 ];
 
 export default function HomePage() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-
-  const handleWaitlist = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setStatus("loading");
-    try {
-      const res = await fetch("/api/waitlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      if (res.ok) {
-        setStatus("success");
-        setEmail("");
-      } else {
-        setStatus("error");
-      }
-    } catch {
-      setStatus("error");
-    }
-  };
-
   return (
     <div className="min-h-screen bg-bg text-text">
       {/* Nav */}
@@ -86,12 +59,12 @@ export default function HomePage() {
             <Link href="#how-it-works" className="hover:text-text transition-colors">How it works</Link>
             <Link href="/support" className="hover:text-text transition-colors">Support</Link>
             <a
-              href={TESTFLIGHT_URL}
+              href={APP_STORE_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-primary text-bg px-4 py-1.5 rounded-full font-semibold hover:opacity-90 transition-opacity"
             >
-              Join Beta
+              Download
             </a>
           </div>
         </div>
@@ -101,7 +74,7 @@ export default function HomePage() {
       <section className="max-w-5xl mx-auto px-6 pt-24 pb-20 text-center">
         <div className="inline-flex items-center gap-2 bg-primary-dim text-primary text-sm font-medium px-4 py-1.5 rounded-full mb-8">
           <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-          Now in beta — limited spots available
+          Now on iOS
         </div>
 
         <h1 className="text-5xl sm:text-6xl font-bold leading-tight mb-6">
@@ -116,22 +89,22 @@ export default function HomePage() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
           <a
-            href={TESTFLIGHT_URL}
+            href={APP_STORE_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto bg-primary text-bg px-8 py-3.5 rounded-xl font-bold text-lg hover:opacity-90 transition-opacity"
           >
-            Download on TestFlight
+            Download on the App Store
           </a>
           <Link
-            href="#waitlist"
+            href="#how-it-works"
             className="w-full sm:w-auto border border-border text-text px-8 py-3.5 rounded-xl font-semibold text-lg hover:border-primary/50 transition-colors text-center"
           >
-            Join the waitlist
+            See how it works
           </Link>
         </div>
 
-        <p className="text-sm text-dim">iOS only · Free during beta</p>
+        <p className="text-sm text-dim">iOS · Free to download</p>
       </section>
 
       {/* Features */}
@@ -174,42 +147,21 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Waitlist */}
-      <section id="waitlist" className="max-w-5xl mx-auto px-6 py-24 text-center">
-        <h2 className="text-3xl font-bold mb-4">Get early access</h2>
+      {/* Closing CTA */}
+      <section className="max-w-5xl mx-auto px-6 py-24 text-center">
+        <h2 className="text-3xl sm:text-4xl font-bold mb-4">Take control of your money</h2>
         <p className="text-muted text-lg mb-10 max-w-lg mx-auto">
-          Beta spots are limited. Drop your email and we&apos;ll send you an invite when a spot opens up.
+          Download Worthlane and start turning small money habits into big financial wins.
         </p>
-
-        {status === "success" ? (
-          <div className="bg-primary-dim border border-primary/30 text-primary rounded-xl px-8 py-5 inline-block font-medium">
-            You&apos;re on the list! We&apos;ll be in touch soon. 🎉
-          </div>
-        ) : (
-          <form onSubmit={handleWaitlist} className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              required
-              className="flex-1 bg-surface border border-border rounded-xl px-5 py-3.5 text-text placeholder-dim focus:outline-none focus:border-primary transition-colors"
-            />
-            <button
-              type="submit"
-              disabled={status === "loading"}
-              className="bg-primary text-bg px-7 py-3.5 rounded-xl font-bold hover:opacity-90 transition-opacity disabled:opacity-60 whitespace-nowrap"
-            >
-              {status === "loading" ? "Joining…" : "Join waitlist"}
-            </button>
-          </form>
-        )}
-
-        {status === "error" && (
-          <p className="text-danger text-sm mt-3">Something went wrong. Try again.</p>
-        )}
-
-        <p className="text-dim text-sm mt-5">No spam. Unsubscribe anytime.</p>
+        <a
+          href={APP_STORE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-primary text-bg px-8 py-3.5 rounded-xl font-bold text-lg hover:opacity-90 transition-opacity"
+        >
+          Download on the App Store
+        </a>
+        <p className="text-dim text-sm mt-5">iOS · Free to download</p>
       </section>
 
       {/* Footer */}
@@ -219,7 +171,7 @@ export default function HomePage() {
           <div className="flex items-center gap-6">
             <Link href="/privacy" className="hover:text-muted transition-colors">Privacy Policy</Link>
             <Link href="/support" className="hover:text-muted transition-colors">Support</Link>
-            <a href={TESTFLIGHT_URL} target="_blank" rel="noopener noreferrer" className="hover:text-muted transition-colors">TestFlight</a>
+            <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-muted transition-colors">App Store</a>
           </div>
           <span>© {new Date().getFullYear()} Worthlane. All rights reserved.</span>
         </div>
