@@ -14,6 +14,7 @@ import {
   View,
 } from "react-native";
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as LocalAuthentication from "expo-local-authentication";
 import type { LinkExit, LinkSuccess } from "react-native-plaid-link-sdk";
@@ -199,6 +200,7 @@ function ManualAccountModal({
 }
 
 export default function ProfileScreen() {
+  const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const styles = useThemedStyles(createStyles);
   const { email, logout, biometricEnabled, enableBiometric, disableBiometric } = useAuthStore();
@@ -487,7 +489,7 @@ export default function ProfileScreen() {
 
   return (
     <>
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <ScrollView style={styles.container} contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.md }]}>
         <Text style={styles.title}>Profile</Text>
 
         <View style={styles.section}>
