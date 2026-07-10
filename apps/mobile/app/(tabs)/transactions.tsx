@@ -27,6 +27,7 @@ import {
 } from "@/lib/finance";
 import { spacing, radius } from "@/lib/theme";
 import { useTheme, useThemedStyles, type Theme } from "@/lib/ThemeContext";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { EmptyState } from "@/components/EmptyState";
 
 type ManualTransactionDraft = {
@@ -243,12 +244,10 @@ function TransactionRow({
         <Text style={styles.txMerchant} numberOfLines={1}>
           {tx.merchantName ?? (tx.amount > 0 ? "Manual expense" : "Manual income")}
         </Text>
-        <Text style={styles.txMeta}>
+        <Text style={styles.txMeta} numberOfLines={1}>
           {formatShortDate(tx.date)}
-          {tx.category ? ` · ${tx.category.name}` : ""}
-          {` · ${tx.account.name}`}
+          {tx.category ? ` · ${tx.category.name}` : ` · ${tx.account.name}`}
         </Text>
-        <Text style={styles.txSource}>{tx.isManual ? "Manual" : "Plaid sync"}</Text>
       </View>
 
       <View style={styles.txRight}>
@@ -266,6 +265,7 @@ function TransactionRow({
 }
 
 export default function TransactionsScreen() {
+  const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const styles = useThemedStyles(createStyles);
   const [search, setSearch] = useState("");
@@ -427,7 +427,7 @@ export default function TransactionsScreen() {
   return (
     <>
       <View style={styles.container}>
-        <View style={styles.header}>
+        <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
           <View style={styles.headerRow}>
             <Text style={styles.title}>Transactions</Text>
             <TouchableOpacity style={styles.addButton} onPress={openCreateModal}>

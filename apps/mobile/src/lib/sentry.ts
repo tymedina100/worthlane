@@ -18,6 +18,10 @@ const sentryGlobal = globalThis as typeof globalThis & {
   __WORTHLANE_SENTRY_INITIALIZED__?: boolean;
 };
 
+// Always call Sentry.init (even with no DSN, where it initializes a disabled
+// client). Sentry.wrap() in app/_layout.tsx requires an initialized client;
+// skipping init entirely makes Sentry.wrap throw at launch and crashes the app.
+// With no DSN, `enabled: false` keeps it inert but valid.
 if (!sentryGlobal.__WORTHLANE_SENTRY_INITIALIZED__) {
   Sentry.init({
     dsn,

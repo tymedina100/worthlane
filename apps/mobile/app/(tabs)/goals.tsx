@@ -19,6 +19,7 @@ import { spacing, radius } from "@/lib/theme";
 import { useTheme, useThemedStyles, type Theme } from "@/lib/ThemeContext";
 import { EmptyState } from "@/components/EmptyState";
 import { Ionicons } from "@expo/vector-icons";
+import Svg, { Circle } from "react-native-svg";
 import type { GoalWithProgress } from "@worthlane/types";
 
 function formatCurrency(amount: number): string {
@@ -55,10 +56,31 @@ function goalTypeColor(type: string, colors: Theme["colors"]): string {
 function ProgressRing({ percent, color, size = 80 }: { percent: number; color: string; size?: number }) {
   const { colors } = useTheme();
   const strokeWidth = 8;
+  const r = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * r;
+  // Clamp so an empty goal shows a truly empty ring (0% draws no arc) and a
+  // completed one doesn't overshoot.
+  const clamped = Math.max(0, Math.min(100, percent));
+  const dashoffset = circumference * (1 - clamped / 100);
   return (
-    <View style={{ width: size, height: size, borderRadius: size / 2, borderWidth: strokeWidth, borderColor: colors.surfaceAlt, justifyContent: "center", alignItems: "center", position: "relative" }}>
-      <View style={{ position: "absolute", width: size, height: size, borderRadius: size / 2, borderWidth: strokeWidth, borderColor: color, borderRightColor: "transparent", borderBottomColor: percent > 75 ? color : "transparent", borderLeftColor: percent > 50 ? color : "transparent", transform: [{ rotate: "-90deg" }] }} />
-      <Text style={{ color, fontWeight: "700", fontSize: 14 }}>{Math.round(percent)}%</Text>
+    <View style={{ width: size, height: size, justifyContent: "center", alignItems: "center" }}>
+      <Svg width={size} height={size} style={{ position: "absolute", transform: [{ rotate: "-90deg" }] }}>
+        <Circle cx={size / 2} cy={size / 2} r={r} stroke={colors.surfaceAlt} strokeWidth={strokeWidth} fill="none" />
+        {clamped > 0 && (
+          <Circle
+            cx={size / 2}
+            cy={size / 2}
+            r={r}
+            stroke={color}
+            strokeWidth={strokeWidth}
+            fill="none"
+            strokeDasharray={circumference}
+            strokeDashoffset={dashoffset}
+            strokeLinecap="round"
+          />
+        )}
+      </Svg>
+      <Text style={{ color, fontWeight: "700", fontSize: 14 }}>{Math.round(clamped)}%</Text>
     </View>
   );
 }
@@ -477,7 +499,7 @@ const createStyles = ({ colors, typography }: Theme) =>
   optional: { ...typography.caption, fontWeight: "400" },
   input: { backgroundColor: colors.bg, borderRadius: radius.md, padding: spacing.md, color: colors.text, fontSize: 16, borderWidth: 1, borderColor: colors.border },
   pillRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
-  pill: { borderWidth: 1, borderColor: colors.border, borderRadius: radius.full, paddingHorizontal: spacing.md, paddingVertical: spacing.xs },
+  pill: { flexGrow: 1, flexBasis: "47%", borderWidth: 1, borderColor: colors.border, borderRadius: radius.full, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, alignItems: "center" },
   pillActive: { borderColor: colors.primary, backgroundColor: colors.primaryDim },
   pillText: { color: colors.text, fontSize: 13, fontWeight: "500" },
   iconRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },

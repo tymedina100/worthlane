@@ -10,7 +10,7 @@ import {
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
-import { openLink, LinkSuccess, LinkExit } from "react-native-plaid-link-sdk";
+import type { LinkSuccess, LinkExit } from "react-native-plaid-link-sdk";
 import { api } from "@/lib/api";
 import { PLAID_ENABLED } from "@/lib/flags";
 import { spacing, radius } from "@/lib/theme";
@@ -44,6 +44,10 @@ export default function OnboardingWelcome() {
         platform: Platform.OS === "ios" ? "ios" : "android",
         mode: "create",
       });
+      // Loaded lazily so the Plaid native module (excluded from the build for
+      // v1, see expo.autolinking.exclude) is never referenced while bank
+      // linking is disabled.
+      const { openLink } = require("react-native-plaid-link-sdk") as typeof import("react-native-plaid-link-sdk");
       openLink({
         tokenConfig: { token, noLoadingState: false },
         onSuccess: async (success: LinkSuccess) => {

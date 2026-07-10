@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import type { AccountsResponse } from "@/lib/finance";
@@ -79,6 +80,7 @@ function NudgeCard({ nudge, onDismiss }: { nudge: NudgeMessage; onDismiss: () =>
 }
 
 export default function DashboardScreen() {
+  const insets = useSafeAreaInsets();
   const { colors, typography } = useTheme();
   const styles = useThemedStyles(createStyles);
   const qc = useQueryClient();
@@ -162,7 +164,7 @@ export default function DashboardScreen() {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={styles.content}
+      contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.md }]}
       refreshControl={
         <RefreshControl
           refreshing={isRefetching}

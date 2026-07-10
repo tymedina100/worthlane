@@ -44,17 +44,18 @@ export const lightColors: ThemeColors = {
   // Backgrounds — soft off-white, white cards ("clean & calm")
   bg: "#F8FAFC",
   surface: "#FFFFFF",
-  surfaceAlt: "#F1F5F9",
-  border: "#E2E8F0",
+  surfaceAlt: "#EEF2F7",
+  border: "#CBD5E1",
 
   // Brand — deeper emerald for contrast on white
   primary: "#10B981",
   primaryDim: "#D1FAE5",
 
-  // Text — dark slate
+  // Text — dark slate (darkened for legible contrast on white: textMuted ~7:1,
+  // textDim ~4.6:1 — both meet WCAG AA, the previous values did not)
   text: "#0F172A",
-  textMuted: "#64748B",
-  textDim: "#94A3B8",
+  textMuted: "#475569",
+  textDim: "#64748B",
 
   // Semantic — slightly deeper for light backgrounds
   success: "#16A34A",
