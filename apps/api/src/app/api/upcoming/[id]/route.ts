@@ -3,7 +3,7 @@ import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
 import { err, notFound, ok, unauthorized } from "@/lib/response";
 import { nextFutureObligationDate, parseDateOnly, toDateOnly, obligationStatus } from "@/lib/upcoming";
-import { upcomingInputSchema } from "../route";
+import { upcomingInputSchema } from "@/lib/upcoming-validation";
 
 function serialize(row: any) {
   return { id: row.id, name: row.name, amount: row.amount.toNumber(), dueDate: toDateOnly(row.dueDate), type: row.type, frequency: row.frequency, accountName: row.accountName, reminderTiming: row.reminderTiming, isPaid: row.isPaid, isActive: row.isActive, lastPaidAt: row.lastPaidAt?.toISOString() ?? null, status: obligationStatus(row.dueDate, row.isPaid), createdAt: row.createdAt.toISOString(), updatedAt: row.updatedAt.toISOString() };
