@@ -156,6 +156,40 @@ export interface DashboardSummary {
   streaks: StreakStatus[];
   topCategories: { name: string; amount: number; color: string }[];
   impulse: { count: number; total: number; previousWeekTotal: number };
+  today: TodaySnapshot;
+}
+
+export type UpcomingObligationType = "BILL" | "CREDIT_CARD" | "SUBSCRIPTION" | "OTHER";
+export type ReminderTiming = "DUE_DATE" | "ONE_DAY_BEFORE" | "THREE_DAYS_BEFORE" | "NONE";
+
+export interface UpcomingObligation {
+  id: string;
+  name: string;
+  amount: number;
+  dueDate: string;
+  type: UpcomingObligationType;
+  frequency: RecurringFrequency | null;
+  accountName: string | null;
+  reminderTiming: ReminderTiming | null;
+  isPaid: boolean;
+  isActive: boolean;
+  lastPaidAt: string | null;
+  status: "OVERDUE" | "DUE_TODAY" | "UPCOMING" | "PAID";
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpcomingObligationsResponse {
+  items: UpcomingObligation[];
+}
+
+export interface TodaySnapshot {
+  availableBalance: number | null;
+  spentThisMonth: number;
+  receivedThisMonth: number;
+  dueNextSevenDays: number;
+  upcomingCount: number;
+  nextItems: UpcomingObligation[];
 }
 
 // Plaid link

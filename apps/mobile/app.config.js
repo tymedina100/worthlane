@@ -19,7 +19,7 @@ module.exports = () => {
   const sentryProject = process.env.SENTRY_PROJECT?.trim();
   const sentryUrl = process.env.SENTRY_URL?.trim() || "https://sentry.io/";
 
-  const plaidEnabled = process.env.EXPO_PUBLIC_PLAID_ENABLED !== "false";
+  const plaidEnabled = process.env.EXPO_PUBLIC_PLAID_ENABLED === "true";
 
   if (isReleaseProfile) {
     const releaseApiUrl = requireReleaseEnv("EXPO_PUBLIC_API_URL", apiUrl);

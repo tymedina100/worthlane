@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import {
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
   Modal,
   Platform,
   Pressable,
@@ -14,6 +15,8 @@ import {
   View,
 } from "react-native";
 import { router } from "expo-router";
+import * as Linking from "expo-linking";
+import * as Notifications from "expo-notifications";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as LocalAuthentication from "expo-local-authentication";
@@ -31,6 +34,9 @@ import {
   getPlaidStatusTone,
 } from "@/lib/finance";
 import { PLAID_ENABLED } from "@/lib/flags";
+import { getDefaultReminder, setDefaultReminder } from "@/lib/obligation-reminders";
+import { captureV1Event } from "@/lib/v1-analytics";
+import type { ReminderTiming } from "@worthlane/types";
 import { spacing, radius } from "@/lib/theme";
 import { useTheme, useThemedStyles, type Theme } from "@/lib/ThemeContext";
 
@@ -129,8 +135,17 @@ function ManualAccountModal({
   const styles = useThemedStyles(createStyles);
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
-      <View style={styles.modalBackdrop}>
-        <View style={styles.modalSheet}>
+      <KeyboardAvoidingView
+        style={styles.modalBackdrop}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <ScrollView
+          style={styles.modalSheet}
+          contentContainerStyle={styles.modalSheetContent}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+          showsVerticalScrollIndicator={false}
+        >
           <Text style={styles.modalTitle}>{draft.id ? "Edit manual account" : "Add manual account"}</Text>
           <Text style={styles.modalSubtitle}>
             Manual accounts keep the app usable when Plaid is unavailable.
@@ -193,8 +208,8 @@ function ManualAccountModal({
               <Text style={styles.modalPrimaryButtonText}>{saving ? "Saving..." : "Save"}</Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -209,6 +224,7 @@ export default function ProfileScreen() {
   const [biometricLabel, setBiometricLabel] = useState("Biometrics");
   const [manualModalVisible, setManualModalVisible] = useState(false);
   const [manualDraft, setManualDraft] = useState<ManualAccountDraft>(emptyManualDraft);
+  const [defaultReminder, setDefaultReminderState] = useState<ReminderTiming>("ONE_DAY_BEFORE");
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -227,6 +243,8 @@ export default function ProfileScreen() {
       }
     })();
   }, []);
+
+  useEffect(() => { getDefaultReminder().then(setDefaultReminderState); }, []);
 
   const accountsQuery = useQuery({
     queryKey: ["accounts"],
@@ -266,6 +284,7 @@ export default function ProfileScreen() {
       });
     },
     onSuccess: () => {
+      if (!manualDraft.id) captureV1Event("manual_account_created");
       setManualModalVisible(false);
       setManualDraft(emptyManualDraft);
       queryClient.invalidateQueries({ queryKey: ["accounts"] });
@@ -455,6 +474,28 @@ export default function ProfileScreen() {
     ]);
   };
 
+  const reminderLabel = defaultReminder === "DUE_DATE" ? "On the due date" : defaultReminder === "THREE_DAYS_BEFORE" ? "Three days before" : defaultReminder === "NONE" ? "Off" : "One day before";
+  const chooseReminder = () => Alert.alert("Default reminders", "Used for new upcoming items. You can change it later.", [
+    { text: "On due date", onPress: () => { setDefaultReminder("DUE_DATE"); setDefaultReminderState("DUE_DATE"); captureV1Event("reminder_enabled"); } },
+    { text: "One day before", onPress: () => { setDefaultReminder("ONE_DAY_BEFORE"); setDefaultReminderState("ONE_DAY_BEFORE"); captureV1Event("reminder_enabled"); } },
+    { text: "Three days before", onPress: () => { setDefaultReminder("THREE_DAYS_BEFORE"); setDefaultReminderState("THREE_DAYS_BEFORE"); captureV1Event("reminder_enabled"); } },
+    { text: "No reminders", style: "destructive", onPress: () => { setDefaultReminder("NONE"); setDefaultReminderState("NONE"); } },
+    { text: "Cancel", style: "cancel" },
+  ]);
+  const enableNotifications = async () => {
+    const current = await Notifications.getPermissionsAsync();
+    if (current.status !== "granted") await Notifications.requestPermissionsAsync();
+    const final = await Notifications.getPermissionsAsync();
+    if (final.status !== "granted") Alert.alert("Notifications are off", "You can enable them in your device settings whenever you’re ready.");
+  };
+  const suggestFeature = async () => {
+    captureV1Event("feature_suggestion_opened");
+    const url = "mailto:support@worthlane.app?subject=" + encodeURIComponent("Worthlane feature suggestion");
+    const supported = await Linking.canOpenURL(url);
+    if (supported) { await Linking.openURL(url); captureV1Event("feature_suggestion_submitted"); Alert.alert("Email ready", "Your email app has been opened with a suggestion draft."); }
+    else Alert.alert("Email unavailable", "Please email support@worthlane.app with your suggestion.");
+  };
+
   const deleteAccountMutation = useMutation({
     mutationFn: () => api.delete("/auth/account"),
   });
@@ -490,13 +531,13 @@ export default function ProfileScreen() {
   return (
     <>
       <ScrollView style={styles.container} contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.md }]}>
-        <Text style={styles.title}>Profile</Text>
+        <Text style={styles.title}>Settings</Text>
 
         <View style={styles.section}>
           <SectionHeader title="Account" />
           <View style={styles.card}>
             <Text style={styles.email}>{email}</Text>
-            <Text style={styles.accountHint}>Manage bank connections, fallback accounts, and sign-in settings.</Text>
+            <Text style={styles.accountHint}>Manage manual accounts, reminders, and sign-in settings.</Text>
           </View>
         </View>
 
@@ -727,6 +768,26 @@ export default function ProfileScreen() {
         ) : null}
 
         <View style={styles.section}>
+          <SectionHeader title="Reminders" />
+          <TouchableOpacity style={[styles.card, { marginBottom: spacing.sm }]} onPress={chooseReminder} accessibilityRole="button" accessibilityLabel="Choose default reminder timing">
+            <View style={styles.settingRow}><Text style={styles.settingLabel}>Default reminder</Text><Text style={styles.accountEditHint}>{reminderLabel} ›</Text></View>
+            <Text style={styles.settingDescription}>Used for new manual bills and card payments.</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.card} onPress={enableNotifications} accessibilityRole="button" accessibilityLabel="Enable notifications">
+            <View style={styles.settingRow}><Text style={styles.settingLabel}>Notifications</Text><Text style={styles.accountEditHint}>Manage ›</Text></View>
+            <Text style={styles.settingDescription}>Turn on calm reminders only when you want them.</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.section}>
+          <SectionHeader title="Worthlane" />
+          <View style={[styles.card, { marginBottom: spacing.sm }]}><Text style={styles.settingLabel}>Plaid coming soon</Text><Text style={styles.settingDescription}>Automatic bank syncing with Plaid is coming soon. For now, Worthlane keeps things simple with fast manual entry.</Text></View>
+          <TouchableOpacity style={[styles.card, { marginBottom: spacing.sm }]} onPress={suggestFeature} accessibilityRole="button" accessibilityLabel="Suggest a feature"><View style={styles.settingRow}><Text style={styles.settingLabel}>Suggest a feature</Text><Text style={styles.accountEditHint}>›</Text></View><Text style={styles.settingDescription}>Tell us what would make Worthlane more useful.</Text></TouchableOpacity>
+          <TouchableOpacity style={[styles.card, { marginBottom: spacing.sm }]} onPress={() => Linking.openURL("https://worthlane.app/privacy")}><Text style={styles.settingLabel}>Privacy policy</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.card} onPress={() => Linking.openURL("mailto:support@worthlane.app")}><Text style={styles.settingLabel}>Support</Text><Text style={styles.settingDescription}>Worthlane V1</Text></TouchableOpacity>
+        </View>
+
+        <View style={styles.section}>
           <TouchableOpacity style={styles.dangerButton} onPress={handleLogout}>
             <Text style={styles.dangerButtonText}>Sign Out</Text>
           </TouchableOpacity>
@@ -927,6 +988,9 @@ const createStyles = ({ colors, typography }: Theme) =>
     backgroundColor: colors.surface,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
+    maxHeight: "88%",
+  },
+  modalSheetContent: {
     padding: spacing.lg,
     gap: spacing.sm,
   },

@@ -42,45 +42,37 @@ export default function TabLayout() {
       <Tabs.Screen
         name="dashboard"
         options={{
-          title: "Dashboard",
+          title: "Today",
           tabBarIcon: ({ focused }) => <TabIcon name="home" focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="transactions"
         options={{
-          title: "Transactions",
+          title: "Activity",
           tabBarIcon: ({ focused }) => <TabIcon name="list" focused={focused} />,
         }}
       />
       <Tabs.Screen
-        name="budgets"
+        name="upcoming"
         options={{
-          title: "Budget",
-          tabBarIcon: ({ focused }) => <TabIcon name="pie-chart" focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="goals"
-        options={{
-          title: "Goals",
-          tabBarIcon: ({ focused }) => <TabIcon name="flag" focused={focused} />,
+          title: "Upcoming",
+          tabBarIcon: ({ focused }) => <TabIcon name="calendar" focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: "Profile",
+          title: "Settings",
           tabBarIcon: ({ focused }) => <TabIcon name="person" focused={focused} />,
         }}
       />
       <Tabs.Screen
-        name="assistant"
-        options={{
-          title: "AI",
-          tabBarIcon: ({ focused }) => <TabIcon name="sparkles" focused={focused} />,
-        }}
+        name="budgets"
+        options={{ href: null }}
       />
+      <Tabs.Screen name="goals" options={{ href: null }} />
+      <Tabs.Screen name="assistant" options={{ href: null }} />
     </Tabs>
   );
 }

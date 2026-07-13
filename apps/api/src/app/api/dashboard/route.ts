@@ -4,6 +4,7 @@ import { getAuthUser } from "@/lib/auth";
 import { computeNetWorth, startOfToday } from "@/lib/net-worth";
 import { ok, unauthorized } from "@/lib/response";
 import { startOfMonth } from "@/lib/dates";
+import { obligationStatus, startOfUtcDay, toDateOnly } from "@/lib/upcoming";
 
 export async function GET(req: NextRequest) {
   let userId: string;
@@ -67,6 +68,33 @@ export async function GET(req: NextRequest) {
         _sum: { amount: true },
       }),
     ]);
+
+  const todayStart = startOfUtcDay(now);
+  const sevenDaysFromNow = new Date(todayStart);
+  sevenDaysFromNow.setUTCDate(sevenDaysFromNow.getUTCDate() + 7);
+  const upcomingRows = await prisma.upcomingObligation.findMany({
+    where: { userId, isActive: true, isPaid: false },
+    orderBy: { dueDate: "asc" },
+  });
+  const upcomingItems = upcomingRows.map((row) => ({
+    id: row.id,
+    name: row.name,
+    amount: row.amount.toNumber(),
+    dueDate: toDateOnly(row.dueDate),
+    type: row.type,
+    frequency: row.frequency,
+    accountName: row.accountName,
+    reminderTiming: row.reminderTiming,
+    isPaid: row.isPaid,
+    isActive: row.isActive,
+    lastPaidAt: row.lastPaidAt?.toISOString() ?? null,
+    status: obligationStatus(row.dueDate, row.isPaid, now),
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  }));
+  const dueNextSevenDays = upcomingRows
+    .filter((row) => row.dueDate >= todayStart && row.dueDate <= sevenDaysFromNow)
+    .reduce((sum, row) => sum + row.amount.toNumber(), 0);
 
   // Net worth
   const netWorth = computeNetWorth(accounts);
@@ -196,6 +224,14 @@ export async function GET(req: NextRequest) {
       count: impulseMonth._count.id,
       total: Number(impulseMonth._sum.amount ?? 0),
       previousWeekTotal: Number(impulsePrevWeek._sum.amount ?? 0),
+    },
+    today: {
+      availableBalance: accounts.length ? accounts.reduce((sum, account) => sum + account.currentBalance.toNumber(), 0) : null,
+      spentThisMonth: Number(spendingAgg._sum.amount ?? 0),
+      receivedThisMonth: Math.abs(Number(incomeAgg._sum.amount ?? 0)),
+      dueNextSevenDays,
+      upcomingCount: upcomingItems.length,
+      nextItems: upcomingItems.slice(0, 3),
     },
   });
 }

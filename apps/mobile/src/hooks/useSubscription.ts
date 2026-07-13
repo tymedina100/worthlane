@@ -16,7 +16,9 @@ export const PRODUCT_IDS = {
 // event listener at import time) have been crashing this app on launch on
 // Expo 54 / RN 0.81 / React 19, independent of whether configure() is ever
 // called. See https://github.com/RevenueCat/react-native-purchases/issues/1436.
-export const REVENUECAT_ENABLED = Boolean(process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY);
+export const REVENUECAT_ENABLED =
+  process.env.EXPO_PUBLIC_ENABLE_PAYWALL === "true" &&
+  Boolean(process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY);
 
 // Lazily loaded only when enabled, so the native module is never touched otherwise.
 function getPurchases(): typeof Purchases {

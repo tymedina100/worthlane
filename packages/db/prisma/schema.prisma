@@ -27,6 +27,7 @@ model User {
   passwordResetTokens   PasswordResetToken[]
   netWorthSnapshots     NetWorthSnapshot[]
   recurringTransactions RecurringTransaction[]
+  upcomingObligations   UpcomingObligation[]
   plaidItems            PlaidItem[]
 }
 
@@ -266,6 +267,37 @@ enum RecurringFrequency {
   MONTHLY
   QUARTERLY
   YEARLY
+}
+
+enum UpcomingObligationType {
+  BILL
+  CREDIT_CARD
+  SUBSCRIPTION
+  OTHER
+}
+
+// User-entered obligations are separate from Plaid-derived recurring data so
+// V1 stays reliable without a bank connection.
+model UpcomingObligation {
+  id             String                 @id @default(cuid())
+  userId         String
+  name           String
+  amount         Decimal                @db.Decimal(12, 2)
+  dueDate        DateTime               @db.Date
+  type           UpcomingObligationType @default(BILL)
+  frequency      RecurringFrequency?
+  accountName    String?
+  reminderTiming String?
+  isPaid         Boolean                @default(false)
+  isActive       Boolean                @default(true)
+  lastPaidAt     DateTime?
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, dueDate])
+  @@index([userId, isPaid, dueDate])
 }
 
 // Detected recurring merchants (subscriptions, bills). Rows are produced by

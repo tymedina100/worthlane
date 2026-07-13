@@ -65,8 +65,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       posthog.identify(user.id, { email: user.email });
     }
     set({ userId: user.id, email: user.email });
-    // Fire-and-forget — don't block login on push permission
-    useAuthStore.getState().registerPushToken().catch(() => {});
+    // Notification permission is requested only when the person enables a
+    // reminder in V1 Settings or saves an upcoming item with reminders.
   },
 
   register: async (email: string, password: string) => {
@@ -84,7 +84,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       posthog.identify(user.id, { email: user.email });
     }
     set({ userId: user.id, email: user.email });
-    useAuthStore.getState().registerPushToken().catch(() => {});
+    // Notification permission is requested contextually from V1 reminders.
   },
 
   logout: async () => {

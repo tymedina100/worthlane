@@ -1,112 +1,119 @@
 # Worthlane
 
-A psychology-driven personal finance app built with Expo (React Native) and Next.js.
+Worthlane V1 is a calm, manual-first personal-finance companion. It answers
+three questions without requiring a bank connection: where do I stand today,
+what is coming next, and what should I enter or handle now?
 
-## Prerequisites
+## What works in V1
 
-- [Postgres.app](https://postgresapp.com) (or any PostgreSQL 14+) must be running before starting the API
-- Node.js 18+ and pnpm (`npm i -g pnpm`)
-- Expo Go on your phone, or Xcode (iOS) / Android Studio (Android) for simulators
+- A Today snapshot: manually entered balance, this-month spending and income,
+  next-seven-day obligations, and the next three items.
+- Fast manual accounts and two-field expense/income entry.
+- Manual bills, credit-card payments, subscriptions, and other obligations.
+- Upcoming timeline grouped into overdue, today, this week, later, and recently
+  paid; recurring items advance safely at month-end.
+- Contextual local reminders (due date, one day before, or three days before).
+- Settings for manual accounts, default reminders, notification permission,
+  feature suggestions, support, and privacy.
 
-## First-time setup
+V1 does not require Plaid, AI, RevenueCat, production push infrastructure, or
+analytics. Those integrations remain isolated and disabled by default.
 
-```bash
-# 1. Install all workspace dependencies
+## Setup
+
+Prerequisites: Node 20+, pnpm, and PostgreSQL 14+.
+
+~~~bash
 pnpm install
-
-# 2. Copy and fill in API environment variables
 cp apps/api/.env.example apps/api/.env
-# Edit apps/api/.env - set DATABASE_URL, JWT_SECRET, JWT_REFRESH_SECRET, SENTRY_DSN
-# Plaid keys optional (sandbox) - needed only for bank linking
+# Set DATABASE_URL, JWT_SECRET, and JWT_REFRESH_SECRET.
 
-# 3. Set the mobile API URL
-echo "EXPO_PUBLIC_API_URL=http://localhost:3001/api" > apps/mobile/.env.local
-# Add EXPO_PUBLIC_SENTRY_DSN and the Sentry build env vars when you're ready
-# to test crash reporting or upload release source maps.
+pnpm db:migrate
+pnpm db:generate
 
-# 4. Run database migrations
-cd packages/db
-DATABASE_URL="postgresql://<user>@localhost:5432/worthlane" npx prisma migrate deploy
-cd ../..
-```
+# apps/mobile/.env.local
+EXPO_PUBLIC_API_URL=http://localhost:3001/api
+~~~
 
-## Starting the app
+Start the API and mobile app in separate terminals:
 
-Two terminals are required and both must stay open.
-
-**Terminal 1 - API server** (port 3001):
-```bash
+~~~bash
 cd apps/api && pnpm dev
-```
-
-**Terminal 2 - Mobile app** (Metro bundler, port 8081):
-```bash
 cd apps/mobile && pnpm dev
-```
+~~~
 
-In the Metro terminal press:
-- `i` to open the iOS simulator
-- `a` to open the Android emulator
-- Scan the QR code with Expo Go on your phone
+Use an iOS simulator, Android emulator, or an Expo development build.
 
 ## Environment variables
 
-### `apps/api/.env`
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `JWT_SECRET` | Random 32+ char string for access tokens |
-| `JWT_REFRESH_SECRET` | Random 32+ char string for refresh tokens |
-| `PLAID_CLIENT_ID` | From [Plaid dashboard](https://dashboard.plaid.com) |
-| `PLAID_SECRET` | Plaid sandbox secret |
-| `PLAID_ENV` | `sandbox` (default) |
-| `SENTRY_DSN` | Server DSN for Next.js API error reporting |
-| `SENTRY_ENVIRONMENT` | Optional Sentry environment label |
-| `SENTRY_AUTH_TOKEN` | Auth token used during builds to upload source maps |
-| `SENTRY_ORG` | Sentry organization slug |
-| `SENTRY_PROJECT` | Sentry project slug for the API |
+Required for V1:
 
-### `apps/mobile/.env.local`
-| Variable | Default |
-|---|---|
-| `EXPO_PUBLIC_API_URL` | `http://localhost:3001/api` |
-| `EXPO_PUBLIC_SENTRY_DSN` | Sentry DSN for the Expo app |
-| `EXPO_PUBLIC_SENTRY_ENVIRONMENT` | `development` |
-| `SENTRY_AUTH_TOKEN` | Sentry auth token for native symbol/source map upload |
-| `SENTRY_ORG` | Sentry organization slug |
-| `SENTRY_PROJECT` | Sentry project slug for the mobile app |
-| `SENTRY_URL` | `https://sentry.io/` |
+| Location | Variable | Purpose |
+|---|---|---|
+| API | DATABASE_URL | PostgreSQL connection string |
+| API | JWT_SECRET, JWT_REFRESH_SECRET | 32+ character JWT secrets |
+| Mobile | EXPO_PUBLIC_API_URL | API URL, such as http://localhost:3001/api |
 
-## Useful commands
+Optional integrations:
 
-```bash
-pnpm typecheck       # type-check all packages
-pnpm test            # run API unit tests (Vitest)
-pnpm db:generate     # regenerate Prisma client after schema changes
-pnpm db:migrate      # apply pending migrations
-pnpm db:studio       # open Prisma Studio in browser
-```
+| Variable | Default | Notes |
+|---|---|---|
+| EXPO_PUBLIC_PLAID_ENABLED | false | Enables existing Plaid flows for later testing. |
+| EXPO_PUBLIC_ENABLE_AI | false | Keeps the existing assistant outside V1. |
+| EXPO_PUBLIC_ENABLE_PAYWALL | false | Keeps RevenueCat/paywalls outside V1. |
+| EXPO_PUBLIC_REVENUECAT_IOS_KEY | unset | Used only when the paywall flag is enabled. |
+| EXPO_PUBLIC_POSTHOG_KEY, POSTHOG_PROJECT_KEY | unset | Optional analytics; V1 does not capture financial details. |
+| EXPO_PUBLIC_SENTRY_DSN, SENTRY_DSN | unset | Optional error reporting. |
 
-## Stack
+Plaid server variables are optional and are not needed for V1.
 
-| Layer | Tech |
-|---|---|
-| Monorepo | pnpm workspaces + Turborepo |
-| Mobile | Expo 51 (React Native) |
-| API | Next.js 14 (API routes only) |
-| Database | PostgreSQL + Prisma 5 |
-| Auth | JWT - access token 15m / refresh token 30d |
-| Banking | Plaid (sandbox) |
+## Notifications
 
-## Features
+Reminders are local Expo notifications. They are requested only when a person
+enables reminders in Settings or saves an upcoming item using a reminder.
+To test: add a future upcoming item, select a default timing in Settings, then
+confirm the OS permission prompt. Editing, paying, deactivating, or deleting
+an item cancels its previously scheduled local reminder.
 
-- **Auth** - register, login, JWT refresh, biometric login (Face ID / Touch ID / Fingerprint)
-- **Dashboard** - net worth, monthly income/spend, budgets, goals, streaks, nudges
-- **Transactions** - list, paginate, impulse flag, manual entry
-- **Budgets** - CRUD with loss-aversion messaging
-- **Goals** - CRUD with progress tracking and projection
-- **Plaid** - bank linking, account sync, transaction import
-- **Nudge engine** - loss-aversion nudges for budget warnings, streak risk, goal milestones
-- **Push notifications** - Expo Push + FCM/APNs; nudges delivered to device
-- **Cron job** - daily proactive nudge delivery via `/api/cron/nudges`
-- **Streaks** - daily check-in, on-budget, no-impulse tracking
+## Quality checks
+
+~~~bash
+pnpm db:generate
+pnpm --filter @worthlane/api typecheck
+pnpm --filter @worthlane/mobile typecheck
+pnpm --filter @worthlane/api test
+~~~
+
+## Roadmap
+
+### V1
+
+- Today dashboard
+- Manual transactions
+- Manual bills and card due dates
+- Upcoming timeline
+- Reminders
+- Feature suggestions
+
+### V1.1
+
+- Plaid integration
+- Bank and card syncing
+- Imported transaction reconciliation
+- Recurring-charge detection connected to real transactions
+
+### V1.2
+
+- AI insights
+- Personalized recommendations
+- Debt payoff guidance
+- Spending-change suggestions
+- Explainable, nonjudgmental financial coaching
+
+## Known V1 limitations
+
+Manual writes require an API connection; V1 retains cached query data for
+readability but does not queue offline writes. The quick-add screen uses a
+date-only field until a native date picker is introduced. Local notifications
+depend on the OS and cannot be guaranteed after an app is uninstalled or
+system-level notifications are disabled.

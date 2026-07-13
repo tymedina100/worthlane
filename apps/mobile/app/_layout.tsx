@@ -35,6 +35,7 @@ function ThemedApp() {
           <Stack.Screen name="(auth)" />
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="onboarding" />
+          <Stack.Screen name="quick-add" options={{ presentation: "modal" }} />
           <Stack.Screen name="paywall" options={{ presentation: "modal", headerShown: false }} />
         </Stack>
       </QueryClientProvider>
