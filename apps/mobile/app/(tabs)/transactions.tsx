@@ -429,9 +429,12 @@ export default function TransactionsScreen() {
       <View style={styles.container}>
         <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
           <View style={styles.headerRow}>
-            <Text style={styles.title}>Transactions</Text>
+            <View>
+              <Text style={styles.title}>Activity</Text>
+              <Text style={styles.activitySubtitle}>Manually added spending and income</Text>
+            </View>
             <TouchableOpacity style={styles.addButton} onPress={openCreateModal}>
-              <Text style={styles.addButtonText}>Manual +</Text>
+              <Text style={styles.addButtonText}>Add transaction</Text>
             </TouchableOpacity>
           </View>
           <TextInput
@@ -477,9 +480,9 @@ export default function TransactionsScreen() {
             listEmpty ? (
               <EmptyState
                 icon="receipt"
-                title="No transactions yet"
-                body="Connect a bank from Profile or add a manual account and log transactions here."
-                actionLabel="Add manual transaction"
+                title="No activity yet"
+                body="Use Add transaction to log an expense or income. Your Today totals update right away."
+                actionLabel="Add transaction"
                 onAction={openCreateModal}
               />
             ) : null
@@ -512,6 +515,7 @@ const createStyles = ({ colors, typography }: Theme) =>
   header: { padding: spacing.md, paddingTop: spacing.xl, gap: spacing.md },
   headerRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   title: { ...typography.h2 },
+  activitySubtitle: { ...typography.caption, marginTop: 2 },
   addButton: {
     backgroundColor: colors.primary,
     borderRadius: radius.full,

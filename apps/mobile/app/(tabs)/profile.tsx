@@ -784,6 +784,7 @@ export default function ProfileScreen() {
           <View style={[styles.card, { marginBottom: spacing.sm }]}><Text style={styles.settingLabel}>Plaid coming soon</Text><Text style={styles.settingDescription}>Automatic bank syncing with Plaid is coming soon. For now, Worthlane keeps things simple with fast manual entry.</Text></View>
           <TouchableOpacity style={[styles.card, { marginBottom: spacing.sm }]} onPress={suggestFeature} accessibilityRole="button" accessibilityLabel="Suggest a feature"><View style={styles.settingRow}><Text style={styles.settingLabel}>Suggest a feature</Text><Text style={styles.accountEditHint}>›</Text></View><Text style={styles.settingDescription}>Tell us what would make Worthlane more useful.</Text></TouchableOpacity>
           <TouchableOpacity style={[styles.card, { marginBottom: spacing.sm }]} onPress={() => Linking.openURL("https://worthlane.app/privacy")}><Text style={styles.settingLabel}>Privacy policy</Text></TouchableOpacity>
+          <TouchableOpacity style={[styles.card, { marginBottom: spacing.sm }]} onPress={() => Linking.openURL("https://worthlane.app/terms")} accessibilityRole="button" accessibilityLabel="Open terms of use"><Text style={styles.settingLabel}>Terms of use</Text></TouchableOpacity>
           <TouchableOpacity style={styles.card} onPress={() => Linking.openURL("mailto:support@worthlane.app")}><Text style={styles.settingLabel}>Support</Text><Text style={styles.settingDescription}>Worthlane V1</Text></TouchableOpacity>
         </View>
 
