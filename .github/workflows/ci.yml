@@ -8,6 +8,13 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    env:
+      # Prisma validation and Next builds need a valid URL shape, but CI does
+      # not connect to a database in this job.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      JWT_SECRET: ci-only-jwt-secret-at-least-32-characters!!
+      JWT_REFRESH_SECRET: ci-only-refresh-secret-at-least-32-chars!!
+      WORTHLANE_API_URL: http://localhost:3001/api
 
     steps:
       - uses: actions/checkout@v4
@@ -23,17 +30,28 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Generate Prisma client
-        run: pnpm --filter @worthlane/db exec prisma generate
+        run: pnpm --filter @worthlane/db db:generate
 
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Test
-        run: pnpm test
+      - name: Test shared financial rules
+        run: pnpm --filter @worthlane/core test
 
-      - name: Build
+      - name: Test shared API contracts
+        run: pnpm --filter @worthlane/contracts test
+
+      - name: Test API
+        run: pnpm --filter @worthlane/api test
+
+      - name: Bundle mobile client
+        run: pnpm --filter @worthlane/mobile exec expo export --platform ios --output-dir "$RUNNER_TEMP/worthlane-mobile-export"
+
+      - name: Build API
         run: pnpm --filter @worthlane/api build
-        env:
-          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
-          JWT_SECRET: ci-only-jwt-secret-at-least-32-characters!!
-          JWT_REFRESH_SECRET: ci-only-refresh-secret-at-least-32-chars!!
+
+      - name: Build desktop client
+        run: pnpm --filter @worthlane/desktop build
+
+      - name: Build public web client
+        run: pnpm --filter @worthlane/web build

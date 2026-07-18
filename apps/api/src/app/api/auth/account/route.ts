@@ -4,6 +4,7 @@ import { getAuthUser } from "@/lib/auth";
 import { decryptPlaidAccessToken, removeItem } from "@/lib/plaid";
 import { ok, unauthorized } from "@/lib/response";
 import { captureServerException } from "@/lib/sentry";
+import { deleteUserAccountData } from "@/lib/account-deletion";
 
 // Permanent account deletion (required by App Store guideline 5.1.1(v)).
 // Removes the user and, via cascade, all accounts, transactions, budgets,
@@ -30,13 +31,7 @@ export async function DELETE(req: NextRequest) {
     }
   }
 
-  await prisma.$transaction([
-    // Budgets reference categories with RESTRICT; remove them first so the
-    // user's custom categories can cascade cleanly.
-    prisma.budget.deleteMany({ where: { userId } }),
-    prisma.plaidItem.deleteMany({ where: { userId } }),
-    prisma.user.delete({ where: { id: userId } }),
-  ]);
+  await deleteUserAccountData(userId);
 
   return ok({ deleted: true });
 }

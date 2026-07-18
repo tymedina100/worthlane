@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Stack, usePathname } from "expo-router";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { Sentry } from "@/lib/sentry";
 import { isPostHogEnabled, posthog } from "@/lib/posthog";
@@ -8,15 +8,7 @@ import { useAuthStore } from "@/store/auth";
 import { ThemeProvider, useTheme } from "@/lib/ThemeContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { configureRevenueCat } from "@/hooks/useSubscription";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 30_000,
-      retry: 1,
-    },
-  },
-});
+import { queryClient } from "@/lib/query-client";
 
 function ThemedApp() {
   const { colors, scheme } = useTheme();
@@ -35,6 +27,7 @@ function ThemedApp() {
           <Stack.Screen name="(auth)" />
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="onboarding" />
+          <Stack.Screen name="household" />
           <Stack.Screen name="quick-add" options={{ presentation: "modal" }} />
           <Stack.Screen name="paywall" options={{ presentation: "modal", headerShown: false }} />
         </Stack>

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { prisma } from "@worthlane/db";
-import { hashPassword, signAccessToken, signRefreshToken } from "@/lib/auth";
+import { createRefreshSession, hashPassword, signAccessToken } from "@/lib/auth";
 import { captureServerEvent } from "@/lib/posthog";
 import { ok, err } from "@/lib/response";
 import { checkRateLimit, ipKey } from "@/lib/rate-limit";
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   // (Categories are system-wide, no seeding needed per user)
 
   const accessToken = signAccessToken({ sub: user.id, email: user.email });
-  const refreshToken = signRefreshToken(user.id);
+  const refreshToken = await createRefreshSession(user.id);
 
   await captureServerEvent({
     distinctId: user.id,

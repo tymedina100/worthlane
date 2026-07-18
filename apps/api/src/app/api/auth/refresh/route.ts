@@ -1,7 +1,6 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
-import { prisma } from "@worthlane/db";
-import { verifyRefreshToken, signAccessToken, signRefreshToken } from "@/lib/auth";
+import { rotateRefreshSession, signAccessToken } from "@/lib/auth";
 import { ok, err } from "@/lib/response";
 
 const schema = z.object({ refreshToken: z.string() });
@@ -12,16 +11,8 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) return err("Invalid request body");
 
   try {
-    const { sub: userId } = verifyRefreshToken(parsed.data.refreshToken);
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true, email: true },
-    });
-    if (!user) return err("User not found", 404);
-
+    const { user, refreshToken } = await rotateRefreshSession(parsed.data.refreshToken);
     const accessToken = signAccessToken({ sub: user.id, email: user.email });
-    const refreshToken = signRefreshToken(user.id);
-
     return ok({ accessToken, refreshToken });
   } catch {
     return err("Invalid or expired refresh token", 401);

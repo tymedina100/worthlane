@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
+import { calculateBudgetProgress, fromMinorUnits, toMinorUnits } from "@worthlane/core";
 import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
 import { ok, err, unauthorized } from "@/lib/response";
@@ -72,7 +73,10 @@ export async function GET(req: NextRequest) {
 
       const spentAmount = Number(spent._sum.amount ?? 0);
       const budgetAmount = Number(b.amount);
-      const remaining = budgetAmount - spentAmount;
+      const progress = calculateBudgetProgress(
+        toMinorUnits(budgetAmount),
+        toMinorUnits(spentAmount)
+      );
 
       return {
         id: b.id,
@@ -82,8 +86,8 @@ export async function GET(req: NextRequest) {
         categoryIcon: b.category.icon,
         amount: budgetAmount,
         spent: spentAmount,
-        remaining,
-        percentUsed: budgetAmount > 0 ? (spentAmount / budgetAmount) * 100 : 0,
+        remaining: fromMinorUnits(progress.remainingMinor),
+        percentUsed: progress.percentUsed,
         period: b.period,
         rollover: b.rollover,
         history: history.map((h) => ({

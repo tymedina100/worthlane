@@ -8,7 +8,7 @@ import { err, ok, unauthorized } from "@/lib/response";
 import { captureServerException } from "@/lib/sentry";
 
 const schema = z.object({
-  platform: z.enum(["ios", "android"]),
+  platform: z.enum(["ios", "android", "web"]),
   mode: z.enum(["create", "update"]),
   plaidItemId: z.string().optional(),
 });

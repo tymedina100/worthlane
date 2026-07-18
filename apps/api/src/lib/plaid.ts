@@ -10,7 +10,7 @@ import {
   TransactionsSyncResponse,
 } from "plaid";
 
-type PlaidPlatform = "ios" | "android";
+export type PlaidPlatform = "ios" | "android" | "web";
 type PlaidLinkMode = "create" | "update";
 
 const config = new Configuration({
@@ -194,8 +194,13 @@ export async function createLinkToken(
 
   if (options.platform === "ios") {
     request.redirect_uri = requireIosRedirectUri();
-  } else {
+  } else if (options.platform === "android") {
     request.android_package_name = requireAndroidPackageName();
+  } else if (process.env.PLAID_WEB_REDIRECT_URI) {
+    // Plaid only requires a web redirect URI for OAuth institutions. Keeping
+    // it optional allows sandbox/non-OAuth Link without weakening the mobile
+    // platform requirements above.
+    request.redirect_uri = process.env.PLAID_WEB_REDIRECT_URI;
   }
 
   if (options.mode === "update") {

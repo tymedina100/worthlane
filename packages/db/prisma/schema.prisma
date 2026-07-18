@@ -8,13 +8,13 @@ datasource db {
 }
 
 model User {
-  id               String        @id @default(cuid())
-  email            String        @unique
+  id               String   @id @default(cuid())
+  email            String   @unique
   passwordHash     String
-  biometricEnabled Boolean       @default(false)
+  biometricEnabled Boolean  @default(false)
   pushToken        String?
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   accounts              Account[]
   transactions          Transaction[]
@@ -29,6 +29,30 @@ model User {
   recurringTransactions RecurringTransaction[]
   upcomingObligations   UpcomingObligation[]
   plaidItems            PlaidItem[]
+  householdMemberships  HouseholdMember[]
+  refreshSessions       RefreshSession[]
+}
+
+// Refresh tokens are opaque client credentials. Only a SHA-256 digest is
+// persisted, while the signed JWT identifies this row and its rotation family.
+// Consumed rows remain as replay-detection records until their user is deleted.
+model RefreshSession {
+  id           String    @id
+  userId       String
+  familyId     String
+  tokenHash    String    @unique @db.VarChar(64)
+  expiresAt    DateTime
+  rotatedAt    DateTime?
+  revokedAt    DateTime?
+  replacedById String?
+  lastUsedAt   DateTime?
+  createdAt    DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+  @@index([familyId])
+  @@index([expiresAt])
 }
 
 enum AccountType {
@@ -46,56 +70,58 @@ enum AccountSource {
 }
 
 model Account {
-  id              String      @id @default(cuid())
+  id              String        @id @default(cuid())
   userId          String
-  plaidAccountId  String?     @unique
+  plaidAccountId  String?       @unique
   plaidItemId     String?
-  plaidCursor     String?     // for transactions sync
+  plaidCursor     String? // for transactions sync
   name            String
   institutionName String?
   type            AccountType
   source          AccountSource @default(MANUAL)
-  currentBalance  Decimal     @db.Decimal(12, 2)
+  currentBalance  Decimal       @db.Decimal(12, 2)
   lastSyncedAt    DateTime?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
-  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  transactions    Transaction[]
+  user              User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions      Transaction[]
+  householdAccesses HouseholdAccountAccess[]
 }
 
 model Category {
   id       String  @id @default(cuid())
   name     String
-  icon     String  // emoji or icon name
-  color    String  // hex color
+  icon     String // emoji or icon name
+  color    String // hex color
   isSystem Boolean @default(false) // system defaults (userId = null)
   userId   String?
 
-  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  transactions Transaction[]
-  budgets      Budget[]
+  user                      User?                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions              Transaction[]
+  budgets                   Budget[]
+  householdResponsibilities HouseholdResponsibility[]
 
   @@unique([userId, name])
 }
 
 model Transaction {
-  id                  String    @id @default(cuid())
-  userId              String
-  accountId           String
-  plaidTransactionId  String?   @unique
-  amount              Decimal   @db.Decimal(12, 2) // positive = expense, negative = income
-  date                DateTime
-  merchantName        String?
-  categoryId          String?
-  isManual            Boolean   @default(false)
-  isImpulse           Boolean   @default(false) // user-flagged impulse purchase
-  note                String?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  id                 String   @id @default(cuid())
+  userId             String
+  accountId          String
+  plaidTransactionId String?  @unique
+  amount             Decimal  @db.Decimal(12, 2) // positive = expense, negative = income
+  date               DateTime
+  merchantName       String?
+  categoryId         String?
+  isManual           Boolean  @default(false)
+  isImpulse          Boolean  @default(false) // user-flagged impulse purchase
+  note               String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  account  Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account  Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
   category Category? @relation(fields: [categoryId], references: [id])
 
   @@index([userId, date])
@@ -118,8 +144,8 @@ model Budget {
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
 
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category Category @relation(fields: [categoryId], references: [id])
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category       @relation(fields: [categoryId], references: [id])
   periods  BudgetPeriod[]
 
   @@unique([userId, categoryId])
@@ -130,7 +156,7 @@ model BudgetPeriod {
   budgetId  String
   startDate DateTime
   endDate   DateTime
-  spent     Decimal  @db.Decimal(12, 2) @default(0)
+  spent     Decimal  @default(0) @db.Decimal(12, 2)
 
   budget Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
 
@@ -145,17 +171,17 @@ enum GoalType {
 }
 
 model Goal {
-  id            String   @id @default(cuid())
-  userId        String
-  name          String
-  targetAmount  Decimal  @db.Decimal(12, 2)
-  currentAmount Decimal  @db.Decimal(12, 2) @default(0)
-  targetDate    DateTime?
-  type          GoalType
-  icon          String?
+  id                     String    @id @default(cuid())
+  userId                 String
+  name                   String
+  targetAmount           Decimal   @db.Decimal(12, 2)
+  currentAmount          Decimal   @default(0) @db.Decimal(12, 2)
+  targetDate             DateTime?
+  type                   GoalType
+  icon                   String?
   linkedBudgetCategoryId String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
 
   user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   contributions GoalContribution[]
@@ -183,14 +209,14 @@ enum StreakType {
 }
 
 model Streak {
-  id              String     @id @default(cuid())
-  userId          String
-  type            StreakType
-  currentCount    Int        @default(0)
-  longestCount    Int        @default(0)
-  lastActivityAt  DateTime?
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  id             String     @id @default(cuid())
+  userId         String
+  type           StreakType
+  currentCount   Int        @default(0)
+  longestCount   Int        @default(0)
+  lastActivityAt DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -212,7 +238,7 @@ model Nudge {
   type      NudgeType
   message   String
   sentAt    DateTime  @default(now())
-  day       DateTime  @db.Date @default(dbgenerated("CURRENT_DATE"))
+  day       DateTime  @default(dbgenerated("CURRENT_DATE")) @db.Date
   dismissed Boolean   @default(false)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -337,4 +363,179 @@ model NetWorthSnapshot {
 
   @@unique([userId, date])
   @@index([userId, date])
+}
+
+enum HouseholdRole {
+  OWNER
+  MEMBER
+}
+
+enum HouseholdMemberStatus {
+  INVITED
+  ACTIVE
+  LEFT
+  REMOVED
+}
+
+enum AccountVisibility {
+  PERSONAL
+  SUMMARY
+  SHARED
+}
+
+enum ResponsibilityMode {
+  MEMBER
+  EQUAL
+  PERCENTAGE
+}
+
+enum GoalContributionMode {
+  EQUAL
+  CUSTOM
+  INCOME_PROPORTIONAL
+}
+
+model Household {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  timezone  String   @default("UTC")
+  currency  String   @default("USD") @db.VarChar(3)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members          HouseholdMember[]
+  accountAccesses  HouseholdAccountAccess[]
+  responsibilities HouseholdResponsibility[]
+  goals            HouseholdGoal[]
+}
+
+model HouseholdMember {
+  id          String                @id @default(cuid())
+  householdId String
+  userId      String?
+  displayName String
+  role        HouseholdRole         @default(MEMBER)
+  status      HouseholdMemberStatus @default(INVITED)
+  incomeBasis Decimal?              @db.Decimal(12, 2)
+  joinedAt    DateTime?
+  endedAt     DateTime?
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  household                 Household                           @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  user                      User?                               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  accountAccesses           HouseholdAccountAccess[]
+  responsibilityAllocations HouseholdResponsibilityAllocation[]
+  goalParticipants          HouseholdGoalParticipant[]
+  goalContributions         HouseholdGoalContribution[]
+
+  @@unique([householdId, userId])
+  // PostgreSQL additionally enforces one ACTIVE membership per non-null user
+  // through a partial unique index in the additive migration.
+  @@index([userId, status])
+  @@index([householdId, status])
+}
+
+model HouseholdAccountAccess {
+  id          String            @id @default(cuid())
+  householdId String
+  accountId   String
+  memberId    String
+  visibility  AccountVisibility @default(PERSONAL)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  household Household       @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  account   Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  member    HouseholdMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([accountId, memberId])
+  @@index([householdId, memberId, visibility])
+}
+
+model HouseholdResponsibility {
+  id            String             @id @default(cuid())
+  householdId   String
+  categoryId    String?
+  slug          String
+  name          String
+  monthlyAmount Decimal            @db.Decimal(12, 2)
+  mode          ResponsibilityMode
+  isActive      Boolean            @default(true)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  household   Household                           @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  category    Category?                           @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  allocations HouseholdResponsibilityAllocation[]
+
+  @@unique([householdId, slug])
+  @@index([householdId, isActive])
+  @@index([categoryId])
+}
+
+model HouseholdResponsibilityAllocation {
+  id               String @id @default(cuid())
+  responsibilityId String
+  memberId         String
+  shareBasisPoints Int?
+
+  responsibility HouseholdResponsibility @relation(fields: [responsibilityId], references: [id], onDelete: Cascade)
+  member         HouseholdMember         @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([responsibilityId, memberId])
+  @@index([memberId])
+}
+
+model HouseholdGoal {
+  id               String               @id @default(cuid())
+  householdId      String
+  slug             String
+  name             String
+  targetAmount     Decimal              @db.Decimal(12, 2)
+  targetDate       DateTime?
+  type             GoalType             @default(SAVINGS)
+  icon             String?
+  contributionMode GoalContributionMode
+  isArchived       Boolean              @default(false)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  household     Household                   @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  participants  HouseholdGoalParticipant[]
+  contributions HouseholdGoalContribution[]
+
+  @@unique([householdId, slug])
+  @@index([householdId, isArchived])
+  @@index([householdId, targetDate])
+}
+
+model HouseholdGoalParticipant {
+  id                 String   @id @default(cuid())
+  goalId             String
+  memberId           String
+  customTargetAmount Decimal? @db.Decimal(12, 2)
+
+  goal   HouseholdGoal   @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  member HouseholdMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([goalId, memberId])
+  @@index([memberId])
+}
+
+model HouseholdGoalContribution {
+  id              String   @id @default(cuid())
+  goalId          String
+  memberId        String?
+  contributorName String
+  amount          Decimal  @db.Decimal(12, 2)
+  note            String?
+  createdAt       DateTime @default(now())
+
+  goal   HouseholdGoal    @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  member HouseholdMember? @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  @@index([goalId, createdAt])
+  @@index([memberId, createdAt])
 }

@@ -1,17 +1,9 @@
 import { z } from "zod";
 
-// Server environment, validated once at startup so misconfiguration fails
-// the first request loudly instead of crashing deep inside a route handler.
-
-const PROD_REQUIRED = [
-  "PLAID_CLIENT_ID",
-  "PLAID_SECRET",
-  "PLAID_TOKEN_ENCRYPTION_KEY",
-  "CRON_SECRET",
-  "ANTHROPIC_API_KEY",
-  "RESEND_API_KEY",
-  "EMAIL_FROM",
-] as const;
+// Validate only the configuration every API route requires. Optional
+// integrations validate their own credentials when invoked so a disabled
+// Plaid, AI, email, or cron feature cannot take down auth and core finance
+// routes in production.
 
 const schema = z
   .object({
@@ -23,25 +15,11 @@ const schema = z
     PLAID_SECRET: z.string().optional(),
     PLAID_ENV: z.enum(["sandbox", "development", "production"]).default("sandbox"),
     PLAID_TOKEN_ENCRYPTION_KEY: z.string().optional(),
+    PLAID_WEB_REDIRECT_URI: z.string().url().optional(),
     CRON_SECRET: z.string().optional(),
     ANTHROPIC_API_KEY: z.string().optional(),
     RESEND_API_KEY: z.string().optional(),
     EMAIL_FROM: z.string().optional(),
-  })
-  .superRefine((env, ctx) => {
-    if (env.NODE_ENV !== "production") return;
-    // `next build` imports route modules with NODE_ENV=production but
-    // without runtime secrets; enforce the full set only when serving.
-    if (process.env.NEXT_PHASE === "phase-production-build") return;
-    for (const key of PROD_REQUIRED) {
-      if (!env[key]) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: [key],
-          message: `${key} is required in production`,
-        });
-      }
-    }
   });
 
 function loadEnv() {

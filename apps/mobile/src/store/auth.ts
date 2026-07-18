@@ -5,6 +5,7 @@ import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { api } from "@/lib/api";
 import { isPostHogEnabled, posthog } from "@/lib/posthog";
+import { clearPrivateQueryCache } from "@/lib/query-client";
 
 interface AuthState {
   userId: string | null;
@@ -57,6 +58,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       refreshToken: string;
     }>("/auth/login", { email, password });
 
+    await clearPrivateQueryCache();
     await SecureStore.setItemAsync("accessToken", accessToken);
     await SecureStore.setItemAsync("refreshToken", refreshToken);
     await SecureStore.setItemAsync("userId", user.id);
@@ -76,6 +78,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       refreshToken: string;
     }>("/auth/register", { email, password });
 
+    await clearPrivateQueryCache();
     await SecureStore.setItemAsync("accessToken", accessToken);
     await SecureStore.setItemAsync("refreshToken", refreshToken);
     await SecureStore.setItemAsync("userId", user.id);
@@ -93,6 +96,16 @@ export const useAuthStore = create<AuthState>((set) => ({
       await posthog.flush();
       posthog.reset();
     }
+    const refreshToken = await SecureStore.getItemAsync("refreshToken");
+    if (refreshToken) {
+      try {
+        await api.post("/auth/logout", { refreshToken });
+      } catch {
+        // Local logout must still complete if the network is unavailable. The
+        // server session expires automatically after 30 days at the latest.
+      }
+    }
+    await clearPrivateQueryCache();
     await SecureStore.deleteItemAsync("accessToken");
     await SecureStore.deleteItemAsync("refreshToken");
     await SecureStore.deleteItemAsync("userId");

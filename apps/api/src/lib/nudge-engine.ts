@@ -1,4 +1,9 @@
 import { prisma, NudgeType } from "@worthlane/db";
+import {
+  calculateBudgetProgress,
+  fromMinorUnits,
+  toMinorUnits,
+} from "@worthlane/core";
 import { startOfMonth, endOfMonth } from "./dates";
 import { sendPushToUser } from "./push";
 
@@ -33,15 +38,18 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
 
     const spentAmount = Number(spent._sum.amount ?? 0);
     const budgetAmount = budget.amount.toNumber();
-    const remaining = budgetAmount - spentAmount;
-    const percentUsed = budgetAmount > 0 ? (spentAmount / budgetAmount) * 100 : 0;
+    const progress = calculateBudgetProgress(
+      toMinorUnits(budgetAmount),
+      toMinorUnits(spentAmount)
+    );
+    const remaining = fromMinorUnits(progress.remainingMinor);
 
     if (remaining < 0) {
       nudges.push({
         type: NudgeType.BUDGET_WARNING,
         message: `You've gone $${Math.abs(remaining).toFixed(0)} over your ${budget.category.name} budget. That's money taken from your savings.`,
       });
-    } else if (percentUsed >= 80) {
+    } else if (progress.percentUsed >= 80) {
       nudges.push({
         type: NudgeType.BUDGET_WARNING,
         message: `Only $${remaining.toFixed(0)} left before you lose your ${budget.category.name} budget. You've been on track — don't slip now.`,

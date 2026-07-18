@@ -51,9 +51,12 @@ describe("signAccessToken / verifyAccessToken", () => {
 
 describe("signRefreshToken / verifyRefreshToken", () => {
   it("signs and verifies a refresh token", () => {
-    const token = signRefreshToken("user-456");
+    const token = signRefreshToken("user-456", "session-1", "family-1");
     const decoded = verifyRefreshToken(token);
     expect(decoded.sub).toBe("user-456");
+    expect(decoded.sid).toBe("session-1");
+    expect(decoded.fid).toBe("family-1");
+    expect(decoded.typ).toBe("refresh");
   });
 });
 

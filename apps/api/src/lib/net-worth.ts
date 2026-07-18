@@ -1,4 +1,10 @@
 import { prisma } from "@worthlane/db";
+import {
+  computeNetWorthBreakdownMinor,
+  computeNetWorthMinor,
+  fromMinorUnits,
+  toMinorUnits,
+} from "@worthlane/core";
 
 interface BalanceLike {
   type: string;
@@ -7,21 +13,28 @@ interface BalanceLike {
 
 /** Assets add, debts (credit/loans) subtract. */
 export function computeNetWorth(accounts: BalanceLike[]): number {
-  return accounts.reduce((sum, a) => {
-    const bal = a.currentBalance.toNumber();
-    return sum + (a.type === "CREDIT" || a.type === "LOAN" ? -bal : bal);
-  }, 0);
+  return fromMinorUnits(
+    computeNetWorthMinor(
+      accounts.map((account) => ({
+        type: account.type,
+        currentBalanceMinor: toMinorUnits(account.currentBalance.toNumber()),
+      }))
+    )
+  );
 }
 
 export function computeBreakdown(accounts: BalanceLike[]): { assets: number; liabilities: number } {
-  let assets = 0;
-  let liabilities = 0;
-  for (const a of accounts) {
-    const bal = a.currentBalance.toNumber();
-    if (a.type === "CREDIT" || a.type === "LOAN") liabilities += bal;
-    else assets += bal;
-  }
-  return { assets, liabilities };
+  const result = computeNetWorthBreakdownMinor(
+    accounts.map((account) => ({
+      type: account.type,
+      currentBalanceMinor: toMinorUnits(account.currentBalance.toNumber()),
+    }))
+  );
+
+  return {
+    assets: fromMinorUnits(result.assetsMinor),
+    liabilities: fromMinorUnits(result.liabilitiesMinor),
+  };
 }
 
 export function startOfToday(): Date {

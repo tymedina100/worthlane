@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { prisma } from "@worthlane/db";
-import { hashPassword } from "@/lib/auth";
+import { hashPassword, revokeAllUserSessions } from "@/lib/auth";
 import { checkRateLimit, ipKey } from "@/lib/rate-limit";
 import { ok, err } from "@/lib/response";
 
@@ -33,16 +33,17 @@ export async function POST(req: NextRequest) {
   const passwordHash = await hashPassword(newPassword);
   const now = new Date();
 
-  await prisma.$transaction([
-    prisma.user.update({
+  await prisma.$transaction(async (tx) => {
+    await tx.user.update({
       where: { id: resetToken.userId },
       data: { passwordHash },
-    }),
-    prisma.passwordResetToken.update({
+    });
+    await tx.passwordResetToken.update({
       where: { id: resetToken.id },
       data: { usedAt: now },
-    }),
-  ]);
+    });
+    await revokeAllUserSessions(resetToken.userId, tx);
+  });
 
   return ok({ message: "Password updated. Please sign in." });
 }
