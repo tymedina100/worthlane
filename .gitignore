@@ -10,3 +10,5 @@ dist/
 .DS_Store
 Thumbs.db
 *.tsbuildinfo
+apps/desktop-native/generated/
+apps/desktop-native/release/

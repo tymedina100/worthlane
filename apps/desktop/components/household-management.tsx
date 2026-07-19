@@ -29,9 +29,9 @@ export type ManageHousehold = <T>(input: {
 
 function Feedback({ error, success }: { error: string | null; success: string | null }) {
   return (
-    <div className="management-feedback" aria-live="polite">
-      {error ? <span className="form-feedback--error">{error}</span> : null}
-      {success ? <span className="form-feedback--success">{success}</span> : null}
+    <div className="management-feedback">
+      {error ? <span className="form-feedback--error" role="alert">{error}</span> : null}
+      {success ? <span className="form-feedback--success" role="status">{success}</span> : null}
     </div>
   );
 }
@@ -544,7 +544,7 @@ export function PartnerManager({
               </button>
             </article>
           ))}
-          {invitationError ? <span className="form-feedback--error">{invitationError}</span> : null}
+          {invitationError ? <span className="form-feedback--error" role="alert">{invitationError}</span> : null}
         </div>
       ) : null}
       {viewer?.role === "OWNER" ? (
@@ -676,7 +676,7 @@ export function AccountDetailPanel({
         <div><p className="section-kicker">Permitted account detail</p><h3 id="account-detail-title">{detail?.name ?? accountName}</h3><p>{detail ? `${detail.ownerName} · ${titleCase(detail.visibility)} access` : "Loading account activity…"}</p></div>
         <button type="button" onClick={onClose} aria-label="Close account detail">×</button>
       </div>
-      {error ? <div className="filtered-empty form-feedback--error">{error}</div> : null}
+      {error ? <div className="filtered-empty form-feedback--error" role="alert">{error}</div> : null}
       {detail ? (
         <>
           <div className="account-detail-summary"><strong>{formatCurrencyMinor(detail.currentBalanceMinor, currency)}</strong><span>{detail.transactions.length} recent transaction{detail.transactions.length === 1 ? "" : "s"}</span></div>

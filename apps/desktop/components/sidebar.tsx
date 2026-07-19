@@ -13,11 +13,11 @@ type SidebarProps = {
 };
 
 const navItems = [
-  { label: "Overview", path: "", icon: "dashboard" as const, shortcut: "1" },
-  { label: "Monthly plan", path: "/plan", icon: "plan" as const, shortcut: "2" },
-  { label: "Accounts & privacy", path: "/accounts", icon: "accounts" as const, shortcut: "3" },
-  { label: "Shared goals", path: "/goals", icon: "goal" as const, shortcut: "4" },
-  { label: "Reports", path: "/reports", icon: "report" as const, shortcut: "5" },
+  { label: "Overview", path: "", demoAnchor: "#overview", icon: "dashboard" as const, shortcut: "1" },
+  { label: "Monthly plan", path: "/plan", demoAnchor: "#responsibilities", icon: "plan" as const, shortcut: "2" },
+  { label: "Accounts & privacy", path: "/accounts", demoAnchor: "#accounts", icon: "accounts" as const, shortcut: "3" },
+  { label: "Shared goals", path: "/goals", demoAnchor: "#goals", icon: "goal" as const, shortcut: "4" },
+  { label: "Reports", path: "/reports", demoAnchor: null, icon: "report" as const, shortcut: "5" },
 ];
 
 export function Sidebar({
@@ -29,6 +29,7 @@ export function Sidebar({
   const pathname = usePathname();
   const router = useRouter();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [activeDemoAnchor, setActiveDemoAnchor] = useState("#overview");
   const workspaceRoot = demo ? "/demo" : "/dashboard";
   const initials = viewerName
     .split(" ")
@@ -38,13 +39,28 @@ export function Sidebar({
     .toUpperCase();
 
   useEffect(() => {
+    if (!demo) return;
+    const syncActiveAnchor = () => setActiveDemoAnchor(window.location.hash || "#overview");
+    syncActiveAnchor();
+    window.addEventListener("hashchange", syncActiveAnchor);
+    return () => window.removeEventListener("hashchange", syncActiveAnchor);
+  }, [demo]);
+
+  useEffect(() => {
     function navigateWithShortcut(event: KeyboardEvent) {
       if (!event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        (target.isContentEditable || target.matches("input, textarea, select, [role='textbox']"))
+      ) {
+        return;
+      }
       const item = navItems.find((candidate) => candidate.shortcut === event.key);
-      if (!item) return;
+      if (!item || (demo && !item.demoAnchor)) return;
 
       event.preventDefault();
-      router.push(`${workspaceRoot}${item.path}`);
+      router.push(demo ? `${workspaceRoot}${item.demoAnchor}` : `${workspaceRoot}${item.path}`);
     }
 
     window.addEventListener("keydown", navigateWithShortcut);
@@ -89,8 +105,28 @@ export function Sidebar({
       <nav className="sidebar__nav">
         <span className="sidebar__eyebrow">Workspace</span>
         {navItems.map((item) => {
-          const href = `${workspaceRoot}${item.path}`;
-          const isActive = item.path ? pathname === href : pathname === workspaceRoot;
+          const href = demo ? `${workspaceRoot}${item.demoAnchor ?? ""}` : `${workspaceRoot}${item.path}`;
+          const isActive = demo
+            ? item.demoAnchor === activeDemoAnchor
+            : item.path
+              ? pathname === href
+              : pathname === workspaceRoot;
+          if (demo && !item.demoAnchor) {
+            return (
+              <span
+                className="sidebar__nav-item is-muted"
+                key={item.label}
+                role="link"
+                aria-disabled="true"
+                aria-label="Reports (sign in required)"
+                title="Sign in to use reports"
+              >
+                <Icon name={item.icon} />
+                <span>{item.label}</span>
+                <kbd>Sign in</kbd>
+              </span>
+            );
+          }
           return (
           <Link
             className={`sidebar__nav-item${isActive ? " is-active" : ""}`}
@@ -101,7 +137,7 @@ export function Sidebar({
           >
             <Icon name={item.icon} />
             <span>{item.label}</span>
-            <kbd>{item.shortcut}</kbd>
+            <kbd>Alt+{item.shortcut}</kbd>
           </Link>
           );
         })}

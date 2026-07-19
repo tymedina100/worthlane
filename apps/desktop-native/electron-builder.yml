@@ -1,0 +1,35 @@
+appId: com.worthlane.desktop
+productName: Worthlane
+asar: true
+compression: maximum
+npmRebuild: false
+afterPack: scripts/after-pack.cjs
+directories:
+  output: release
+files:
+  - package.json
+  - src/main.cjs
+  - src/navigation.cjs
+  - src/security.cjs
+  - src/offline.html
+  - src/offline.js
+  - generated/app-config.json
+extraResources:
+  - from: ../web/app/icon.png
+    to: branding/worthlane.png
+win:
+  icon: ../web/app/icon.png
+  artifactName: Worthlane-Setup-${version}-${arch}.${ext}
+  target:
+    - target: nsis
+      arch:
+        - x64
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Worthlane
+  uninstallDisplayName: Worthlane
+  deleteAppDataOnUninstall: false

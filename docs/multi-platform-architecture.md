@@ -1,19 +1,23 @@
 # Worthlane multi-platform architecture
 
-Status: initial multi-platform milestone implemented
+Status: native Windows shell implemented; production hosting and signing remain release prerequisites
 Last updated: 2026-07-18
 
 ## Outcome
 
 Worthlane is one product with one PostgreSQL database and one authoritative API,
-served through two distinct authenticated clients:
+presented through distinct mobile and desktop product surfaces:
 
 - `apps/mobile` remains the Expo/React Native client for quick daily checks,
   entry, reminders, accounts, personal budgets/goals, and compact household
   progress.
-- `apps/desktop` is a separate Next.js desktop-first planning client with a
-  configurable dashboard, planning views, account privacy, responsibility and
-  goal management, reports, filters, and keyboard navigation.
+- `apps/desktop` is a separate Next.js desktop-first planning UI and same-origin
+  backend-for-frontend (BFF), with a configurable dashboard, planning views,
+  account privacy, responsibility and goal management, reports, filters, and
+  keyboard navigation.
+- `apps/desktop-native` is a hardened Electron shell that presents that desktop
+  origin in a native Windows window without duplicating finance or session
+  logic.
 - `apps/api` owns authentication, authorization, financial data, Plaid,
   household rules, calculations, and persistence for both clients.
 - `apps/web` remains the public marketing/legal site and is not the desktop
@@ -56,6 +60,12 @@ Browser JavaScript never receives API tokens. Desktop mutation routes require an
 exact same-origin `Origin` and `application/json`, validate their bodies, and
 proxy only allowlisted API paths.
 
+Every desktop response carries a restrictive Content Security Policy. Worthlane
+cannot be framed, object embedding and unnecessary device APIs are disabled, and
+browser connections default to same-origin. The only external script, frame, and
+network exceptions are Plaid's documented Link Web endpoints; development alone
+adds localhost WebSockets and eval for Next.js hot reload.
+
 ### Database
 
 `packages/db` remains the only Prisma schema and database boundary. Existing
@@ -85,12 +95,49 @@ routes; only an internal item ID reaches browser code. The API supports a `web`
 link-token platform for future Plaid Link Web work, but the desktop intentionally
 does not claim that link initiation is complete.
 
+### Native Windows shell and production topology
+
+The Electron workspace is intentionally a shell rather than another web server.
+It does not embed API credentials, copy refresh tokens into renderer storage, or
+ship a second persistence layer. Renderer Node.js integration is disabled;
+context isolation, Chromium sandboxing, web security, and ASAR packaging are
+enabled. The shell pins navigation to the configured Worthlane origin, rejects
+new windows and webviews, denies device-permission requests, disables packaged
+developer shortcuts, and permits only Worthlane privacy, terms, and support URLs
+to open in the system browser. Packaged builds also flip Electron fuses for cookie
+encryption, ASAR integrity, and Node/inspection restrictions.
+
+Production keeps the existing trusted server boundary:
+
+```text
+Worthlane.exe -> HTTPS apps/desktop UI + BFF -> apps/api -> PostgreSQL
+```
+
+The hosted `apps/desktop` deployment owns the secure HttpOnly cookies and sends
+server-to-server requests using `WORTHLANE_API_URL`. The browser/Electron renderer
+continues to call only same-origin routes. A packaged client therefore cannot be
+configured to load `apps/api` directly.
+
+Development uses `corepack pnpm desktop:native:dev`. An unpacked QA build can be
+created with `corepack pnpm desktop:native:pack:local`; it loads
+`http://127.0.0.1:3003` and writes
+`apps/desktop-native/release/win-unpacked/Worthlane.exe`, so it is not a
+distributable release. `corepack pnpm desktop:native:dist` requires
+`WORTHLANE_DESKTOP_URL` to be the deployed HTTPS desktop origin and writes
+`apps/desktop-native/release/Worthlane-Setup-<version>-x64.exe`.
+
+Windows release signing is an operational prerequisite, not a repository
+secret. Configure a trusted code-signing certificate in the protected release
+environment before distribution; an unsigned build can produce SmartScreen
+warnings even when its application code is unchanged.
+
 ## Project boundaries
 
 ```text
 apps/
   api/          authentication, authorization, Plaid, and persistence orchestration
-  desktop/      desktop-specific Next.js navigation and planning UI
+  desktop/      desktop-specific Next.js planning UI and same-origin BFF
+  desktop-native/ hardened Electron shell for the hosted desktop origin
   mobile/       Expo navigation, native integrations, and quick-interaction UI
   web/          public marketing, support, privacy, and terms
 
@@ -176,6 +223,10 @@ and revokes both smoke sessions.
   data.
 - Desktop link/relink initiation remains a documented mobile boundary until
   Plaid Link Web and public-token exchange BFF routes are implemented.
+- A production native installer requires a deployed HTTPS `apps/desktop` BFF
+  origin; the shell intentionally rejects HTTP and localhost in release builds.
+- The installer must be code-signed in a protected release environment before
+  distribution. Signing keys and certificates must not be committed.
 - A production release should still add PostgreSQL-backed CI integration tests
   and physical-device mobile QA; local unit/build/export checks do not replace
   those environments.
@@ -192,6 +243,10 @@ corepack pnpm --filter @worthlane/contracts test
 corepack pnpm --filter @worthlane/api test
 corepack pnpm --filter @worthlane/api build
 corepack pnpm --filter @worthlane/desktop build
+corepack pnpm --filter @worthlane/desktop-native typecheck
+corepack pnpm --filter @worthlane/desktop-native test
+# Local-only unpacked shell; keep apps/desktop available on 127.0.0.1:3003.
+corepack pnpm desktop:native:pack:local
 corepack pnpm --filter @worthlane/web build
 corepack pnpm --filter @worthlane/mobile exec expo export --platform ios --output-dir .tmp/mobile-export
 corepack pnpm smoke:household-demo
@@ -200,3 +255,5 @@ corepack pnpm smoke:household-demo
 Migration deployment, seed, and smoke require the configured PostgreSQL database
 and a running API. Physical iOS interaction remains a manual check on macOS or a
 device; the Windows verification path uses Expo's production iOS bundle export.
+The production native installer additionally requires a hosted HTTPS desktop
+origin, `WORTHLANE_DESKTOP_URL`, and release code signing.

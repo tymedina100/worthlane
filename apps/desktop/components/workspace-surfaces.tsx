@@ -516,8 +516,8 @@ function PlaidConnectionControls({
           </div>
         </article>
       )) : <p>No Plaid connections are attached to this login. New bank linking remains available in the mobile app.</p>}
-      {message ? <span className="form-feedback--success">{message}</span> : null}
-      {error ? <span className="form-feedback--error">{error}</span> : null}
+      {message ? <span className="form-feedback--success" role="status">{message}</span> : null}
+      {error ? <span className="form-feedback--error" role="alert">{error}</span> : null}
     </div>
   );
 }
@@ -1058,6 +1058,15 @@ function ReportsSurface({
             </select>
           </label>
           <button className="toolbar-clear" type="button" onClick={() => { setTransactionQuery(""); setCategoryId("all"); setAccountId("all"); setDirection("all"); }}>Clear</button>
+        </div>
+
+        <div role="status" aria-live="polite">
+          <span className="result-count">
+            Expense mix: top {Math.min(categorySpend.length, 8)} of {categorySpend.length} categories
+          </span>{" "}
+          <span className="result-count">
+            Activity: {Math.min(filteredTransactions.length, 30)} of {filteredTransactions.length} transactions
+          </span>
         </div>
 
         <div className="transaction-report-grid">

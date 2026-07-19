@@ -18,9 +18,9 @@ function parseAmount(value: string, { allowZero = false, signed = false }: { all
 
 function Feedback({ error, success }: { error: string | null; success: string | null }) {
   return (
-    <div className="management-feedback" aria-live="polite">
-      {error ? <span className="form-feedback--error">{error}</span> : null}
-      {success ? <span className="form-feedback--success">{success}</span> : null}
+    <div className="management-feedback">
+      {error ? <span className="form-feedback--error" role="alert">{error}</span> : null}
+      {success ? <span className="form-feedback--success" role="status">{success}</span> : null}
     </div>
   );
 }
