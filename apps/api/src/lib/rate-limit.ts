@@ -1,3 +1,5 @@
+import { timingSafeEqual } from "crypto";
+import { isIP } from "net";
 import { NextRequest } from "next/server";
 import { err } from "./response";
 
@@ -16,10 +18,35 @@ setInterval(() => {
   }
 }, 60_000);
 
+function secretsMatch(expected: string, received: string): boolean {
+  const expectedBytes = Buffer.from(expected, "utf8");
+  const receivedBytes = Buffer.from(received, "utf8");
+  return (
+    expectedBytes.length === receivedBytes.length &&
+    timingSafeEqual(expectedBytes, receivedBytes)
+  );
+}
+
+function trustedDesktopClientIp(req: NextRequest): string | null {
+  const expectedSecret = process.env.WORTHLANE_DESKTOP_PROXY_SECRET;
+  const receivedSecret = req.headers.get("x-worthlane-proxy-secret");
+  if (
+    !expectedSecret ||
+    !receivedSecret ||
+    !secretsMatch(expectedSecret, receivedSecret)
+  ) {
+    return null;
+  }
+
+  const clientIp = req.headers.get("x-worthlane-client-ip")?.trim();
+  return clientIp && isIP(clientIp) ? clientIp : null;
+}
+
 function getIp(req: NextRequest): string {
   return (
+    trustedDesktopClientIp(req) ??
+    req.headers.get("x-real-ip")?.trim() ??
     req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
-    req.headers.get("x-real-ip") ??
     "unknown"
   );
 }
