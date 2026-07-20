@@ -1,0 +1,48 @@
+name: Desktop release
+
+on:
+  workflow_dispatch:
+    inputs:
+      desktop_url:
+        description: Deployed HTTPS apps/desktop origin, such as https://desktop.worthlane.app
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  installer:
+    runs-on: windows-latest
+    env:
+      WORTHLANE_DESKTOP_URL: ${{ inputs.desktop_url }}
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies with the Windows Electron runtime
+        run: pnpm install --frozen-lockfile
+
+      - name: Test native desktop security and packaging contracts
+        run: pnpm --filter @worthlane/desktop-native test
+
+      - name: Build, harden, and verify the Windows installer
+        run: pnpm desktop:native:dist
+
+      - name: Upload Worthlane installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: worthlane-windows-installer
+          path: apps/desktop-native/release/Worthlane-Setup-*.exe
+          if-no-files-found: error
+          retention-days: 14

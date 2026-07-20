@@ -1,0 +1,20 @@
+{
+  "name": "@worthlane/desktop-native",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Secure native Windows shell for the Worthlane desktop workspace",
+  "main": "src/main.cjs",
+  "scripts": {
+    "native:dev": "node scripts/dev.mjs",
+    "typecheck": "node --check src/main.cjs && node --check src/navigation.cjs && node --check src/security.cjs && node --check src/offline.js && node --check scripts/write-config.cjs && node --check scripts/verify-origin.mjs && node --check scripts/verify-package.cjs && node --check scripts/after-pack.cjs && node --check scripts/dev.mjs",
+    "test": "node --test tests/navigation.test.cjs tests/packaging.test.cjs tests/security.test.cjs",
+    "verify:packaged": "node scripts/verify-package.cjs",
+    "pack:win:local": "node scripts/write-config.cjs --allow-local && electron-builder --win --dir --x64 && node scripts/verify-package.cjs",
+    "dist:win": "node scripts/verify-origin.mjs && node scripts/write-config.cjs && electron-builder --win nsis --x64 && node scripts/verify-package.cjs --production"
+  },
+  "devDependencies": {
+    "@electron/fuses": "2.1.3",
+    "electron": "43.1.1",
+    "electron-builder": "26.15.3"
+  }
+}

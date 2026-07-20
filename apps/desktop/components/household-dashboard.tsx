@@ -89,7 +89,7 @@ export function ProgressBar({
       aria-label={label}
       aria-valuemin={0}
       aria-valuemax={100}
-      aria-valuenow={Math.round(value)}
+      aria-valuenow={Math.round(clamped)}
     >
       <span style={{ width: `${clamped}%` }} />
     </div>
@@ -114,7 +114,13 @@ function LoadingShell({ onRetry, error }: { onRetry: () => void; error?: string 
             </button>
           </div>
         ) : (
-          <div className="dashboard-skeleton" aria-label="Loading household dashboard">
+          <div
+            className="dashboard-skeleton"
+            role="status"
+            aria-label="Loading household dashboard"
+            aria-live="polite"
+            aria-busy="true"
+          >
             <div className="skeleton skeleton--eyebrow" />
             <div className="skeleton skeleton--title" />
             <div className="skeleton-grid">
@@ -289,10 +295,12 @@ export function GoalCard({
   summary,
   goal,
   onContribute,
+  anchorId,
 }: {
   summary: HouseholdSummary;
   goal: HouseholdSummary["sharedGoals"][number];
   onContribute: (goalId: string, amountMinor: number, note: string | null) => Promise<void>;
+  anchorId?: string;
 }) {
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
@@ -334,7 +342,7 @@ export function GoalCard({
   }
 
   return (
-    <section className="goal-panel" id={`goal-${goal.id}`} aria-labelledby={titleId}>
+    <section className="goal-panel" id={anchorId ?? `goal-${goal.id}`} aria-labelledby={titleId}>
       <div className="goal-panel__header">
         <span className="goal-panel__icon"><Icon name="spark" /></span>
         <div>
@@ -414,9 +422,9 @@ export function GoalCard({
             {isSubmitting ? "Adding…" : "Add contribution"}
           </button>
         </div>
-        <div id={feedbackId} className="form-feedback" aria-live="polite">
-          {formError ? <span className="form-feedback--error">{formError}</span> : null}
-          {successMessage ? <span className="form-feedback--success">{successMessage}</span> : null}
+        <div id={feedbackId} className="form-feedback">
+          {formError ? <span className="form-feedback--error" role="alert">{formError}</span> : null}
+          {successMessage ? <span className="form-feedback--success" role="status">{successMessage}</span> : null}
         </div>
       </form>
 
@@ -686,7 +694,7 @@ export function HouseholdDashboard({ mode, initialSummary }: HouseholdDashboardP
         ) : null}
 
         {loadError ? (
-          <div className="status-banner status-banner--error" role="status">
+          <div className="status-banner status-banner--error" role="alert">
             <span>Live updates are paused. Your last household snapshot is still shown.</span>
             <button type="button" onClick={() => void loadSummary()}>Reconnect</button>
           </div>
@@ -808,7 +816,12 @@ export function HouseholdDashboard({ mode, initialSummary }: HouseholdDashboardP
             {dashboardSections.plan ? <ResponsibilitiesSection summary={summary} /> : null}
             {dashboardSections.goals ? (
               featuredGoal ? (
-                <GoalCard summary={summary} goal={featuredGoal} onContribute={contribute} />
+                <GoalCard
+                  summary={summary}
+                  goal={featuredGoal}
+                  onContribute={contribute}
+                  anchorId={mode === "demo" ? "goals" : undefined}
+                />
               ) : (
                 <section className="goal-panel goal-panel--empty" id="goals">
                   <Icon name="goal" />

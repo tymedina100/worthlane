@@ -349,7 +349,6 @@ svg { display: block; }
   .sidebar__household, .sidebar__privacy, .sidebar__profile, .sidebar__nav > .sidebar__eyebrow { display: none; }
   .sidebar__nav { grid-template-columns: repeat(4, max-content); gap: 4px; margin-top: 14px; overflow-x: auto; }
   .sidebar__nav-item { min-height: 38px; }
-  .sidebar__nav-item.is-muted { display: none; }
   .dashboard-main { width: 100%; margin: 0; padding: 26px 20px; }
   .metric-grid { grid-template-columns: 1fr 1fr; }
   .metric-card--primary { grid-column: 1 / -1; }
@@ -707,4 +706,173 @@ svg { display: block; }
   .privacy-account-grid > article { grid-template-columns: 36px 1fr; }
   .privacy-account-actions { grid-column: 2; }
   .privacy-account-grid > article > strong { grid-column: 2; }
+}
+
+/* Human-centered desktop legibility and interaction floor */
+:root {
+  --muted: #52635e;
+  --line: #cfd8d1;
+  --line-soft: #dfe6e0;
+}
+
+body { font-size: 14px; line-height: 1.5; }
+body small { font-size: 12px !important; line-height: 1.45; }
+.section-kicker { font-size: 12px; line-height: 1.35; }
+.sidebar__eyebrow { color: #9bb2ab; font-size: 10px; }
+.sidebar__nav-item { min-height: 48px; color: #bfd0cb; font-size: 14px; }
+.sidebar__nav-item kbd { min-width: 42px; padding: 3px 6px; color: #a9beb8; font-size: 10px; text-align: center; }
+.sidebar__privacy strong, .sidebar__profile strong { font-size: 13px; }
+.sidebar__privacy span, .sidebar__profile div span { color: #a9beb8; font-size: 12px; }
+.sidebar__signout { width: 40px; height: 40px; color: #b9cbc5; }
+
+.sync-status,
+.demo-banner,
+.status-banner,
+.result-count,
+.workspace-warning,
+.privacy-key,
+.metric-card__top,
+.metric-card__foot,
+.metric-card__scope,
+.panel__header p:last-child,
+.goal-panel__date,
+.goal-panel__numbers > span,
+.goal-panel__numbers p,
+.chart-legend,
+.dashboard-footer { font-size: 12px; line-height: 1.45; }
+
+.metric-card > p,
+.scope-boundary p,
+.workspace-stat p,
+.summary-only-card__copy p,
+.management-callout p,
+.goal-plan-note p,
+.report-donut-card > div:last-child > p:last-child,
+.category-spend-chart > p { font-size: 13px; line-height: 1.5; }
+
+.account-table__header,
+.transaction-table__header { color: #53635f; font-size: 11px; }
+.account-row,
+.transaction-table__row { font-size: 13px; }
+.account-row strong,
+.account-row > strong:last-child,
+.transaction-table__row > span:first-child strong,
+.transaction-table__row > strong:last-child,
+.connected-account-row strong,
+.privacy-account-grid > article > div strong,
+.privacy-account-grid > article > strong { font-size: 14px; }
+.account-row small,
+.transaction-table__row small,
+.connected-account-row small,
+.privacy-account-grid > article > div small,
+.privacy-summary-row > div p,
+.account-detail-panel__header p:last-child,
+.account-detail-transactions small { font-size: 12px; line-height: 1.45; }
+.access-badge,
+.source-chip,
+.connection-status { font-size: 11px; }
+
+.responsibility-row h3,
+.personal-goal-grid h3,
+.category-spend-chart h3 { font-size: 14px; }
+.responsibility-row__heading span,
+.responsibility-row__progress-copy,
+.responsibility-row__allocations,
+.responsibility-row__amount small,
+.goal-plan-members article strong,
+.goal-plan-members article b,
+.goal-plan-members article small,
+.personal-goal-grid p,
+.personal-goal-grid small,
+.horizontal-chart > div > span:first-child strong,
+.horizontal-chart > div > span:last-child b,
+.horizontal-chart > div > span small,
+.category-spend-chart > div > span,
+.category-spend-chart > div > strong { font-size: 12px; line-height: 1.45; }
+
+.workspace-toolbar label,
+.inline-filters label,
+.contribution-form label,
+.management-picker,
+.management-form > label,
+.partner-link-form > label,
+.account-detail-filters label,
+.percentage-fields legend,
+.percentage-fields label { color: #4d5e59; font-size: 12px; line-height: 1.4; }
+.workspace-toolbar input,
+.workspace-toolbar select,
+.inline-filters input,
+.inline-filters select,
+.contribution-form input,
+.management-picker select,
+.management-form input,
+.management-form select,
+.partner-link-form input,
+.account-detail-filters input,
+.account-detail-filters select { min-height: 42px; font-size: 14px; }
+.contribution-form .button,
+.management-form__actions .button,
+.partner-invitations .button,
+.partner-link-form .button,
+.plaid-connection-controls .button { min-height: 40px; padding: 0 14px; font-size: 13px; }
+.management-feedback,
+.form-feedback,
+.plaid-connection-controls small,
+.plaid-connection-controls p { min-height: 18px; font-size: 12px; line-height: 1.45; }
+
+.button--secondary {
+  border: 1px solid #b9c8c0;
+  background: #fff;
+  color: var(--green-dark);
+  box-shadow: 0 4px 12px rgba(28, 49, 42, .06);
+}
+.button--secondary:hover:not(:disabled) { border-color: #7fa995; background: var(--mint-soft); }
+.visibility-control select { min-height: 38px; padding: 0 10px; font-size: 12px; }
+.privacy-account-actions > button { min-height: 36px; border-radius: 8px; padding: 0 10px; font-size: 12px; text-decoration: none; }
+.privacy-account-actions > button:hover { background: var(--mint-soft); }
+.account-detail-panel__header > button { width: 40px; height: 40px; }
+.account-detail-transactions strong,
+.account-detail-transactions b { font-size: 13px; }
+.dashboard-customizer__trigger { min-height: 42px; font-size: 13px; }
+.dashboard-customizer__menu { width: 280px; }
+.dashboard-customizer__menu > div strong,
+.dashboard-customizer__menu label { font-size: 13px; }
+.dashboard-customizer__menu > div button { min-height: 36px; padding: 0 8px; font-size: 12px; }
+.dashboard-customizer__menu input { width: 18px; height: 18px; }
+
+@media (max-width: 900px) {
+  .sidebar {
+    display: grid;
+    grid-template-areas:
+      "brand profile"
+      "nav nav";
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px 16px;
+  }
+  .sidebar__brand { grid-area: brand; min-width: 0; }
+  .sidebar__nav {
+    grid-area: nav;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    width: 100%;
+    justify-self: stretch;
+    margin-top: 0;
+    overflow-x: visible;
+  }
+  .sidebar__nav-item { min-width: 0; min-height: 42px; justify-content: center; padding-inline: 8px; }
+  .sidebar__nav-item kbd { display: none; }
+  .sidebar__profile { display: grid; grid-area: profile; grid-template-columns: 40px; padding: 0; border-top: 0; }
+  .sidebar__profile > .sidebar__avatar, .sidebar__profile > div { display: none; }
+  .login-story { display: none; }
+  .login-form-panel { min-height: 100vh; padding: 40px 28px; }
+}
+
+@media (forced-colors: active) {
+  .button,
+  .icon-button,
+  .panel,
+  .metric-card,
+  .account-table,
+  .transaction-table { border: 1px solid CanvasText; }
+  .progress > span { background: Highlight; }
 }

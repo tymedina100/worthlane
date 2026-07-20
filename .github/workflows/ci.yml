@@ -28,6 +28,8 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
 
       - name: Generate Prisma client
         run: pnpm --filter @worthlane/db db:generate
@@ -44,6 +46,9 @@ jobs:
       - name: Test API
         run: pnpm --filter @worthlane/api test
 
+      - name: Test native desktop security and packaging manifest
+        run: pnpm --filter @worthlane/desktop-native test
+
       - name: Bundle mobile client
         run: pnpm --filter @worthlane/mobile exec expo export --platform ios --output-dir "$RUNNER_TEMP/worthlane-mobile-export"
 
@@ -55,3 +60,30 @@ jobs:
 
       - name: Build public web client
         run: pnpm --filter @worthlane/web build
+
+  native-windows:
+    runs-on: windows-latest
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies with the Windows Electron runtime
+        run: pnpm install --frozen-lockfile
+
+      - name: Check native desktop source
+        run: pnpm --filter @worthlane/desktop-native typecheck
+
+      - name: Test native desktop security and recovery
+        run: pnpm --filter @worthlane/desktop-native test
+
+      - name: Package and verify the local Windows application
+        run: pnpm desktop:native:pack:local
