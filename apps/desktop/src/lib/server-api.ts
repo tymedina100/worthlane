@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createHash } from "crypto";
+import { isIP } from "net";
 import type { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import {
@@ -42,6 +43,32 @@ function apiUrl(path: string): string {
     ""
   );
   return `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
+export function desktopProxyHeaders(
+  request: Request
+): HeadersInit | undefined {
+  if (process.env.VERCEL !== "1") return undefined;
+
+  const secret = process.env.WORTHLANE_DESKTOP_PROXY_SECRET;
+  if (!secret) {
+    throw new Error("WORTHLANE_DESKTOP_PROXY_SECRET is required on Vercel");
+  }
+
+  // Vercel overwrites these inbound headers, so browser callers cannot spoof
+  // the address that is relayed to Worthlane's API.
+  const forwardedFor =
+    request.headers.get("x-vercel-forwarded-for") ??
+    request.headers.get("x-forwarded-for");
+  const clientIp = forwardedFor?.split(",")[0]?.trim();
+  if (!clientIp || !isIP(clientIp)) {
+    throw new Error("A valid Vercel client IP header is required");
+  }
+
+  return {
+    "X-Worthlane-Client-IP": clientIp,
+    "X-Worthlane-Proxy-Secret": secret,
+  };
 }
 
 function sessionTokens(

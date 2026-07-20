@@ -11,7 +11,7 @@ import {
   upstreamUnavailableResponse,
 } from "@/src/lib/server-api";
 
-type LoginPayload = {
+type RegisterPayload = {
   data?: {
     user?: {
       id?: unknown;
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await publicServerRequest("/auth/login", {
+    const response = await publicServerRequest("/auth/register", {
       method: "POST",
       body: JSON.stringify({ email, password }),
       headers: desktopProxyHeaders(request),
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     }
 
     const tokens = getSessionTokens(payload);
-    const user = (payload as LoginPayload | null)?.data?.user;
+    const user = (payload as RegisterPayload | null)?.data?.user;
     if (
       !tokens ||
       !user ||
@@ -62,7 +62,10 @@ export async function POST(request: Request) {
     setSessionCookies(await cookies(), tokens.accessToken, tokens.refreshToken);
 
     // Tokens are intentionally removed from the browser-visible response.
-    return jsonResponse({ data: { user: { id: user.id, email: user.email } } });
+    return jsonResponse(
+      { data: { user: { id: user.id, email: user.email } } },
+      response.status
+    );
   } catch {
     return upstreamUnavailableResponse();
   }

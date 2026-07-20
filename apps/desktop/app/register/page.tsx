@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { Icon, WorthlaneMark } from "../../components/icons";
 
-function loginError(payload: unknown, fallback: string) {
+function registerError(payload: unknown, fallback: string) {
   if (!payload || typeof payload !== "object") return fallback;
   const error = (payload as { error?: unknown }).error;
   if (typeof error === "string") return error;
@@ -16,32 +16,53 @@ function loginError(payload: unknown, fallback: string) {
   return fallback;
 }
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmation, setConfirmation] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+
+    if (password.length < 8) {
+      setError("Use at least 8 characters for your password.");
+      return;
+    }
+    if (password !== confirmation) {
+      setError("Those passwords do not match.");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch("/api/auth/register", {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password }),
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          password,
+        }),
       });
       const payload = await response.json().catch(() => null);
       if (!response.ok) {
-        throw new Error(loginError(payload, "That email and password didn’t match."));
+        throw new Error(
+          registerError(payload, "We could not create your account right now.")
+        );
       }
+
       router.replace("/invitations");
       router.refresh();
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "We couldn’t sign you in right now.");
+      setError(
+        caught instanceof Error
+          ? caught.message
+          : "We could not create your account right now."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -56,10 +77,10 @@ export default function LoginPage() {
         </Link>
 
         <div className="login-story__copy">
-          <p className="section-kicker">Money, made mutual</p>
-          <h1>Plan a life together without giving up what’s yours.</h1>
+          <p className="section-kicker">Start with your own login</p>
+          <h1>Build a shared plan without giving up your privacy.</h1>
           <p>
-            Share the plan, keep personal detail personal, and see the goals you’re moving toward side by side.
+            Create your personal Worthlane account first. You can start a household or join your partner after you sign in.
           </p>
         </div>
 
@@ -69,33 +90,33 @@ export default function LoginPage() {
             <i><Icon name="shield" /> Privacy on</i>
           </div>
           <div className="login-preview__metric">
-            <span>Visible net worth</span>
-            <strong>$84,998.38</strong>
-            <small>Tyler + shared household view</small>
+            <span>Your account</span>
+            <strong>Private by default</strong>
+            <small>You choose what becomes visible to your household</small>
           </div>
           <div className="login-preview__goal">
             <span><Icon name="spark" /></span>
             <div>
-              <strong>Universal Orlando</strong>
-              <small>$3,215 of $7,000</small>
+              <strong>Shared goals, separate access</strong>
+              <small>Invite a partner when you are ready</small>
               <i><b /></i>
             </div>
-            <em>46%</em>
+            <em>Yours</em>
           </div>
           <div className="login-preview__people">
-            <span>TY</span><span>RA</span><small>Planning together</small>
+            <span>ME</span><small>One secure login to begin</small>
           </div>
         </div>
 
-        <p className="login-story__foot"><Icon name="lock" /> Separate logins. One synchronized household.</p>
+        <p className="login-story__foot"><Icon name="lock" /> Secure sessions. No passwords shared between partners.</p>
       </section>
 
       <section className="login-form-panel">
         <div className="login-form-wrap">
           <div className="login-form-heading">
-            <p className="section-kicker">Welcome back</p>
-            <h2>Sign in to your household</h2>
-            <p>Use your own Worthlane login. Your partner signs in separately.</p>
+            <p className="section-kicker">New account</p>
+            <h2>Create your Worthlane account</h2>
+            <p>Use your own email and password. Your partner creates a separate login.</p>
           </div>
 
           <form className="login-form" onSubmit={submit}>
@@ -119,38 +140,42 @@ export default function LoginPage() {
                 name="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                placeholder="Enter your password"
-                autoComplete="current-password"
+                placeholder="At least 8 characters"
+                autoComplete="new-password"
+                minLength={8}
+                required
+              />
+            </label>
+            <label>
+              <span>Confirm password</span>
+              <input
+                type="password"
+                name="password-confirmation"
+                value={confirmation}
+                onChange={(event) => setConfirmation(event.target.value)}
+                placeholder="Enter it again"
+                autoComplete="new-password"
+                minLength={8}
                 required
               />
             </label>
             <div className="login-form__meta">
               <span>Private, encrypted session</span>
-              <span>Secure household access</span>
+              <span>Minimum 8 characters</span>
             </div>
             <div className="login-error" role="alert" aria-live="polite">
               {error ? <><Icon name="lock" />{error}</> : null}
             </div>
             <button className="button button--primary button--wide" type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Signing in…" : "Sign in"}
+              {isSubmitting ? "Creating account..." : "Create account"}
               {!isSubmitting ? <Icon name="arrow" /> : null}
             </button>
-            <Link className="button button--secondary button--wide" href="/register">
-              Create account
-              <Icon name="arrow" />
+            <Link className="button button--secondary button--wide" href="/login">
+              Already have an account? Sign in
             </Link>
           </form>
 
-          <div className="demo-callout">
-            <span><Icon name="spark" /></span>
-            <div>
-              <strong>Want to look around first?</strong>
-              <p>Open a realistic Tyler and Rachel household—no login needed.</p>
-            </div>
-            <Link href="/demo">View demo <Icon name="arrow" /></Link>
-          </div>
-
-          <p className="login-privacy"><Icon name="shield" /> Worthlane never exposes account credentials or private account detail to your partner.</p>
+          <p className="login-privacy"><Icon name="shield" /> Your account starts private. Household sharing is always explicit.</p>
         </div>
       </section>
     </main>
