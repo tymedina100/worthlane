@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
-import { mkdirSync, openSync, closeSync } from 'node:fs';
+import { mkdirSync, openSync, closeSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 
@@ -81,6 +81,12 @@ try {
   const restored = await browser('/api/personal/transactions');
   assert.equal(restored.data.transactions.find(t => t.id === transaction.data.id).spendingTreatment, 'REFUND');
   console.log('PASS: real HTTP registration, HttpOnly session, BFF validation/origin/auth checks, refund save, logout denial, login persistence.');
+  if (process.argv.includes('--interactive')) {
+    const stopFile = resolve('.tmp', `stop-http-${process.pid}`);
+    console.log(`Interactive test app ready at ${desktop}/register. Create ${stopFile} to stop. Auto-stop after 15 minutes.`);
+    const deadline = Date.now() + 15 * 60_000;
+    while (!existsSync(stopFile) && Date.now() < deadline) await new Promise(r => setTimeout(r, 1000));
+  }
 } finally {
   for (const child of children.reverse()) {
     if (child.exitCode !== null) continue;

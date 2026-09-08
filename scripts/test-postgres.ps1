@@ -1,7 +1,8 @@
 param(
   [string]$PostgresBin = 'C:\Program Files\PostgreSQL\17\bin',
   [int]$Port = 55439,
-  [switch]$Http
+  [switch]$Http,
+  [switch]$Interactive
 )
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path $PSScriptRoot -Parent
@@ -35,8 +36,9 @@ try {
   Check-Exit 'Apply migrations to test database'
   corepack pnpm --filter @worthlane/api exec vitest run --config vitest.integration.config.ts
   Check-Exit 'PostgreSQL integration tests'
-  if ($Http) {
-    node scripts/test-http.mjs
+  if ($Http -or $Interactive) {
+    if ($Interactive) { node scripts/test-http.mjs --interactive }
+    else { node scripts/test-http.mjs }
     Check-Exit 'HTTP BFF integration tests'
   }
 } finally {

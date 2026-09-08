@@ -207,3 +207,31 @@ production changes or spending. Full beta acceptance remains unproven.
 - Next priority: actual HTTP/BFF and interactive classification/save/logout
   verification. Historical snapshot/split semantics, onboarding polish, Sandbox
   banking, due-date/debt flows and full regression builds remain unfinished.
+
+## 2026-09-08 — rendered solo onboarding and fresh category bootstrap
+
+- Browser registration with synthetic credentials reached household setup and a
+  real authenticated dashboard. Solo setup required no partner. The monthly-plan
+  form saved a 600 Food & Drink responsibility, assigned 100% to the solo member,
+  and the dashboard retained 600 remaining after a full browser reload.
+- This check exposed two defects: a fresh migration-only database had no standard
+  categories, and dashboard month labels were hardcoded to July. Added a reference
+  data migration for all 16 existing standard categories, preserving prior IDs.
+  Summary now carries an optional asOf timestamp; dashboard labels use its month
+  in the household timezone. Browser verified September / September 2026.
+- Added -Interactive to the isolated runner, retaining the local synthetic API
+  and desktop for at most 15 minutes with an explicit stop-file mechanism. The
+  browser tab was closed; its server ports were confirmed no longer listening.
+- Final ./scripts/test-postgres.ps1 -Http passed all 14 migrations, three real
+  PostgreSQL checks (including repeat category bootstrap with identical IDs and
+  no demo users), and HTTP/BFF session/refund/logout persistence. Exit 0 confirmed
+  database/server shutdown. Workspace typechecks and 176 unit/contract tests
+  (32 core, 8 contracts, 136 API) passed; git diff --check passed.
+- Browser evidence covers localhost registration, solo setup, category save and
+  reload. It does not establish HTTPS deployment, two-user rendered acceptance,
+  mobile/native behavior, banking or debt readiness. Screenshot inspection covered
+  the desktop dashboard viewport only.
+- Next: invitations currently silently ignore unregistered partners. Implement a
+  consent-safe registration/join path, then verify two-user UI ownership/splits and
+  privacy. Historical split policy, Sandbox banking, due-date/debt flows and full
+  regression builds remain required. No production changes or spending.

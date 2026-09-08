@@ -476,6 +476,7 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
   });
 
   return householdSummarySchema.parse({
+    asOf: now.toISOString(),
     household: {
       id: household.id,
       name: household.name,

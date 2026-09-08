@@ -112,6 +112,8 @@ export const householdGoalSummarySchema = z.object({
 });
 
 export const householdSummarySchema = z.object({
+  // Optional for compatibility with older clients and saved demo snapshots.
+  asOf: isoDateTimeSchema.optional(),
   household: z.object({
     id: z.string(),
     name: z.string(),

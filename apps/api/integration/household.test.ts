@@ -1,5 +1,6 @@
 import { afterAll, describe, expect, it, vi } from "vitest";
 import { randomUUID } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { weekRangeInTimeZone } from "@worthlane/core";
 import { NextRequest } from "next/server";
 import { prisma } from "@worthlane/db";
@@ -47,6 +48,15 @@ async function newUser(name: string) {
 afterAll(async () => { await prisma.$disconnect(); });
 
 describe("persistent household consent and budget journey", () => {
+  it("bootstraps standard categories without demo users and preserves existing IDs", async () => {
+    const before = await prisma.category.findMany({ where: { isSystem: true }, orderBy: { name: "asc" } });
+    expect(before).toHaveLength(16);
+    expect(before.find((category) => category.name === "Food & Drink")).toBeDefined();
+    expect(await prisma.user.count()).toBe(0);
+    // Exercise the migration's existing-data branch as well as a fresh deploy.
+    await prisma.$executeRawUnsafe(readFileSync(new URL("../../../packages/db/prisma/migrations/20260908130000_bootstrap_categories/migration.sql", import.meta.url), "utf8"));
+    expect(await prisma.category.findMany({ where: { isSystem: true }, orderBy: { name: "asc" } })).toEqual(before);
+  });
   it("keeps reports and dashboard in the household month while UTC is ahead", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-09-01T02:00:00Z"));
@@ -80,6 +90,7 @@ describe("persistent household consent and budget journey", () => {
       name: "Synthetic household", displayName: "Alex", timezone: "America/Phoenix", currency: "USD",
     }, 201);
     const solo = await readSummary(owner.token);
+    expect(solo.asOf).toBeDefined();
     expect(solo.members).toHaveLength(1);
     expect(solo.household.id).toBe(household.householdId);
     await call(summary, partner.token, undefined, 404);
