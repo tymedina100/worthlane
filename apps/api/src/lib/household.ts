@@ -40,6 +40,7 @@ import {
 } from "@worthlane/core";
 import { Prisma, prisma } from "@worthlane/db";
 import { randomUUID } from "node:crypto";
+import { spendingWhere } from "./spending-treatment";
 
 export class HouseholdNotFoundError extends Error {}
 export class HouseholdConflictError extends Error {}
@@ -321,10 +322,7 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
           where: {
             accountId: { in: participatingAccountIds },
             categoryId: { in: categoryIds },
-            OR: [
-              { spendingTreatment: "AUTO", amount: { gt: 0 } },
-              { spendingTreatment: "REFUND", amount: { lt: 0 } },
-            ],
+            ...spendingWhere,
             date: { gte: month.start, lt: month.end },
           },
           _sum: { amount: true },

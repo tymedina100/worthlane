@@ -136,3 +136,22 @@ production changes or spending. Full beta acceptance remains unproven.
   dialog usability or save/reload behavior. Other personal dashboard/budget totals
   still need reconciliation. Next verify edits through HTTP/UI and unify those
   remaining aggregate queries; no full-beta completion claim.
+
+## 2026-09-08 — personal and household refund totals agree
+
+- Centralized spending/income query predicates. Personal budgets, dashboard,
+  spending report, household summary and legacy nudge/streak/AI context queries
+  now include confirmed refunds and omit excluded transfers. Income excludes
+  confirmed refunds and excluded credits. Optional providers were not activated.
+- Shared budget progress accepts net negative spending. Cashflow sums integer
+  cents and treats refund credits as negative spending, not income.
+- PostgreSQL journey now calls actual personal budget/dashboard/spending/cashflow
+  handlers against the refund fixture: groceries spent -20 / remaining 620;
+  overall spending 81.01; income 900; cashflow net 818.99. Matches household plan.
+- `./scripts/test-postgres.ps1` passed with the final cent-summing implementation.
+  Core 30 and API 136 unit tests passed; recursive workspace typechecks passed.
+- Limits: this verifies treatment accounting, not identical period semantics
+  (personal routes still use server-calendar dates and some include future rows).
+  Weekly budget periods, household timezone alignment, stale-data indicators,
+  imported automatic classification and interactive edits remain open. Next
+  verify the HTTP/BFF/UI save path and repair date-period inconsistencies.

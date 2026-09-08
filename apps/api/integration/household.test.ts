@@ -13,6 +13,10 @@ import { GET as summary } from "../src/app/api/households/current/summary/route"
 import { POST as createResponsibility } from "../src/app/api/households/current/responsibilities/route";
 import { POST as createAccount } from "../src/app/api/accounts/route";
 import { POST as createTransaction } from "../src/app/api/transactions/route";
+import { GET as personalBudgets } from "../src/app/api/budgets/route";
+import { GET as dashboard } from "../src/app/api/dashboard/route";
+import { GET as spendingReport } from "../src/app/api/reports/spending/route";
+import { GET as cashflow } from "../src/app/api/reports/cashflow/route";
 import { getHouseholdAccountDetail, setHouseholdAccountVisibility } from "../src/lib/household";
 
 type Handler = (req: NextRequest) => Promise<Response>;
@@ -161,6 +165,19 @@ describe("persistent household consent and budget journey", () => {
       .find(row => row.name === "Groceries")!.allocations;
     expect(netCredit.map(row => row.appliedSpendMinor)).toEqual([-1000, -1000]);
     expect(netCredit.reduce((sum, row) => sum + row.remainingMinor, 0)).toBe(62_000);
+    await prisma.budget.create({ data: { userId: owner.id, categoryId: groceries.id, amount: "600" } });
+    const personalBudget = (await call(personalBudgets, owner.token))[0];
+    expect(personalBudget.spent).toBe(-20);
+    expect(personalBudget.remaining).toBe(620);
+    const snapshot = await call(dashboard, owner.token);
+    expect(snapshot.monthlySpending).toBe(81.01);
+    expect(snapshot.monthlyIncome).toBe(900);
+    expect(snapshot.budgets[0].spent).toBe(-20);
+    const report = await call(spendingReport, owner.token);
+    expect(report.totalSpending).toBe(81.01);
+    expect(report.income).toBe(900);
+    const cash = await call(cashflow, owner.token);
+    expect(cash.months.at(-1)).toMatchObject({ spending: 81.01, income: 900, net: 818.99 });
     await setHouseholdAccountVisibility(owner.id, account.id, { visibility: "PERSONAL" });
     expect((await readSummary(partner.token)).finances.visibleNetWorthMinor).toBe(0);
     expect((await readSummary(partner.token)).responsibilities.find(row => row.name === "Utilities")

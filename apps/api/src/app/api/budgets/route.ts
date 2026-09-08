@@ -1,3 +1,4 @@
+import { spendingWhere } from "@/lib/spending-treatment";
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { calculateBudgetProgress, fromMinorUnits, toMinorUnits } from "@worthlane/core";
@@ -42,7 +43,7 @@ export async function GET(req: NextRequest) {
             userId,
             categoryId: b.categoryId,
             date: { gte: periodStart, lte: periodEnd },
-            amount: { gt: 0 },
+            ...spendingWhere,
           },
           _sum: { amount: true },
         }),
@@ -51,7 +52,7 @@ export async function GET(req: NextRequest) {
             userId,
             categoryId: b.categoryId,
             date: { gte: prevStart, lte: prevEnd },
-            amount: { gt: 0 },
+            ...spendingWhere,
           },
           _sum: { amount: true },
         }),

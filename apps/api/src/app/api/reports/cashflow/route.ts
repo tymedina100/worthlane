@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { toMinorUnits, fromMinorUnits } from "@worthlane/core";
 import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
 import { startOfMonth } from "@/lib/dates";
@@ -22,7 +23,7 @@ export async function GET(req: NextRequest) {
 
   const transactions = await prisma.transaction.findMany({
     where: { userId, date: { gte: start, lte: now } },
-    select: { amount: true, date: true },
+    select: { amount: true, date: true, spendingTreatment: true },
   });
 
   // Seed every month in the window so quiet months still chart as zero.
@@ -37,16 +38,17 @@ export async function GET(req: NextRequest) {
     const key = `${tx.date.getFullYear()}-${String(tx.date.getMonth() + 1).padStart(2, "0")}`;
     const bucket = buckets.get(key);
     if (!bucket) continue;
-    const amount = tx.amount.toNumber();
-    if (amount < 0) bucket.income += Math.abs(amount);
+    if (tx.spendingTreatment === "EXCLUDED") continue;
+    const amount = toMinorUnits(tx.amount.toNumber());
+    if (amount < 0 && tx.spendingTreatment !== "REFUND") bucket.income += Math.abs(amount);
     else bucket.spending += amount;
   }
 
   const monthsResult = [...buckets.entries()].map(([month, b]) => ({
     month,
-    income: Math.round(b.income * 100) / 100,
-    spending: Math.round(b.spending * 100) / 100,
-    net: Math.round((b.income - b.spending) * 100) / 100,
+    income: fromMinorUnits(b.income),
+    spending: fromMinorUnits(b.spending),
+    net: fromMinorUnits(b.income - b.spending),
   }));
 
   return ok({ months: monthsResult });

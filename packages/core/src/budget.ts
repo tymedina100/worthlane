@@ -14,7 +14,7 @@ export function calculateBudgetProgress(
   assertMinorUnits(amountMinor, "budget amount");
   assertMinorUnits(spentMinor, "spent amount");
   if (amountMinor < 0) throw new Error("budget amount cannot be negative");
-  if (spentMinor < 0) throw new Error("spent amount cannot be negative");
+  // Confirmed refunds may exceed purchases in the selected period.
 
   return {
     amountMinor,

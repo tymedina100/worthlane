@@ -1,3 +1,4 @@
+import { spendingWhere } from "@/lib/spending-treatment";
 import { prisma, NudgeType } from "@worthlane/db";
 import {
   calculateBudgetProgress,
@@ -31,7 +32,7 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
         userId,
         categoryId: budget.categoryId,
         date: { gte: periodStart, lte: periodEnd },
-        amount: { gt: 0 },
+        ...spendingWhere,
       },
       _sum: { amount: true },
     });
@@ -129,7 +130,7 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
       userId,
       isImpulse: true,
       date: { gte: sevenDaysAgo, lte: now },
-      amount: { gt: 0 },
+      ...spendingWhere,
     },
     _sum: { amount: true },
     _count: { id: true },

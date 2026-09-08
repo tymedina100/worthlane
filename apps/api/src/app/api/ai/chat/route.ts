@@ -1,3 +1,4 @@
+import { spendingWhere, incomeWhere } from "@/lib/spending-treatment";
 import { NextRequest } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@worthlane/db";
@@ -44,17 +45,17 @@ export async function POST(req: NextRequest) {
       prisma.streak.findMany({ where: { userId } }),
       prisma.transaction.groupBy({
         by: ["categoryId"],
-        where: { userId, date: { gte: periodStart, lte: now }, amount: { gt: 0 } },
+        where: { userId, date: { gte: periodStart, lte: now }, ...spendingWhere },
         _sum: { amount: true },
         orderBy: { _sum: { amount: "desc" } },
         take: 5,
       }),
       prisma.transaction.aggregate({
-        where: { userId, date: { gte: periodStart, lte: now }, amount: { lt: 0 } },
+        where: { userId, date: { gte: periodStart, lte: now }, ...incomeWhere },
         _sum: { amount: true },
       }),
       prisma.transaction.aggregate({
-        where: { userId, date: { gte: periodStart, lte: now }, amount: { gt: 0 } },
+        where: { userId, date: { gte: periodStart, lte: now }, ...spendingWhere },
         _sum: { amount: true },
       }),
     ]);

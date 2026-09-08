@@ -1,3 +1,4 @@
+import { spendingWhere, incomeWhere } from "@/lib/spending-treatment";
 import { NextRequest } from "next/server";
 import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
@@ -36,16 +37,16 @@ export async function GET(req: NextRequest) {
   const [currentGroups, previousGroups, incomeAgg] = await Promise.all([
     prisma.transaction.groupBy({
       by: ["categoryId"],
-      where: { userId, date: { gte: current.start, lte: current.end }, amount: { gt: 0 } },
+      where: { userId, date: { gte: current.start, lte: current.end }, ...spendingWhere },
       _sum: { amount: true },
     }),
     prisma.transaction.groupBy({
       by: ["categoryId"],
-      where: { userId, date: { gte: previous.start, lte: previous.end }, amount: { gt: 0 } },
+      where: { userId, date: { gte: previous.start, lte: previous.end }, ...spendingWhere },
       _sum: { amount: true },
     }),
     prisma.transaction.aggregate({
-      where: { userId, date: { gte: current.start, lte: current.end }, amount: { lt: 0 } },
+      where: { userId, date: { gte: current.start, lte: current.end }, ...incomeWhere },
       _sum: { amount: true },
     }),
   ]);

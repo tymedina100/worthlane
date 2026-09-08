@@ -1,3 +1,4 @@
+import { spendingWhere, incomeWhere } from "@/lib/spending-treatment";
 import { NextRequest } from "next/server";
 import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
@@ -36,7 +37,7 @@ export async function GET(req: NextRequest) {
         where: {
           userId,
           date: { gte: periodStart, lte: periodEnd },
-          amount: { gt: 0 },
+          ...spendingWhere,
         },
         _sum: { amount: true },
         orderBy: { _sum: { amount: "desc" } },
@@ -47,24 +48,24 @@ export async function GET(req: NextRequest) {
         where: {
           userId,
           date: { gte: periodStart, lte: periodEnd },
-          amount: { lt: 0 }, // negative = income in Plaid convention
+          ...incomeWhere, // negative = income in Plaid convention
         },
         _sum: { amount: true },
       }),
       // Impulse this month
       prisma.transaction.aggregate({
-        where: { userId, isImpulse: true, date: { gte: periodStart, lte: periodEnd }, amount: { gt: 0 } },
+        where: { userId, isImpulse: true, date: { gte: periodStart, lte: periodEnd }, ...spendingWhere },
         _sum: { amount: true },
         _count: { id: true },
       }),
       // Impulse this week (last 7 days)
       prisma.transaction.aggregate({
-        where: { userId, isImpulse: true, date: { gte: thisWeekStart, lte: now }, amount: { gt: 0 } },
+        where: { userId, isImpulse: true, date: { gte: thisWeekStart, lte: now }, ...spendingWhere },
         _sum: { amount: true },
       }),
       // Impulse previous week (7-14 days ago)
       prisma.transaction.aggregate({
-        where: { userId, isImpulse: true, date: { gte: prevWeekStart, lt: thisWeekStart }, amount: { gt: 0 } },
+        where: { userId, isImpulse: true, date: { gte: prevWeekStart, lt: thisWeekStart }, ...spendingWhere },
         _sum: { amount: true },
       }),
     ]);
@@ -121,7 +122,7 @@ export async function GET(req: NextRequest) {
     where: {
       userId,
       date: { gte: periodStart, lte: periodEnd },
-      amount: { gt: 0 },
+      ...spendingWhere,
     },
     _sum: { amount: true },
   });
@@ -134,7 +135,7 @@ export async function GET(req: NextRequest) {
           userId,
           categoryId: b.categoryId,
           date: { gte: periodStart, lte: periodEnd },
-          amount: { gt: 0 },
+          ...spendingWhere,
         },
         _sum: { amount: true },
       });
