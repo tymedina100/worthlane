@@ -36,6 +36,7 @@ import {
   computeNetWorthMinor,
   monthRangeInTimeZone,
   toMinorUnits,
+  type ResponsibilityPlan,
 } from "@worthlane/core";
 import { Prisma, prisma } from "@worthlane/db";
 import { randomUUID } from "node:crypto";
@@ -341,8 +342,7 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
       (allocation) => allocation.memberId
     );
     const totalMinor = toMinorUnits(responsibility.monthlyAmount.toNumber());
-    const targetAllocations = allocateResponsibility(
-      totalMinor,
+    const responsibilityPlan: ResponsibilityPlan =
       responsibility.mode === "MEMBER"
         ? { mode: "MEMBER", memberId: allocationMemberIds[0] ?? "" }
         : responsibility.mode === "EQUAL"
@@ -353,7 +353,17 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
                 memberId: allocation.memberId,
                 basisPoints: allocation.shareBasisPoints ?? 0,
               })),
-            }
+            };
+    const targetAllocations = allocateResponsibility(totalMinor, responsibilityPlan);
+    // Responsibility follows the agreed plan, independently of the payer.
+    // Only caller-permitted activity enters this total.
+    const visibleSpendMinor = members.reduce((total, member) => total +
+      (responsibility.categoryId
+        ? appliedSpendByMemberAndCategory.get(`${member.id}:${responsibility.categoryId}`) ?? 0
+        : 0), 0);
+    const appliedAllocations = new Map(
+      allocateResponsibility(visibleSpendMinor, responsibilityPlan)
+        .map(allocation => [allocation.memberId, allocation.amountMinor])
     );
     const equalBasisPoints =
       responsibility.mode === "EQUAL"
@@ -376,11 +386,7 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
         const source = responsibility.allocations.find(
           (allocation) => allocation.memberId === target.memberId
         );
-        const appliedSpendMinor = responsibility.categoryId
-          ? appliedSpendByMemberAndCategory.get(
-              `${target.memberId}:${responsibility.categoryId}`
-            ) ?? 0
-          : 0;
+        const appliedSpendMinor = appliedAllocations.get(target.memberId) ?? 0;
         const shareBasisPoints =
           responsibility.mode === "MEMBER"
             ? 10_000

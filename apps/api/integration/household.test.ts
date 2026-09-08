@@ -110,8 +110,42 @@ describe("persistent household consent and budget journey", () => {
     await expect(getHouseholdAccountDetail(partner.id, account.id)).rejects.toThrow("Account not found");
     await setHouseholdAccountVisibility(owner.id, account.id, { visibility: "SHARED" });
     expect((await getHouseholdAccountDetail(partner.id, account.id)).id).toBe(account.id);
+    // The owner pays for a category assigned entirely to the partner. The
+    // agreed responsibility must not change with the identity of the payer.
+    const category = await prisma.category.create({ data: {
+      name: `Utilities ${suffix}`, icon: "home", color: "#336699", userId: owner.id,
+    } });
+    await prisma.householdResponsibility.update({
+      where: { id: byName.get("Utilities")!.id }, data: { categoryId: category.id },
+    });
+    await prisma.transaction.create({ data: {
+      userId: owner.id, accountId: account.id, categoryId: category.id,
+      amount: "101.01", date: new Date(), isManual: true,
+    } });
+    const ownerActivity = await readSummary(owner.token);
+    const partnerActivity = await readSummary(partner.token);
+    expect(ownerActivity.responsibilities).toEqual(partnerActivity.responsibilities);
+    expect(partnerActivity.responsibilities.find(row => row.name === "Utilities")?.allocations)
+      .toEqual([expect.objectContaining({ memberId: partnerId, assignedMinor: 15_000,
+        appliedSpendMinor: 10_101, remainingMinor: 4_899 })]);
+    const groceries = await prisma.category.create({ data: {
+      name: `Groceries ${suffix}`, icon: "food", color: "#336699", userId: owner.id,
+    } });
+    await prisma.householdResponsibility.update({
+      where: { id: byName.get("Groceries")!.id }, data: { categoryId: groceries.id },
+    });
+    await prisma.transaction.create({ data: {
+      userId: owner.id, accountId: account.id, categoryId: groceries.id,
+      amount: "100.01", date: new Date(), isManual: true,
+    } });
+    const splitSpend = (await readSummary(partner.token)).responsibilities
+      .find(row => row.name === "Groceries")!.allocations;
+    expect(splitSpend.map(row => row.appliedSpendMinor).sort((a, b) => a - b)).toEqual([5000, 5001]);
+    expect(splitSpend.reduce((sum, row) => sum + row.remainingMinor, 0)).toBe(49_999);
     await setHouseholdAccountVisibility(owner.id, account.id, { visibility: "PERSONAL" });
     expect((await readSummary(partner.token)).finances.visibleNetWorthMinor).toBe(0);
+    expect((await readSummary(partner.token)).responsibilities.find(row => row.name === "Utilities")
+      ?.allocations[0].appliedSpendMinor).toBe(0);
     await expect(getHouseholdAccountDetail(partner.id, account.id)).rejects.toThrow("Account not found");
   });
 });

@@ -219,6 +219,7 @@ function ResponsibilityCard({ item, currency }: { item: Responsibility; currency
       </View>
 
       <View style={styles.allocationStack}>
+        <Text style={styles.rowMeta}>Visible spending follows your agreed split, regardless of who paid. Private partner activity is excluded.</Text>
         {item.allocations.map((allocation) => (
           <View key={allocation.memberId} style={styles.allocationRow}>
             <View style={styles.inlineBetween}>

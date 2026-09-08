@@ -265,7 +265,7 @@ function ResponsibilitiesSection({ summary }: { summary: HouseholdSummary }) {
               </div>
               <div className="responsibility-row__progress">
                 <div className="responsibility-row__progress-copy">
-                  <span>{formatCurrencyMinor(usedMinor, currency, { hideCents: true })} applied</span>
+                  <span>{formatCurrencyMinor(usedMinor, currency, { hideCents: true })} visible spending · applied by agreed split</span>
                   <strong>{formatPercent(percentUsed)}</strong>
                 </div>
                 <ProgressBar value={percentUsed} label={`${responsibility.name} progress`} />
@@ -276,6 +276,7 @@ function ResponsibilitiesSection({ summary }: { summary: HouseholdSummary }) {
                     <i className={`member-dot member-dot--${allocation.displayName.toLowerCase()}`} />
                     <b>{allocation.displayName}</b>
                     {formatPercent(allocation.shareBasisPoints / 100)} · {formatCurrencyMinor(allocation.assignedMinor, currency, { hideCents: true })}
+                    {" · "}{formatCurrencyMinor(allocation.remainingMinor, currency)} remaining from visible activity
                   </span>
                 ))}
               </div>

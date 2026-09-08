@@ -77,3 +77,22 @@ production changes or spending. Full beta acceptance remains unproven.
 - Next: attach categorized transactions to these persisted fixtures and fix
   refund/payer semantics with explicit privacy scope; extend to concurrent
   invitations and full HTTP/UI journeys. Banking and debt acceptance still open.
+
+## 2026-09-08 — responsibility independent of payer
+
+- Household summary now allocates permitted category spending using the agreed
+  responsibility plan, rather than subtracting payer activity only from that
+  payer's allocation. Uses existing deterministic shared allocation rules.
+- Desktop now shows individual remaining amounts; both clients label the visible
+  activity scope and agreed-split behavior. Interactive layout QA remains open.
+- Extended the real PostgreSQL journey: owner pays 101.01 for partner-owned
+  utilities, producing 10101 applied / 4899 remaining for the partner; owner pays
+  100.01 for equal groceries, producing 5000/5001 applied and 49999 total remaining.
+  Both viewers agree while shared; revocation excludes private activity again.
+- `./scripts/test-postgres.ps1` passed after the new assertions. API 136 unit
+  tests and API/desktop/mobile typechecks passed. No production or banking calls.
+- Refund classification remains unresolved: blindly subtracting all negative
+  transactions would conflate refunds and income. Next add explicit spending
+  classification/reconciliation, signed refund accounting, month-boundary and
+  overspending fixtures, then HTTP/UI journey verification. This checkpoint does
+  not establish a complete month or full beta acceptance.
