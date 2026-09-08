@@ -5,7 +5,7 @@ import { calculateBudgetProgress, fromMinorUnits, toMinorUnits } from "@worthlan
 import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
 import { ok, err, unauthorized } from "@/lib/response";
-import { startOfMonth, endOfMonth, addMonths } from "@/lib/dates";
+import { budgetPeriod, financialTimeZone } from "@/lib/budget-period";
 import { positiveMoneyAmount } from "@/lib/validation";
 
 const createSchema = z.object({
@@ -24,10 +24,7 @@ export async function GET(req: NextRequest) {
   }
 
   const now = new Date();
-  const periodStart = startOfMonth(now);
-  const periodEnd = endOfMonth(now);
-  const prevStart = startOfMonth(addMonths(now, -1));
-  const prevEnd = endOfMonth(addMonths(now, -1));
+  const timeZone = await financialTimeZone(userId);
 
   const budgets = await prisma.budget.findMany({
     where: { userId },
@@ -37,12 +34,14 @@ export async function GET(req: NextRequest) {
   // Calculate spent per budget for current period
   const result = await Promise.all(
     budgets.map(async (b) => {
+      const { start: periodStart, end: periodEnd } = budgetPeriod(now, timeZone, b.period);
+      const { start: prevStart, end: prevEnd } = budgetPeriod(new Date(periodStart.getTime() - 1), timeZone, b.period);
       const [spent, prevSpentAgg, history] = await Promise.all([
         prisma.transaction.aggregate({
           where: {
             userId,
             categoryId: b.categoryId,
-            date: { gte: periodStart, lte: periodEnd },
+            date: { gte: periodStart, lt: periodEnd, lte: now },
             ...spendingWhere,
           },
           _sum: { amount: true },
@@ -51,7 +50,7 @@ export async function GET(req: NextRequest) {
           where: {
             userId,
             categoryId: b.categoryId,
-            date: { gte: prevStart, lte: prevEnd },
+            date: { gte: prevStart, lt: prevEnd },
             ...spendingWhere,
           },
           _sum: { amount: true },

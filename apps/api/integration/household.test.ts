@@ -1,5 +1,6 @@
 import { afterAll, describe, expect, it } from "vitest";
 import { randomUUID } from "node:crypto";
+import { weekRangeInTimeZone } from "@worthlane/core";
 import { NextRequest } from "next/server";
 import { prisma } from "@worthlane/db";
 import { householdSummarySchema } from "@worthlane/contracts";
@@ -178,6 +179,25 @@ describe("persistent household consent and budget journey", () => {
     expect(report.income).toBe(900);
     const cash = await call(cashflow, owner.token);
     expect(cash.months.at(-1)).toMatchObject({ spending: 81.01, income: 900, net: 818.99 });
+    const weeklyCategory = await prisma.category.create({ data: {
+      name: `Weekly ${suffix}`, icon: "food", color: "#336699", userId: owner.id,
+    } });
+    const weeklyBudget = await prisma.budget.create({ data: {
+      userId: owner.id, categoryId: weeklyCategory.id, amount: "50", period: "WEEKLY",
+    } });
+    const week = weekRangeInTimeZone(new Date(), "America/Phoenix");
+    await prisma.transaction.createMany({ data: [
+      { userId: owner.id, accountId: account.id, categoryId: weeklyCategory.id,
+        amount: "35", date: new Date(week.start.getTime() - 1), isManual: true },
+      { userId: owner.id, accountId: account.id, categoryId: weeklyCategory.id,
+        amount: "10", date: new Date(), isManual: true },
+      { userId: owner.id, accountId: account.id, categoryId: weeklyCategory.id,
+        amount: "100", date: new Date(Date.now() + 60_000), isManual: true },
+    ] });
+    expect((await call(personalBudgets, owner.token)).find((row: { id: string }) => row.id === weeklyBudget.id))
+      .toMatchObject({ spent: 10, remaining: 40, period: "WEEKLY" });
+    expect((await call(dashboard, owner.token)).budgets.find((row: { id: string }) => row.id === weeklyBudget.id))
+      .toMatchObject({ spent: 10, remaining: 40 });
     await setHouseholdAccountVisibility(owner.id, account.id, { visibility: "PERSONAL" });
     expect((await readSummary(partner.token)).finances.visibleNetWorthMinor).toBe(0);
     expect((await readSummary(partner.token)).responsibilities.find(row => row.name === "Utilities")

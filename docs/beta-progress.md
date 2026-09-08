@@ -155,3 +155,20 @@ production changes or spending. Full beta acceptance remains unproven.
   Weekly budget periods, household timezone alignment, stale-data indicators,
   imported automatic classification and interactive edits remain open. Next
   verify the HTTP/BFF/UI save path and repair date-period inconsistencies.
+
+## 2026-09-08 — weekly budgets and current activity cutoff
+
+- Added deterministic Sunday-start week ranges in shared core, including DST
+  boundary handling. Personal budget and dashboard queries use the active
+  household timezone (UTC before household setup) and actual weekly/monthly
+  budget period. Prior-period snapshots follow the same period boundaries.
+- Personal budgets and household summaries now cap applied activity at now;
+  future-dated entries no longer reduce current remaining amounts.
+- PostgreSQL fixture verifies a 50 weekly budget: previous-week 35 and future 100
+  are excluded; current 10 produces spent 10 / remaining 40 in budgets and the
+  dashboard. DST spring week and UTC-Sunday/local-Saturday cases pass core tests.
+- `./scripts/test-postgres.ps1` passed; core now has 32 tests. Workspace
+  typechecks and `git diff --check` passed; API regression tests were run.
+- Still open: report/cashflow timezone alignment, old snapshot period labeling,
+  split history, interactive classification saves, and full banking/debt/beta
+  verification. No production migration or external service activation.

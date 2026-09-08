@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 
 const { mockPrisma, mockGetAuthUser } = vi.hoisted(() => {
   const mockPrisma = {
+    householdMember: { findFirst: vi.fn().mockResolvedValue(null) },
     budget: { findMany: vi.fn(), upsert: vi.fn() },
     transaction: { aggregate: vi.fn() },
     budgetPeriod: { findMany: vi.fn(), upsert: vi.fn() },

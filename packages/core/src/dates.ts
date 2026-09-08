@@ -91,3 +91,14 @@ export function monthRangeInTimeZone(
 
   return { start, end, year: local.year, month: local.month };
 }
+
+/** Sunday-start calendar week, preserving Worthlane's existing week convention. */
+export function weekRangeInTimeZone(instant: Date, timeZone: string): { start: Date; end: Date } {
+  if (Number.isNaN(instant.getTime())) throw new Error("instant must be a valid date");
+  const local = partsAt(instant, timeZone);
+  const weekday = new Date(Date.UTC(local.year, local.month - 1, local.day)).getUTCDay();
+  return {
+    start: localMidnightToUtc(local.year, local.month - 1, local.day - weekday, timeZone),
+    end: localMidnightToUtc(local.year, local.month - 1, local.day - weekday + 7, timeZone),
+  };
+}

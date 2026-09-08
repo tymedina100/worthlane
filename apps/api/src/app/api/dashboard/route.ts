@@ -4,7 +4,7 @@ import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
 import { computeNetWorth, startOfToday } from "@/lib/net-worth";
 import { ok, unauthorized } from "@/lib/response";
-import { startOfMonth } from "@/lib/dates";
+import { budgetPeriod, financialTimeZone } from "@/lib/budget-period";
 import { obligationStatus, startOfUtcDay, toDateOnly } from "@/lib/upcoming";
 
 export async function GET(req: NextRequest) {
@@ -16,7 +16,8 @@ export async function GET(req: NextRequest) {
   }
 
   const now = new Date();
-  const periodStart = startOfMonth(now);
+  const timeZone = await financialTimeZone(userId);
+  const periodStart = budgetPeriod(now, timeZone, "MONTHLY").start;
   // Cap period end at now to exclude future-dated transactions
   const periodEnd = now;
 
@@ -130,11 +131,12 @@ export async function GET(req: NextRequest) {
   // Budgets with spent
   const budgetsWithSpent = await Promise.all(
     budgets.map(async (b) => {
+      const budgetStart = budgetPeriod(now, timeZone, b.period).start;
       const spent = await prisma.transaction.aggregate({
         where: {
           userId,
           categoryId: b.categoryId,
-          date: { gte: periodStart, lte: periodEnd },
+          date: { gte: budgetStart, lte: periodEnd },
           ...spendingWhere,
         },
         _sum: { amount: true },

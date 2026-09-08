@@ -1,6 +1,19 @@
 import { describe, expect, it } from "vitest";
 
-import { monthRangeInTimeZone } from "../dates";
+import { monthRangeInTimeZone, weekRangeInTimeZone } from "../dates";
+
+describe("weekRangeInTimeZone", () => {
+  it("uses local Sunday boundaries across a spring DST change", () => {
+    const range = weekRangeInTimeZone(new Date("2026-03-10T12:00:00Z"), "America/Los_Angeles");
+    expect(range.start.toISOString()).toBe("2026-03-08T08:00:00.000Z");
+    expect(range.end.toISOString()).toBe("2026-03-15T07:00:00.000Z");
+  });
+  it("keeps Saturday evening in the prior week even when UTC is Sunday", () => {
+    const range = weekRangeInTimeZone(new Date("2026-08-02T02:00:00Z"), "America/Phoenix");
+    expect(range.start.toISOString()).toBe("2026-07-26T07:00:00.000Z");
+    expect(range.end.toISOString()).toBe("2026-08-02T07:00:00.000Z");
+  });
+});
 
 describe("monthRangeInTimeZone", () => {
   it("uses the household month when UTC is already in the next month", () => {

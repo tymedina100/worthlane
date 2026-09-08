@@ -323,7 +323,7 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
             accountId: { in: participatingAccountIds },
             categoryId: { in: categoryIds },
             ...spendingWhere,
-            date: { gte: month.start, lt: month.end },
+            date: { gte: month.start, lt: month.end, lte: now },
           },
           _sum: { amount: true },
         })
