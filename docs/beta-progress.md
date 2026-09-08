@@ -173,6 +173,25 @@ production changes or spending. Full beta acceptance remains unproven.
   split history, interactive classification saves, and full banking/debt/beta
   verification. No production migration or external service activation.
 
+## 2026-09-08 — real HTTP/BFF session and refund editing
+
+- Added optional `./scripts/test-postgres.ps1 -Http`, using a freshly migrated
+  isolated cluster and local API/desktop servers, with synthetic sessions and
+  optional integration credentials disabled. Task-created servers are stopped
+  afterward; logs stay under ignored `.tmp`.
+- Final run passed: desktop registration, HttpOnly session cookies, no access
+  token in browser-facing registration JSON, anonymous PATCH denied, cross-origin
+  PATCH denied, unsupported amount edit rejected by the narrow BFF, refund PATCH
+  persisted through desktop GET, logout caused 401, and fresh login retained it.
+- First attempt used 127.0.0.1 for desktop and received origin rejection. Harness
+  now uses documented localhost desktop origin; no origin protection was relaxed.
+- Both PostgreSQL journeys also passed in the final run. This is real HTTP
+  transport and cookie-header evidence, not browser policy enforcement: the test
+  client carries cookies explicitly. HTTPS Secure-cookie behavior, rendered UI,
+  mobile controls and complete two-user HTTP/UI onboarding remain unverified.
+- Next: interactive desktop/solo/two-user acceptance and fixes surfaced there,
+  alongside outstanding historical split behavior, Sandbox banking and debt.
+
 ## 2026-09-08 — report month boundaries
 
 - Spending and cashflow reports now resolve the active household timezone (UTC

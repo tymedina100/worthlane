@@ -265,6 +265,12 @@ and account visibility, and stops the cluster in `finally`. PostgreSQL 17 is the
 default; override `-PostgresBin` or `-Port` as needed. Clusters are retained for
 diagnosis. This does not run browser/mobile UI or Plaid acceptance tests.
 
+Add `-Http` to run `scripts/test-http.mjs` after the database journey. It starts
+local API/desktop servers on ports 3301/3303 and checks real cookie sessions,
+origin/auth validation, classification persistence, logout and fresh login.
+Servers are stopped afterward. This HTTP client inspects cookies but is not a
+browser and does not prove Secure-cookie behavior or visual/interactive UX.
+
 CI runs the same suite against an ephemeral PostgreSQL service. A separately
 provisioned local test database can run `corepack pnpm --filter @worthlane/api test:integration`
 with `WORTHLANE_TEST_DATABASE_URL` pointing explicitly to `127.0.0.1`, an explicit

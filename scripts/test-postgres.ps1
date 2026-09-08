@@ -1,6 +1,7 @@
 param(
   [string]$PostgresBin = 'C:\Program Files\PostgreSQL\17\bin',
-  [int]$Port = 55439
+  [int]$Port = 55439,
+  [switch]$Http
 )
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path $PSScriptRoot -Parent
@@ -34,6 +35,10 @@ try {
   Check-Exit 'Apply migrations to test database'
   corepack pnpm --filter @worthlane/api exec vitest run --config vitest.integration.config.ts
   Check-Exit 'PostgreSQL integration tests'
+  if ($Http) {
+    node scripts/test-http.mjs
+    Check-Exit 'HTTP BFF integration tests'
+  }
 } finally {
   if ($started) {
     & (Join-Path $PostgresBin 'pg_ctl.exe') -D $cluster -m fast -w stop
