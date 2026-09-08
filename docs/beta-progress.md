@@ -117,3 +117,22 @@ production changes or spending. Full beta acceptance remains unproven.
   duplicate/transfer detection, date-boundary fixtures and interactive QA. Next
   carry treatment through both editing surfaces and unify all spending views;
   do not describe this backend checkpoint as complete refund UX or banking proof.
+
+## 2026-09-08 — client treatment controls
+
+- Existing mobile transactions (manual and imported) now offer owner-controlled
+  treatment choices, show refund/excluded state and report save errors. Refund
+  choice is available only for credits. Success invalidates transactions,
+  dashboard, budgets and household summary queries.
+- Desktop personal report rows now expose equivalent selectors through the
+  existing authenticated management callback. The BFF permits only transaction
+  PATCH containing a valid spendingTreatment; existing origin/session protection
+  remains. Save/pending/error feedback is present and data reloads after saving.
+- Desktop filtered category analysis includes confirmed refunds, excludes marked
+  transfers/repayments, sums in cents and handles negative net amounts without
+  negative-width bars. Shared client-local DTOs retain treatment on reload.
+- Mobile and desktop typechecks and diff whitespace checks passed. Interactive
+  verification remains pending: typechecks do not prove BFF transport, mobile
+  dialog usability or save/reload behavior. Other personal dashboard/budget totals
+  still need reconciliation. Next verify edits through HTTP/UI and unify those
+  remaining aggregate queries; no full-beta completion claim.

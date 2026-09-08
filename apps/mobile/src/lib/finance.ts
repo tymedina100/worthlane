@@ -52,6 +52,7 @@ export interface CategorySummary {
 }
 
 export interface TransactionSummary {
+  spendingTreatment?: "AUTO" | "REFUND" | "EXCLUDED";
   id: string;
   amount: number;
   date: string;

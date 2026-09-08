@@ -876,11 +876,25 @@ function ReportsSurface({
   summary,
   personal,
   warnings,
+  onManagePersonal,
 }: {
   summary: HouseholdSummary;
   personal: PersonalWorkspaceData;
   warnings: string[];
+  onManagePersonal: ManagePersonal;
 }) {
+  const [treatmentPending, setTreatmentPending] = useState(false);
+  const [treatmentMessage, setTreatmentMessage] = useState("");
+  const saveTreatment = async (id: string, spendingTreatment: string) => {
+    setTreatmentPending(true);
+    setTreatmentMessage("");
+    try {
+      await onManagePersonal({ path: `/transactions/${id}`, method: "PATCH", body: { spendingTreatment } });
+      setTreatmentMessage("Budget treatment saved.");
+    } catch (error) {
+      setTreatmentMessage(error instanceof Error ? error.message : "Budget treatment was not saved. Try again.");
+    } finally { setTreatmentPending(false); }
+  };
   const [memberId, setMemberId] = useState("all");
   const [sort, setSort] = useState("planned");
   const [transactionQuery, setTransactionQuery] = useState("");
@@ -943,12 +957,13 @@ function ReportsSurface({
   const categorySpend = useMemo(() => {
     const totals = new Map<string, number>();
     filteredTransactions.forEach((transaction) => {
-      if (transaction.amount <= 0) return;
+      if (transaction.spendingTreatment === "EXCLUDED" ||
+          (transaction.amount <= 0 && transaction.spendingTreatment !== "REFUND")) return;
       const name = transaction.category?.name ?? "Uncategorized";
-      totals.set(name, (totals.get(name) ?? 0) + transaction.amount);
+      totals.set(name, (totals.get(name) ?? 0) + majorToMinor(transaction.amount));
     });
     return [...totals]
-      .map(([name, amount]) => ({ name, amount }))
+      .map(([name, amount]) => ({ name, amount: amount / 100 }))
       .sort((a, b) => b.amount - a.amount);
   }, [filteredTransactions]);
   const maxCategorySpend = Math.max(...categorySpend.map((category) => category.amount), 1);
@@ -1028,8 +1043,10 @@ function ReportsSurface({
             <h2 id="transaction-report-title">Transactions &amp; category analysis</h2>
             <p>Your own detailed transaction feed. Partner activity remains governed by household privacy.</p>
           </div>
-          <span className="readonly-chip"><Icon name="lock" /> Read-only report</span>
+          <span className="readonly-chip"><Icon name="lock" /> Your transactions</span>
         </div>
+        <p>Confirmed refunds reduce category spending. Exclude transfers and card repayments to avoid counting them as purchases.</p>
+        <p role="status" aria-live="polite">{treatmentMessage}</p>
         <div className="transaction-filters" role="search">
           <label className="workspace-search">
             <span>Search activity</span>
@@ -1076,7 +1093,7 @@ function ReportsSurface({
             {categorySpend.length ? categorySpend.slice(0, 8).map((category) => (
               <div key={category.name}>
                 <span>{category.name}</span>
-                <i><b style={{ width: `${(category.amount / maxCategorySpend) * 100}%` }} /></i>
+                <i><b style={{ width: `${Math.max(0, (category.amount / maxCategorySpend) * 100)}%` }} /></i>
                 <strong>{formatCurrencyMinor(majorToMinor(category.amount), currency)}</strong>
               </div>
             )) : <div className="filtered-empty">No expense rows match these filters.</div>}
@@ -1088,7 +1105,15 @@ function ReportsSurface({
             {filteredTransactions.length ? filteredTransactions.slice(0, 30).map((transaction) => (
               <div className="transaction-table__row" role="row" key={transaction.id}>
                 <span role="cell"><strong>{transaction.merchantName ?? transaction.note ?? "Transaction"}</strong><small>{formatShortDate(transaction.date)}{transaction.isManual ? " · Manual" : ""}</small></span>
-                <span role="cell">{transaction.category?.name ?? "Uncategorized"}</span>
+                <span role="cell">{transaction.category?.name ?? "Uncategorized"}
+                  <select aria-label={`Budget treatment for ${transaction.merchantName ?? "transaction"}`} disabled={treatmentPending}
+                    value={transaction.spendingTreatment ?? "AUTO"}
+                    onChange={event => void saveTreatment(transaction.id, event.target.value)}>
+                    <option value="AUTO">Ordinary expense / income</option>
+                    {transaction.amount < 0 && <option value="REFUND">Refund</option>}
+                    <option value="EXCLUDED">Exclude transfer / repayment</option>
+                  </select>
+                </span>
                 <span role="cell">{transaction.account.name}</span>
                 <strong className={transaction.amount < 0 ? "amount-income" : ""} role="cell">{formatCurrencyMinor(majorToMinor(transaction.amount), currency)}</strong>
               </div>
@@ -1128,5 +1153,5 @@ export function WorkspaceSurface({
       />
     );
   }
-  return <ReportsSurface summary={summary} personal={personal} warnings={personalDataWarnings} />;
+  return <ReportsSurface summary={summary} personal={personal} warnings={personalDataWarnings} onManagePersonal={onManagePersonal} />;
 }

@@ -227,10 +227,12 @@ function TransactionRow({
   tx,
   onToggleImpulse,
   onOpenManualEditor,
+  onTreatment,
 }: {
   tx: TransactionSummary;
   onToggleImpulse: () => void;
   onOpenManualEditor: () => void;
+  onTreatment: () => void;
 }) {
   const { colors } = useTheme();
   const styles = useThemedStyles(createStyles);
@@ -251,6 +253,9 @@ function TransactionRow({
       </View>
 
       <View style={styles.txRight}>
+        <TouchableOpacity onPress={onTreatment} accessibilityRole="button" accessibilityLabel="Change budget treatment">
+          <Text style={styles.txMeta}>{tx.spendingTreatment === "REFUND" ? "Refund" : tx.spendingTreatment === "EXCLUDED" ? "Excluded" : "Budget treatment"}</Text>
+        </TouchableOpacity>
         <Text style={[styles.txAmount, { color: tx.amount > 0 ? colors.danger : colors.success }]}>
           {formatSignedTransactionAmount(tx.amount)}
         </Text>
@@ -301,6 +306,27 @@ export default function TransactionsScreen() {
       qc.invalidateQueries({ queryKey: ["dashboard"] });
     },
   });
+
+  const treatmentMutation = useMutation({
+    mutationFn: ({ id, spendingTreatment }: { id: string; spendingTreatment: "AUTO" | "REFUND" | "EXCLUDED" }) =>
+      api.patch(`/transactions/${id}`, { spendingTreatment }),
+    onSuccess: () => {
+      for (const key of ["transactions", "dashboard", "budgets", "household-summary"]) {
+        qc.invalidateQueries({ queryKey: [key] });
+      }
+    },
+    onError: (error) => Alert.alert("Not saved", transactionErrorMessage(error)),
+  });
+  const chooseTreatment = (tx: TransactionSummary) => {
+    if (treatmentMutation.isPending) return;
+    const save = (spendingTreatment: "AUTO" | "REFUND" | "EXCLUDED") =>
+      treatmentMutation.mutate({ id: tx.id, spendingTreatment });
+    Alert.alert("Budget treatment", "Refunds reduce category spending. Exclude transfers and card repayments to avoid counting them as purchases.", [
+      { text: "Ordinary expense / income", onPress: () => save("AUTO") },
+      ...(tx.amount < 0 ? [{ text: "Refund", onPress: () => save("REFUND") }] : []),
+      { text: "Exclude transfer / repayment", onPress: () => save("EXCLUDED") },
+    ], { cancelable: true });
+  };
 
   const manualTransactionMutation = useMutation({
     mutationFn: async (currentDraft: ManualTransactionDraft) => {
@@ -466,6 +492,7 @@ export default function TransactionsScreen() {
               tx={item}
               onToggleImpulse={() => toggleImpulse.mutate({ id: item.id, isImpulse: !item.isImpulse })}
               onOpenManualEditor={() => openEditModal(item)}
+              onTreatment={() => chooseTreatment(item)}
             />
           )}
           refreshControl={

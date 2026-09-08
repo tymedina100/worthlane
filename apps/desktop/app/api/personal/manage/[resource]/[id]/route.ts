@@ -23,6 +23,10 @@ function validMoney(value: unknown, allowZero = false) {
 
 function validatePatch(resource: string, body: unknown): Record<string, unknown> | null {
   if (!isRecord(body) || !Object.keys(body).length) return null;
+  if (resource === "transactions") {
+    return hasOnlyKeys(body, ["spendingTreatment"]) &&
+      ["AUTO", "REFUND", "EXCLUDED"].includes(String(body.spendingTreatment)) ? body : null;
+  }
   if (resource === "goals") {
     if (!hasOnlyKeys(body, ["name", "currentAmount", "targetAmount", "targetDate", "icon"])) return null;
     if (
@@ -54,7 +58,8 @@ async function proxy(
   const originError = sameOriginMutationError(request);
   if (originError) return originError;
   const { resource, id } = await params;
-  if (resource !== "goals" && resource !== "accounts") {
+  if (resource !== "goals" && resource !== "accounts" &&
+      !(resource === "transactions" && request.method === "PATCH")) {
     return errorResponse("Personal finance mutation not found", 404, "NOT_FOUND");
   }
 
