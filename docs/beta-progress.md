@@ -96,3 +96,24 @@ production changes or spending. Full beta acceptance remains unproven.
   classification/reconciliation, signed refund accounting, month-boundary and
   overspending fixtures, then HTTP/UI journey verification. This checkpoint does
   not establish a complete month or full beta acceptance.
+
+## 2026-09-08 — explicit refund and exclusion storage
+
+- Added additive migration `20260908120000_add_spending_treatment`: AUTO preserves
+  legacy positive-spending behavior, REFUND explicitly includes negative credits,
+  EXCLUDED omits transfers/repayments. Existing credits are not silently recast as
+  refunds. Manual create and owner-only manual/imported PATCH accept treatment;
+  list/create/update responses expose it. Positive refunds are rejected.
+- Household summaries include confirmed refunds; signed applied spending and
+  usage contracts allow net refunds greater than purchases without clamping money.
+- `./scripts/test-postgres.ps1` applied 13 migrations and passed the expanded
+  persisted journey: 100.01 purchase minus 20.01 refund equals 80; 900 income and
+  500 excluded debit do not alter it; another 100 refund yields -20 net / 620
+  remaining. Positive-refund creation returns 400.
+- API 136 unit tests, contracts 8 tests, recursive workspace typechecks and
+  `git diff --check` passed. Prisma regenerated locally; no live migration.
+- Still incomplete: transaction-editor controls and shared client DTO fields,
+  personal dashboard/report reconciliation, imported automatic classification,
+  duplicate/transfer detection, date-boundary fixtures and interactive QA. Next
+  carry treatment through both editing surfaces and unify all spending views;
+  do not describe this backend checkpoint as complete refund UX or banking proof.

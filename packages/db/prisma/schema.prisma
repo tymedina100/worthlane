@@ -105,6 +105,12 @@ model Category {
   @@unique([userId, name])
 }
 
+enum SpendingTreatment {
+  AUTO
+  REFUND
+  EXCLUDED
+}
+
 model Transaction {
   id                 String   @id @default(cuid())
   userId             String
@@ -115,6 +121,7 @@ model Transaction {
   merchantName       String?
   categoryId         String?
   isManual           Boolean  @default(false)
+  spendingTreatment  SpendingTreatment @default(AUTO)
   isImpulse          Boolean  @default(false) // user-flagged impulse purchase
   note               String?
   createdAt          DateTime @default(now())

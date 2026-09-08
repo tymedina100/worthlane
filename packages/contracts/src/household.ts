@@ -62,9 +62,9 @@ export const responsibilityAllocationSummarySchema = z.object({
   displayName: z.string(),
   shareBasisPoints: z.number().int().min(0).max(10_000),
   assignedMinor: nonNegativeMinorUnitsSchema,
-  appliedSpendMinor: nonNegativeMinorUnitsSchema,
+  appliedSpendMinor: signedMinorUnitsSchema,
   remainingMinor: signedMinorUnitsSchema,
-  percentUsed: percentSchema,
+  percentUsed: z.number().finite(),
 });
 
 export const householdResponsibilitySummarySchema = z.object({

@@ -12,6 +12,7 @@ import { POST as accept } from "../src/app/api/households/invitations/accept/rou
 import { GET as summary } from "../src/app/api/households/current/summary/route";
 import { POST as createResponsibility } from "../src/app/api/households/current/responsibilities/route";
 import { POST as createAccount } from "../src/app/api/accounts/route";
+import { POST as createTransaction } from "../src/app/api/transactions/route";
 import { getHouseholdAccountDetail, setHouseholdAccountVisibility } from "../src/lib/household";
 
 type Handler = (req: NextRequest) => Promise<Response>;
@@ -142,6 +143,24 @@ describe("persistent household consent and budget journey", () => {
       .find(row => row.name === "Groceries")!.allocations;
     expect(splitSpend.map(row => row.appliedSpendMinor).sort((a, b) => a - b)).toEqual([5000, 5001]);
     expect(splitSpend.reduce((sum, row) => sum + row.remainingMinor, 0)).toBe(49_999);
+    const addCredit = (amount: number, spendingTreatment: string) => call(createTransaction, owner.token, {
+      accountId: account.id, categoryId: groceries.id, amount, spendingTreatment,
+      date: new Date().toISOString(),
+    }, 201);
+    await addCredit(-20.01, "REFUND");
+    await addCredit(-900, "AUTO"); // income must not reduce grocery spending
+    await addCredit(500, "EXCLUDED"); // transfer or repayment is not consumption
+    const afterRefund = (await readSummary(partner.token)).responsibilities
+      .find(row => row.name === "Groceries")!.allocations;
+    expect(afterRefund.map(row => row.appliedSpendMinor)).toEqual([4000, 4000]);
+    await call(createTransaction, owner.token, {
+      accountId: account.id, amount: 1, spendingTreatment: "REFUND", date: new Date().toISOString(),
+    }, 400);
+    await addCredit(-100, "REFUND");
+    const netCredit = (await readSummary(partner.token)).responsibilities
+      .find(row => row.name === "Groceries")!.allocations;
+    expect(netCredit.map(row => row.appliedSpendMinor)).toEqual([-1000, -1000]);
+    expect(netCredit.reduce((sum, row) => sum + row.remainingMinor, 0)).toBe(62_000);
     await setHouseholdAccountVisibility(owner.id, account.id, { visibility: "PERSONAL" });
     expect((await readSummary(partner.token)).finances.visibleNetWorthMinor).toBe(0);
     expect((await readSummary(partner.token)).responsibilities.find(row => row.name === "Utilities")

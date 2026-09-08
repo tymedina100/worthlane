@@ -4,8 +4,10 @@ import { AccountSource, prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
 import { ok, err, unauthorized, notFound } from "@/lib/response";
 import { moneyAmount } from "@/lib/validation";
+import { spendingTreatmentSchema, validSpendingTreatment } from "@/lib/spending-treatment";
 
 const manualUpdateSchema = z.object({
+  spendingTreatment: spendingTreatmentSchema.optional(),
   accountId: z.string().optional(),
   amount: moneyAmount.optional(),
   date: z.string().datetime().optional(),
@@ -16,6 +18,7 @@ const manualUpdateSchema = z.object({
 });
 
 const importedUpdateSchema = z.object({
+  spendingTreatment: spendingTreatmentSchema.optional(),
   categoryId: z.string().nullable().optional(),
   note: z.string().nullable().optional(),
   isImpulse: z.boolean().optional(),
@@ -60,6 +63,11 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       }
     : parsedImported!.data;
 
+  const treatment = updateData?.spendingTreatment ?? tx.spendingTreatment;
+  const amount = parsedManual?.data.amount ?? tx.amount.toNumber();
+  if (!validSpendingTreatment(amount, treatment)) {
+    return err("A refund must be a negative credit amount");
+  }
   const updated = await prisma.transaction.update({
     where: { id: params.id },
     data: updateData,
@@ -74,6 +82,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     note: updated.note,
     isImpulse: updated.isImpulse,
     isManual: updated.isManual,
+    spendingTreatment: updated.spendingTreatment,
     account: {
       id: updated.account.id,
       name: updated.account.name,

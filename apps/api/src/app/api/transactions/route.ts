@@ -4,10 +4,12 @@ import { AccountSource, prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
 import { ok, err, unauthorized } from "@/lib/response";
 import { moneyAmount } from "@/lib/validation";
+import { spendingTreatmentSchema, validSpendingTreatment } from "@/lib/spending-treatment";
 
 const createSchema = z.object({
   accountId: z.string(),
   amount: moneyAmount,
+  spendingTreatment: spendingTreatmentSchema.default("AUTO"),
   date: z.string().datetime(),
   merchantName: z.string().optional(),
   categoryId: z.string().optional(),
@@ -67,6 +69,7 @@ export async function GET(req: NextRequest) {
       note: tx.note,
       isImpulse: tx.isImpulse,
       isManual: tx.isManual,
+      spendingTreatment: tx.spendingTreatment,
       account: {
         id: tx.account.id,
         name: tx.account.name,
@@ -98,6 +101,9 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   const parsed = createSchema.safeParse(body);
   if (!parsed.success) return err("Invalid request body");
+  if (!validSpendingTreatment(parsed.data.amount, parsed.data.spendingTreatment)) {
+    return err("A refund must be a negative credit amount");
+  }
 
   const account = await prisma.account.findFirst({
     where: { id: parsed.data.accountId, userId },
@@ -125,6 +131,7 @@ export async function POST(req: NextRequest) {
     note: tx.note,
     isImpulse: tx.isImpulse,
     isManual: tx.isManual,
+    spendingTreatment: tx.spendingTreatment,
     account: {
       id: tx.account.id,
       name: tx.account.name,

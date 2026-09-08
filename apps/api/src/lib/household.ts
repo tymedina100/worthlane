@@ -321,7 +321,10 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
           where: {
             accountId: { in: participatingAccountIds },
             categoryId: { in: categoryIds },
-            amount: { gt: 0 },
+            OR: [
+              { spendingTreatment: "AUTO", amount: { gt: 0 } },
+              { spendingTreatment: "REFUND", amount: { lt: 0 } },
+            ],
             date: { gte: month.start, lt: month.end },
           },
           _sum: { amount: true },
