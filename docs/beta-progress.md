@@ -172,3 +172,19 @@ production changes or spending. Full beta acceptance remains unproven.
 - Still open: report/cashflow timezone alignment, old snapshot period labeling,
   split history, interactive classification saves, and full banking/debt/beta
   verification. No production migration or external service activation.
+
+## 2026-09-08 — report month boundaries
+
+- Spending and cashflow reports now resolve the active household timezone (UTC
+  for users without a household), using shared inclusive/exclusive month ranges.
+  The default report month follows that timezone. Future transactions are capped
+  at now, including explicit future report requests.
+- Added a real PostgreSQL boundary journey with only the JavaScript Date clock
+  fixed: at 2026-09-01 02:00 UTC, Phoenix is still in August. Spending report,
+  cashflow and dashboard show August spending 7; cashflow puts the prior-boundary
+  3 in July and excludes future 9 at the September local boundary.
+- `./scripts/test-postgres.ps1` passed both persisted journeys; API typecheck and
+  `git diff --check` passed. No provider calls or production changes.
+- Next priority: actual HTTP/BFF and interactive classification/save/logout
+  verification. Historical snapshot/split semantics, onboarding polish, Sandbox
+  banking, due-date/debt flows and full regression builds remain unfinished.

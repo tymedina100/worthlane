@@ -1,4 +1,4 @@
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it, vi } from "vitest";
 import { randomUUID } from "node:crypto";
 import { weekRangeInTimeZone } from "@worthlane/core";
 import { NextRequest } from "next/server";
@@ -47,6 +47,30 @@ async function newUser(name: string) {
 afterAll(async () => { await prisma.$disconnect(); });
 
 describe("persistent household consent and budget journey", () => {
+  it("keeps reports and dashboard in the household month while UTC is ahead", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-09-01T02:00:00Z"));
+    try {
+      const owner = await newUser("boundary");
+      await call(createHousehold, owner.token, {
+        name: "Boundary household", displayName: "Alex", timezone: "America/Phoenix", currency: "USD",
+      }, 201);
+      const account = await call(createAccount, owner.token, {
+        name: "Boundary checking", type: "CHECKING", currentBalance: 100,
+      }, 201);
+      await prisma.transaction.createMany({ data: [
+        { userId: owner.id, accountId: account.id, amount: "3", date: new Date("2026-08-01T06:59:59.999Z") },
+        { userId: owner.id, accountId: account.id, amount: "7", date: new Date("2026-09-01T01:00:00Z") },
+        { userId: owner.id, accountId: account.id, amount: "9", date: new Date("2026-09-01T07:00:00Z") },
+      ] });
+      const report = await call(spendingReport, owner.token);
+      expect(report).toMatchObject({ month: "2026-08", totalSpending: 7 });
+      const cash = await call(cashflow, owner.token);
+      expect(cash.months.at(-1)).toMatchObject({ month: "2026-08", spending: 7 });
+      expect(cash.months.at(-2)).toMatchObject({ month: "2026-07", spending: 3 });
+      expect((await call(dashboard, owner.token)).monthlySpending).toBe(7);
+    } finally { vi.useRealTimers(); }
+  });
   it("registers solo, joins with consent, persists splits across login, and enforces account privacy", async () => {
     const owner = await newUser("owner");
     const partner = await newUser("partner");

@@ -3,13 +3,8 @@ import { NextRequest } from "next/server";
 import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
 import { ok, err, unauthorized } from "@/lib/response";
-
-function monthBounds(year: number, month: number): { start: Date; end: Date } {
-  return {
-    start: new Date(year, month - 1, 1),
-    end: new Date(year, month, 0, 23, 59, 59, 999),
-  };
-}
+import { monthRangeInTimeZone } from "@worthlane/core";
+import { financialTimeZone } from "@/lib/budget-period";
 
 // Category spending breakdown for a month with prior-month deltas.
 export async function GET(req: NextRequest) {
@@ -21,32 +16,35 @@ export async function GET(req: NextRequest) {
   }
 
   const now = new Date();
+  const timeZone = await financialTimeZone(userId);
+  const localMonth = monthRangeInTimeZone(now, timeZone);
   const monthParam =
     req.nextUrl.searchParams.get("month") ??
-    `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    `${localMonth.year}-${String(localMonth.month).padStart(2, "0")}`;
   const match = /^(\d{4})-(\d{2})$/.exec(monthParam);
   if (!match) return err("month must be YYYY-MM", 400);
 
   const year = Number(match[1]);
   const month = Number(match[2]);
-  if (month < 1 || month > 12) return err("month must be YYYY-MM", 400);
+  if (year < 1000 || month < 1 || month > 12) return err("month must be YYYY-MM", 400);
 
-  const current = monthBounds(year, month);
-  const previous = monthBounds(month === 1 ? year - 1 : year, month === 1 ? 12 : month - 1);
+  // The 15th at UTC lies in the requested calendar month in every IANA zone.
+  const current = monthRangeInTimeZone(new Date(Date.UTC(year, month - 1, 15)), timeZone);
+  const previous = monthRangeInTimeZone(new Date(current.start.getTime() - 1), timeZone);
 
   const [currentGroups, previousGroups, incomeAgg] = await Promise.all([
     prisma.transaction.groupBy({
       by: ["categoryId"],
-      where: { userId, date: { gte: current.start, lte: current.end }, ...spendingWhere },
+      where: { userId, date: { gte: current.start, lt: current.end, lte: now }, ...spendingWhere },
       _sum: { amount: true },
     }),
     prisma.transaction.groupBy({
       by: ["categoryId"],
-      where: { userId, date: { gte: previous.start, lte: previous.end }, ...spendingWhere },
+      where: { userId, date: { gte: previous.start, lt: previous.end, lte: now }, ...spendingWhere },
       _sum: { amount: true },
     }),
     prisma.transaction.aggregate({
-      where: { userId, date: { gte: current.start, lte: current.end }, ...incomeWhere },
+      where: { userId, date: { gte: current.start, lt: current.end, lte: now }, ...incomeWhere },
       _sum: { amount: true },
     }),
   ]);
