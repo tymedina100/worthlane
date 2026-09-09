@@ -28,7 +28,7 @@ function loadSdk() {
   });
 }
 
-export function PlaidLinkButton({ onManage, itemId }: { onManage: ManagePlaid; itemId?: string }) {
+export function PlaidLinkButton({ onManage, itemId, includeLiabilities = false }: { onManage: ManagePlaid; itemId?: string; includeLiabilities?: boolean }) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const handler = useRef<LinkHandler | null>(null);
@@ -39,7 +39,7 @@ export function PlaidLinkButton({ onManage, itemId }: { onManage: ManagePlaid; i
     setBusy(true);
     setMessage("");
     try {
-      const { linkToken } = await onManage<{ linkToken: string }>({ path: "/link-token", body: { platform: "web", mode: itemId ? "update" : "create", ...(itemId ? { plaidItemId: itemId } : {}) } });
+      const { linkToken } = await onManage<{ linkToken: string }>({ path: "/link-token", body: { platform: "web", mode: itemId ? "update" : "create", ...(itemId ? { plaidItemId: itemId } : {}), ...(includeLiabilities ? { includeLiabilities: true } : {}) } });
       const sdk = await loadSdk();
       if (!mounted.current) return;
       handler.current?.destroy();
@@ -49,12 +49,12 @@ export function PlaidLinkButton({ onManage, itemId }: { onManage: ManagePlaid; i
           void (async () => {
             try {
               if (itemId) {
-                await onManage({ path: "/sync", body: { plaidItemId: itemId, refresh: true } });
+                await onManage({ path: "/sync", body: { plaidItemId: itemId, refresh: !includeLiabilities } });
               } else {
                 if (!publicToken) throw new Error("Bank linking did not return a token. Please try again.");
                 await onManage({ path: "/exchange", body: { publicToken, ...(metadata.institution?.name ? { institutionName: metadata.institution.name } : {}) } });
               }
-              if (mounted.current) setMessage("Connection saved. Review account freshness and choose what to share.");
+              if (mounted.current) setMessage(includeLiabilities ? "Link completed. Use Check debt details to retrieve available data. Your saved plans have not changed." : "Connection saved. Review account freshness and choose what to share.");
             } catch (error) {
               if (mounted.current) setMessage(error instanceof Error ? error.message : "Connection could not be saved. Please try again.");
             } finally { if (mounted.current) setBusy(false); }
@@ -70,7 +70,7 @@ export function PlaidLinkButton({ onManage, itemId }: { onManage: ManagePlaid; i
     }
   }
   return <div>
-    <button className="button button--secondary" type="button" disabled={busy} onClick={() => void connect()}>{busy ? "Connecting…" : itemId ? "Reconnect" : "Connect bank"}</button>
+    <button className="button button--secondary" type="button" disabled={busy} onClick={() => void connect()}>{busy ? "Connecting…" : includeLiabilities ? "Review debt-data consent" : itemId ? "Reconnect" : "Connect bank"}</button>
     {message ? <p role="status">{message}</p> : null}
   </div>;
 }

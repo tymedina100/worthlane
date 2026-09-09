@@ -89,6 +89,9 @@ it("persists encrypted Sandbox Items, repeats sync, isolates owners, records rel
     expect(failed.errorCode).toBe("ITEM_LOGIN_REQUIRED");
     const update = await data(await linkToken(req(session.accessToken, { platform: "web", mode: "update", plaidItemId: item.id })));
     expect(Boolean(update.linkToken)).toBe(true);
+    stage = "liabilities consent update token";
+    const consent = await data(await linkToken(req(session.accessToken, { platform: "web", mode: "update", plaidItemId: item.id, includeLiabilities: true })));
+    expect(Boolean(consent.linkToken)).toBe(true);
     stage = "unlink cleanup";
     await data(await unlink(req(session.accessToken, {}), { params: { id: item.id } }));
     cleanupToken = undefined;

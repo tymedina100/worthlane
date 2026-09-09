@@ -1,10 +1,18 @@
 "use client";
+import { PlaidLinkButton } from "./plaid-link-button";
+import type { ManagePlaid } from "../src/lib/workspace-data";
 import { useState } from "react";
 import { liabilitySnapshotSchema, type LiabilitySnapshot } from "@worthlane/contracts";
 export function BankDebtDetails({ connections }: { connections: { id: string; institution: string | null }[] }) {
   const [snapshot, setSnapshot] = useState<{ id: string; data: LiabilitySnapshot } | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const manage: ManagePlaid = async ({ path, body }) => {
+    const response = await fetch(`/api/plaid${path}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body ?? {}) });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error?.message ?? "Bank linking is unavailable.");
+    return payload.data;
+  };
   async function check(id: string) {
     setBusy(true); setMessage(""); setSnapshot(null);
     try {
@@ -18,7 +26,7 @@ export function BankDebtDetails({ connections }: { connections: { id: string; in
   const data = snapshot && connections.some(connection => connection.id === snapshot.id) ? snapshot.data : null;
   return <section className="panel workspace-panel upcoming-panel"><div className="panel__header"><p className="section-kicker">Personal scope · Only you</p><h2>Bank debt details</h2><p>Check supported linked debts, then confirm the figures on your statement before entering them in your plan. Checking does not change a saved plan.</p></div>
     {!connections.length && <p>No bank connections yet. You can enter debt details manually below.</p>}
-    <div className="debt-plan-actions">{connections.map(connection => <button key={connection.id} disabled={busy} className="button button--secondary" onClick={() => void check(connection.id)}>Check {connection.institution ?? "bank connection"} debt details</button>)}</div>
+    <div className="debt-plan-actions">{connections.map(connection => <div key={connection.id}><button disabled={busy} className="button button--secondary" onClick={() => void check(connection.id)}>Check {connection.institution ?? "bank connection"} debt details</button><p>Review permission to share debt details through Plaid. This does not share them with your partner.</p><PlaidLinkButton onManage={manage} itemId={connection.id} includeLiabilities /></div>)}</div>
     <p role="status">{busy ? "Checking debt details…" : message}</p>
     {data && <><p>Source: Plaid Liabilities · Retrieved {new Date(data.retrievedAt).toLocaleString()}</p><p>{data.notice}</p>{!data.debts.length && <p>No supported debt details were returned. Continue with manual entry.</p>}{data.debts.map(debt => {
       const money = (value: number | null) => value === null ? "Not provided" : `${(value / 100).toFixed(2)} ${debt.currency ?? "(currency not provided)"}`;

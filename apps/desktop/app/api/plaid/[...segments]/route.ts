@@ -15,7 +15,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function targetFor(segments: string[], body: unknown) {
   if (segments.length === 1 && segments[0] === "link-token") {
-    if (!isRecord(body) || Object.keys(body).some((key) => !["platform", "mode", "plaidItemId"].includes(key))) return null;
+    if (!isRecord(body) || Object.keys(body).some((key) => !["platform", "mode", "plaidItemId", "includeLiabilities"].includes(key))) return null;
+    if (body.includeLiabilities !== undefined && typeof body.includeLiabilities !== "boolean") return null;
     if (body.platform !== "web" || !["create", "update"].includes(String(body.mode))) return null;
     if (body.mode === "update" && (typeof body.plaidItemId !== "string" || !body.plaidItemId)) return null;
     if (body.mode === "create" && body.plaidItemId !== undefined) return null;

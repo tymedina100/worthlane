@@ -180,16 +180,18 @@ export async function createLinkToken(
     platform: PlaidPlatform;
     mode: PlaidLinkMode;
     accessToken?: string;
+    includeLiabilities?: boolean;
   }
 ) {
   const request: LinkTokenCreateRequest = {
     user: { client_user_id: userId },
     client_name: "Worthlane",
     products: options.mode === "create" ? [Products.Transactions] : undefined,
+    additional_consented_products: options.includeLiabilities ? [Products.Liabilities] : undefined,
     country_codes: [CountryCode.Us],
     language: "en",
     webhook: getWebhookUrl(),
-    transactions: { days_requested: 730 },
+    transactions: options.mode === "create" ? { days_requested: 730 } : undefined,
   };
 
   if (options.platform === "ios") {

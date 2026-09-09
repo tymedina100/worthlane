@@ -761,3 +761,25 @@ production changes or spending. Full beta acceptance remains unproven.
 - Remaining: Liabilities consent upgrades, explicit confirmed copy with saved
   provenance, rendered review/error/empty-state checks, and broader banking/native
   integrated beta acceptance. These panels currently support review/manual entry.
+
+## 2026-09-08 — explicit desktop debt-data consent request
+
+- Added a separate Review debt-data consent action for existing connections in
+  desktop bank-debt review. Link requests additional Liabilities consent only when
+  explicitly selected; ordinary bank creation stays Transactions-only. Retrieval
+  remains a separate Check action and never changes saved plans automatically.
+- Update-mode token requests now omit transaction initialization settings. The
+  desktop proxy validates the optional boolean; non-Sandbox Liabilities requests
+  remain disabled unless explicitly configured. No production activation occurred.
+- API148 tests passed, including product-consent request shape, missing update
+  access token and non-Sandbox gating. `./scripts/test-postgres.ps1 -Sandbox`
+  passed21 migrations/5DB tests and live Sandbox integration including the new
+  consent-update token. Provider Items were removed and the database stopped.
+- `./scripts/test-postgres.ps1 -Http` passed21 migrations/5DB tests and the full
+  real HTTP suite, including the added consent payload type/auth checks. Database
+  and HTTP servers stopped successfully.
+- All workspace typechecks and `git diff --check` passed after server shutdown.
+- This proves token creation, not interactive consent completion: the Sandbox
+  fixture already has Liabilities. Native consent, rendered Link/recovery/OAuth,
+  confirmed copy into plans with provenance, joint/manual deduplication and final
+  integrated/device acceptance remain unfinished. No deployment or spending.

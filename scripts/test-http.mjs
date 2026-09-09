@@ -64,6 +64,8 @@ try {
   await stranger('/api/plaid/link-token', { method: 'POST', status: 400, body: { platform: 'web', mode: 'update' } });
   await stranger('/api/plaid/link-token', { method: 'POST', status: 400, body: { platform: 'ios', mode: 'create' } });
   await stranger('/api/plaid/exchange', { method: 'POST', status: 400, body: { publicToken: 'synthetic-token', accessToken: 'not-accepted' } });
+  await stranger('/api/plaid/link-token', { method: 'POST', status: 400, body: { platform: 'web', mode: 'create', includeLiabilities: 'true' } });
+  await stranger('/api/plaid/link-token', { method: 'POST', status: 401, body: { platform: 'web', mode: 'create', includeLiabilities: true } });
   console.log('PASS: Link/exchange BFF authentication, origin and narrow payload validation.');
   await stranger('/api/plaid/items/missing/liabilities', { method: 'POST', status: 401, body: {} });
   await stranger('/api/plaid/items/missing/liabilities', { method: 'POST', status: 403, origin: 'https://untrusted.invalid', body: {} });

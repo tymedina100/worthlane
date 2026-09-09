@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 
 const {
@@ -36,6 +36,7 @@ function request(body: unknown) {
 }
 
 describe("POST /api/plaid/link-token", () => {
+  afterEach(() => vi.unstubAllEnvs());
   beforeEach(() => {
     vi.clearAllMocks();
     mockGetAuthUser.mockReturnValue({ sub: "user-1", email: "user@example.com" });
@@ -63,4 +64,11 @@ describe("POST /api/plaid/link-token", () => {
     expect(response.status).toBe(400);
     expect(mockCreateLinkToken).not.toHaveBeenCalled();
   });
+  it("gates non-Sandbox debt consent without changing ordinary Link", async () => {
+    vi.stubEnv("PLAID_ENV", "production"); vi.stubEnv("PLAID_LIABILITIES_ENABLED", "false");
+    expect((await POST(request({ platform: "web", mode: "create", includeLiabilities: true }))).status).toBe(503);
+    expect(mockCreateLinkToken).not.toHaveBeenCalled();
+    expect((await POST(request({ platform: "web", mode: "create" }))).status).toBe(200);
+  });
+
 });

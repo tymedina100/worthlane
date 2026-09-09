@@ -11,6 +11,7 @@ const schema = z.object({
   platform: z.enum(["ios", "android", "web"]),
   mode: z.enum(["create", "update"]),
   plaidItemId: z.string().optional(),
+  includeLiabilities: z.boolean().optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -24,6 +25,8 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   const parsed = schema.safeParse(body);
   if (!parsed.success) return err("Invalid request body");
+
+  if (parsed.data.includeLiabilities && (process.env.PLAID_ENV ?? "sandbox") !== "sandbox" && process.env.PLAID_LIABILITIES_ENABLED !== "true") return err("Bank debt details are not enabled here. Use manual entry.", 503, "LIABILITIES_DISABLED");
 
   try {
     let accessToken: string | undefined;
@@ -44,6 +47,7 @@ export async function POST(req: NextRequest) {
       platform: parsed.data.platform,
       mode: parsed.data.mode,
       accessToken,
+      ...(parsed.data.includeLiabilities ? { includeLiabilities: true } : {}),
     });
 
     await captureServerEvent({
