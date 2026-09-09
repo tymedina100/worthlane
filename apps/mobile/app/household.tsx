@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -170,6 +170,10 @@ function AccountsSection({ summary }: { summary: HouseholdSummary }) {
         )}
       </View>
 
+      {summary.finances.detailedAccounts.filter(account => account.isOwner).map(account => (
+        <AccountSharing key={account.id} account={account} />
+      ))}
+
       {summary.finances.summaryOnlyByOwner.length ? (
         <View style={styles.summaryStack}>
           {summary.finances.summaryOnlyByOwner.map((owner) => (
@@ -203,6 +207,50 @@ function AccountsSection({ summary }: { summary: HouseholdSummary }) {
       ) : null}
     </View>
   );
+}
+
+const sharingChoices = [
+  { value: "PERSONAL", label: "Private", description: "Only you can see this account. Its balance and activity are excluded from your partner’s household view." },
+  { value: "SUMMARY", label: "Summary only", description: "Your partner can see totals that include this account’s balance. The account name and transactions stay hidden." },
+  { value: "SHARED", label: "Shared detail", description: "Your partner can see this account’s name, balance and transaction history, including new activity. It is included in their household totals." },
+] as const;
+
+function AccountSharing({ account }: { account: DetailedAccount }) {
+  const styles = useThemedStyles(createStyles);
+  const userId = useAuthStore(state => state.userId);
+  const client = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [visibility, setVisibility] = useState(account.visibility);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  useEffect(() => setVisibility(account.visibility), [account.visibility]);
+  async function save() {
+    if (saving || visibility === account.visibility) return;
+    setSaving(true); setMessage(null);
+    try {
+      await api.patch(`/households/current/accounts/${encodeURIComponent(account.id)}/visibility`, { visibility });
+      await client.invalidateQueries({ queryKey: ["household-summary", userId] });
+      setMessage("Visibility saved.");
+    } catch (caught) { setMessage(caught instanceof Error ? caught.message : "Visibility could not be saved."); }
+    finally { setSaving(false); }
+  }
+  return <View style={[styles.card, { marginTop: spacing.sm }]}>
+    <TouchableOpacity accessibilityRole="button" accessibilityState={{ expanded: open }} onPress={() => setOpen(value => !value)}>
+      <Text style={styles.rowTitle}>Sharing for {account.name} {open ? "−" : "+"}</Text>
+      <Text style={styles.rowMeta}>Only you can change who sees this account.</Text>
+    </TouchableOpacity>
+    {open ? <>
+      {sharingChoices.map(choice => <TouchableOpacity key={choice.value} accessibilityRole="radio" accessibilityState={{ checked: visibility === choice.value, disabled: saving }} disabled={saving} style={[styles.retryButton, { minHeight: 44, justifyContent: "center" }]} onPress={() => { setVisibility(choice.value); setMessage(null); }}>
+        <Text style={styles.retryText}>{visibility === choice.value ? "✓ " : ""}{choice.label}</Text>
+      </TouchableOpacity>)}
+      <Text style={styles.rowMeta}>{sharingChoices.find(choice => choice.value === visibility)?.description}</Text>
+      <Text style={styles.rowMeta}>This does not change who paid or your agreed budget responsibilities. You can change visibility later.</Text>
+      <TouchableOpacity accessibilityRole="button" accessibilityState={{ disabled: saving || visibility === account.visibility }} disabled={saving || visibility === account.visibility} style={[styles.primaryButton, (saving || visibility === account.visibility) && { opacity: 0.5 }]} onPress={() => void save()}>
+        <Text style={styles.primaryButtonText}>{saving ? "Saving…" : "Save visibility"}</Text>
+      </TouchableOpacity>
+      {message ? <Text accessibilityLiveRegion="polite" style={styles.rowMeta}>{message}</Text> : null}
+    </> : null}
+  </View>;
 }
 
 function ResponsibilityCard({ item, currency }: { item: Responsibility; currency: string }) {

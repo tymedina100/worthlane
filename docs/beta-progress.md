@@ -1093,3 +1093,32 @@ production changes or spending. Full beta acceptance remains unproven.
   the isolated local API. Full solo/two-user spending, banking, bills/debt/reminders,
   persistence and regression acceptance remain required; this is a bounded native
   invitation/privacy check, not beta completion.
+
+## 2026-09-09 — mobile owner-controlled account visibility
+
+- Added account-owner controls for Private, Summary only and Shared detail, with
+  disclosure before an explicit Save visibility action. Merely selecting an option
+  does not change server access. Household members can manage their own accounts;
+  controls are not granted based on household-owner role. The existing authenticated
+  visibility endpoint continues enforcing account ownership. Choices have 44px
+  minimum touch targets and disabled save state is visually distinct.
+- Recovered after an intentional interruption: previous process handle was absent,
+  ports were not listening and pg_ctl confirmed the retained test cluster was stopped.
+  Resumed that same isolated database, not replacement data; HTTP/BFF suites passed.
+  The interrupted SUMMARY save had persisted. Fresh logins confirmed owner visibility,
+  partner summary-only totals and hidden account details. Restarted Metro/emulator;
+  the retained mobile session loaded and displayed Summary to partner.
+- Native Android actions then saved SHARED and PERSONAL. Fresh owner/partner API
+  logins after each save verified exact totals: Casey's 123,456 cents became 469,134
+  while Jordan's 345,678 cents were summary/shared, then returned to 123,456 when
+  sharing was revoked. Summary mode excluded Jordan account detail; shared mode
+  included it; private mode excluded both detail and summary. Casey's 15,000-cent
+  responsibility remained unchanged throughout. Android showed Visibility saved.
+- The account was a synthetic API fixture owned by Jordan (household MEMBER).
+  Changes were made through Android UI; partner results were verified through fresh
+  API logins, not a simultaneously open partner UI. Transaction-history display and
+  already-open cross-device revocation behavior remain separate acceptance checks.
+  Mobile typecheck passed. No production settings, banking or real accounts changed.
+- Remaining visual finding: the personal dashboard available-balance formatter still
+  rounds cents, while household money now preserves them. Full integrated solo and
+  two-user financial journeys, native banking/reminders and regression builds remain.
