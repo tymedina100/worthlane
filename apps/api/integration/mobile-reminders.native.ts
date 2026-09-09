@@ -89,4 +89,47 @@ describe('mobile reminder session isolation (mock native adapters)', () => {
     }
     expect(mocks.cancel).toHaveBeenCalledTimes(3); expect(mocks.schedule).not.toHaveBeenCalled();
   });
+  it('reconciles changed and deleted items without asking for notification permission', async () => {
+    const r = await import('../../mobile/src/lib/obligation-reminders'); await r.setReminderSession('alex');
+    mocks.scheduled.mockResolvedValue([
+      { identifier: 'deleted', content: { data: { obligationId: 'gone', reminderUserId: 'alex' } } },
+      { identifier: 'unrelated', content: { data: {} } },
+    ]);
+    mocks.permission.mockResolvedValue({ status: 'denied' });
+    expect(await r.reconcileObligationReminders('alex', async () => [item])).toBe('denied');
+    expect(mocks.cancel).toHaveBeenCalledWith('deleted');
+    expect(mocks.cancel).not.toHaveBeenCalledWith('unrelated');
+    expect(mocks.requestPermission).not.toHaveBeenCalled();
+    mocks.permission.mockResolvedValue({ status: 'granted' });
+    expect(await r.reconcileObligationReminders('alex', async () => [{ ...item, dueDate: '2099-11-20' }])).toBe('checked');
+    expect(mocks.schedule.mock.calls[0][0].trigger.date.getMonth()).toBe(10);
+  });
+  it('preserves existing schedules when the server cannot provide a fresh snapshot', async () => {
+    const r = await import('../../mobile/src/lib/obligation-reminders'); await r.setReminderSession('alex');
+    await expect(r.reconcileObligationReminders('alex', async () => { throw new Error('offline'); })).rejects.toThrow('offline');
+    expect(mocks.cancel).not.toHaveBeenCalled(); expect(mocks.schedule).not.toHaveBeenCalled();
+  });
+  it('discards a snapshot returned after logout', async () => {
+    const r = await import('../../mobile/src/lib/obligation-reminders'); await r.setReminderSession('alex');
+    let finish!: (items: UpcomingObligation[]) => void;
+    const work = r.reconcileObligationReminders('alex', () => new Promise(resolve => { finish = resolve; }));
+    await vi.waitFor(() => expect(finish).toBeDefined());
+    const logout = r.setReminderSession(null); finish([item]);
+    expect(await work).toBe('stale'); await logout;
+    expect(mocks.schedule).not.toHaveBeenCalled();
+  });
+
+  it('releases the operation queue when snapshot loading stalls', async () => {
+    const r = await import('../../mobile/src/lib/obligation-reminders'); await r.setReminderSession('alex');
+    vi.useFakeTimers();
+    try {
+      const work = r.reconcileObligationReminders('alex', () => new Promise(() => {}));
+      const rejected = expect(work).rejects.toThrow('timed out');
+      await vi.advanceTimersByTimeAsync(15_000);
+      await rejected;
+      await r.setReminderSession(null);
+      expect(mocks.schedule).not.toHaveBeenCalled();
+    } finally { vi.useRealTimers(); }
+  });
+
 });

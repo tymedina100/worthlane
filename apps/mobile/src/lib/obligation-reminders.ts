@@ -53,9 +53,7 @@ async function cancel(userId: string, id: string) {
 export function cancelObligationReminder(userId: string | null, id: string) {
   return enqueue(async () => { if (userId && userId === activeUser) await cancel(userId, id); });
 }
-export function scheduleObligationReminder(userId: string | null, item: UpcomingObligation) {
-  const started = generation;
-  return enqueue(async () => {
+async function schedule(userId: string | null, item: UpcomingObligation, started: number, requestPermission: boolean) {
     if (!userId || userId !== activeUser || started !== generation) return "not-scheduled" as const;
     await cancel(userId, item.id);
     const timing = item.reminderTiming ?? (await getDefaultReminder(userId));
@@ -64,7 +62,7 @@ export function scheduleObligationReminder(userId: string | null, item: Upcoming
       await Notifications.setNotificationChannelAsync("obligations", { name: "Upcoming reminders", importance: Notifications.AndroidImportance.DEFAULT });
     }
     let permission = await Notifications.getPermissionsAsync();
-    if (permission.status !== "granted") permission = await Notifications.requestPermissionsAsync();
+    if (permission.status !== "granted" && requestPermission) permission = await Notifications.requestPermissionsAsync();
     if (permission.status !== "granted") return "denied" as const;
     if (started !== generation || userId !== activeUser) return "not-scheduled" as const;
 
@@ -82,5 +80,40 @@ export function scheduleObligationReminder(userId: string | null, item: Upcoming
     }
     await AsyncStorage.setItem(notificationKey(userId, item.id), id);
     return "scheduled" as const;
+}
+
+export function scheduleObligationReminder(userId: string | null, item: UpcomingObligation) {
+  const started = generation;
+  return enqueue(() => schedule(userId, item, started, true));
+}
+
+// Fetch inside the same queue as edits: an older server snapshot cannot finish
+// after a newer local schedule operation and overwrite it.
+export function reconcileObligationReminders(userId: string, load: () => Promise<UpcomingObligation[]>) {
+  const started = generation;
+  return enqueue(async () => {
+    if (userId !== activeUser || started !== generation) return "stale" as const;
+    // A stalled network request must not indefinitely hold logout cleanup.
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    const items = await Promise.race([
+      load(),
+      new Promise<never>((_, reject) => { timeout = setTimeout(() => reject(new Error("Reminder refresh timed out")), 15_000); }),
+    ]).finally(() => clearTimeout(timeout));
+    if (userId !== activeUser || started !== generation) return "stale" as const;
+    const ids = new Set(items.map(item => item.id));
+    const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+    for (const notification of scheduled) {
+      const data = notification.content.data;
+      if (data?.reminderUserId === userId && typeof data.obligationId === "string" && !ids.has(data.obligationId)) {
+        await Notifications.cancelScheduledNotificationAsync(notification.identifier);
+        await AsyncStorage.removeItem(notificationKey(userId, data.obligationId));
+      }
+    }
+    let denied = false;
+    for (const item of items) {
+      if (userId !== activeUser || started !== generation) return "stale" as const;
+      if (await schedule(userId, item, started, false) === "denied") denied = true;
+    }
+    return denied ? "denied" as const : "checked" as const;
   });
 }

@@ -612,3 +612,22 @@ production changes or spending. Full beta acceptance remains unproven.
 - Remaining: restore/reconcile reminders on login and after desktop edits, mobile
   per-item editing, physical device permission/delivery/timezone QA, rendered
   desktop Upcoming, Liabilities and remaining banking/integrated beta gates.
+
+## 2026-09-08 — foreground reminder reconciliation
+
+- Authenticated mobile app startup/login and foreground return fetch the owner's
+  current Upcoming list and reconcile local reminders. Deleted items are removed;
+  changed/paid/inactive/off items replace or cancel schedules. This restores saved
+  explicit preferences after logout and picks up desktop edits when mobile resumes.
+- Refresh does not prompt for permission. Denied permission or refresh failure is
+  visible in an app warning. Offline snapshots do not erase existing reminders;
+  they may remain stale until a successful refresh. No background push sync claim.
+- The fetch shares the reminder operation queue, rejects stale sessions, and times
+  out after15 seconds so a stalled request cannot indefinitely hold logout cleanup.
+- Dedicated mocked-native suite passes10 tests, including changed/deleted snapshots,
+  offline preservation, no background permission prompt, logout during fetch and
+  stalled-fetch queue release. Workspace typechecks passed before the timeout
+  addition; iOS export of the final implementation passed1941 modules/6.94MB.
+- Remaining: mobile per-item edit/reminder controls, rendered desktop Upcoming
+  journey, physical-device foreground/delivery/permission/timezone acceptance,
+  Liabilities and remaining banking/integrated beta gates.
