@@ -7,6 +7,8 @@ import { api } from "@/lib/api";
 import { isPostHogEnabled, posthog } from "@/lib/posthog";
 import { clearPrivateQueryCache } from "@/lib/query-client";
 
+import { setReminderSession } from "@/lib/obligation-reminders";
+
 interface AuthState {
   userId: string | null;
   email: string | null;
@@ -37,6 +39,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     const userId = await SecureStore.getItemAsync("userId");
     const biometricEnabled = (await SecureStore.getItemAsync("biometricEnabled")) === "true";
     const rememberedEmail = (await SecureStore.getItemAsync("rememberedEmail")) ?? null;
+    await setReminderSession(token && userId ? userId : null);
     if (token && userId) {
       if (isPostHogEnabled) {
         if (email) {
@@ -58,6 +61,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       refreshToken: string;
     }>("/auth/login", { email, password });
 
+    await setReminderSession(user.id);
     await clearPrivateQueryCache();
     await SecureStore.setItemAsync("accessToken", accessToken);
     await SecureStore.setItemAsync("refreshToken", refreshToken);
@@ -78,6 +82,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       refreshToken: string;
     }>("/auth/register", { email, password });
 
+    await setReminderSession(user.id);
     await clearPrivateQueryCache();
     await SecureStore.setItemAsync("accessToken", accessToken);
     await SecureStore.setItemAsync("refreshToken", refreshToken);
@@ -91,6 +96,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   logout: async () => {
+    // Invalidate pending schedules immediately, before network logout.
+    const reminderCleanup = setReminderSession(null);
+    const cleanupResult = reminderCleanup.then(() => null, error => error as Error);
     if (isPostHogEnabled) {
       posthog.capture("user logged out");
       await posthog.flush();
@@ -111,6 +119,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     await SecureStore.deleteItemAsync("userId");
     await SecureStore.deleteItemAsync("userEmail");
     set({ userId: null, email: null });
+    const cleanupError = await cleanupResult;
+    if (cleanupError) throw new Error("Signed out. Device reminder cleanup failed; clear Worthlane notifications in device settings.");
   },
 
   enableBiometric: async () => {
@@ -149,6 +159,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
       posthog.capture("user logged in", { method: "biometric" });
     }
+    await setReminderSession(userId);
     set({ userId, email });
   },
 

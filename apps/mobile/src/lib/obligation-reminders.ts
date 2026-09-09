@@ -3,42 +3,84 @@ import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import type { ReminderTiming, UpcomingObligation } from "@worthlane/types";
 
-const DEFAULT_KEY = "worthlane:default-reminder";
-const notificationKey = (id: string) => `worthlane:obligation-reminder:${id}`;
-
-export async function getDefaultReminder(): Promise<ReminderTiming> {
-  return ((await AsyncStorage.getItem(DEFAULT_KEY)) as ReminderTiming | null) ?? "ONE_DAY_BEFORE";
+// Serialize native notification changes so a permission prompt cannot race logout.
+let activeUser: string | null = null;
+let generation = 0;
+let pending: Promise<unknown> = Promise.resolve();
+function enqueue<T>(work: () => Promise<T>): Promise<T> {
+  const result = pending.then(work, work);
+  pending = result.catch(() => undefined);
+  return result;
 }
+const defaultKey = (userId: string) => `worthlane:default-reminder:${userId}`;
+const notificationKey = (userId: string, id: string) => `worthlane:obligation-reminder:${userId}:${id}`;
 
-export async function setDefaultReminder(value: ReminderTiming) {
-  await AsyncStorage.setItem(DEFAULT_KEY, value);
-}
-
-export async function cancelObligationReminder(id: string) {
-  const stored = await AsyncStorage.getItem(notificationKey(id));
-  if (stored) await Notifications.cancelScheduledNotificationAsync(stored).catch(() => undefined);
-  await AsyncStorage.removeItem(notificationKey(id));
-}
-
-export async function scheduleObligationReminder(item: UpcomingObligation) {
-  await cancelObligationReminder(item.id);
-  const timing = item.reminderTiming ?? (await getDefaultReminder());
-  if (timing === "NONE" || item.isPaid || !item.isActive) return "not-scheduled" as const;
-  if (Platform.OS === "android") {
-    await Notifications.setNotificationChannelAsync("obligations", { name: "Upcoming reminders", importance: Notifications.AndroidImportance.DEFAULT });
-  }
-  let permission = await Notifications.getPermissionsAsync();
-  if (permission.status !== "granted") permission = await Notifications.requestPermissionsAsync();
-  if (permission.status !== "granted") return "denied" as const;
-
-  const days = timing === "THREE_DAYS_BEFORE" ? 3 : timing === "ONE_DAY_BEFORE" ? 1 : 0;
-  const [year, month, day] = item.dueDate.split("-").map(Number);
-  const trigger = new Date(year, month - 1, day - days, 9, 0, 0);
-  if (trigger <= new Date()) return "past" as const;
-  const id = await Notifications.scheduleNotificationAsync({
-    content: { title: "Upcoming payment", body: `${item.name} is due ${days === 0 ? "today" : `in ${days} ${days === 1 ? "day" : "days"}`}.`, sound: "default", data: { obligationId: item.id } },
-    trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: trigger },
+export function setReminderSession(userId: string | null): Promise<void> {
+  activeUser = userId;
+  generation++;
+  return enqueue(async () => {
+    const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+    for (const notification of scheduled) {
+      const data = notification.content.data;
+      if (data?.obligationId && (!userId || data.reminderUserId !== userId)) {
+        await Notifications.cancelScheduledNotificationAsync(notification.identifier);
+      }
+    }
+    const presented = await Notifications.getPresentedNotificationsAsync();
+    for (const notification of presented) {
+      if (notification.request.content.data?.obligationId) {
+        await Notifications.dismissNotificationAsync(notification.request.identifier);
+      }
+    }
+    // Old unscoped defaults are deliberately not inherited by another login.
   });
-  await AsyncStorage.setItem(notificationKey(item.id), id);
-  return "scheduled" as const;
+}
+export async function getDefaultReminder(userId: string | null): Promise<ReminderTiming> {
+  if (!userId || userId !== activeUser) return "NONE";
+  const value = await AsyncStorage.getItem(defaultKey(userId));
+  return (["DUE_DATE", "ONE_DAY_BEFORE", "THREE_DAYS_BEFORE", "NONE"].includes(value ?? "") ? value : "NONE") as ReminderTiming;
+}
+export async function setDefaultReminder(userId: string | null, value: ReminderTiming) {
+  if (!userId || userId !== activeUser) return;
+  await AsyncStorage.setItem(defaultKey(userId), value);
+}
+async function cancel(userId: string, id: string) {
+  const key = notificationKey(userId, id);
+  const stored = await AsyncStorage.getItem(key);
+  if (stored) await Notifications.cancelScheduledNotificationAsync(stored);
+  await AsyncStorage.removeItem(key);
+}
+export function cancelObligationReminder(userId: string | null, id: string) {
+  return enqueue(async () => { if (userId && userId === activeUser) await cancel(userId, id); });
+}
+export function scheduleObligationReminder(userId: string | null, item: UpcomingObligation) {
+  const started = generation;
+  return enqueue(async () => {
+    if (!userId || userId !== activeUser || started !== generation) return "not-scheduled" as const;
+    await cancel(userId, item.id);
+    const timing = item.reminderTiming ?? (await getDefaultReminder(userId));
+    if (timing === "NONE" || item.isPaid || !item.isActive) return "not-scheduled" as const;
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("obligations", { name: "Upcoming reminders", importance: Notifications.AndroidImportance.DEFAULT });
+    }
+    let permission = await Notifications.getPermissionsAsync();
+    if (permission.status !== "granted") permission = await Notifications.requestPermissionsAsync();
+    if (permission.status !== "granted") return "denied" as const;
+    if (started !== generation || userId !== activeUser) return "not-scheduled" as const;
+
+    const days = timing === "THREE_DAYS_BEFORE" ? 3 : timing === "ONE_DAY_BEFORE" ? 1 : 0;
+    const [year, month, day] = item.dueDate.split("-").map(Number);
+    const trigger = new Date(year, month - 1, day - days, 9, 0, 0);
+    if (trigger <= new Date()) return "past" as const;
+    const id = await Notifications.scheduleNotificationAsync({
+      content: { title: "Upcoming payment", body: "Open Worthlane to review your upcoming items.", sound: "default", data: { obligationId: item.id, reminderUserId: userId } },
+      trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: trigger },
+    });
+    if (started !== generation || userId !== activeUser) {
+      await Notifications.cancelScheduledNotificationAsync(id);
+      return "not-scheduled" as const;
+    }
+    await AsyncStorage.setItem(notificationKey(userId, item.id), id);
+    return "scheduled" as const;
+  });
 }

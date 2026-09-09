@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/store/auth";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -41,6 +42,7 @@ export default function QuickAddScreen() {
   const [name, setName] = useState("");
   const [dueDate, setDueDate] = useState(new Date().toISOString().slice(0, 10));
   const styles = useThemedStyles(createStyles);
+  const userId = useAuthStore(state => state.userId);
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const accounts = useQuery({
@@ -72,7 +74,7 @@ export default function QuickAddScreen() {
         });
       }
 
-      const reminderTiming = await getDefaultReminder();
+      const reminderTiming = await getDefaultReminder(userId);
       const item = await api.post<UpcomingObligation>("/upcoming", {
         name: name.trim(),
         amount: value,
@@ -80,7 +82,7 @@ export default function QuickAddScreen() {
         type: kind === "credit" ? "CREDIT_CARD" : "BILL",
         reminderTiming,
       });
-      const reminderResult = await scheduleObligationReminder(item);
+      const reminderResult = await scheduleObligationReminder(userId, item).catch(() => "unavailable" as const);
       return { item, reminderResult };
     },
     onSuccess: (result) => {
@@ -90,8 +92,8 @@ export default function QuickAddScreen() {
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       Alert.alert(
         "Saved",
-        result && typeof result === "object" && "reminderResult" in result && result.reminderResult === "denied"
-          ? "Your item was saved. You can turn on reminders later in Settings."
+        result && typeof result === "object" && "reminderResult" in result && (result.reminderResult === "denied" || result.reminderResult === "unavailable")
+          ? "Your item was saved, but its device reminder could not be scheduled. Check notification settings before relying on a reminder."
           : "It’s now reflected in your Today view."
       );
       router.back();

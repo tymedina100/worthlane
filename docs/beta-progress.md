@@ -586,3 +586,29 @@ production changes or spending. Full beta acceptance remains unproven.
 - Remaining: rendered Upcoming/action QA, reminder delivery/privacy semantics,
   Liabilities, native runtime and banking recovery/dedupe plus integrated beta
   acceptance and regression builds. This milestone is not beta completion.
+
+## 2026-09-08 — mobile reminder session privacy
+
+- Reminder defaults and stored notification handles are user-scoped. New defaults
+  are off; old unscoped preferences are not inherited. Auth hydrate/login/register/
+  biometric login clean legacy and other-user obligation schedules; logout
+  invalidates pending work immediately and clears schedules/delivered reminders.
+- Serialized native operations plus a session generation prevent permission or
+  scheduling completions from recreating a previous user's reminder after logout.
+  New lock-screen content is generic and contains no bill name or amount.
+- Recurring payment advancement now schedules the next item rather than only
+  cancelling the old reminder. Recurring items no longer remain in Recently paid
+  solely because they have a lastPaidAt timestamp. Save/payment notification errors
+  report saved state separately from reminder failure. Settings state device-local
+  9 a.m., user-scoped defaults, and logout cancellation.
+- `corepack pnpm --filter @worthlane/api exec vitest run --config
+  vitest.mobile.config.ts` passed6 mocked-native tests: legacy/partner cleanup,
+  independent preferences, stale caller, generic content/recurrence, permission
+  and schedule races, and paid/inactive/off cancellation. Dedicated config keeps
+  these tests separate from PostgreSQL integration. Workspace typechecks passed.
+- iOS Expo export to `.tmp/reminder-mobile-export` passed1940 modules/6.93MB
+  Hermes bundle. This is compilation and mocked adapter evidence, not native
+  delivery or complete auth UI verification. No production changes.
+- Remaining: restore/reconcile reminders on login and after desktop edits, mobile
+  per-item editing, physical device permission/delivery/timezone QA, rendered
+  desktop Upcoming, Liabilities and remaining banking/integrated beta gates.

@@ -218,13 +218,13 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const styles = useThemedStyles(createStyles);
-  const { email, logout, biometricEnabled, enableBiometric, disableBiometric } = useAuthStore();
+  const { userId, email, logout, biometricEnabled, enableBiometric, disableBiometric } = useAuthStore();
   const { isPremium } = useSubscription();
   const [biometricSupported, setBiometricSupported] = useState(false);
   const [biometricLabel, setBiometricLabel] = useState("Biometrics");
   const [manualModalVisible, setManualModalVisible] = useState(false);
   const [manualDraft, setManualDraft] = useState<ManualAccountDraft>(emptyManualDraft);
-  const [defaultReminder, setDefaultReminderState] = useState<ReminderTiming>("ONE_DAY_BEFORE");
+  const [defaultReminder, setDefaultReminderState] = useState<ReminderTiming>("NONE");
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -244,7 +244,7 @@ export default function ProfileScreen() {
     })();
   }, []);
 
-  useEffect(() => { getDefaultReminder().then(setDefaultReminderState); }, []);
+  useEffect(() => { getDefaultReminder(userId).then(setDefaultReminderState); }, [userId]);
 
   const accountsQuery = useQuery({
     queryKey: ["accounts"],
@@ -475,11 +475,11 @@ export default function ProfileScreen() {
   };
 
   const reminderLabel = defaultReminder === "DUE_DATE" ? "On the due date" : defaultReminder === "THREE_DAYS_BEFORE" ? "Three days before" : defaultReminder === "NONE" ? "Off" : "One day before";
-  const chooseReminder = () => Alert.alert("Default reminders", "Used for new upcoming items. You can change it later.", [
-    { text: "On due date", onPress: () => { setDefaultReminder("DUE_DATE"); setDefaultReminderState("DUE_DATE"); captureV1Event("reminder_enabled"); } },
-    { text: "One day before", onPress: () => { setDefaultReminder("ONE_DAY_BEFORE"); setDefaultReminderState("ONE_DAY_BEFORE"); captureV1Event("reminder_enabled"); } },
-    { text: "Three days before", onPress: () => { setDefaultReminder("THREE_DAYS_BEFORE"); setDefaultReminderState("THREE_DAYS_BEFORE"); captureV1Event("reminder_enabled"); } },
-    { text: "No reminders", style: "destructive", onPress: () => { setDefaultReminder("NONE"); setDefaultReminderState("NONE"); } },
+  const chooseReminder = () => Alert.alert("Default reminders", "Used for new upcoming items on this login. Reminders use 9 a.m. in this device’s timezone and are cleared on logout. Existing items keep their preference.", [
+    { text: "On due date", onPress: () => { setDefaultReminder(userId, "DUE_DATE"); setDefaultReminderState("DUE_DATE"); captureV1Event("reminder_enabled"); } },
+    { text: "One day before", onPress: () => { setDefaultReminder(userId, "ONE_DAY_BEFORE"); setDefaultReminderState("ONE_DAY_BEFORE"); captureV1Event("reminder_enabled"); } },
+    { text: "Three days before", onPress: () => { setDefaultReminder(userId, "THREE_DAYS_BEFORE"); setDefaultReminderState("THREE_DAYS_BEFORE"); captureV1Event("reminder_enabled"); } },
+    { text: "No reminders", style: "destructive", onPress: () => { setDefaultReminder(userId, "NONE"); setDefaultReminderState("NONE"); } },
     { text: "Cancel", style: "cancel" },
   ]);
   const enableNotifications = async () => {

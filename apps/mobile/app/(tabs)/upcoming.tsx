@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/store/auth";
 import { Alert, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -15,7 +16,7 @@ const groups = (items: UpcomingObligation[]) => {
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const week = new Date(today); week.setDate(week.getDate() + 7);
   for (const item of items) {
-    if (item.isPaid || item.lastPaidAt) { result["Recently paid"].push(item); continue; }
+    if (item.isPaid) { result["Recently paid"].push(item); continue; }
     const due = new Date(`${item.dueDate}T12:00:00`);
     if (due < today) result.Overdue.push(item);
     else if (due.toDateString() === today.toDateString()) result.Today.push(item);
@@ -26,6 +27,7 @@ const groups = (items: UpcomingObligation[]) => {
 };
 
 export default function UpcomingScreen() {
+  const userId = useAuthStore(state => state.userId);
   const insets = useSafeAreaInsets();
   const styles = useThemedStyles(createStyles);
   const qc = useQueryClient();
@@ -33,14 +35,14 @@ export default function UpcomingScreen() {
   const update = useMutation({
     mutationFn: async ({ item, action }: { item: UpcomingObligation; action: "markPaid" | "markUnpaid" }) => {
       const updated = await api.post<UpcomingObligation>(`/upcoming/${item.id}`, { action });
-      if (action === "markPaid") { await cancelObligationReminder(item.id); captureV1Event("upcoming_item_marked_paid"); }
-      else await scheduleObligationReminder(updated);
+      if (action === "markPaid") captureV1Event("upcoming_item_marked_paid");
+      await scheduleObligationReminder(userId, updated).catch(() => { Alert.alert("Payment status saved", "The device reminder could not be updated. Check notification settings before relying on it."); });
       return updated;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["upcoming"] }); qc.invalidateQueries({ queryKey: ["dashboard"] }); },
   });
   const remove = useMutation({
-    mutationFn: async (item: UpcomingObligation) => { await cancelObligationReminder(item.id); return api.delete(`/upcoming/${item.id}`); },
+    mutationFn: async (item: UpcomingObligation) => { await cancelObligationReminder(userId, item.id); return api.delete(`/upcoming/${item.id}`); },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["upcoming"] }); qc.invalidateQueries({ queryKey: ["dashboard"] }); },
   });
   const data = query.data?.items ?? [];
