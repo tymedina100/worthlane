@@ -27,7 +27,7 @@ import { POST as saveDebtPlan, GET as listDebtPlans } from "../src/app/api/debt-
 import { GET as readDebtPlan, PATCH as editDebtPlan } from "../src/app/api/debt-plans/[id]/route";
 import { POST as addDebtDueDate } from "../src/app/api/debt-plans/[id]/upcoming/route";
 import { POST as createUpcoming, GET as listUpcoming } from "../src/app/api/upcoming/route";
-import { POST as payUpcoming } from "../src/app/api/upcoming/[id]/route";
+import { POST as payUpcoming, PATCH as editUpcoming } from "../src/app/api/upcoming/[id]/route";
 import { getHouseholdAccountDetail, setHouseholdAccountVisibility } from "../src/lib/household";
 
 type Handler = (req: NextRequest) => Promise<Response>;
@@ -94,8 +94,12 @@ describe("persistent household consent and budget journey", () => {
       expect((await call(dashboard, owner.token)).today.dueNextSevenDays).toBe(25);
       const pay = (req: NextRequest) => payUpcoming(req, { params: { id: bill.id } });
       expect((await call(pay, owner.token, { action: "markPaid" })).dueDate).toBe("2026-09-30");
+      const editBill = (req: NextRequest) => editUpcoming(req, { params: { id: bill.id } });
+      await call(editBill, owner.token, { amount: 30, dueDate: "2026-09-30" });
       expect((await call(pay, owner.token, { action: "markPaid" })).dueDate).toBe("2026-10-31");
       expect((await prisma.upcomingObligation.findUniqueOrThrow({ where: { id: bill.id } })).anchorDay).toBe(31);
+      await call(editBill, owner.token, { dueDate: "2026-10-20" });
+      expect((await prisma.upcomingObligation.findUniqueOrThrow({ where: { id: bill.id } })).anchorDay).toBe(20);
     } finally { vi.useRealTimers(); }
   });
   it("registers solo, joins with consent, persists splits across login, and enforces account privacy", async () => {

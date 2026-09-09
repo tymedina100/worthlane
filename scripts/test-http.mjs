@@ -115,6 +115,25 @@ try {
   await browser(`/api/debt-plans/${plan.data.id}`, { method: 'PATCH', status: 409, body: { revision: 1, input: planInput } });
   assert.equal((await browser(`/api/debt-plans/${plan.data.id}`)).data.input.monthlyPaymentMinor, 5000);
   console.log('PASS: debt-plan BFF create, reopen, owner isolation, strict input and revision conflict.');
+  await stranger('/api/upcoming', { status: 401 });
+  const dueInput = { name: 'HTTP due', amount: 12.34, dueDate: '2026-09-20', frequency: null, reminderTiming: 'NONE' };
+  await browser('/api/upcoming', { method: 'POST', status: 403, origin: 'https://untrusted.invalid', body: dueInput });
+  await browser('/api/upcoming', { method: 'POST', status: 400, body: { ...dueInput, userId: 'forged' } });
+  const due = await browser('/api/upcoming', { method: 'POST', status: 201, body: dueInput });
+  const duePath = `/api/upcoming/${due.data.id}`;
+  await partner(duePath, { method: 'PATCH', status: 404, body: { amount: 90 } });
+  await partner(duePath, { method: 'POST', status: 404, body: { action: 'markPaid' } });
+  assert(!(await partner('/api/upcoming')).data.items.some(item => item.id === due.data.id));
+  await browser(duePath, { method: 'PATCH', body: { amount: 15, reminderTiming: null } });
+  await browser(duePath, { method: 'POST', body: { action: 'markPaid' } });
+  let persistedDue = (await browser('/api/upcoming')).data.items.find(item => item.id === due.data.id);
+  assert.equal(persistedDue.amount, 15); assert.equal(persistedDue.isPaid, true); assert.equal(persistedDue.reminderTiming, null);
+  await browser(duePath, { method: 'POST', body: { action: 'markUnpaid' } });
+  await browser(duePath, { method: 'PATCH', body: { isActive: false } });
+  persistedDue = (await browser('/api/upcoming')).data.items.find(item => item.id === due.data.id);
+  assert.equal(persistedDue.isPaid, false); assert.equal(persistedDue.isActive, false); assert.equal(persistedDue.type, 'BILL');
+  console.log('PASS: Upcoming BFF create, edit, paid/unpaid, deactivate, reminder preservation, partner isolation, auth/origin/strict validation.');
+
   console.log('PASS: real HTTP registration, HttpOnly session, BFF validation/origin/auth checks, refund save, logout denial, login persistence.');
   if (process.argv.includes('--interactive')) {
     const stopFile = resolve('.tmp', `stop-http-${process.pid}`);

@@ -11,7 +11,7 @@ async function request<T>(path = "", body?: unknown, method = "GET"): Promise<T>
   if (!response.ok) throw new Error(payload.error?.message ?? "Could not load the plan.");
   return payload.data;
 }
-export function DebtPlanner({ currency }: { currency: string }) {
+export function DebtPlanner({ currency, onUpcomingAdded }: { currency: string; onUpcomingAdded?: () => void }) {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [selected, setSelected] = useState<Plan | null>(null);
   const [debts, setDebts] = useState<DebtPlanInput["debts"]>([]);
@@ -31,7 +31,7 @@ export function DebtPlanner({ currency }: { currency: string }) {
   async function addDueDate(entryId: string) {
     if (!selected) return;
     setBusy(true);
-    try { const result = await request<{ message: string }>(`/${encodeURIComponent(selected.id)}/upcoming`, { entryId, revision: selected.revision }, "POST"); setMessage(result.message); }
+    try { const result = await request<{ message: string }>(`/${encodeURIComponent(selected.id)}/upcoming`, { entryId, revision: selected.revision }, "POST"); setMessage(result.message); onUpcomingAdded?.(); }
     catch (error) { setMessage((error as Error).message); }
     finally { setBusy(false); }
   }

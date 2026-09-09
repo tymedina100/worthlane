@@ -25,7 +25,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const data = parsed.data;
   const row = await prisma.upcomingObligation.update({
     where: { id: params.id },
-    data: { ...data, ...(data.dueDate ? { dueDate: parseDateOnly(data.dueDate), anchorDay: parseDateOnly(data.dueDate).getUTCDate() } : {}), accountName: data.accountName?.trim() || data.accountName },
+    data: { ...data, ...(data.dueDate ? { dueDate: parseDateOnly(data.dueDate), ...(data.dueDate !== toDateOnly(owned.item.dueDate) ? { anchorDay: parseDateOnly(data.dueDate).getUTCDate() } : {}) } : {}), accountName: data.accountName?.trim() || data.accountName },
   });
   return ok(serialize(row, await financialTimeZone(owned.userId)));
 }

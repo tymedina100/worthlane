@@ -566,3 +566,23 @@ production changes or spending. Full beta acceptance remains unproven.
   -> Oct31 payment advancement. Exact database shutdown confirmed.
 - Remaining: desktop Upcoming controls, rendered action QA, reminder delivery
   semantics, Liabilities, mobile runtime and banking/beta acceptance gates.
+
+## 2026-09-08 — desktop Upcoming management
+
+- Goals now includes owner-only Upcoming creation/editing, paid/unpaid controls,
+  recurring payment advancement and deactivation. Adding a saved debt minimum
+  refreshes the list. Payment advancement clears an open edit for that item.
+- New items default to reminders off; existing null/explicit preferences survive
+  edits. Desktop does not schedule device notifications. Shared strict contracts
+  and a narrow authenticated, same-origin BFF validate dates and cent amounts.
+- Amount edits that submit an unchanged clamped due date now preserve the intended
+  recurrence day. Changing the actual date resets the anchor.
+- Passed core47, contracts11 and API138 unit tests; all workspace typechecks and
+  diff check. `./scripts/test-postgres.ps1 -Http` passed21 migrations,5 database
+  tests and real HTTP create/edit/paid/unpaid/deactivate, null reminder preservation,
+  partner read/write isolation and auth/origin/strict validation. After the anchor
+  fix, `./scripts/test-postgres.ps1` passed again with persisted same-date edit
+  preserving31 and changed date resetting20. Both isolated servers stopped.
+- Remaining: rendered Upcoming/action QA, reminder delivery/privacy semantics,
+  Liabilities, native runtime and banking recovery/dedupe plus integrated beta
+  acceptance and regression builds. This milestone is not beta completion.

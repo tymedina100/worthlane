@@ -1,5 +1,6 @@
 "use client";
 import { DebtPlanner } from "./debt-planner";
+import { UpcomingManager } from "./upcoming-manager";
 
 import type { HouseholdSummary } from "@worthlane/contracts";
 import { PlaidLinkButton } from "./plaid-link-button";
@@ -738,6 +739,7 @@ function GoalsSurface({
   onManage: ManageHousehold;
   onManagePersonal: ManagePersonal;
 }) {
+  const [upcomingVersion, setUpcomingVersion] = useState(0);
   const [selectedGoalId, setSelectedGoalId] = useState(summary.sharedGoals[0]?.id ?? "");
   const currency = summary.household.currency;
   const selectedGoal =
@@ -814,7 +816,8 @@ function GoalsSurface({
       )}
 
       <GoalPlanManager summary={summary} onManage={onManage} />
-      <DebtPlanner currency={summary.household.currency} />
+      <DebtPlanner currency={summary.household.currency} onUpcomingAdded={() => setUpcomingVersion(value => value + 1)} />
+      <UpcomingManager refreshKey={upcomingVersion} />
 
       <section className="panel workspace-panel" aria-labelledby="personal-goals-title">
         <div className="panel__header panel__header--split">
