@@ -903,3 +903,19 @@ production changes or spending. Full beta acceptance remains unproven.
 - No APK/iOS native build/device success is claimed. Next: supply local Android
   toolchain and compile; native Sandbox/UI/reminder checks and remaining banking,
   deduplication and integrated beta acceptance. No paid cloud build or production.
+
+## 2026-09-08 — authorized local Android SDK installation
+
+- Tyler explicitly approved accepting the Android SDK agreement and installing
+  Google's free tools locally. `./scripts/setup-android-sdk.ps1 -AcceptLicense`
+  completed with exit 0. The pinned official command-line tools archive is SHA256
+  checked before extraction. SDK 36, build-tools 36.0.0, platform-tools, NDK
+  27.1.12297006 and CMake 3.22.1 are installed under ignored `.tmp/android-sdk`.
+- Added reproducible PowerShell setup/build helpers; no machine-wide environment
+  changes. The debug build scopes SDK variables, disables Sentry upload and restores
+  the original environment afterward. Custom SDK paths resolve before directory changes.
+- `./scripts/build-android-local.ps1` is still running in session 9409. It passed
+  the previous missing-SDK failure and discovers the Plaid native module. A live
+  Gradle thread inspection shows an HTTP dependency metadata request waiting for
+  a response; no terminal result or APK success is claimed. Continue observing
+  this same process before retrying. No production activation or spending.
