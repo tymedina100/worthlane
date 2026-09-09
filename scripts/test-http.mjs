@@ -82,6 +82,16 @@ try {
   assert(!JSON.stringify(registration).includes('accessToken'), 'BFF must not expose tokens');
   const session = await backend('/api/auth/login', { method: 'POST', body: { email, password } });
   const token = session.data.accessToken;
+  const duplicatePath = '/api/personal/manage/transactions/duplicates';
+  const duplicateBody = { manualId: 'missing-manual', bankId: 'missing-bank', manualUpdatedAt: '2026-09-09T12:00:00.000Z', bankUpdatedAt: '2026-09-09T12:00:00.000Z' };
+  await stranger(duplicatePath, { status: 401 });
+  await stranger(duplicatePath, { method: 'POST', body: duplicateBody, status: 401 });
+  await browser(duplicatePath, { method: 'POST', body: duplicateBody, origin: 'https://untrusted.invalid', status: 403 });
+  await browser(duplicatePath, { method: 'POST', body: { ...duplicateBody, userId: 'forged' }, status: 400 });
+  await browser(duplicatePath, { method: 'POST', body: duplicateBody, status: 404 });
+  const duplicates = await browser(duplicatePath);
+  assert.deepEqual(duplicates.data, { entries: [], nextCursor: null, reviewedCount: 0 });
+  console.log('PASS: duplicate review BFF authentication, origin, payload validation and owner-scoped response.');
   const account = await backend('/api/accounts', { method: 'POST', token, status: 201,
     body: { name: 'HTTP synthetic checking', type: 'CHECKING', currentBalance: 100 } });
   const transaction = await backend('/api/transactions', { method: 'POST', token, status: 201,

@@ -1305,3 +1305,30 @@ production changes or spending. Full beta acceptance remains unproven.
 - Still required: desktop duplicate review, unknown-identity account reconciliation,
   native Sandbox lifecycle and reminder delivery, restart/partner UI persistence,
   and integrated solo/two-user regression acceptance. No production changes.
+
+## 2026-09-09 — desktop duplicate review and persisted browser verification
+
+- Added a Reports duplicate-review panel using the existing shared contract/API.
+  It shows both descriptions, signed amounts, dates and accounts before explicit
+  confirmation. Keep both cancels; exclusion refreshes workspace totals and leaves
+  both records visible. Refresh and history paging support continued review.
+- The narrow desktop BFF uses secure session cookies, same-origin JSON mutation
+  checks and the strict shared confirmation schema. Added regression assertions
+  to `scripts/test-http.mjs` for anonymous GET/POST, cross-origin rejection, forged
+  fields, missing records and empty owner review. The full HTTP script was not
+  restarted this turn; equivalent focused checks ran against the live local pair
+  with `node .tmp/check-duplicate-bff.mjs`, including oversized-cursor rejection.
+- Interactive in-app browser: Jordan signed in, opened Reports, restored the known
+  manual $23.47 entry through Budget treatment and saw expense mix rise to $56.94.
+  Opened the matching bank suggestion, chose Keep both, reopened and confirmed.
+  Success showed both records retained, manual excluded, no remaining suggestions
+  and expense mix $33.47. A full browser reload retained both rows and the exclusion.
+  `node .tmp/check-native-import-review.mjs` freshly verified owner totals and that
+  Casey could not read either private entry. These are browser and local API results,
+  not new Android or Plaid Link evidence.
+- Final desktop typecheck and diff whitespace check passed. No build/release claim.
+  Existing Reports headline rounds $33.47 to $33 while expense mix and rows show
+  exact cents; broader display consistency remains a polish item.
+- Remaining: unknown-identity account reconciliation, native Sandbox and reminder
+  delivery, partner/restart integrated journeys and regression builds. Native tool
+  restriction remains; browser control works. No spending or production changes.

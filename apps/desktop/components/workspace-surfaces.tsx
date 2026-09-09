@@ -2,6 +2,7 @@
 
 import { DebtPlanner } from "./debt-planner";
 import { ResponsibilityHistory } from "./responsibility-history";
+import { DuplicateReview } from "./duplicate-review";
 import { UpcomingManager } from "./upcoming-manager";
 
 import type { HouseholdSummary } from "@worthlane/contracts";
@@ -1059,7 +1060,8 @@ function ReportsSurface({
           </div>
           <span className="readonly-chip"><Icon name="lock" /> Your transactions</span>
         </div>
-        <p>Confirmed refunds reduce category spending. Exclude transfers and card repayments to avoid counting them as purchases.</p>
+        <p>Confirmed refunds reduce category spending. Exclude transfers, card repayments and confirmed duplicates to avoid counting them as purchases. Restore an excluded entry using its Budget treatment.</p>
+        <DuplicateReview onManagePersonal={onManagePersonal} />
         <p role="status" aria-live="polite">{treatmentMessage}</p>
         <div className="transaction-filters" role="search">
           <label className="workspace-search">
@@ -1125,7 +1127,7 @@ function ReportsSurface({
                     onChange={event => void saveTreatment(transaction.id, event.target.value)}>
                     <option value="AUTO">Ordinary expense / income</option>
                     {transaction.amount < 0 && <option value="REFUND">Refund</option>}
-                    <option value="EXCLUDED">Exclude transfer / repayment</option>
+                    <option value="EXCLUDED">Exclude from totals</option>
                   </select>
                 </span>
                 <span role="cell">{transaction.account.name}</span>
