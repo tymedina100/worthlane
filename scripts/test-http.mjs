@@ -11,12 +11,15 @@ const api = 'http://127.0.0.1:3301';
 const desktop = 'http://localhost:3303';
 const children = [];
 const logs = [];
+assert(!process.argv.includes('--sandbox') || process.argv.includes('--interactive'), 'Sandbox HTTP requires interactive mode');
+const sandbox = process.argv.includes('--sandbox') ? await (await import('./sandbox-http.mjs')).sandboxHttp(db.href) : null;
 const env = { ...process.env, DATABASE_URL: db.href, NODE_ENV: 'development',
   WORTHLANE_API_URL: `${api}/api`, NEXT_TELEMETRY_DISABLED: '1',
   JWT_SECRET: 'http-integration-only-access-secret-32-characters',
   JWT_REFRESH_SECRET: 'http-integration-only-refresh-secret-32-characters',
   POSTHOG_PROJECT_KEY: '', SENTRY_DSN: '', SENTRY_AUTH_TOKEN: '', VERCEL: '',
   PLAID_ENV: 'sandbox', PLAID_CLIENT_ID: '', PLAID_SECRET: '',
+  ...(sandbox?.env ?? {}),
 };
 async function start(app, port, health) {
   try { await fetch(health, { signal: AbortSignal.timeout(1000) }); throw new Error(`Test port ${port} already occupied`); }
@@ -145,6 +148,10 @@ try {
 
   console.log('PASS: real HTTP registration, HttpOnly session, BFF validation/origin/auth checks, refund save, logout denial, login persistence.');
   if (process.argv.includes('--interactive')) {
+    if (sandbox) {
+      await browser('/api/plaid/exchange', { method: 'POST', status: 201, body: { publicToken: await sandbox.publicToken(), institutionName: 'Synthetic Sandbox Bank' } });
+      console.log(`Synthetic browser fixture login: ${email} / ${password}`);
+    }
     const stopFile = resolve('.tmp', `stop-http-${process.pid}`);
     console.log(`Interactive test app ready at ${desktop}/register. Create ${stopFile} to stop. Auto-stop after 15 minutes.`);
     const deadline = Date.now() + 15 * 60_000;
@@ -157,4 +164,5 @@ try {
     else child.kill('SIGTERM');
   }
   for (const log of logs) closeSync(log);
+  if (sandbox) await sandbox.cleanup();
 }

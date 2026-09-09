@@ -58,7 +58,7 @@ export function DebtPlanner({ currency, connections, onUpcomingAdded }: { curren
     } catch (error) { setMessage(error instanceof Error && error.name !== "ZodError" ? error.message : "Check names, amounts, dates and promotional details."); }
     finally { setBusy(false); }
   }
-  return <><BankDebtDetails copyDisabled={busy || debts.length >= 100} connections={connections} currency={currency} onCopy={debt => { setDebts(rows => [...rows, debt]); setEstimate(null); setMessage("Reviewed debt added to this draft. Save the plan to keep it."); }} /><section className="panel workspace-panel">
+  return <><BankDebtDetails copyDisabled={busy || debts.length >= 100} connections={connections} currency={currency} onCopy={debt => { setDebts(rows => [...rows, debt]); setEstimate(null); setMessage("Reviewed debt added to this draft. Save the plan to keep it."); }} /><section className="panel workspace-panel upcoming-panel">
     <div className="panel__header"><p className="section-kicker">Personal scope · Only you</p><h2>Debt payoff plan</h2><p>Enter an affordable monthly payment budget. These are manual estimates; no payments are made.</p></div>
     <div className="debt-plan-actions"><button type="button" className="button button--secondary" disabled={busy} onClick={() => reset(null)}>New plan</button>{plans.map(plan => <button key={plan.id} type="button" className="button button--secondary" disabled={busy} onClick={() => void open(plan.id)}>Open {plan.input.name}</button>)}</div>
     <form key={version} onSubmit={submit} onChange={() => { setEstimate(null); setMessage("Unsaved changes."); }}>
@@ -69,7 +69,7 @@ export function DebtPlanner({ currency, connections, onUpcomingAdded }: { curren
         <label>Method<select name="strategy" defaultValue={selected?.input.strategy ?? "AVALANCHE"}><option value="AVALANCHE">Avalanche — highest APR first</option><option value="SNOWBALL">Snowball — smallest balance first</option></select></label>
       </fieldset>
       {debts.map((debt, index) => <fieldset disabled={busy} className="debt-plan-fields" key={debt.id}><legend>Debt {index + 1}</legend>
-        {debt.bankReference && <p>Bank details reviewed {new Date(debt.bankReference.reviewedAt).toLocaleString()}; retrieved {new Date(debt.bankReference.retrievedAt).toLocaleString()}. Values may have been edited and do not refresh automatically.</p>}<label>Name<input name={`name${index}`} required maxLength={100} defaultValue={debt.name} /></label>
+        {debt.bankReference && <p className="debt-bank-reference">Bank details reviewed {new Date(debt.bankReference.reviewedAt).toLocaleString()}; retrieved {new Date(debt.bankReference.retrievedAt).toLocaleString()}. Values may have been edited and do not refresh automatically.</p>}<label>Name<input name={`name${index}`} required maxLength={100} defaultValue={debt.name} /></label>
         <label>Current balance ({currency})<input name={`balance${index}`} type="number" min="0" step="0.01" required defaultValue={debt.balanceMinor / 100} /></label>
         <label>Minimum monthly payment<input name={`minimum${index}`} type="number" min="0" step="0.01" required defaultValue={debt.minimumPaymentMinor / 100} /></label>
         <label>Ordinary APR (%)<input name={`apr${index}`} type="number" min="0" max="1000" step="0.01" required defaultValue={debt.aprBasisPoints / 100} /></label>

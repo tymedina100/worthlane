@@ -3,7 +3,8 @@ param(
   [int]$Port = 55439,
   [switch]$Http,
   [switch]$Interactive,
-  [switch]$Sandbox
+  [switch]$Sandbox,
+  [switch]$SandboxInteractive
 )
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path $PSScriptRoot -Parent
@@ -41,8 +42,9 @@ try {
     node scripts/run-plaid-integration.mjs
     Check-Exit 'Live Sandbox application integration tests'
   }
-  if ($Http -or $Interactive) {
-    if ($Interactive) { node scripts/test-http.mjs --interactive }
+  if ($Http -or $Interactive -or $SandboxInteractive) {
+    if ($SandboxInteractive) { node scripts/test-http.mjs --interactive --sandbox }
+    elseif ($Interactive) { node scripts/test-http.mjs --interactive }
     else { node scripts/test-http.mjs }
     Check-Exit 'HTTP BFF integration tests'
   }

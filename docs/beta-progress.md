@@ -828,3 +828,35 @@ production changes or spending. Full beta acceptance remains unproven.
   not device interaction or notification-delivery evidence.
 - Rendered copy/draft checks on desktop and actual native UI remain pending,
   alongside Link/consent/recovery, joint/manual deduplication and full acceptance.
+
+## 2026-09-08 — populated browser debt-copy and Link update acceptance
+
+- Added opt-in `./scripts/test-postgres.ps1 -SandboxInteractive`: isolated loopback
+  PostgreSQL, normal HTTP assertions, ephemeral encryption key, real Sandbox fixture
+  exchange,15-minute browser window and provider Item cleanup on normal exit/failure.
+  Ordinary HTTP mode still blanks provider credentials. Synthetic login is printed
+  only for this opt-in mode; provider credentials/tokens are not printed by helpers.
+- First startup failed because the helper supplied an empty optional redirect URL;
+  removed that override. The failed run stopped and cleanup completed. Corrected
+  run passed22 migrations/5DB tests plus the entire real HTTP suite and fixture
+  exchange. Explicit stop file ended it with exit0, provider cleanup and DB stop.
+- Actual in-app browser: signed in as synthetic Alex, opened Goals, entered manual
+  debt100/min10 plus payment budget150, and checked linked Liabilities. Rendered
+  card current410/statement1708.77/min20 and individual APRs; mortgage missing minimum
+  and student grouped-payment warning were visible. Corrected synthetic card date
+  from2020-05-28 to2026-09-30 and explicitly entered12.5APR before confirming copy.
+- Copy appended exactly one debt and disabled that copy button; original manual
+  draft/payment budget remained. Saved Reviewed bank acceptance; reloaded and opened
+  it through UI. Both debts, distinct amounts, corrected date and review timestamps
+  persisted. Estimate showed Dec2026 payoff,8.56interest and518.56payments.
+- Actual Plaid Link opened via Review debt-data consent, skipped phone enrollment,
+  displayed synthetic accounts and credit/loans scope, completed update successfully,
+  and returned the app's completion message after Finish without saving a Plaid profile.
+  The fixture already had Liabilities: this is real existing-Item Link-update proof,
+  not proof of upgrading a Transactions-only Item or new/OAuth/native connection.
+- Visual screenshot inspection found cramped provenance placement; moved reference
+  to a full-width row and padded the planner. Second screenshot confirmed readable
+  fields and retained values. Desktop typecheck, helper syntax and diff checks pass.
+- Still required: transaction-only consent upgrade, new/recovery/OAuth/native banking,
+  native review/delivery checks, joint/manual deduplication and integrated acceptance.
+  No production activation, migration, spending or deployment.

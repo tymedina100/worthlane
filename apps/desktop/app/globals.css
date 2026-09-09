@@ -878,6 +878,7 @@ body small { font-size: 12px !important; line-height: 1.45; }
 }
 .debt-plan-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; border: 1px solid var(--border, #dce2d9); border-radius: 12px; padding: 16px; margin: 16px 0; min-width: 0; }
 .debt-plan-fields label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; min-width: 0; }
+.debt-plan-fields .debt-bank-reference { grid-column: 1 / -1; margin: 0; }
 .debt-plan-fields input, .debt-plan-fields select { width: 100%; min-width: 0; padding: 10px; border: 1px solid #cbd3c8; border-radius: 8px; background: white; color: #233125; }
 .debt-plan-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
 .debt-plan-table { overflow-x: auto; }
