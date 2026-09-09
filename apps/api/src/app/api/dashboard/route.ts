@@ -5,7 +5,7 @@ import { getAuthUser } from "@/lib/auth";
 import { computeNetWorth, startOfToday } from "@/lib/net-worth";
 import { ok, unauthorized } from "@/lib/response";
 import { budgetPeriod, financialTimeZone } from "@/lib/budget-period";
-import { obligationStatus, startOfUtcDay, toDateOnly } from "@/lib/upcoming";
+import { obligationStatus, householdCalendarDay, toDateOnly } from "@/lib/upcoming";
 
 export async function GET(req: NextRequest) {
   let userId: string;
@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
       }),
     ]);
 
-  const todayStart = startOfUtcDay(now);
+  const todayStart = householdCalendarDay(now, timeZone);
   const sevenDaysFromNow = new Date(todayStart);
   sevenDaysFromNow.setUTCDate(sevenDaysFromNow.getUTCDate() + 7);
   const upcomingRows = await prisma.upcomingObligation.findMany({
@@ -90,7 +90,7 @@ export async function GET(req: NextRequest) {
     isPaid: row.isPaid,
     isActive: row.isActive,
     lastPaidAt: row.lastPaidAt?.toISOString() ?? null,
-    status: obligationStatus(row.dueDate, row.isPaid, now),
+    status: obligationStatus(row.dueDate, row.isPaid, now, timeZone),
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   }));

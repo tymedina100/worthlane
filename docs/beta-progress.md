@@ -550,3 +550,19 @@ production changes or spending. Full beta acceptance remains unproven.
 - Still required: rendered action QA, desktop Upcoming manager, household-local
   due status and reminder verification, Liabilities sources, mobile runtime,
   banking recovery/native/dedupe and full integrated beta acceptance.
+
+## 2026-09-08 — household-calendar due dates and recurrence anchors
+
+- Upcoming read/create/edit/payment responses and dashboard due totals now use the
+  household calendar day, defaultUTC before household setup. Calendar due dates
+  remain date-only values, not shifted instants.
+- Persist intended recurrence day separately. Clamped shorter months no longer
+  change a31st recurrence to the28th/30th permanently; explicit due-date edits reset
+  the anchor. New manual and debt-derived items record the anchor. Migration uses
+  each existing due date; historical drift before this change cannot be inferred.
+- Corrected old test that enshrined Jan31 -> Mar28. API138 tests and workspace
+  typechecks passed.21 migrations and5 PostgreSQL tests passed, including Phoenix
+  due-today/dashboard agreement after UTC midnight and persisted Aug31 -> Sep30
+  -> Oct31 payment advancement. Exact database shutdown confirmed.
+- Remaining: desktop Upcoming controls, rendered action QA, reminder delivery
+  semantics, Liabilities, mobile runtime and banking/beta acceptance gates.

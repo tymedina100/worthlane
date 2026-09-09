@@ -1,3 +1,4 @@
+import { financialTimeZone } from "@/lib/budget-period";
 import { NextRequest } from "next/server";
 import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
@@ -5,8 +6,8 @@ import { err, notFound, ok, unauthorized } from "@/lib/response";
 import { nextFutureObligationDate, parseDateOnly, toDateOnly, obligationStatus } from "@/lib/upcoming";
 import { upcomingInputSchema } from "@/lib/upcoming-validation";
 
-function serialize(row: any) {
-  return { id: row.id, name: row.name, amount: row.amount.toNumber(), dueDate: toDateOnly(row.dueDate), type: row.type, frequency: row.frequency, accountName: row.accountName, reminderTiming: row.reminderTiming, isPaid: row.isPaid, isActive: row.isActive, lastPaidAt: row.lastPaidAt?.toISOString() ?? null, status: obligationStatus(row.dueDate, row.isPaid), createdAt: row.createdAt.toISOString(), updatedAt: row.updatedAt.toISOString() };
+function serialize(row: any, timeZone: string) {
+  return { id: row.id, name: row.name, amount: row.amount.toNumber(), dueDate: toDateOnly(row.dueDate), type: row.type, frequency: row.frequency, accountName: row.accountName, reminderTiming: row.reminderTiming, isPaid: row.isPaid, isActive: row.isActive, lastPaidAt: row.lastPaidAt?.toISOString() ?? null, status: obligationStatus(row.dueDate, row.isPaid, new Date(), timeZone), createdAt: row.createdAt.toISOString(), updatedAt: row.updatedAt.toISOString() };
 }
 
 async function ownItem(req: NextRequest, id: string) {
@@ -24,9 +25,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const data = parsed.data;
   const row = await prisma.upcomingObligation.update({
     where: { id: params.id },
-    data: { ...data, ...(data.dueDate ? { dueDate: parseDateOnly(data.dueDate) } : {}), accountName: data.accountName?.trim() || data.accountName },
+    data: { ...data, ...(data.dueDate ? { dueDate: parseDateOnly(data.dueDate), anchorDay: parseDateOnly(data.dueDate).getUTCDate() } : {}), accountName: data.accountName?.trim() || data.accountName },
   });
-  return ok(serialize(row));
+  return ok(serialize(row, await financialTimeZone(owned.userId)));
 }
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
@@ -38,10 +39,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   const markPaid = body.action === "markPaid";
   const now = new Date();
   const data = markPaid && owned.item.frequency
-    ? { dueDate: nextFutureObligationDate(owned.item.dueDate, owned.item.frequency, now), isPaid: false, lastPaidAt: now }
+    ? { dueDate: nextFutureObligationDate(owned.item.dueDate, owned.item.frequency, now, await financialTimeZone(owned.userId), owned.item.anchorDay ?? owned.item.dueDate.getUTCDate()), isPaid: false, lastPaidAt: now }
     : { isPaid: markPaid, lastPaidAt: markPaid ? now : null };
   const row = await prisma.upcomingObligation.update({ where: { id: params.id }, data });
-  return ok(serialize(row));
+  return ok(serialize(row, await financialTimeZone(owned.userId)));
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {

@@ -9,7 +9,14 @@ describe("upcoming obligation dates", () => {
   });
 
   it("advances a paid recurring item past today", () => {
-    expect(toDateOnly(nextFutureObligationDate(parseDateOnly("2026-01-31"), RecurringFrequency.MONTHLY, parseDateOnly("2026-03-03")))).toBe("2026-03-28");
+    expect(toDateOnly(nextFutureObligationDate(parseDateOnly("2026-01-31"), RecurringFrequency.MONTHLY, parseDateOnly("2026-03-03")))).toBe("2026-03-31");
+  });
+  it("keeps due status on the household day near UTC midnight", () => {
+    expect(obligationStatus(parseDateOnly("2026-09-08"), false, new Date("2026-09-09T02:00:00Z"), "America/Phoenix")).toBe("DUE_TODAY");
+    expect(obligationStatus(parseDateOnly("2026-09-09"), false, new Date("2026-09-08T16:00:00Z"), "Asia/Tokyo")).toBe("DUE_TODAY");
+  });
+  it("preserves a stored month-end anchor after February has been paid", () => {
+    expect(toDateOnly(nextFutureObligationDate(parseDateOnly("2026-02-28"), RecurringFrequency.MONTHLY, parseDateOnly("2026-02-28"), "UTC", 31))).toBe("2026-03-31");
   });
 
   it("returns clear due statuses from date-only values", () => {

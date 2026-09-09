@@ -349,6 +349,7 @@ enum UpcomingObligationType {
 // User-entered obligations are separate from Plaid-derived recurring data so
 // V1 stays reliable without a bank connection.
 model UpcomingObligation {
+  anchorDay      Int?
   sourceKey      String?                @unique
   id             String                 @id @default(cuid())
   userId         String

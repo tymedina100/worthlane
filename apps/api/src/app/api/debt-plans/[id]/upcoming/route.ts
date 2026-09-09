@@ -21,7 +21,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     const sourceKey = createHash("sha256").update(JSON.stringify([userId, params.id, debt.entryId, debt.dueDate])).digest("hex");
     const existing = await db.upcomingObligation.findUnique({ where: { sourceKey } });
     if (existing) return { item: existing, existed: true };
-    const item = await db.upcomingObligation.create({ data: { userId, sourceKey, name: `${debt.name} minimum payment`, amount: debt.minimumPayment, dueDate: parseDateOnly(debt.dueDate), type: "BILL", frequency: null, reminderTiming: "NONE" } });
+    const item = await db.upcomingObligation.create({ data: { userId, sourceKey, name: `${debt.name} minimum payment`, amount: debt.minimumPayment, dueDate: parseDateOnly(debt.dueDate), anchorDay: parseDateOnly(debt.dueDate).getUTCDate(), type: "BILL", frequency: null, reminderTiming: "NONE" } });
     return { item, existed: false };
   });
   if ("error" in result) {
