@@ -23,6 +23,8 @@ import { GET as personalBudgets } from "../src/app/api/budgets/route";
 import { GET as dashboard } from "../src/app/api/dashboard/route";
 import { GET as spendingReport } from "../src/app/api/reports/spending/route";
 import { GET as cashflow } from "../src/app/api/reports/cashflow/route";
+import { POST as saveDebtPlan, GET as listDebtPlans } from "../src/app/api/debt-plans/route";
+import { GET as readDebtPlan, PATCH as editDebtPlan } from "../src/app/api/debt-plans/[id]/route";
 import { getHouseholdAccountDetail, setHouseholdAccountVisibility } from "../src/lib/household";
 
 type Handler = (req: NextRequest) => Promise<Response>;
@@ -264,6 +266,31 @@ describe("persistent household consent and budget journey", () => {
       ?.allocations[0].appliedSpendMinor).toBe(0);
     await expect(getHouseholdAccountDetail(partner.id, account.id)).rejects.toThrow("Account not found");
   });
+});
+
+it("persists private debt estimates across login and rejects stale edits", async () => {
+  const owner = await newUser("debt-owner");
+  const stranger = await newUser("debt-stranger");
+  const input = { name: "Synthetic payoff", startMonth: "2026-09", strategy: "AVALANCHE", monthlyPaymentMinor: 3000, debts: [{ id: "card", name: "Manual card", balanceMinor: 10000, minimumPaymentMinor: 1000, aprBasisPoints: 0, statementBalanceMinor: 8500, dueDate: "2026-09-20" }] };
+  await call(saveDebtPlan, undefined, input, 401);
+  await call(saveDebtPlan, owner.token, { ...input, userId: stranger.id }, 400);
+  const saved = await call(saveDebtPlan, owner.token, input, 201);
+  expect(saved.estimate).toMatchObject({ status: "PAID_OFF", totalPaidMinor: 10000, totalInterestMinor: 0, payoffMonth: "2026-12" });
+  expect(saved.input.debts[0]).toMatchObject({ balanceMinor: 10000, statementBalanceMinor: 8500, minimumPaymentMinor: 1000, dueDate: "2026-09-20" });
+  const read = (req: NextRequest) => readDebtPlan(req, { params: { id: saved.id } });
+  const edit = (req: NextRequest) => editDebtPlan(req, { params: { id: saved.id } });
+  await call(read, stranger.token, undefined, 404);
+  expect(await call(listDebtPlans, stranger.token)).toEqual([]);
+  await call(edit, stranger.token, { revision: 1, input }, 404);
+  const relogin = await call(login, undefined, { email: owner.email, password });
+  expect((await call(read, relogin.accessToken)).input).toEqual(saved.input);
+  const revised = await call(edit, relogin.accessToken, { revision: 1, input: { ...input, strategy: "SNOWBALL", monthlyPaymentMinor: 5000 } });
+  expect(revised).toMatchObject({ revision: 2, estimate: { payoffMonth: "2026-10" } });
+  await call(edit, owner.token, { revision: 1, input }, 409);
+  expect((await call(read, owner.token)).input.monthlyPaymentMinor).toBe(5000);
+  expect(await prisma.debtPlanEntry.count({ where: { planId: saved.id } })).toBe(1);
+  const insufficient = await call(edit, owner.token, { revision: 2, input: { ...input, monthlyPaymentMinor: 999 } });
+  expect(insufficient.estimate).toMatchObject({ status: "INSUFFICIENT_PAYMENT", shortfallMinor: 1, payoffMonth: null });
 });
 
 it("atomically reconciles pending, posted, modified, removed and stale Plaid batches", async () => {

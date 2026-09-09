@@ -455,3 +455,22 @@ production changes or spending. Full beta acceptance remains unproven.
 - Next: validated persistent owned debt-plan API and edit/save/revisit UI, with
   explicit balances/statement/minimum/due-date semantics. Liabilities/manual due
   dates, banking recovery/dedupe, rendered QA and full beta acceptance remain open.
+
+## 2026-09-08 — persistent owner-only debt plans
+
+- Added normalized DebtPlan/DebtPlanEntry storage; database money remains Decimal
+  while validated API inputs use exact cents. Current balance, statement balance,
+  minimum payment, APR, due date and promo date/rate are separate fields.
+- Authenticated API supports create/list/get/full edit. Ownership is derived only
+  from the session. User-supplied owner fields are rejected; other users get 404.
+  Edits claim a revision and replace entries atomically, rejecting stale writers409.
+- Reopened plans recompute calculation-version1 estimates from saved manual inputs
+  and return assumptions. Insufficient-payment plans remain saveable with warnings;
+  unsupported calculation ranges return422. Due dates here are manual plan input,
+  not yet connected to obligation reminders or bank-confirmed Liabilities.
+- Passed 19 migrations and5 PostgreSQL integration tests, including saved plan
+  reopen after login, exact statement/current/minimum/date separation, owner
+  isolation, stale-edit preservation, entry replacement and shortfall persistence.
+  API136/contracts8 and workspace typechecks passed; database shutdown confirmed.
+- Next: desktop BFF and editable save/revisit UI, then mobile and obligation links.
+  Bank Liabilities/recovery/native/dedupe and broad beta verification remain open.
