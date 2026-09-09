@@ -1273,3 +1273,35 @@ production changes or spending. Full beta acceptance remains unproven.
 - Remaining: explicit reconciliation when provider identity is unavailable and
   manual/import duplicate matching, native Sandbox/reminders, partner UI/restart
   persistence, and complete integrated regression acceptance. No production changes.
+
+## 2026-09-09 — explicit manual/import duplicate review
+
+- Added an authenticated review API and mobile Activity entry point. It compares
+  only the owner's manual and imported entries, using equal signed amounts within
+  three days as suggestions. Pages cover 20 manual entries and show up to five
+  bank candidates each; ambiguous matches require the user's decision.
+- Confirmation checks both saved timestamps and ownership in a serializable
+  transaction. It excludes the manual copy from totals without deleting either
+  record. Activity's Budget treatment can restore the entry. The confirmation
+  explains that bank sharing rules apply and household totals may change; if the
+  imported record disappears later, restoration remains a manual review action.
+- Final React review added session guards before submitting and displaying errors,
+  plus cancellation semantics and wording that covers credits as well as purchases.
+- Validation: workspace typechecks and 148 API tests passed in the implementation
+  run; the final mobile typecheck passed after the session guard. The isolated
+  PostgreSQL run applied 24 migrations and passed 8 tests, covering owner isolation,
+  stale-match rejection, retained records, one counted amount, restoration and
+  history pagination. Logs: `.tmp/duplicate-review-{typecheck,api-tests,postgres}.log`.
+- Earlier native Android interaction reached the confirmation and success dialog
+  for the known synthetic $23.47 pair. Fresh local owner/partner logins in this turn
+  verified manual EXCLUDED, bank AUTO, both records retained, $33.47 monthly spend,
+  no remaining suggestions, and no partner access to either private record.
+  Command: `node .tmp/check-native-import-review.mjs`. Its first run referenced an
+  incorrect top-level dashboard field; corrected to `today.spentThisMonth`, passed.
+- No new native interaction or APK build in this turn. Current Computer Use exposes
+  the restriction "Native computer APIs are disabled" and Calculator selection
+  returns `cua.getApp is not a function`; the separate Windows node runtime is absent.
+  Earlier native evidence does not verify the final session-guard/copy adjustment.
+- Still required: desktop duplicate review, unknown-identity account reconciliation,
+  native Sandbox lifecycle and reminder delivery, restart/partner UI persistence,
+  and integrated solo/two-user regression acceptance. No production changes.

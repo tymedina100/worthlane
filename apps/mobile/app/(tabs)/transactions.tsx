@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { router } from "expo-router";
 import {
   Alert,
   FlatList,
@@ -321,10 +322,10 @@ export default function TransactionsScreen() {
     if (treatmentMutation.isPending) return;
     const save = (spendingTreatment: "AUTO" | "REFUND" | "EXCLUDED") =>
       treatmentMutation.mutate({ id: tx.id, spendingTreatment });
-    Alert.alert("Budget treatment", "Refunds reduce category spending. Exclude transfers and card repayments to avoid counting them as purchases.", [
+    Alert.alert("Budget treatment", "Refunds reduce category spending. Exclude transfers, card repayments or a confirmed duplicate. Choose ordinary expense / income to restore an excluded entry.", [
       { text: "Ordinary expense / income", onPress: () => save("AUTO") },
       ...(tx.amount < 0 ? [{ text: "Refund", onPress: () => save("REFUND") }] : []),
-      { text: "Exclude transfer / repayment", onPress: () => save("EXCLUDED") },
+      { text: "Exclude from totals", onPress: () => save("EXCLUDED") },
     ], { cancelable: true });
   };
 
@@ -459,12 +460,13 @@ export default function TransactionsScreen() {
           <View style={styles.headerRow}>
             <View>
               <Text style={styles.title}>Activity</Text>
-              <Text style={styles.activitySubtitle}>Manually added spending and income</Text>
+              <Text style={styles.activitySubtitle}>Your bank and manual activity</Text>
             </View>
             <TouchableOpacity style={styles.addButton} onPress={openCreateModal}>
               <Text style={styles.addButtonText}>Add transaction</Text>
             </TouchableOpacity>
           </View>
+          <TouchableOpacity accessibilityRole="button" onPress={() => router.push("/duplicate-review" as any)} style={{ minHeight: 44, justifyContent: "center" }}><Text style={{ color: colors.primary, fontWeight: "700" }}>Review possible duplicates</Text></TouchableOpacity>
           <TextInput
             style={styles.search}
             placeholder="Search merchants..."
