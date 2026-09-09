@@ -148,6 +148,9 @@ importers:
       '@worthlane/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@worthlane/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@worthlane/types':
         specifier: workspace:*
         version: link:../../packages/types

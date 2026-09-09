@@ -27,6 +27,7 @@
     "@sentry/react-native": "^7.2.0",
     "@tanstack/react-query": "^5.45.0",
     "@worthlane/contracts": "workspace:*",
+    "@worthlane/core": "workspace:*",
     "@worthlane/types": "workspace:*",
     "expo": "~54.0.33",
     "expo-application": "~7.0.8",

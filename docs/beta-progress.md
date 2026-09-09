@@ -513,3 +513,22 @@ production changes or spending. Full beta acceptance remains unproven.
 - This proves basic one-debt desktop preview/save/edit/reopen/fresh-session behavior.
   Multi-debt/promo/conflict UI cases, per-debt payment guidance, mobile plans,
   obligation integration and broader banking/beta acceptance remain unfinished.
+
+## 2026-09-08 — mobile saved debt-plan flow and payment guidance
+
+- Added authenticated mobile debt-plan screen linked from Goals. Uses shared
+  calculator/contracts and existing refresh-token API client. Supports named debts,
+  separate monetary/date fields, promotions, preview/save/reopen, revision errors,
+  avalanche/snowball, assumptions and monthly schedule. Draft inputs survive errors.
+- User-keyed editor remounts on identity changes; saved-plan query is scoped by
+  userId. No household sharing is inferred. Both mobile and desktop now display
+  first-month payment per debt, not only a total monthly payment.
+- Added only mobile's workspace dependency on core. pnpm add initially recalculated
+  unrelated API peers and disrupted local links; restored prior lock resolutions,
+  retained the core link and ran offline frozen-lockfile install successfully.
+- Passed workspace typechecks, core47 tests and iOS Expo export (1939 modules,
+  Hermes bundle, exit0) to ignored .tmp/debt-mobile-export. This is bundle proof,
+  not iPhone/simulator interaction or app-store distribution.
+- Remaining: native runtime/UI acceptance, multi-debt/promo/conflict interaction,
+  per-month debt detail presentation, obligations/Liabilities integration, banking
+  recovery/OAuth/native/dedupe and full beta acceptance. No production release.

@@ -28,6 +28,7 @@ function ThemedApp() {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="onboarding" />
           <Stack.Screen name="household" />
+          <Stack.Screen name="debt-plans" />
           <Stack.Screen name="quick-add" options={{ presentation: "modal" }} />
           <Stack.Screen name="paywall" options={{ presentation: "modal", headerShown: false }} />
         </Stack>

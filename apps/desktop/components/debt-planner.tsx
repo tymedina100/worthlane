@@ -40,6 +40,7 @@ export function DebtPlanner({ currency }: { currency: string }) {
     try {
       const input = debtPlanInputSchema.parse({ name: form.get("name"), startMonth: form.get("startMonth"), strategy: form.get("strategy"), monthlyPaymentMinor: number("payment"), debts: debts.map((debt, index) => ({ id: debt.id, name: form.get(`name${index}`), balanceMinor: number(`balance${index}`), minimumPaymentMinor: number(`minimum${index}`), aprBasisPoints: number(`apr${index}`), statementBalanceMinor: form.get(`statement${index}`) ? number(`statement${index}`) : null, dueDate: form.get(`due${index}`) || null, ...(form.get(`expiry${index}`) ? { promotion: { expiresOn: form.get(`expiry${index}`), aprBasisPoints: number(`promo${index}`) } } : {}) })) });
       const result = estimateDebtPayoff(input);
+      setDebts(input.debts);
       setEstimate(result);
       const action = (event.nativeEvent as SubmitEvent).submitter?.getAttribute("value");
       if (action === "preview") { setMessage("Preview only — these changes are not saved."); return; }
@@ -75,6 +76,7 @@ export function DebtPlanner({ currency }: { currency: string }) {
     </form>
     {message && <p role="status">{message}</p>}
     {estimate && <div className="debt-plan-result"><h3>{estimate.status === "PAID_OFF" ? `Estimated payoff: ${estimate.payoffMonth}` : "This plan needs adjustment"}</h3><p>Estimated interest: {money(estimate.totalInterestMinor)} · Payments in this estimate: {money(estimate.totalPaidMinor)}</p>{estimate.shortfallMinor > 0 && <p>Additional monthly amount needed for minimums: {money(estimate.shortfallMinor)}</p>}{estimate.warnings.map(warning => <p key={warning}>{warning}</p>)}<details><summary>Monthly schedule</summary><div className="debt-plan-table"><table><thead><tr><th>Month</th><th>Payment</th><th>Interest</th><th>Remaining</th></tr></thead><tbody>{estimate.schedule.map(row => <tr key={row.month}><td>{row.month}</td><td>{money(row.paymentMinor)}</td><td>{money(row.interestMinor)}</td><td>{money(row.remainingMinor)}</td></tr>)}</tbody></table></div></details></div>}
+    {estimate?.schedule[0] && <div><h3>First month's payments</h3><ul>{estimate.schedule[0].debts.map(row => <li key={row.id}>{debts.find(debt => debt.id === row.id)?.name}: {money(row.paymentMinor)}</li>)}</ul></div>}
     <details><summary>How this estimate works</summary><ul>{DEBT_ESTIMATE_ASSUMPTIONS.map(text => <li key={text}>{text}</li>)}</ul></details>
   </section>;
 }
