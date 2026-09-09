@@ -1193,3 +1193,26 @@ production changes or spending. Full beta acceptance remains unproven.
 - Remaining debt UI acceptance includes insufficient-payment/promo warnings,
   confirmed due-date conversion to Upcoming, and native reminder behavior. The
   complete solo/two-user banking and financial journeys remain open.
+
+## 2026-09-09 — native debt shortfall and confirmed Upcoming conversion
+
+- Fixed the mobile debt-to-Upcoming action to refresh the current login's Upcoming
+  and Today queries after success. Previously the saved obligation could leave
+  those cached views stale. Typecheck passed. Fast Refresh reset the development
+  form after adding a hook; reopened the saved plan before testing the new action.
+- Native preview: changed the two-debt monthly budget from $100 to $40. Android
+  displayed This plan needs adjustment, a $35 minimum shortfall, and the warning
+  that the budget does not cover entered minimums. Reopening the saved plan restored
+  $100, confirming preview-only changes had not overwritten the saved input.
+- Entered and saved September 10, 2026 as the first debt's confirmed due date.
+  Added its $50 minimum to Upcoming through Android. The UI disclosed reminders
+  off and no payment execution. A second native add reported that the item already
+  exists. Upcoming displayed one $50 item due September 10; Today showed two items
+  totaling $137.65, with correct Today/Tomorrow labels, without manual refresh.
+- Fresh local owner/partner API logins verified exactly one converted obligation,
+  $50 amount, the confirmed date, unpaid state and reminders NONE. Casey could not
+  see it. Saved debt revision 4 retained the $100 snowball budget and $487.13
+  estimated interest; changing the reference due date did not alter the estimate.
+- No notification delivery, real payment, production change or APK rebuild occurred.
+  Native promo handling, logout/app-restart persistence, banking/deduplication and
+  integrated solo/two-user regression acceptance remain open.

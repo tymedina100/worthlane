@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ScrollView, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect, router } from "expo-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { debtPlanInputSchema, type DebtPlanInput } from "@worthlane/contracts";
 import { estimateDebtPayoff, DEBT_ESTIMATE_ASSUMPTIONS, type DebtEstimate } from "@worthlane/core";
 import { api } from "@/lib/api";
@@ -20,6 +20,7 @@ const money = (value: number) => new Intl.NumberFormat("en-US", { style: "curren
 
 function DebtPlanEditor({ userId }: { userId: string }) {
   const { colors } = useTheme();
+  const queryClient = useQueryClient();
   const plans = useQuery({ queryKey: ["debt-plans", userId], queryFn: () => api.get<Plan[]>("/debt-plans"), enabled: Boolean(userId) });
   const [selected, setSelected] = useState<Plan | null>(null);
   const [name, setName] = useState("My payoff plan");
@@ -54,7 +55,15 @@ function DebtPlanEditor({ userId }: { userId: string }) {
   async function addDueDate(entryId: string) {
     if (!selected) return;
     setBusy(true);
-    try { const result = await api.post<{ message: string }>(`/debt-plans/${encodeURIComponent(selected.id)}/upcoming`, { entryId, revision: selected.revision }); setMessage(result.message); }
+    try {
+      const result = await api.post<{ message: string }>(`/debt-plans/${encodeURIComponent(selected.id)}/upcoming`, { entryId, revision: selected.revision });
+      if (useAuthStore.getState().userId !== userId) return;
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["upcoming", userId] }),
+        queryClient.invalidateQueries({ queryKey: ["dashboard", userId] }),
+      ]);
+      setMessage(result.message);
+    }
     catch (error) { setMessage((error as Error).message); }
     finally { setBusy(false); }
   }
