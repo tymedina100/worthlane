@@ -342,3 +342,29 @@ production changes or spending. Full beta acceptance remains unproven.
   OAuth resumption, native banking, due dates/debt and full beta regression gates.
 - Next: interactive desktop Sandbox flow with a separately scoped encryption key,
   and deterministic reconciliation coverage. Native/mobile remains unverified.
+
+## 2026-09-08 — atomic posted-transaction reconciliation
+
+- Replaced independent transaction writes/cursor update with one serializable
+  batch. A stale cursor returns a retryable conflict without overwriting a newer
+  successful Item state. Unknown accounts fail the batch rather than silently
+  advancing past unimported activity; owner collisions roll back the entire batch.
+- Bank spending now uses posted transactions. Pending events are excluded, and
+  posted replacements remove any legacy pending row by pending_transaction_id.
+  Desktop banking copy makes this posted-only scope explicit. Pending holds are
+  not a separate supported spending view in this beta.
+- Added categoryOverridden tracking to user category edits so future sync does
+  not overwrite them. The migration conservatively preserves existing categorized
+  imports because earlier rows did not distinguish manual category edits. Notes
+  and explicit spending treatment remain preserved during modified events.
+- New real-PostgreSQL deterministic batch coverage verifies pending exclusion,
+  legacy pending replacement, replay without duplicate rows, modified amount,
+  user-category/note/treatment preservation, stale-cursor rejection, full rollback
+  on a later ownership collision, and owner-scoped removals.
+- Final ./scripts/test-postgres.ps1 -Sandbox passed all 16 migrations, four DB
+  tests and live persisted Sandbox banking, including Item cleanup; exit 0 and
+  database shutdown confirmed. API unit tests (136), workspace typechecks and
+  git diff --check passed. No production migration or activation.
+- Still required: bank-date timezone semantics, transfer/card-payment and joint
+  account/import dedupe, incomplete-history/freshness signals, interactive Link
+  recovery, OAuth/native banking, historical splits, debt/due dates and full builds.

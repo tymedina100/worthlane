@@ -1,6 +1,8 @@
 import { afterAll, describe, expect, it, vi } from "vitest";
 import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
+import type { Transaction as PlaidTransaction } from "plaid";
+import { applyPlaidSyncBatch } from "../src/lib/plaid-reconciliation";
 import { weekRangeInTimeZone } from "@worthlane/core";
 import { NextRequest } from "next/server";
 import { prisma } from "@worthlane/db";
@@ -247,4 +249,38 @@ describe("persistent household consent and budget journey", () => {
       ?.allocations[0].appliedSpendMinor).toBe(0);
     await expect(getHouseholdAccountDetail(partner.id, account.id)).rejects.toThrow("Account not found");
   });
+});
+
+it("atomically reconciles pending, posted, modified, removed and stale Plaid batches", async () => {
+  const user = await prisma.user.create({ data: { email: `reconcile-${randomUUID()}@worthlane.local`, passwordHash: "synthetic-unused" } });
+  const account = await prisma.account.create({ data: { userId: user.id, name: "Synthetic bank", type: "CHECKING", source: "PLAID", currentBalance: 100 } });
+  const item = await prisma.plaidItem.create({ data: { userId: user.id, itemId: `synthetic-${randomUUID()}`, accessTokenEncrypted: "not-a-provider-token" } });
+  const map = new Map([["account", account.id]]);
+  const bankTx = (id: string, amount: number, pending = false, pendingId: string | null = null) => ({ transaction_id: id, account_id: "account", amount, date: "2026-09-08", name: "Synthetic purchase", pending, pending_transaction_id: pendingId }) as PlaidTransaction;
+  const apply = async (cursor: string | null, next: string, added: PlaidTransaction[] = [], modified: PlaidTransaction[] = [], removed: string[] = []) => applyPlaidSyncBatch({ id: item.id, userId: user.id, syncCursor: cursor }, map, { added, modified, removed: removed.map((transaction_id) => ({ transaction_id })) }, next, new Date());
+  const pendingId = `pending-${randomUUID()}`;
+  const postedId = `posted-${randomUUID()}`;
+  await apply(null, "one", [bankTx(pendingId, 10, true)]);
+  expect(await prisma.transaction.count({ where: { accountId: account.id } })).toBe(0);
+  // An older deployment may already have saved a pending authorization.
+  await prisma.transaction.create({ data: { userId: user.id, accountId: account.id, plaidTransactionId: pendingId, amount: 10, date: new Date() } });
+  await apply("one", "two", [bankTx(postedId, 12, false, pendingId)]);
+  expect(await prisma.transaction.count({ where: { accountId: account.id } })).toBe(1);
+  await apply("two", "three", [bankTx(postedId, 12, false, pendingId)]);
+  expect(await prisma.transaction.count({ where: { accountId: account.id } })).toBe(1);
+  await expect(apply("two", "old", [], [bankTx(postedId, 999)])).rejects.toMatchObject({ code: "SYNC_CONFLICT" });
+  await prisma.transaction.update({ where: { plaidTransactionId: postedId }, data: { categoryId: null, categoryOverridden: true, note: "User note", spendingTreatment: "EXCLUDED" } });
+  await apply("three", "four", [], [bankTx(postedId, 15)]);
+  expect(await prisma.transaction.findUniqueOrThrow({ where: { plaidTransactionId: postedId } })).toMatchObject({ categoryId: null, note: "User note", spendingTreatment: "EXCLUDED" });
+  expect((await prisma.transaction.findUniqueOrThrow({ where: { plaidTransactionId: postedId } })).amount.toNumber()).toBe(15);
+  const other = await prisma.user.create({ data: { email: `collision-${randomUUID()}@worthlane.local`, passwordHash: "synthetic-unused" } });
+  const otherAccount = await prisma.account.create({ data: { userId: other.id, name: "Other", type: "CHECKING", currentBalance: 0 } });
+  const collision = `collision-${randomUUID()}`;
+  await prisma.transaction.create({ data: { userId: other.id, accountId: otherAccount.id, plaidTransactionId: collision, amount: 1, date: new Date() } });
+  await expect(apply("four", "bad", [], [bankTx(postedId, 999), bankTx(collision, 2)])).rejects.toMatchObject({ code: "SYNC_OWNER_CONFLICT" });
+  expect((await prisma.transaction.findUniqueOrThrow({ where: { plaidTransactionId: postedId } })).amount.toNumber()).toBe(15);
+  expect((await prisma.plaidItem.findUniqueOrThrow({ where: { id: item.id } })).syncCursor).toBe("four");
+  await apply("four", "five", [], [], [postedId, collision]);
+  expect(await prisma.transaction.count({ where: { accountId: account.id } })).toBe(0);
+  expect(await prisma.transaction.count({ where: { accountId: otherAccount.id } })).toBe(1);
 });

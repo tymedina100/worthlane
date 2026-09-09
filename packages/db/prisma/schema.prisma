@@ -120,6 +120,7 @@ model Transaction {
   date               DateTime
   merchantName       String?
   categoryId         String?
+  categoryOverridden Boolean @default(false)
   isManual           Boolean  @default(false)
   spendingTreatment  SpendingTreatment @default(AUTO)
   isImpulse          Boolean  @default(false) // user-flagged impulse purchase

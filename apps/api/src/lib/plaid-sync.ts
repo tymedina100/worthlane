@@ -4,7 +4,7 @@ import {
   PlaidItemStatus,
   prisma,
 } from "@worthlane/db";
-import { mapPlaidCategory } from "./categories";
+import { applyPlaidSyncBatch } from "./plaid-reconciliation";
 import {
   decryptPlaidAccessToken,
   getAccounts,
@@ -199,56 +199,7 @@ export async function syncPlaidItemRecord(
       }
     }
 
-    for (const tx of [...addedTransactions, ...modifiedTransactions]) {
-      const accountId = accountMap.get(tx.account_id);
-      if (!accountId) continue;
-
-      const categoryId = await mapPlaidCategory(
-        tx.personal_finance_category?.primary ?? null,
-        item.userId
-      );
-
-      await prisma.transaction.upsert({
-        where: { plaidTransactionId: tx.transaction_id },
-        create: {
-          userId: item.userId,
-          accountId,
-          plaidTransactionId: tx.transaction_id,
-          amount: tx.amount,
-          date: new Date(tx.date),
-          merchantName: tx.merchant_name ?? tx.name,
-          categoryId,
-        },
-        update: {
-          accountId,
-          amount: tx.amount,
-          date: new Date(tx.date),
-          merchantName: tx.merchant_name ?? tx.name,
-          categoryId,
-        },
-      });
-    }
-
-    for (const removed of removedTransactions) {
-      await prisma.transaction.deleteMany({
-        where: {
-          userId: item.userId,
-          plaidTransactionId: removed.transaction_id,
-        },
-      });
-    }
-
-    await prisma.plaidItem.update({
-      where: { id: item.id },
-      data: {
-        status: PlaidItemStatus.HEALTHY,
-        needsRelink: false,
-        errorCode: null,
-        errorMessage: null,
-        syncCursor: nextCursor,
-        lastSyncAt: now,
-      },
-    });
+    await applyPlaidSyncBatch(item, accountMap, { added: addedTransactions, modified: modifiedTransactions, removed: removedTransactions }, nextCursor, now);
 
     // Fresh transactions may reveal new subscriptions/bills — refresh the
     // detector, but never let it fail the sync itself.
@@ -268,7 +219,7 @@ export async function syncPlaidItemRecord(
       removed: removedTransactions.length,
     };
   } catch (error) {
-    if (error instanceof PlaidIntegrationError) {
+    if (error instanceof PlaidIntegrationError && error.code !== "SYNC_CONFLICT") {
       await prisma.plaidItem.update({
         where: { id: item.id },
         data: {
