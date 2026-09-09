@@ -1,12 +1,13 @@
+import { BankDebtCopy } from "./BankDebtCopy";
 import { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { liabilitySnapshotSchema, type LiabilitySnapshot } from "@worthlane/contracts";
+import { liabilitySnapshotSchema, type LiabilitySnapshot, type DebtPlanInput } from "@worthlane/contracts";
 import type { AccountsResponse } from "@worthlane/types";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth";
 import { useTheme } from "@/lib/ThemeContext";
-export function BankDebtDetails({ userId }: { userId: string }) {
+export function BankDebtDetails({ userId, copyDisabled, onCopy }: { userId: string; copyDisabled: boolean; onCopy: (debt: DebtPlanInput["debts"][number]) => void }) {
   const { colors } = useTheme();
   const connections = useQuery({ queryKey: ["debt-bank-connections", userId], queryFn: () => api.get<AccountsResponse>("/accounts") });
   const [snapshot, setSnapshot] = useState<{ id: string; data: LiabilitySnapshot } | null>(null);
@@ -34,7 +35,7 @@ export function BankDebtDetails({ userId }: { userId: string }) {
     {data && <><Text style={text}>Source: Plaid Liabilities · Retrieved {new Date(data.retrievedAt).toLocaleString()}</Text><Text style={text}>{data.notice}</Text>{!data.debts.length && <Text style={text}>No supported debt details returned. Use manual entry.</Text>}{data.debts.map(debt => {
       const money = (value: number | null) => value === null ? "Not provided" : `${(value / 100).toFixed(2)} ${debt.currency ?? "(currency not provided)"}`;
       return <View key={debt.accountId} style={{ gap: 8, paddingVertical: 12 }}><Text style={{ ...text, fontWeight: "700" }}>{debt.name}</Text><Text style={text}>{debt.kind.replaceAll("_", " ").toLowerCase()}</Text>
-        <Text style={text}>Current balance: {money(debt.currentBalanceMinor)}</Text><Text style={text}>Statement balance: {money(debt.statementBalanceMinor)}</Text><Text style={text}>Minimum payment: {money(debt.minimumPaymentMinor)}</Text><Text style={text}>Next payment (mortgage): {money(debt.nextPaymentMinor)}</Text><Text style={text}>Accrued interest: {money(debt.outstandingInterestMinor)}</Text><Text style={text}>Provider due date: {debt.dueDate ?? "Not provided"}</Text><Text style={text}>Reported rates (review separately):</Text>{!debt.rates.length && <Text style={text}>Not provided</Text>}{debt.rates.map((rate, index) => <Text key={index} style={text}>{rate.kind.replaceAll("_", " ")}: {rate.percentage}% · balance subject to rate: {money(rate.balanceSubjectToRateMinor)}</Text>)}{debt.notes.map(note => <Text key={note} style={text}>{note}</Text>)}</View>;
+        <Text style={text}>Current balance: {money(debt.currentBalanceMinor)}</Text><Text style={text}>Statement balance: {money(debt.statementBalanceMinor)}</Text><Text style={text}>Minimum payment: {money(debt.minimumPaymentMinor)}</Text><Text style={text}>Next payment (mortgage): {money(debt.nextPaymentMinor)}</Text><Text style={text}>Accrued interest: {money(debt.outstandingInterestMinor)}</Text><Text style={text}>Provider due date: {debt.dueDate ?? "Not provided"}</Text><Text style={text}>Reported rates (review separately):</Text>{!debt.rates.length && <Text style={text}>Not provided</Text>}{debt.rates.map((rate, index) => <Text key={index} style={text}>{rate.kind.replaceAll("_", " ")}: {rate.percentage}% · balance subject to rate: {money(rate.balanceSubjectToRateMinor)}</Text>)}{debt.notes.map(note => <Text key={note} style={text}>{note}</Text>)}<BankDebtCopy key={`${debt.accountId}-${data.retrievedAt}`} debt={debt} retrievedAt={data.retrievedAt} disabled={copyDisabled} onCopy={onCopy} /></View>;
     })}</>}
   </View>;
 }

@@ -1,6 +1,6 @@
 "use client";
 import { useState, type FormEvent } from "react";
-import { debtPlanEntrySchema, type DebtPlanInput, type LiabilitySnapshot } from "@worthlane/contracts";
+import { reviewedBankDebt, type DebtPlanInput, type LiabilitySnapshot } from "@worthlane/contracts";
 
 type Debt = DebtPlanInput["debts"][number];
 export function BankDebtCopy({ debt, retrievedAt, currency, onCopy, disabled }: { debt: LiabilitySnapshot["debts"][number]; retrievedAt: string; currency: string; onCopy: (debt: Debt) => void; disabled: boolean }) {
@@ -10,15 +10,11 @@ export function BankDebtCopy({ debt, retrievedAt, currency, onCopy, disabled }: 
   const amount = (value: number | null) => value === null || value < 0 ? "" : (value / 100).toFixed(2);
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (copied || disabled) return;
     const form = new FormData(event.currentTarget);
-    const minor = (key: string) => {
-      const raw = String(form.get(key) ?? "");
-      if (!/^\d+(\.\d{1,2})?$/.test(raw)) throw new Error("Enter nonnegative amounts and APR with at most two decimal places.");
-      return Math.round(Number(raw) * 100);
-    };
+    const value = (key: string) => String(form.get(key) ?? "");
     try {
-      if (form.get("confirmed") !== "on") throw new Error("Confirm the figures before copying.");
-      const input = debtPlanEntrySchema.parse({ id: crypto.randomUUID(), name: form.get("name"), balanceMinor: minor("balance"), minimumPaymentMinor: minor("minimum"), aprBasisPoints: minor("apr"), statementBalanceMinor: form.get("statement") ? minor("statement") : null, dueDate: form.get("due") || null, bankReference: { source: "USER_REVIEWED_PLAID_LIABILITIES", retrievedAt, reviewedAt: new Date().toISOString() } });
+      const input = reviewedBankDebt({ id: crypto.randomUUID(), name: value("name"), balance: value("balance"), minimum: value("minimum"), apr: value("apr"), statement: value("statement"), due: value("due"), confirmed: form.get("confirmed") === "on", currency, bankCurrency: debt.currency, retrievedAt, reviewedAt: new Date().toISOString() });
       onCopy(input); setCopied(true); setMessage("Copied to the current plan draft below. Review the full plan and choose Save plan to keep it.");
     } catch (error) { setMessage(error instanceof Error && error.name !== "ZodError" ? error.message : "Check the amounts, name and date."); }
   }

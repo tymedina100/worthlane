@@ -808,3 +808,23 @@ production changes or spending. Full beta acceptance remains unproven.
   preservation across interactive actions, and native UI still need rendered QA.
   Broader Link/consent/recovery, joint/manual deduplication and integrated acceptance
   remain incomplete. All changes local; no production migration or deployment.
+
+## 2026-09-08 — mobile reviewed bank-debt copy
+
+- Mobile debt review now offers editable figures and a confirmation switch, then
+  appends to the current draft without replacing debts or saving automatically.
+  Editing a figure clears confirmation. Copy is disabled during plan requests,
+  at100 debts, and after a successful copy from the displayed snapshot. The parent
+  checks the current user before accepting the draft entry.
+- Shared reviewedBankDebt validation now serves desktop and mobile. It requires
+  explicit balance/minimum/APR and confirmation, rejects missing/mismatched currency,
+  and preserves separate statement/current amounts and optional missing dates.
+  It does not infer a combined APR or convert mortgage next-payment into minimum.
+- Contracts17 tests and all workspace typechecks passed. New tests cover exact
+  cents, provenance, missing required figures, unconfirmed/currency mismatch,
+  invalid dates/precision, optional fields and an explicit zero APR. No API or
+  database persistence changes in this milestone.
+- iOS export1946 modules/6.96MB and diff check passed. This is bundle evidence,
+  not device interaction or notification-delivery evidence.
+- Rendered copy/draft checks on desktop and actual native UI remain pending,
+  alongside Link/consent/recovery, joint/manual deduplication and full acceptance.
