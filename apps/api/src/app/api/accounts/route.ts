@@ -4,6 +4,7 @@ import { AccountType, AccountSource, prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
 import { err, ok, unauthorized } from "@/lib/response";
 import { moneyAmount } from "@/lib/validation";
+import { bankDataNotice } from "@worthlane/core";
 
 const createSchema = z.object({
   name: z.string().min(1),
@@ -63,6 +64,8 @@ export async function GET(req: NextRequest) {
       errorCode: item.errorCode ?? null,
       errorMessage: item.errorMessage ?? null,
       lastSyncAt: item.lastSyncAt?.toISOString() ?? null,
+      transactionHistoryStatus: item.transactionHistoryStatus,
+      dataNotice: bankDataNotice({ ...item, lastSyncAt: item.lastSyncAt?.toISOString() ?? null }, new Date()),
       lastWebhookAt: item.lastWebhookAt?.toISOString() ?? null,
       accountCount: accountCountsByItem[item.itemId] ?? 0,
     })),

@@ -12,6 +12,7 @@ export async function applyPlaidSyncBatch(
   changes: { added: Transaction[]; modified: Transaction[]; removed: Array<{ transaction_id: string }> },
   nextCursor: string,
   now: Date,
+  transactionHistoryStatus = "UNKNOWN",
 ) {
   const prepared: Array<{ transaction: Transaction; accountId: string; categoryId: string | null }> = [];
   for (const transaction of [...changes.added, ...changes.modified]) {
@@ -44,7 +45,7 @@ export async function applyPlaidSyncBatch(
         });
       }
       await db.transaction.deleteMany({ where: { userId: item.userId, accountId: { in: [...accountMap.values()] }, plaidTransactionId: { in: changes.removed.map((tx) => tx.transaction_id) } } });
-      await db.plaidItem.update({ where: { id: item.id }, data: { status: "HEALTHY", needsRelink: false, errorCode: null, errorMessage: null, syncCursor: nextCursor, lastSyncAt: now } });
+      await db.plaidItem.update({ where: { id: item.id }, data: { transactionHistoryStatus, status: "HEALTHY", needsRelink: false, errorCode: null, errorMessage: null, syncCursor: nextCursor, lastSyncAt: now } });
     }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable, timeout: 30_000 });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2034") throw new PlaidIntegrationError("Another sync finished. Refresh and try again.", { code: "SYNC_CONFLICT", status: 409 });

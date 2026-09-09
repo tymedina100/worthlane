@@ -41,6 +41,8 @@ export type AccountSource = "PLAID" | "MANUAL";
 export type PlaidItemStatus = "HEALTHY" | "NEEDS_RELINK" | "ERROR" | "PENDING_EXPIRATION";
 
 export interface PlaidItemSummary {
+  transactionHistoryStatus: string;
+  dataNotice: string;
   id: string;
   itemId: string;
   institution: string | null;

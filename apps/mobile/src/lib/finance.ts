@@ -27,6 +27,8 @@ export interface AccountSummary {
 }
 
 export interface PlaidItemSummary {
+  transactionHistoryStatus: string;
+  dataNotice: string;
   id: string;
   itemId: string;
   institution: string | null;

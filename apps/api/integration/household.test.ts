@@ -298,4 +298,8 @@ it("atomically reconciles pending, posted, modified, removed and stale Plaid bat
   expect((await prisma.transaction.findUniqueOrThrow({ where: { id: manual.id } })).date.toISOString()).toBe("2026-09-01T00:00:00.000Z");
   await apply("six", "seven", [], [transfers[0]!]);
   expect((await prisma.transaction.findUniqueOrThrow({ where: { plaidTransactionId: transfers[0]!.transaction_id } })).date.toISOString()).toBe("2026-09-01T07:00:00.000Z");
+  await applyPlaidSyncBatch({ id: item.id, userId: user.id, syncCursor: "seven" }, map, { added: [], modified: [], removed: [] }, "eight", new Date(), "INITIAL_UPDATE_COMPLETE");
+  expect((await prisma.plaidItem.findUniqueOrThrow({ where: { id: item.id } })).transactionHistoryStatus).toBe("INITIAL_UPDATE_COMPLETE");
+  await expect(applyPlaidSyncBatch({ id: item.id, userId: user.id, syncCursor: "seven" }, map, { added: [], modified: [], removed: [] }, "stale", new Date(), "HISTORICAL_UPDATE_COMPLETE")).rejects.toMatchObject({ code: "SYNC_CONFLICT" });
+  expect((await prisma.plaidItem.findUniqueOrThrow({ where: { id: item.id } })).transactionHistoryStatus).toBe("INITIAL_UPDATE_COMPLETE");
 });

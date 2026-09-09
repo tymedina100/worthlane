@@ -5,6 +5,7 @@ import {
   prisma,
 } from "@worthlane/db";
 import { applyPlaidSyncBatch } from "./plaid-reconciliation";
+import { bankHistoryStatus } from "@worthlane/core";
 import {
   decryptPlaidAccessToken,
   getAccounts,
@@ -167,6 +168,7 @@ export async function syncPlaidItemRecord(
     let cursor = originalCursor;
     let nextCursor = item.syncCursor ?? "";
     let restarted = false;
+    let historyStatus = "UNKNOWN";
     const addedTransactions: any[] = [];
     const modifiedTransactions: any[] = [];
     const removedTransactions: Array<{ transaction_id: string }> = [];
@@ -178,6 +180,7 @@ export async function syncPlaidItemRecord(
         modifiedTransactions.push(...page.modified);
         removedTransactions.push(...page.removed);
         nextCursor = page.next_cursor;
+        historyStatus = bankHistoryStatus(page.transactions_update_status);
 
         if (!page.has_more) break;
         cursor = page.next_cursor;
@@ -199,7 +202,7 @@ export async function syncPlaidItemRecord(
       }
     }
 
-    await applyPlaidSyncBatch(item, accountMap, { added: addedTransactions, modified: modifiedTransactions, removed: removedTransactions }, nextCursor, now);
+    await applyPlaidSyncBatch(item, accountMap, { added: addedTransactions, modified: modifiedTransactions, removed: removedTransactions }, nextCursor, now, historyStatus);
 
     // Fresh transactions may reveal new subscriptions/bills — refresh the
     // detector, but never let it fail the sync itself.

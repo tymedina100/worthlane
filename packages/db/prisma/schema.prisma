@@ -287,6 +287,7 @@ model PlaidItem {
   errorCode            String?
   errorMessage         String?
   syncCursor           String?
+  transactionHistoryStatus String @default("UNKNOWN")
   lastSyncAt           DateTime?
   lastWebhookAt        DateTime?
   createdAt            DateTime        @default(now())

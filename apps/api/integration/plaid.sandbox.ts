@@ -9,6 +9,7 @@ import { POST as exchange } from "../src/app/api/plaid/exchange/route";
 import { POST as sync } from "../src/app/api/plaid/sync/route";
 import { POST as linkToken } from "../src/app/api/plaid/link-token/route";
 import { POST as unlink } from "../src/app/api/plaid/items/[id]/unlink/route";
+import { GET as accounts } from "../src/app/api/accounts/route";
 
 function req(token: string | undefined, body: unknown) {
   return new NextRequest("http://localhost/api/sandbox", { method: "POST", headers: { "content-type": "application/json", ...(token ? { authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(body) });
@@ -47,6 +48,10 @@ it("persists encrypted Sandbox Items, repeats sync, isolates owners, records rel
     expect(count).toBeGreaterThan(0);
     await data(await sync(req(session.accessToken, { plaidItemId: item.id, refresh: false })));
     expect(await prisma.transaction.count({ where: { userId: session.user.id } })).toBe(count);
+    const connection = (await data(await accounts(req(session.accessToken, {})))).plaidItems[0];
+    expect(["UNKNOWN", "NOT_READY", "INITIAL_UPDATE_COMPLETE", "HISTORICAL_UPDATE_COMPLETE"]).toContain(connection.transactionHistoryStatus);
+    expect(connection.dataNotice.length).toBeGreaterThan(0);
+    expect((await data(await accounts(req(stranger.accessToken, {})))).plaidItems).toHaveLength(0);
     stage = "login required and update token";
     await plaidClient.sandboxItemResetLogin({ access_token: cleanupToken });
     await data(await sync(req(session.accessToken, { plaidItemId: item.id })), 409);

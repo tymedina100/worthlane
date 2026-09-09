@@ -513,7 +513,7 @@ function PlaidConnectionControls({
       <p>Bank-labeled transfers and credit card payments are excluded from spending and income. You can change this in Transactions.</p>
       {connections.length ? connections.map((connection) => (
         <article key={connection.id}>
-          <span><strong>{connection.institution ?? "Connected institution"}</strong><small>{connection.accountCount} account{connection.accountCount === 1 ? "" : "s"} - {titleCase(connection.status)}</small></span>
+          <span><strong>{connection.institution ?? "Connected institution"}</strong><small>{connection.accountCount} account{connection.accountCount === 1 ? "" : "s"} - {titleCase(connection.status)}</small><small>{connection.dataNotice}</small><small>{connection.lastSyncAt ? `Last retrieved ${formatShortDate(connection.lastSyncAt)}` : "No activity retrieved yet"}</small></span>
           <div>
             <PlaidLinkButton onManage={onManage} itemId={connection.id} />
             <button className="button button--secondary" type="button" disabled={workingId === connection.id} onClick={() => void sync(connection)}>Sync</button>

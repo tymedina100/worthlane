@@ -68,6 +68,8 @@ export type PersonalAccount = {
 };
 
 export type PlaidConnection = {
+  transactionHistoryStatus: string;
+  dataNotice: string;
   id: string;
   itemId: string;
   institution: string | null;

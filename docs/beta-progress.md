@@ -394,3 +394,23 @@ production changes or spending. Full beta acceptance remains unproven.
 - Remaining: interactive Link/recovery, OAuth/native, joint/manual-import dedupe,
   freshness/history indicators, historical splits, due dates/debt and full builds.
   No production migration, deployment or spending.
+
+## 2026-09-08 — bank history coverage and retrieval notices
+
+- Persist Plaid transactions_update_status in the same atomic batch as cursor and
+  transaction changes. Unknown/absent provider values fail conservatively to
+  UNKNOWN; existing Items migrate to UNKNOWN until verified by another sync.
+- Accounts API exposes owner-only history status and calm notices. Desktop
+  planning/account views and mobile dashboard/profile display loading, unconfirmed,
+  stale retrieval, connection attention and limited-history notices. Successful
+  retrieval does not claim the bank itself is current or guarantee full months.
+- Source: https://plaid.com/docs/api/products/transactions/ (sync response status).
+- Passed core39/API136 unit tests, recursive workspace typechecks and diff check.
+  test-postgres.ps1 -Sandbox passed 18 migrations, 4 DB tests and persisted Sandbox
+  lifecycle/cleanup. DB proves partial-history persistence and stale-cursor rejection
+  cannot overwrite it. Sandbox verifies accounts notice serialization and stranger
+  isolation. Database shutdown confirmed; no production activity.
+- Remaining: rendered notice QA, dedicated desktop overview and all mobile spending
+  surface coverage, privacy-safe partner permitted-account coverage warnings,
+  provider last-successful-update timestamps, joint/manual-import deduplication,
+  interactive Link/recovery/OAuth/native, debt/due dates and full acceptance builds.

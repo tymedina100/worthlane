@@ -630,6 +630,7 @@ export default function ProfileScreen() {
                     </View>
 
                     <Text style={styles.bankSyncText}>{formatRelativeSyncTime(item.lastSyncAt)}</Text>
+                    <Text style={styles.bankSyncText}>{item.dataNotice}</Text>
                     {item.errorMessage ? <Text style={styles.bankError}>{item.errorMessage}</Text> : null}
 
                     {linkedAccounts.map((account) => (
