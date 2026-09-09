@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { rebaseBankDates } from "./bank-dates";
+import { bankDataNotice } from "@worthlane/core";
 import {
   acceptHouseholdPartnerInviteResultSchema,
   createHouseholdResultSchema,
@@ -290,6 +291,16 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
     }
   }
 
+  // Only accounts with permitted transaction detail can contribute bank notices.
+  // Summary/private access must not reveal the existence or health of a connection.
+  const detailedIds = new Set(detailedAccounts.map(account => account.id));
+  const bankAccounts = accounts.filter(account => detailedIds.has(account.id) && account.source === "PLAID");
+  const bankItems = bankAccounts.length ? await prisma.plaidItem.findMany({ where: { OR: bankAccounts.filter(account => account.plaidItemId).map(account => ({ userId: account.userId, itemId: account.plaidItemId! })) } }) : [];
+  const bankDataNotices = bankAccounts.map(account => {
+    const item = bankItems.find(item => item.itemId === account.plaidItemId && item.userId === account.userId);
+    return { accountId: account.id, message: `${account.name}: ${item ? bankDataNotice({ ...item, lastSyncAt: item.lastSyncAt?.toISOString() ?? null }, new Date()) : "Bank history coverage is unconfirmed. Spending totals may be incomplete."}` };
+  });
+
   const summaryOnlyByOwner = [...summaryAccountsByOwner.entries()].map(
     ([ownerMemberId, summary]) => {
       const breakdown = computeNetWorthBreakdownMinor(summary.accounts);
@@ -500,6 +511,7 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
           : toMinorUnits(member.incomeBasis.toNumber()),
     })),
     finances: {
+      bankDataNotices,
       scope: "VISIBLE_TO_CALLER",
       visibleNetWorthMinor: computeNetWorthMinor(allVisibleBalances),
       detailedAccounts,

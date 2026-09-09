@@ -776,6 +776,7 @@ export function HouseholdDashboard({ mode, initialSummary }: HouseholdDashboardP
           </div>
         </header>
 
+        {summary.finances.bankDataNotices.map(notice => <p className="status-banner" key={notice.accountId} role="status">{notice.message}</p>)}
         <section className="metric-grid" aria-label="Household summary">
           <article className="metric-card metric-card--primary">
             <div className="metric-card__top">

@@ -414,3 +414,21 @@ production changes or spending. Full beta acceptance remains unproven.
   surface coverage, privacy-safe partner permitted-account coverage warnings,
   provider last-successful-update timestamps, joint/manual-import deduplication,
   interactive Link/recovery/OAuth/native, debt/due dates and full acceptance builds.
+
+## 2026-09-08 — privacy-scoped household banking notices
+
+- Household summary now includes bank notices only for the caller's accounts and
+  partner accounts explicitly shared with transaction detail. Summary-only and
+  private accounts do not disclose connection existence, health or history state.
+- Desktop overview and planning views, plus mobile household dashboard snapshot,
+  show these permission-filtered notices alongside the plan. Removed duplicated
+  owner notices from those views. Manual accounts produce no bank notice.
+- Verified with 4 PostgreSQL integration tests after 18 migrations; the two-user
+  journey asserts owner notice, shared notice, summary/private exclusion and
+  removal after revocation. Initial run caught fixture source contamination of
+  the later manual-entry test; fixture cleanup fixed it and final run passed.
+  API136/contracts8 and workspace typechecks passed. Database shutdown confirmed.
+- Still pending: rendered notice QA and remaining mobile spending screens,
+  provider update timestamps, interactive Link/OAuth/native, joint/manual-import
+  dedupe, historical split behavior, debt/due dates and full acceptance builds.
+  No new live Sandbox run was needed for this permission-only change.

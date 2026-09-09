@@ -124,6 +124,7 @@ export const householdSummarySchema = z.object({
   viewerMemberId: z.string(),
   members: z.array(householdMemberSummarySchema),
   finances: z.object({
+    bankDataNotices: z.array(z.object({ accountId: z.string(), message: z.string() })).default([]),
     scope: z.literal("VISIBLE_TO_CALLER"),
     visibleNetWorthMinor: signedMinorUnitsSchema,
     detailedAccounts: z.array(householdAccountSummarySchema),

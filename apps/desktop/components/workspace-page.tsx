@@ -153,9 +153,6 @@ export function WorkspacePage({ view }: { view: WorkspaceView }) {
       if (!responses[3].ok || !Array.isArray(goalData)) warnings.push("Personal goals could not refresh.");
       if (!responses[4].ok || !accountData || !Array.isArray(accountData.accounts)) warnings.push("Connected accounts could not refresh.");
       if (!responses[5].ok || !Array.isArray(categoryData)) warnings.push("Budget categories could not refresh.");
-      for (const item of accountData?.plaidItems ?? []) {
-        if (item.dataNotice) warnings.push(`${item.institution ?? "Your bank"}: ${item.dataNotice}`);
-      }
 
       if (activeRequest === requestId.current) {
         setSummary(household);
@@ -376,6 +373,7 @@ export function WorkspacePage({ view }: { view: WorkspaceView }) {
           </div>
         </header>
 
+        {summary.finances.bankDataNotices.map(notice => <p className="status-banner" key={notice.accountId} role="status">{notice.message}</p>)}
         <WorkspaceSurface
           view={view}
           summary={summary}

@@ -155,6 +155,19 @@ describe("persistent household consent and budget journey", () => {
     }, 201);
     expect((await readSummary(partner.token)).finances.detailedAccounts).toHaveLength(0);
     await expect(getHouseholdAccountDetail(partner.id, account.id)).rejects.toThrow("Account not found");
+    const bankItem = await prisma.plaidItem.create({ data: { userId: owner.id, itemId: randomUUID(), accessTokenEncrypted: "synthetic-unused", transactionHistoryStatus: "INITIAL_UPDATE_COMPLETE", lastSyncAt: new Date() } });
+    await prisma.account.update({ where: { id: account.id }, data: { source: "PLAID", plaidItemId: bankItem.itemId } });
+    expect((await readSummary(owner.token)).finances.bankDataNotices).toEqual([expect.objectContaining({ accountId: account.id, message: expect.stringContaining("older history is still loading") })]);
+    expect((await readSummary(partner.token)).finances.bankDataNotices).toEqual([]);
+    await setHouseholdAccountVisibility(owner.id, account.id, { visibility: "SHARED" });
+    expect((await readSummary(partner.token)).finances.bankDataNotices).toHaveLength(1);
+    await setHouseholdAccountVisibility(owner.id, account.id, { visibility: "SUMMARY" });
+    expect((await readSummary(partner.token)).finances.bankDataNotices).toEqual([]);
+    await setHouseholdAccountVisibility(owner.id, account.id, { visibility: "PERSONAL" });
+    expect((await readSummary(partner.token)).finances.bankDataNotices).toEqual([]);
+    // Continue the manual-entry journey with its original account source.
+    await prisma.account.update({ where: { id: account.id }, data: { source: "MANUAL", plaidItemId: null } });
+    await prisma.plaidItem.delete({ where: { id: bankItem.id } });
     await expect(setHouseholdAccountVisibility(partner.id, account.id, { visibility: "SHARED" })).rejects.toThrow("Account not found");
     await setHouseholdAccountVisibility(owner.id, account.id, { visibility: "SUMMARY" });
     const summarized = await readSummary(partner.token);
