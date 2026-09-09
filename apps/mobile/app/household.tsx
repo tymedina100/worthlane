@@ -500,6 +500,11 @@ export default function HouseholdScreen() {
   const [displayName, setDisplayName] = useState("");
   const [income, setIncome] = useState("");
   const [setupError, setSetupError] = useState<string | null>(null);
+  const [invitationCode, setInvitationCode] = useState("");
+  const [partnerEmail, setPartnerEmail] = useState("");
+  const createInvite = useMutation({
+    mutationFn: () => api.post<{ message: string; invitationCode?: string }>("/households/current/partners/link", { email: partnerEmail.trim() }),
+  });
   const household = useQuery({
     queryKey: ["household-summary", userId],
     queryFn: async () => householdSummarySchema.parse(
@@ -532,6 +537,10 @@ export default function HouseholdScreen() {
     onSuccess: async () => {
       await household.refetch();
     },
+  });
+  const joinWithCode = useMutation({
+    mutationFn: () => api.post("/households/invitations/accept", { invitationCode: invitationCode.trim() }),
+    onSuccess: async () => { setInvitationCode(""); await household.refetch(); },
   });
 
   function submitHouseholdSetup() {
@@ -645,6 +654,25 @@ export default function HouseholdScreen() {
             acceptingId={acceptInvitation.isPending ? acceptInvitation.variables ?? null : null}
             onAccept={(id) => acceptInvitation.mutate(id)}
           />
+          {isMissingHousehold ? (
+            <View style={styles.card}>
+              <Text style={styles.rowTitle}>Joining your partner?</Text>
+              <Text style={styles.muted}>Sign in with the invited email and enter their private code. Accepting joins the shared plan; your account details stay personal until you choose to share them.</Text>
+              <TextInput accessibilityLabel="Invitation code" style={styles.noteInput} value={invitationCode} onChangeText={setInvitationCode} autoCapitalize="none" placeholder="Invitation code" />
+              <TouchableOpacity style={styles.primaryButton} disabled={joinWithCode.isPending} onPress={() => joinWithCode.mutate()}><Text style={styles.primaryButtonText}>Accept and join household</Text></TouchableOpacity>
+              {joinWithCode.error ? <Text style={styles.errorText}>{joinWithCode.error.message}</Text> : null}
+            </View>
+          ) : null}
+          {household.data?.members.some((member) => member.isCurrentUser && member.role === "OWNER") ? (
+            <View style={styles.card}>
+              <Text style={styles.rowTitle}>Invite your partner</Text>
+              <Text style={styles.muted}>They can register later. Share the code directly; no email is sent. They must use the invited email and explicitly accept within 7 days.</Text>
+              <TextInput accessibilityLabel="Partner email" style={styles.noteInput} value={partnerEmail} onChangeText={setPartnerEmail} autoCapitalize="none" keyboardType="email-address" placeholder="Partner email" />
+              <TouchableOpacity style={styles.primaryButton} disabled={createInvite.isPending} onPress={() => createInvite.mutate()}><Text style={styles.primaryButtonText}>Create invitation code</Text></TouchableOpacity>
+              {createInvite.data ? <Text selectable style={styles.muted}>{createInvite.data.message}{"\n"}{createInvite.data.invitationCode}</Text> : null}
+              {createInvite.error ? <Text style={styles.errorText}>{createInvite.error.message}</Text> : null}
+            </View>
+          ) : null}
           {acceptInvitation.error ? (
             <View style={styles.errorCard}><Text style={styles.muted}>{acceptInvitation.error.message}</Text></View>
           ) : null}

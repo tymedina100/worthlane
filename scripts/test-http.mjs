@@ -80,6 +80,24 @@ try {
   await browser('/api/auth/login', { method: 'POST', body: { email, password } });
   const restored = await browser('/api/personal/transactions');
   assert.equal(restored.data.transactions.find(t => t.id === transaction.data.id).spendingTreatment, 'REFUND');
+  await browser('/api/household/create', { method: 'POST', status: 201,
+    body: { name: 'HTTP couple', displayName: 'Alex', timezone: 'America/Phoenix', currency: 'USD' } });
+  const partnerEmail = `late-${randomUUID()}@worthlane.local`;
+  const invitation = await browser('/api/household/manage/partners/link', { method: 'POST', status: 202,
+    body: { email: partnerEmail, displayName: 'Sam' } });
+  assert.match(invitation.data.invitationCode, /^[a-f0-9]{48}$/);
+  const partner = client(desktop);
+  await partner('/api/auth/register', { method: 'POST', status: 201, body: { email: partnerEmail, password } });
+  await partner('/api/household/summary', { status: 404 });
+  await partner('/api/household/manage/invitations/accept', { method: 'POST',
+    body: { invitationCode: invitation.data.invitationCode } });
+  const joined = await partner('/api/household/summary');
+  assert.equal(joined.data.members.length, 2);
+  assert.equal(joined.data.finances.detailedAccounts.length, 0, 'Partner must not inherit private account detail');
+  await partner('/api/auth/logout', { method: 'POST' });
+  await partner('/api/auth/login', { method: 'POST', body: { email: partnerEmail, password } });
+  assert.equal((await partner('/api/household/summary')).data.household.id, joined.data.household.id);
+  console.log('PASS: BFF invitation before registration, code acceptance, two-member household, private account isolation, partner login persistence.');
   console.log('PASS: real HTTP registration, HttpOnly session, BFF validation/origin/auth checks, refund save, logout denial, login persistence.');
   if (process.argv.includes('--interactive')) {
     const stopFile = resolve('.tmp', `stop-http-${process.pid}`);

@@ -192,5 +192,8 @@ describe("household management contracts", () => {
       acceptHouseholdPartnerInviteSchema.parse({ invitationId: "invite-1" })
     ).toEqual({ invitationId: "invite-1" });
     expect(() => acceptHouseholdPartnerInviteSchema.parse({})).toThrow();
+    expect(acceptHouseholdPartnerInviteSchema.parse({ invitationCode: "a".repeat(48) }).invitationCode).toHaveLength(48);
+    expect(() => acceptHouseholdPartnerInviteSchema.parse({ invitationCode: "short" })).toThrow();
+    expect(() => acceptHouseholdPartnerInviteSchema.parse({ invitationId: "id", invitationCode: "a".repeat(48) })).toThrow();
   });
 });

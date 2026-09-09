@@ -354,6 +354,7 @@ export const linkHouseholdPartnerSchema = z
 export const householdPartnerInviteResultSchema = z.object({
   status: z.literal("PENDING"),
   message: z.string(),
+  invitationCode: z.string().optional(),
 });
 
 export const householdPartnerInvitationSummarySchema = z.object({
@@ -370,8 +371,9 @@ export const householdPartnerInvitationsSchema = z.array(
 );
 
 export const acceptHouseholdPartnerInviteSchema = z
-  .object({ invitationId: identifierSchema })
-  .strict();
+  .object({ invitationId: identifierSchema.optional(), invitationCode: z.string().trim().regex(/^[a-f0-9]{48}$/).optional() })
+  .strict()
+  .refine((value) => Boolean(value.invitationId) !== Boolean(value.invitationCode), "Provide an invitation ID or code");
 
 export const acceptHouseholdPartnerInviteResultSchema = z.object({
   member: householdMemberSummarySchema,

@@ -17,6 +17,7 @@ const { mockPrisma, MockPrismaClientKnownRequestError } = vi.hoisted(() => {
   const mockPrisma = {
     household: { create: vi.fn(), update: vi.fn() },
     householdMember: {
+      count: vi.fn().mockResolvedValue(1),
       findFirst: vi.fn(),
       findMany: vi.fn(),
       findUnique: vi.fn(),

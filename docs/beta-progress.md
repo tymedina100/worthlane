@@ -235,3 +235,33 @@ production changes or spending. Full beta acceptance remains unproven.
   consent-safe registration/join path, then verify two-user UI ownership/splits and
   privacy. Historical split policy, Sandbox banking, due-date/debt flows and full
   regression builds remain required. No production changes or spending.
+
+## 2026-09-08 — invitation before partner registration
+
+- New invitations persist an intended email and SHA-256 hash of a random 192-bit
+  private code. The owner shares the code directly; no mail provider is implied
+  or activated. A recipient registers/signs in with the intended email and
+  explicitly accepts. Code expiry remains seven days; reissue rotates the code.
+  Raw codes are returned once to the owner and are not stored in the database.
+- New invitations cannot be listed or accepted by member ID alone. Existing
+  pre-migration invitations retain their original ID-based acceptance path.
+  Acceptance checks the active two-member limit inside the serializable transaction.
+- Desktop setup now offers code acceptance; desktop owner controls show the code.
+  Mobile household setup offers code acceptance and owner invitation creation.
+  These new rendered controls have typecheck evidence but await interactive QA.
+- PostgreSQL journey now invites before registration, registers the partner,
+  reissues without duplicating the reserved slot, rejects the superseded code,
+  rejects a different login and ID-only acceptance, accepts the intended user,
+  clears the token hash, and rejects a stale third-member invitation. Existing
+  saved split, privacy, refund and calendar assertions still pass.
+- ./scripts/test-postgres.ps1 -Http passed the new two-client BFF flow: invitation
+  before registration, acceptance, private-account isolation, partner logout/login
+  persistence. After adding the acceptance-time limit, ./scripts/test-postgres.ps1
+  passed all three DB journeys again with exit 0 and server shutdown. API tests
+  (136), contracts (8), workspace typechecks and git diff --check passed.
+- One initial typecheck overlapped the dev harness rebuilding .next/types and
+  failed on disappearing generated files; rerun after server shutdown passed.
+- Next: interactive two-user registration/code/budget/split/save verification,
+  including code display and setup navigation. Full mobile/native acceptance,
+  historical split handling, Sandbox banking, due dates/debt and builds remain
+  open. No production changes, emails or spending.

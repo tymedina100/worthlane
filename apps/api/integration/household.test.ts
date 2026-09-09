@@ -83,7 +83,6 @@ describe("persistent household consent and budget journey", () => {
   });
   it("registers solo, joins with consent, persists splits across login, and enforces account privacy", async () => {
     const owner = await newUser("owner");
-    const partner = await newUser("partner");
     const outsider = await newUser("outsider");
     await call(summary, undefined, undefined, 401);
     const household = await call(createHousehold, owner.token, {
@@ -93,18 +92,27 @@ describe("persistent household consent and budget journey", () => {
     expect(solo.asOf).toBeDefined();
     expect(solo.members).toHaveLength(1);
     expect(solo.household.id).toBe(household.householdId);
-    await call(summary, partner.token, undefined, 404);
-    await call(invite, owner.token, { email: partner.email, displayName: "Sam" }, 202);
+    const firstInvite = await call(invite, owner.token, { email: `partner-${suffix}@worthlane.local`, displayName: "Sam" }, 202);
+    const partner = await newUser("partner");
+    const replacement = await call(invite, owner.token, { email: partner.email, displayName: "Sam" }, 202);
     // An invitation is not consent and grants no data access.
     await call(summary, partner.token, undefined, 404);
     const pending = await call(invitations, partner.token);
-    expect(pending).toHaveLength(1);
-    const invitationId = pending[0].id;
-    await call(accept, outsider.token, { invitationId }, 404);
-    await call(accept, partner.token, { invitationId });
+    expect(pending).toHaveLength(0); // Email knowledge alone reveals no new invitation.
+    expect(await prisma.householdMember.count({ where: { householdId: solo.household.id, status: "INVITED" } })).toBe(1);
+    await call(accept, partner.token, { invitationCode: firstInvite.invitationCode }, 404);
+    await call(accept, outsider.token, { invitationCode: replacement.invitationCode }, 404);
+    const storedInvite = await prisma.householdMember.findFirstOrThrow({ where: { householdId: solo.household.id, status: "INVITED" } });
+    expect(storedInvite.inviteTokenHash).not.toBe(replacement.invitationCode);
+    await call(accept, partner.token, { invitationId: storedInvite.id }, 404);
+    await call(accept, partner.token, { invitationCode: replacement.invitationCode });
+    expect((await prisma.householdMember.findUniqueOrThrow({ where: { id: storedInvite.id } })).inviteTokenHash).toBeNull();
     const joined = await readSummary(partner.token);
     expect(joined.household.id).toBe(solo.household.id);
     expect(joined.members).toHaveLength(2);
+    const staleInvite = await prisma.householdMember.create({ data: { householdId: solo.household.id, userId: outsider.id, displayName: "Outsider", status: "INVITED" } });
+    await call(accept, outsider.token, { invitationId: staleInvite.id }, 409);
+    await prisma.householdMember.update({ where: { id: staleInvite.id }, data: { status: "REMOVED" } });
     const ownerId = solo.viewerMemberId;
     const partnerId = joined.viewerMemberId;
 

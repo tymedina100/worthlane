@@ -1,3 +1,4 @@
+import { createHash, randomBytes } from "node:crypto";
 import {
   acceptHouseholdPartnerInviteResultSchema,
   createHouseholdResultSchema,
@@ -1416,6 +1417,9 @@ export async function linkHouseholdPartner(
   userId: string,
   input: LinkHouseholdPartner
 ): Promise<HouseholdPartnerInviteResult> {
+  const invitationCode = randomBytes(24).toString("hex");
+  const inviteTokenHash = createHash("sha256").update(invitationCode).digest("hex");
+  const invitedEmail = input.email.trim().toLowerCase();
   await runHouseholdMutation(
     userId,
     true,
@@ -1425,7 +1429,7 @@ export async function linkHouseholdPartner(
         where: { email: { equals: input.email, mode: "insensitive" } },
         select: { id: true, email: true },
       });
-      if (!target || target.id === userId) return;
+      if (target?.id === userId) return;
       const occupiedPartnerSlot = await tx.householdMember.findFirst({
         where: {
           householdId: context.householdId,
@@ -1435,15 +1439,16 @@ export async function linkHouseholdPartner(
             { status: "INVITED", updatedAt: { gte: inviteCutoff } },
           ],
         },
-        select: { userId: true },
+        select: { userId: true, invitedEmail: true },
       });
       if (
         occupiedPartnerSlot &&
-        occupiedPartnerSlot.userId !== target.id
+        occupiedPartnerSlot.userId !== target?.id &&
+        occupiedPartnerSlot.invitedEmail !== invitedEmail
       ) {
         return;
       }
-      const occupiedElsewhere = await tx.householdMember.findFirst({
+      const occupiedElsewhere = target ? await tx.householdMember.findFirst({
         where: {
           userId: target.id,
           OR: [
@@ -1453,31 +1458,32 @@ export async function linkHouseholdPartner(
           NOT: { householdId: context.householdId },
         },
         select: { id: true },
-      });
+      }) : null;
       if (occupiedElsewhere) return;
-      const existing = await tx.householdMember.findUnique({
+      const existing = (target ? await tx.householdMember.findUnique({
         where: {
           householdId_userId: {
             householdId: context.householdId,
             userId: target.id,
           },
         },
+      }) : null) ?? await tx.householdMember.findFirst({
+        where: { householdId: context.householdId, invitedEmail, userId: null },
       });
       if (
-        existing?.status === "ACTIVE" ||
-        (existing?.status === "INVITED" && existing.updatedAt >= inviteCutoff)
+        existing?.status === "ACTIVE"
       ) {
         return;
       }
       const displayName =
-        input.displayName ?? existing?.displayName ?? defaultPartnerName(target.email);
+        input.displayName ?? existing?.displayName ?? defaultPartnerName(invitedEmail);
       if (existing) {
         await tx.householdAccountAccess.deleteMany({
           where: {
             householdId: context.householdId,
             OR: [
               { memberId: existing.id },
-              { account: { userId: target.id } },
+              ...(target ? [{ account: { userId: target.id } }] : []),
             ],
           },
         });
@@ -1487,6 +1493,8 @@ export async function linkHouseholdPartner(
             displayName,
             role: "MEMBER",
             status: "INVITED",
+            invitedEmail,
+            inviteTokenHash,
             joinedAt: null,
             endedAt: null,
             updatedAt: now,
@@ -1496,7 +1504,9 @@ export async function linkHouseholdPartner(
         await tx.householdMember.create({
           data: {
             householdId: context.householdId,
-            userId: target.id,
+            userId: target?.id ?? null,
+            invitedEmail,
+            inviteTokenHash,
             displayName,
             role: "MEMBER",
             status: "INVITED",
@@ -1507,13 +1517,15 @@ export async function linkHouseholdPartner(
   );
   return householdPartnerInviteResultSchema.parse({
     status: "PENDING",
-    message: "If this email is eligible, a partner invitation is pending.",
+    invitationCode,
+    message: "If the invited email is eligible, this private code lets your partner join. Share it directly; no email is sent. They can register with the invited email, then enter the code in household setup within 7 days. A new code replaces an earlier invitation to the same partner. Joining requires their acceptance and an available household slot.",
   });
 }
 
 export async function acceptHouseholdPartnerInvite(
   userId: string,
-  invitationId: string
+  invitationId?: string,
+  invitationCode?: string
 ): Promise<AcceptHouseholdPartnerInviteResult> {
   try {
     const result = await prisma.$transaction(
@@ -1527,10 +1539,13 @@ export async function acceptHouseholdPartnerInvite(
         if (activeMembership) {
           throw new HouseholdConflictError("User already has an active household");
         }
+        const recipient = invitationCode ? await tx.user.findUnique({ where: { id: userId }, select: { email: true } }) : null;
         const invite = await tx.householdMember.findFirst({
           where: {
-            id: invitationId,
-            userId,
+            ...(invitationCode ? {
+              inviteTokenHash: createHash("sha256").update(invitationCode).digest("hex"),
+              invitedEmail: recipient?.email.toLowerCase() ?? "",
+            } : { id: invitationId, userId, inviteTokenHash: null }),
             status: "INVITED",
             updatedAt: { gte: inviteCutoff },
           },
@@ -1550,9 +1565,12 @@ export async function acceptHouseholdPartnerInvite(
         if (!owner) {
           throw new HouseholdNotFoundError("Partner invitation not found");
         }
+        if (await tx.householdMember.count({ where: { householdId: invite.householdId, status: "ACTIVE" } }) >= 2) {
+          throw new HouseholdConflictError("This household already has two members");
+        }
         const member = await tx.householdMember.update({
           where: { id: invite.id },
-          data: { status: "ACTIVE", joinedAt: now, endedAt: null },
+          data: { userId, status: "ACTIVE", joinedAt: now, endedAt: null, inviteTokenHash: null, invitedEmail: null },
         });
         await tx.householdMember.updateMany({
           where: {
@@ -1605,6 +1623,7 @@ export async function listHouseholdPartnerInvitations(
     where: {
       userId,
       status: "INVITED",
+      inviteTokenHash: null,
       updatedAt: { gte: inviteCutoff },
     },
     include: {
