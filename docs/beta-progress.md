@@ -1067,3 +1067,29 @@ production changes or spending. Full beta acceptance remains unproven.
   guide, a complete solo account-to-budget/bill/debt journey, partner-side native
   privacy and editing checks, and full regression builds. Setup progress derives
   from saved server data; an unfinished name/code draft is not persisted.
+
+## 2026-09-08 — native invitation joining and partner privacy
+
+- In Android, Casey created an invitation for a synthetic email that had not yet
+  registered. Signed Casey out, registered the invited login, and observed the
+  unjoined onboarding choices rather than automatic household access.
+- First manually transcribed code returned Partner invitation not found. Its exact
+  failure cause was not established. Issued a replacement code through the local
+  API fixture, entered that exact code in Android's new onboarding join form, and
+  accepted successfully. This proves native acceptance with an API-issued replacement;
+  uninterrupted native code creation/copy/acceptance is not yet a passed journey.
+- The joined partner's Android Household screen showed My plan, shared with Casey,
+  no account details, visible net worth $0, and Casey utilities assigned 100%/$150.
+  Owner editing/invitation controls were absent. Private savings ($1,234.56) and the
+  owned budget were added through the local API as test fixtures before joining.
+  Fresh API logins for both users confirmed two members in the same persisted plan;
+  Casey alone saw the private savings balance and account details.
+- Separated the generated invitation code into selectable monospaced text with
+  press-and-hold copying guidance. Added a visible input label and actionable
+  unavailable-code guidance without revealing another login's invitation. Mobile
+  typecheck passed. These final copy/layout changes still need an owner-side visual
+  recheck; the join and partner privacy observations above precede those text edits.
+- No real invitation/email was sent. All accounts and amounts are synthetic, on
+  the isolated local API. Full solo/two-user spending, banking, bills/debt/reminders,
+  persistence and regression acceptance remain required; this is a bounded native
+  invitation/privacy check, not beta completion.

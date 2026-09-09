@@ -34,7 +34,11 @@ export default function OnboardingWelcome() {
       if (mode === "join") await api.post("/households/invitations/accept", { invitationCode: code.trim() });
       else if (parsed.success) await api.post("/households", parsed.data);
       await client.invalidateQueries({ queryKey: ["household-summary", userId] });
-    } catch (caught) { setError(caught instanceof Error ? caught.message : "Your plan could not be saved."); }
+    } catch (caught) {
+      setError(mode === "join" && caught instanceof ApiError && caught.status === 404
+        ? "This code isn’t available for this login. Check that you used the invited email and copied the full code, or ask your partner for a new one."
+        : caught instanceof Error ? caught.message : "Your plan could not be saved.");
+    }
     finally { setBusy(false); }
   }
   const action = (label: string, onPress: () => void, primary = false) => <TouchableOpacity accessibilityRole="button" disabled={busy} style={[styles.action, primary && styles.primary]} onPress={onPress}><Text style={primary ? styles.primaryText : styles.actionText}>{label}</Text></TouchableOpacity>;
@@ -65,6 +69,7 @@ export default function OnboardingWelcome() {
           {mode === "join" ? <View style={styles.card}>
             <Text style={styles.label}>Join your partner’s plan</Text>
             <Text style={styles.text}>Use the email they invited. Accepting lets both of you see the shared plan; your accounts stay private until you choose to share them.</Text>
+            <Text style={styles.label}>Invitation code</Text>
             <TextInput accessibilityLabel="Invitation code" style={styles.input} editable={!busy} value={code} onChangeText={setCode} autoCapitalize="none" autoCorrect={false} />
             {action(busy ? "Joining…" : "Accept invitation and join", () => void savePlan(), true)}
           </View> : null}

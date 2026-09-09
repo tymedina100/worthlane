@@ -704,7 +704,13 @@ export default function HouseholdScreen() {
               <Text style={styles.muted}>They can register later. Share the code directly; no email is sent. They must use the invited email and explicitly accept within 7 days.</Text>
               <TextInput accessibilityLabel="Partner email" style={styles.noteInput} value={partnerEmail} onChangeText={setPartnerEmail} autoCapitalize="none" keyboardType="email-address" placeholder="Partner email" />
               <TouchableOpacity style={styles.primaryButton} disabled={createInvite.isPending} onPress={() => createInvite.mutate()}><Text style={styles.primaryButtonText}>Create invitation code</Text></TouchableOpacity>
-              {createInvite.data ? <Text selectable style={styles.muted}>{createInvite.data.message}{"\n"}{createInvite.data.invitationCode}</Text> : null}
+              {createInvite.data ? <View style={{ gap: spacing.sm }}>
+                <Text style={styles.muted}>{createInvite.data.message}</Text>
+                {createInvite.data.invitationCode ? <>
+                  <Text style={styles.inputLabel}>Invitation code · press and hold to copy</Text>
+                  <Text selectable accessibilityLabel="Generated invitation code" style={[styles.muted, { fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }]}>{createInvite.data.invitationCode}</Text>
+                </> : null}
+              </View> : null}
               {createInvite.error ? <Text style={styles.errorText}>{createInvite.error.message}</Text> : null}
             </View>
           ) : null}
