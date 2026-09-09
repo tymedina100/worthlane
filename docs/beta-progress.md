@@ -1246,3 +1246,30 @@ production changes or spending. Full beta acceptance remains unproven.
   No production migration, external bank call or native Link proof in this change.
   Existing Sandbox and Android build/UI evidence remains separate. Next: privacy-
   aware joint-account reconciliation, manual-import matching and native Sandbox.
+
+## 2026-09-09 — privacy-filtered confirmed joint-account totals
+
+- Household aggregation now filters the viewer's account permissions before matching
+  confirmed bank identities. Repeated permitted copies count once for net worth and
+  category spending. The viewer's own connection supplies their ledger; no partner
+  feed is silently substituted as more complete. Unknown identities remain separate.
+  Both permitted detailed copies stay available for review, with an explanation on
+  the excluded copy. Private copies cannot affect selection or duplicate notices.
+- Added bank notices to the mobile Household screen, alongside existing Today and
+  desktop notice surfaces. Fractional money displays retain two decimal digits;
+  whole amounts can still omit cents. No account access or responsibility changes.
+- PostgreSQL checks cover private, SHARED, SUMMARY and revoked access, duplicate
+  balances, duplicate expenses/refunds, unchanged equal allocations, hidden-balance
+  changes, and unknown-identity fallback. All 7 database tests passed after 24
+  migrations; 49 core and 148 API tests and workspace typechecks passed. Mobile
+  typecheck passed again after the final display adjustment.
+- Local synthetic API/DB fixture: Jordan and Casey each have a $420.12 shared copy
+  and $10 Utilities purchase with the same confirmed test identity. Native Android
+  Household shows Jordan's $3,876.90 visible net worth and the repeat-connection
+  explanation, not $4,297.02. Fresh API logins verify Jordan's permitted spend of
+  $33.47 and Casey's $10, preserving Jordan's private $23.47 expense exclusion.
+  Casey's visible net worth is $1,654.68. Identity hashes are absent from responses.
+  This is synthetic provider-identity evidence, not a live Plaid joint-link test.
+- Remaining: explicit reconciliation when provider identity is unavailable and
+  manual/import duplicate matching, native Sandbox/reminders, partner UI/restart
+  persistence, and complete integrated regression acceptance. No production changes.

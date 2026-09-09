@@ -51,7 +51,7 @@ function formatMoney(amountMinor: number, currency: string): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
-    minimumFractionDigits: 0,
+    minimumFractionDigits: amountMinor % 100 === 0 ? 0 : 2,
     maximumFractionDigits: 2,
   }).format(amountMinor / 100);
 }
@@ -534,6 +534,7 @@ function HouseholdContent({ summary }: { summary: HouseholdSummary }) {
             This total only includes your accounts plus details or summaries your partner chose to share.
           </Text>
         </View>
+        {summary.finances.bankDataNotices.map(notice => <Text key={notice.accountId} style={styles.privacyText}>{notice.message}</Text>)}
       </View>
 
       <AccountsSection summary={summary} />

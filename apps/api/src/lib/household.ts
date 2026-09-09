@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { rebaseBankDates } from "./bank-dates";
-import { bankDataNotice } from "@worthlane/core";
+import { bankDataNotice, countedBankAccountIds } from "@worthlane/core";
 import {
   acceptHouseholdPartnerInviteResultSchema,
   createHouseholdResultSchema,
@@ -244,6 +244,11 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
     { ownerName: string; accounts: { type: string; currentBalanceMinor: number }[] }
   >();
   const allVisibleBalances: { type: string; currentBalanceMinor: number }[] = [];
+  // Filter consent first. Even the existence of an unshared matching account
+  // must not affect totals, notices, or which transaction feed is selected.
+  const permittedAccounts = accounts.filter(account => account.userId === userId ||
+    account.householdAccesses.some(access => access.memberId === context.memberId && access.visibility !== "PERSONAL"));
+  const countedIds = countedBankAccountIds(permittedAccounts, userId);
 
   for (const account of accounts) {
     const owner = memberByUserId.get(account.userId);
@@ -278,11 +283,11 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
         isOwner,
         updatedAt: account.updatedAt.toISOString(),
       });
-      allVisibleBalances.push(balance);
+      if (countedIds.has(account.id)) allVisibleBalances.push(balance);
       continue;
     }
 
-    if (visibility === "SUMMARY") {
+    if (visibility === "SUMMARY" && countedIds.has(account.id)) {
       const ownerSummary = summaryAccountsByOwner.get(owner.id) ?? {
         ownerName: owner.displayName,
         accounts: [],
@@ -300,7 +305,8 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
   const bankItems = bankAccounts.length ? await prisma.plaidItem.findMany({ where: { OR: bankAccounts.filter(account => account.plaidItemId).map(account => ({ userId: account.userId, itemId: account.plaidItemId! })) } }) : [];
   const bankDataNotices = bankAccounts.map(account => {
     const item = bankItems.find(item => item.itemId === account.plaidItemId && item.userId === account.userId);
-    return { accountId: account.id, message: `${account.name}: ${item ? bankDataNotice({ ...item, lastSyncAt: item.lastSyncAt?.toISOString() ?? null }, new Date()) : "Bank history coverage is unconfirmed. Spending totals may be incomplete."}` };
+    const duplicateNotice = countedIds.has(account.id) ? "" : " This confirmed repeat connection is available for review, but its balance and activity are not added again to household totals. Your own connection is used in this view.";
+    return { accountId: account.id, message: `${account.name}: ${item ? bankDataNotice({ ...item, lastSyncAt: item.lastSyncAt?.toISOString() ?? null }, new Date()) : "Bank history coverage is unconfirmed. Spending totals may be incomplete."}${duplicateNotice}` };
   });
 
   const summaryOnlyByOwner = [...summaryAccountsByOwner.entries()].map(
@@ -319,11 +325,11 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
   const participatingAccountIds = accounts
     .filter(
       (account) =>
-        account.userId === userId ||
+        countedIds.has(account.id) && (account.userId === userId ||
         account.householdAccesses.some(
           (access) =>
             access.memberId === context.memberId && access.visibility === "SHARED"
-        )
+        ))
     )
     .map((account) => account.id);
   const categoryIds = responsibilities

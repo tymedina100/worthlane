@@ -10,8 +10,8 @@ import { useThemedStyles, type Theme } from "@/lib/ThemeContext";
 import { useAuthStore } from "@/store/auth";
 import { relativeUpcomingDate } from "@/lib/upcoming-date";
 
-const currency = (value: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(value);
-const currencyMinor = (value: number, currencyCode: string) => new Intl.NumberFormat("en-US", { style: "currency", currency: currencyCode, minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(value / 100);
+const currency = (value: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: Number.isInteger(value) ? 0 : 2, maximumFractionDigits: 2 }).format(value);
+const currencyMinor = (value: number, currencyCode: string) => new Intl.NumberFormat("en-US", { style: "currency", currency: currencyCode, minimumFractionDigits: value % 100 === 0 ? 0 : 2, maximumFractionDigits: 2 }).format(value / 100);
 function greeting() { const hour = new Date().getHours(); return hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"; }
 
 function NextRow({ item }: { item: UpcomingObligation }) { const styles = useThemedStyles(createStyles); return <View style={styles.nextRow}><View style={styles.nextMain}><Text style={styles.nextName}>{item.name}</Text><Text style={styles.nextMeta}>{item.type.replace("_", " ")}</Text></View><View style={styles.nextRight}><Text style={styles.nextAmount}>{currency(item.amount)}</Text><Text style={styles.status}>{relativeUpcomingDate(item.dueDate)}</Text></View></View>; }

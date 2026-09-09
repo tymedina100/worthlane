@@ -5,7 +5,7 @@ import type { Transaction as PlaidTransaction } from "plaid";
 import { applyPlaidSyncBatch } from "../src/lib/plaid-reconciliation";
 import { savePlaidAccounts } from "../src/lib/plaid-accounts";
 import type { AccountBase } from "plaid";
-import { createHouseholdForUser, listResponsibilityHistory } from "../src/lib/household";
+import { createHouseholdForUser, createHouseholdResponsibility, getHouseholdSummary, listResponsibilityHistory } from "../src/lib/household";
 import { spendingWhere, incomeWhere } from "../src/lib/spending-treatment";
 import { weekRangeInTimeZone } from "@worthlane/core";
 import { NextRequest } from "next/server";
@@ -462,4 +462,52 @@ it("prevents confirmed duplicate bank accounts atomically without merging separa
   ]);
   expect(races.filter(result => result.status === "fulfilled")).toHaveLength(1);
   expect(await prisma.account.count({ where: { userId: owner.id, plaidAccountId: { in: [`${suffix}-race-a`, `${suffix}-race-b`] } } })).toBe(1);
+});
+
+it("counts confirmed joint copies once after filtering each viewer's consent", async () => {
+  const owner = await prisma.user.create({ data: { email: `joint-owner-${suffix}@worthlane.local`, passwordHash: "unusable-fixture-hash" } });
+  const partner = await prisma.user.create({ data: { email: `joint-partner-${suffix}@worthlane.local`, passwordHash: "unusable-fixture-hash" } });
+  const household = await createHouseholdForUser(owner.id, { name: "Joint fixture", displayName: "Alex", timezone: "UTC", currency: "USD" });
+  const partnerMember = await prisma.householdMember.create({ data: { householdId: household.householdId, userId: partner.id, displayName: "Sam", status: "ACTIVE", role: "MEMBER" } });
+  const category = await prisma.category.findFirstOrThrow({ where: { name: "Utilities", isSystem: true } });
+  await createHouseholdResponsibility(owner.id, { name: "Joint utilities", categoryId: category.id, monthlyAmountMinor: 15000, assignment: { mode: "EQUAL", memberIds: [household.memberId, partnerMember.id] } });
+  const accounts = [];
+  for (const user of [owner, partner]) {
+    const account = await prisma.account.create({ data: { userId: user.id, name: user.id === owner.id ? "Alex joint copy" : "Sam joint copy", type: "CHECKING", source: "PLAID", currentBalance: 100, bankIdentity: `joint-${suffix}` } });
+    accounts.push(account);
+    await prisma.transaction.createMany({ data: [
+      { userId: user.id, accountId: account.id, amount: 12.34, categoryId: category.id, date: new Date() },
+      { userId: user.id, accountId: account.id, amount: -2.34, categoryId: category.id, date: new Date(), spendingTreatment: "REFUND" },
+    ] });
+  }
+  const applied = (state: Awaited<ReturnType<typeof getHouseholdSummary>>) => state.responsibilities[0].allocations.reduce((sum, row) => sum + row.appliedSpendMinor, 0);
+  const privateState = await getHouseholdSummary(owner.id);
+  expect(privateState.finances.visibleNetWorthMinor).toBe(10000);
+  expect(applied(privateState)).toBe(1000);
+  expect(privateState.finances.bankDataNotices.some(n => n.message.includes("repeat connection"))).toBe(false);
+  for (const [index, user] of [owner, partner].entries()) await setHouseholdAccountVisibility(user.id, accounts[index].id, { visibility: "SHARED" });
+  for (const user of [owner, partner]) {
+    const state = await getHouseholdSummary(user.id);
+    expect(state.finances.detailedAccounts).toHaveLength(2);
+    expect(state.finances.visibleNetWorthMinor).toBe(10000);
+    expect(applied(state)).toBe(1000);
+    expect(state.responsibilities[0].allocations.map(a => a.remainingMinor)).toEqual([7000, 7000]);
+    expect(state.finances.bankDataNotices.filter(n => n.message.includes("repeat connection"))).toHaveLength(1);
+  }
+  await setHouseholdAccountVisibility(partner.id, accounts[1].id, { visibility: "PERSONAL" });
+  await prisma.account.update({ where: { id: accounts[1].id }, data: { currentBalance: 999 } });
+  const revoked = await getHouseholdSummary(owner.id);
+  expect(revoked.finances.visibleNetWorthMinor).toBe(10000);
+  expect(revoked.finances.detailedAccounts).toHaveLength(1);
+  expect(revoked.finances.bankDataNotices.some(n => n.message.includes("repeat connection") || n.message.includes("Sam"))).toBe(false);
+  await setHouseholdAccountVisibility(partner.id, accounts[1].id, { visibility: "SUMMARY" });
+  const summaryOnly = await getHouseholdSummary(owner.id);
+  expect(summaryOnly.finances.visibleNetWorthMinor).toBe(10000);
+  expect(summaryOnly.finances.detailedAccounts).toHaveLength(1);
+  expect(applied(summaryOnly)).toBe(1000);
+  expect(summaryOnly.finances.bankDataNotices.some(n => n.message.includes("repeat connection") || n.message.includes("Sam"))).toBe(false);
+  await prisma.account.update({ where: { id: accounts[1].id }, data: { bankIdentity: null } });
+  expect((await getHouseholdSummary(owner.id)).finances.visibleNetWorthMinor).toBe(109900);
+  await setHouseholdAccountVisibility(partner.id, accounts[1].id, { visibility: "SHARED" });
+  expect(applied(await getHouseholdSummary(owner.id))).toBe(2000);
 });
