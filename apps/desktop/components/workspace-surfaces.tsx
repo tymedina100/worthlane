@@ -1,4 +1,5 @@
 "use client";
+import { BankDebtDetails } from "./bank-debt-details";
 import { DebtPlanner } from "./debt-planner";
 import { UpcomingManager } from "./upcoming-manager";
 
@@ -816,6 +817,7 @@ function GoalsSurface({
       )}
 
       <GoalPlanManager summary={summary} onManage={onManage} />
+      <BankDebtDetails connections={personal.plaidItems} />
       <DebtPlanner currency={summary.household.currency} onUpcomingAdded={() => setUpcomingVersion(value => value + 1)} />
       <UpcomingManager refreshKey={upcomingVersion} />
 

@@ -888,3 +888,6 @@ body small { font-size: 12px !important; line-height: 1.45; }
 .upcoming-panel .panel__header { padding: 24px 0 18px; }
 .debt-plan-fields .upcoming-active { flex-direction: row; align-items: center; gap: 10px; }
 .debt-plan-fields .upcoming-active input { width: 18px; height: 18px; margin: 0; }
+
+.liability-details { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 16px; }
+.liability-details dd { margin: 0; overflow-wrap: anywhere; }

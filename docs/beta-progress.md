@@ -740,3 +740,24 @@ production changes or spending. Full beta acceptance remains unproven.
 - Remaining Liabilities work: Link consent/availability UX, desktop/mobile review
   and confirmed copy into plans with provenance, refresh behavior and acceptance.
   This is backend/Sandbox proof, not completion of the user-facing debt-data flow.
+
+## 2026-09-08 — desktop/mobile bank-debt review panels
+
+- Desktop Goals and mobile debt planning now offer explicit per-connection Check
+  actions for Liabilities. Results show source/retrieval time, cached-data notice,
+  separate monetary fields, missing-value labels, individual rates and student
+  payment-grouping notes. No provider request runs automatically on screen load.
+- Empty connections/results and unavailable responses retain manual entry. New
+  requests clear earlier results; removed connections no longer display snapshots.
+  Mobile data is user-scoped and stale-auth responses do not publish a snapshot.
+- Desktop POST proxy now allowlists the empty-body items/id/liabilities action.
+  `./scripts/test-postgres.ps1 -Http` passed21 migrations/5DB tests and real HTTP
+  checks, including Liabilities401/403/strict-payload400/missing-owner-item404.
+  Existing consent/budget/debt/Upcoming HTTP checks also passed; server stopped.
+- Desktop/mobile typechecks and diff check passed. iOS export1944 modules/6.96MB
+  passed; Metro noted transient missing .next directories while HTTP servers were
+  compiling, but completed successfully. No native UI or populated browser review
+  proof is claimed by this bundle check.
+- Remaining: Liabilities consent upgrades, explicit confirmed copy with saved
+  provenance, rendered review/error/empty-state checks, and broader banking/native
+  integrated beta acceptance. These panels currently support review/manual entry.

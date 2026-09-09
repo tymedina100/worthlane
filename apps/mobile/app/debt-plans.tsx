@@ -1,3 +1,4 @@
+import { BankDebtDetails } from "@/components/BankDebtDetails";
 import { useEffect, useState } from "react";
 import { ScrollView, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -83,6 +84,7 @@ function DebtPlanEditor({ userId }: { userId: string }) {
     </View>}
     {selected && <View><Text style={[styles.heading, { color: colors.text }]}>Due dates from the saved plan</Text><Text style={{ color: colors.textMuted }}>Add each confirmed minimum once, with reminders off. Unsaved changes are not used.</Text>{selected.input.debts.filter(debt => debt.dueDate && debt.minimumPaymentMinor > 0).map(debt => <View key={debt.id}>{button(`Add ${debt.name}: ${money(debt.minimumPaymentMinor)} due ${debt.dueDate} to Upcoming`, () => void addDueDate(debt.id))}</View>)}{button("Manage Upcoming", () => router.push("/(tabs)/upcoming" as any))}</View>}
     <Text style={[styles.heading, { color: colors.text }]}>Estimate assumptions</Text>{DEBT_ESTIMATE_ASSUMPTIONS.map(text => <Text key={text} style={{ color: colors.textMuted }}>{text}</Text>)}
+    <BankDebtDetails userId={userId} />
   </ScrollView></KeyboardAvoidingView></SafeAreaView>;
 }
 export default function DebtPlansScreen() {

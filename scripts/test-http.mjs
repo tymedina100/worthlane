@@ -65,9 +65,13 @@ try {
   await stranger('/api/plaid/link-token', { method: 'POST', status: 400, body: { platform: 'ios', mode: 'create' } });
   await stranger('/api/plaid/exchange', { method: 'POST', status: 400, body: { publicToken: 'synthetic-token', accessToken: 'not-accepted' } });
   console.log('PASS: Link/exchange BFF authentication, origin and narrow payload validation.');
+  await stranger('/api/plaid/items/missing/liabilities', { method: 'POST', status: 401, body: {} });
+  await stranger('/api/plaid/items/missing/liabilities', { method: 'POST', status: 403, origin: 'https://untrusted.invalid', body: {} });
+  await stranger('/api/plaid/items/missing/liabilities', { method: 'POST', status: 400, body: { accessToken: 'forged' } });
   const email = `http-${randomUUID()}@worthlane.local`; const password = 'Synthetic-http-passphrase!2026';
   const registration = await browser('/api/auth/register', { method: 'POST', body: { email, password }, status: 201 });
   assert(registration.data.user.id);
+  await browser('/api/plaid/items/missing/liabilities', { method: 'POST', status: 404, body: {} });
   assert(!JSON.stringify(registration).includes('accessToken'), 'BFF must not expose tokens');
   const session = await backend('/api/auth/login', { method: 'POST', body: { email, password } });
   const token = session.data.accessToken;

@@ -37,12 +37,12 @@ function targetFor(segments: string[], body: unknown) {
     segments.length === 3 &&
     segments[0] === "items" &&
     segments[1] &&
-    segments[2] === "unlink" &&
+    ["unlink", "liabilities"].includes(segments[2] ?? "") &&
     isRecord(body) &&
     Object.keys(body).length === 0
   ) {
     return {
-      path: `/plaid/items/${encodeURIComponent(segments[1])}/unlink`,
+      path: `/plaid/items/${encodeURIComponent(segments[1])}/${segments[2]}`,
       body,
     };
   }
