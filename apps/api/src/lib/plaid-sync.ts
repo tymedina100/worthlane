@@ -1,10 +1,9 @@
 import {
-  AccountSource,
-  AccountType,
   PlaidItemStatus,
   prisma,
 } from "@worthlane/db";
 import { applyPlaidSyncBatch } from "./plaid-reconciliation";
+import { savePlaidAccounts } from "./plaid-accounts";
 import { bankHistoryStatus } from "@worthlane/core";
 import {
   decryptPlaidAccessToken,
@@ -15,21 +14,6 @@ import {
 } from "./plaid";
 import { detectRecurringForUser } from "./recurring";
 import { captureServerException } from "./sentry";
-
-function mapPlaidAccountType(type: string, subtype?: string | null): AccountType {
-  switch (type) {
-    case "depository":
-      return subtype === "savings" ? AccountType.SAVINGS : AccountType.CHECKING;
-    case "credit":
-      return AccountType.CREDIT;
-    case "investment":
-      return AccountType.INVESTMENT;
-    case "loan":
-      return AccountType.LOAN;
-    default:
-      return AccountType.OTHER;
-  }
-}
 
 function statusForPlaidError(error: PlaidIntegrationError): PlaidItemStatus {
   if (error.code === "PENDING_EXPIRATION") return PlaidItemStatus.PENDING_EXPIRATION;
@@ -46,48 +30,7 @@ async function upsertAccountsForItem(item: {
 }) {
   const accessToken = decryptPlaidAccessToken(item.accessTokenEncrypted);
   const plaidAccounts = await getAccounts(accessToken);
-  const now = new Date();
-  const accountMap = new Map<string, string>();
-
-  for (const account of plaidAccounts) {
-    const existing = await prisma.account.findUnique({
-      where: { plaidAccountId: account.account_id },
-      select: { id: true, userId: true },
-    });
-
-    if (existing && existing.userId !== item.userId) {
-      throw new PlaidIntegrationError(
-        "This institution is already linked to another account.",
-        { status: 409, code: "PLAID_ACCOUNT_ALREADY_LINKED" }
-      );
-    }
-
-    const upserted = await prisma.account.upsert({
-      where: { plaidAccountId: account.account_id },
-      create: {
-        userId: item.userId,
-        plaidAccountId: account.account_id,
-        plaidItemId: item.itemId,
-        name: account.name,
-        institutionName: item.institution,
-        type: mapPlaidAccountType(account.type, account.subtype),
-        source: AccountSource.PLAID,
-        currentBalance: account.balances.current ?? 0,
-        lastSyncedAt: now,
-      },
-      update: {
-        name: account.name,
-        institutionName: item.institution,
-        type: mapPlaidAccountType(account.type, account.subtype),
-        source: AccountSource.PLAID,
-        currentBalance: account.balances.current ?? 0,
-        lastSyncedAt: now,
-      },
-    });
-
-    accountMap.set(account.account_id, upserted.id);
-  }
-
+  const accountMap = await savePlaidAccounts(item, plaidAccounts);
   return { accessToken, accountMap };
 }
 

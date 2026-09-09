@@ -107,6 +107,7 @@ model Account {
   id              String        @id @default(cuid())
   userId          String
   plaidAccountId  String?       @unique
+  bankIdentity    String? // hashed provider persistent identity; never returned to clients
   plaidItemId     String?
   plaidCursor     String? // for transactions sync
   name            String
@@ -121,6 +122,8 @@ model Account {
   user              User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions      Transaction[]
   householdAccesses HouseholdAccountAccess[]
+
+  @@unique([userId, bankIdentity])
 }
 
 model Category {

@@ -1216,3 +1216,33 @@ production changes or spending. Full beta acceptance remains unproven.
 - No notification delivery, real payment, production change or APK rebuild occurred.
   Native promo handling, logout/app-restart persistence, banking/deduplication and
   integrated solo/two-user regression acceptance remain open.
+
+## 2026-09-09 — confirmed bank identity and atomic account snapshots
+
+- Plaid account IDs can differ across repeat links. Added an internal SHA-256
+  bankIdentity from provider persistent_account_id when supplied, with a unique
+  (userId, bankIdentity) constraint. Same-login repeat connections with a confirmed
+  identity are rejected before importing another copy. Existing connection sync
+  still updates balances. Existing rows acquire identity during later sync; the
+  migration does not infer identities from names, masks or balances.
+- Account snapshots now validate ownership and save all accounts in one serializable
+  transaction. A duplicate late in the snapshot rolls back earlier additions;
+  concurrent duplicates cannot both commit. Conflicts produce a retry/existing-
+  connection message. Separate logins are not merged or granted account access.
+  The identity hash is not included in client response mappings.
+- Coverage limitation: Plaid supplies persistent_account_id only for applicable
+  institutions. See [Plaid account identity](https://plaid.com/docs/api/accounts/)
+  and [duplicate Items](https://plaid.com/docs/link/duplicate-items/). Unknown identity
+  remains unknown; matching names/masks does not suppress legitimate accounts.
+  This milestone does not deduplicate shared joint-account totals or manual imports.
+- Validation: Prisma generation and workspace typechecks passed; API 148 tests
+  passed. `./scripts/test-postgres.ps1 -Port 55440` applied 24 migrations and passed
+  all 6 integration tests, including confirmed duplicate rollback, preserved original
+  link, unknown-identity accounts, separate-login ownership and concurrent duplicate
+  attempts. First run reached registration throttling before the new assertions;
+  corrected the account-storage test to use isolated DB user fixtures, then passed.
+- Stopped the known local HTTP session for Prisma regeneration, migrated the same
+  retained synthetic database and resumed services. All HTTP/BFF suites passed.
+  No production migration, external bank call or native Link proof in this change.
+  Existing Sandbox and Android build/UI evidence remains separate. Next: privacy-
+  aware joint-account reconciliation, manual-import matching and native Sandbox.

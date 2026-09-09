@@ -3,6 +3,8 @@ import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 import type { Transaction as PlaidTransaction } from "plaid";
 import { applyPlaidSyncBatch } from "../src/lib/plaid-reconciliation";
+import { savePlaidAccounts } from "../src/lib/plaid-accounts";
+import type { AccountBase } from "plaid";
 import { createHouseholdForUser, listResponsibilityHistory } from "../src/lib/household";
 import { spendingWhere, incomeWhere } from "../src/lib/spending-treatment";
 import { weekRangeInTimeZone } from "@worthlane/core";
@@ -428,4 +430,36 @@ it("atomically reconciles pending, posted, modified, removed and stale Plaid bat
   expect((await prisma.plaidItem.findUniqueOrThrow({ where: { id: item.id } })).transactionHistoryStatus).toBe("INITIAL_UPDATE_COMPLETE");
   await expect(applyPlaidSyncBatch({ id: item.id, userId: user.id, syncCursor: "seven" }, map, { added: [], modified: [], removed: [] }, "stale", new Date(), "HISTORICAL_UPDATE_COMPLETE")).rejects.toMatchObject({ code: "SYNC_CONFLICT" });
   expect((await prisma.plaidItem.findUniqueOrThrow({ where: { id: item.id } })).transactionHistoryStatus).toBe("INITIAL_UPDATE_COMPLETE");
+});
+
+it("prevents confirmed duplicate bank accounts atomically without merging separate logins", async () => {
+  const owner = await prisma.user.create({ data: { email: `bank-identity-owner-${suffix}@worthlane.local`, passwordHash: "unusable-fixture-hash" } });
+  const partner = await prisma.user.create({ data: { email: `bank-identity-partner-${suffix}@worthlane.local`, passwordHash: "unusable-fixture-hash" } });
+  const item = { userId: owner.id, itemId: `identity-${suffix}`, institution: "Synthetic institution" };
+  const bank = (id: string, identity?: string, balance = 100): AccountBase => ({
+    account_id: `${suffix}-${id}`, persistent_account_id: identity ? `${suffix}-${identity}` : undefined,
+    name: "Same display name", mask: "1234", type: "depository", subtype: "checking",
+    balances: { current: balance, available: balance, iso_currency_code: "USD", unofficial_currency_code: null, limit: null },
+  } as AccountBase);
+  const first = bank("original", "confirmed");
+  const map = await savePlaidAccounts(item, [first]);
+  const firstId = map.get(first.account_id)!;
+  await savePlaidAccounts(item, [{ ...first, balances: { ...first.balances, current: 123.45 } }]);
+  expect((await prisma.account.findUniqueOrThrow({ where: { id: firstId } })).currentBalance.toNumber()).toBe(123.45);
+  await expect(savePlaidAccounts({ ...item, itemId: "duplicate-item" }, [bank("unrelated", "different"), bank("second-copy", "confirmed")])).rejects.toMatchObject({ code: "PLAID_DUPLICATE_ACCOUNT" });
+  expect(await prisma.account.count({ where: { userId: owner.id } })).toBe(1);
+  expect((await prisma.account.findUniqueOrThrow({ where: { id: firstId } })).plaidItemId).toBe(item.itemId);
+  // Similar names/masks/balances alone must not erase legitimate accounts.
+  await savePlaidAccounts(item, [bank("unknown-a"), bank("unknown-b")]);
+  expect(await prisma.account.count({ where: { userId: owner.id } })).toBe(3);
+  await savePlaidAccounts({ ...item, userId: partner.id, itemId: "partner-item" }, [bank("partner-copy", "confirmed")]);
+  expect(await prisma.account.count({ where: { userId: partner.id } })).toBe(1);
+  expect(await prisma.householdAccountAccess.count({ where: { accountId: firstId } })).toBe(0);
+  await expect(savePlaidAccounts({ ...item, userId: partner.id }, [first])).rejects.toMatchObject({ code: "PLAID_ACCOUNT_ALREADY_LINKED" });
+  const races = await Promise.allSettled([
+    savePlaidAccounts({ ...item, itemId: "race-a" }, [bank("race-a", "race-identity")]),
+    savePlaidAccounts({ ...item, itemId: "race-b" }, [bank("race-b", "race-identity")]),
+  ]);
+  expect(races.filter(result => result.status === "fulfilled")).toHaveLength(1);
+  expect(await prisma.account.count({ where: { userId: owner.id, plaidAccountId: { in: [`${suffix}-race-a`, `${suffix}-race-b`] } } })).toBe(1);
 });
