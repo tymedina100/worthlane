@@ -883,3 +883,8 @@ body small { font-size: 12px !important; line-height: 1.45; }
 .debt-plan-table { overflow-x: auto; }
 .debt-plan-table th, .debt-plan-table td { padding: 8px; text-align: left; }
 .debt-plan-result { padding: 16px 0; }
+
+.upcoming-panel { padding: 0 20px 20px; }
+.upcoming-panel .panel__header { padding: 24px 0 18px; }
+.debt-plan-fields .upcoming-active { flex-direction: row; align-items: center; gap: 10px; }
+.debt-plan-fields .upcoming-active input { width: 18px; height: 18px; margin: 0; }

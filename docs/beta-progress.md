@@ -650,3 +650,24 @@ production changes or spending. Full beta acceptance remains unproven.
 - Next: rendered desktop Upcoming/debt-to-item flow and native acceptance where
   available; Liabilities, banking recovery/dedupe and full beta regression gates
   remain. Concurrent Upcoming edits still need a conflict/idempotency contract.
+
+## 2026-09-08 — rendered desktop debt-to-Upcoming journey
+
+- Ran `./scripts/test-postgres.ps1 -Interactive`:21 migrations,5 database tests and
+  HTTP auth/origin/privacy/persistence checks passed before browser acceptance.
+- Fresh synthetic registration and solo household setup through the desktop UI.
+  Saved one debt:100 current balance,10 minimum,0APR,30 monthly budget, confirmed
+  Sep30 due date. UI showed December2026 payoff and the exact saved due action.
+- Added minimum to Upcoming; the list refreshed automatically. Repeating Add
+  reported the existing item without another row. Edited it to12.34/Oct1 and marked
+  paid. Reload and a separate sign-out/sign-in both showed12.34/Oct1/paid.
+- Inspected Upcoming editor screenshots at390x844. No horizontal document overflow
+  (375px client/scroll width excluding scrollbar). Found edge-flush body content
+  and detached Active label; added scoped panel padding and inline checkbox style.
+  Inspected the updated screenshot: aligned checkbox, padded controls and readable
+  reminder explanation/save button. Viewport override reset afterward.
+- Exact interactive stop file used; runner exited0 and confirmed PostgreSQL stopped.
+  Diff check passed. Screenshots were inspected inline, not saved as artifacts.
+- This proves the named desktop path only. Concurrent edits/payment retries, native
+  UI/delivery, Liabilities, banking recovery/dedupe and full regression acceptance
+  remain open. No production data or provider calls used in this run.
