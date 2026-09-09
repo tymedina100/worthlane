@@ -9,6 +9,7 @@ import { POST as exchange } from "../src/app/api/plaid/exchange/route";
 import { POST as sync } from "../src/app/api/plaid/sync/route";
 import { POST as linkToken } from "../src/app/api/plaid/link-token/route";
 import { POST as unlink } from "../src/app/api/plaid/items/[id]/unlink/route";
+import { POST as liabilities } from "../src/app/api/plaid/items/[id]/liabilities/route";
 import { GET as accounts } from "../src/app/api/accounts/route";
 
 function req(token: string | undefined, body: unknown) {
@@ -26,7 +27,7 @@ it("persists encrypted Sandbox Items, repeats sync, isolates owners, records rel
   try {
     const session = await data(await register(req(undefined, { email: `sandbox-${randomUUID()}@worthlane.local`, password: "Synthetic-sandbox-passphrase!2026" })), 201);
     const stranger = await data(await register(req(undefined, { email: `other-${randomUUID()}@worthlane.local`, password: "Synthetic-sandbox-passphrase!2026" })), 201);
-    const created = await plaidClient.sandboxPublicTokenCreate({ institution_id: "ins_109508", initial_products: [Products.Transactions] });
+    const created = await plaidClient.sandboxPublicTokenCreate({ institution_id: "ins_109508", initial_products: [Products.Transactions, Products.Liabilities] });
     const linked = await data(await exchange(req(session.accessToken, { publicToken: created.data.public_token, institutionName: "Synthetic Sandbox Bank" })), 201);
     const item = await prisma.plaidItem.findUniqueOrThrow({ where: { id: linked.plaidItem.id } });
     cleanupToken = decryptPlaidAccessToken(item.accessTokenEncrypted);
@@ -37,6 +38,34 @@ it("persists encrypted Sandbox Items, repeats sync, isolates owners, records rel
     await data(await sync(req(stranger.accessToken, { plaidItemId: item.id })), 404);
     await data(await linkToken(req(stranger.accessToken, { platform: "web", mode: "update", plaidItemId: item.id })), 404);
     await data(await unlink(req(stranger.accessToken, {}), { params: { id: item.id } }), 404);
+    stage = "liability fields and owner isolation";
+    await data(await liabilities(req(stranger.accessToken, {}), { params: { id: item.id } }), 404);
+    let liabilityData: any;
+    for (let attempt = 0; attempt < 15; attempt++) {
+      const response = await liabilities(req(session.accessToken, {}), { params: { id: item.id } });
+      if (response.status === 200) { liabilityData = await data(response); break; }
+      const failure = await response.json();
+      if (failure.error?.code !== "PRODUCT_NOT_READY") {
+        const safeCode = /^[A-Z_]+$/.test(failure.error?.code ?? "") ? failure.error.code : "UNKNOWN";
+        stage = `liabilities response ${response.status} ${safeCode}`; throw new Error("Liabilities unavailable");
+      }
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    stage = "liabilities source and debt count";
+    expect(liabilityData.source).toBe("PLAID_LIABILITIES");
+    expect(liabilityData.debts.length).toBeGreaterThan(0);
+    const card = liabilityData.debts.find((debt: any) => debt.kind === "CREDIT_CARD");
+    stage = "liabilities card present";
+    expect(card).toBeDefined();
+    stage = "liabilities statement balance present";
+    expect(card.statementBalanceMinor).not.toBeNull();
+    stage = "liabilities minimum present";
+    expect(card.minimumPaymentMinor).not.toBeNull();
+    stage = "liabilities due date present";
+    expect(card.dueDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    stage = "liabilities rates present";
+    expect(card.rates.length).toBeGreaterThan(0);
+    expect(JSON.stringify(liabilityData)).not.toContain(cleanupToken);
     let count = 0;
     stage = "transaction sync and replay";
     for (let attempt = 0; attempt < 15; attempt++) {

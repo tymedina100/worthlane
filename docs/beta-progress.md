@@ -714,3 +714,29 @@ production changes or spending. Full beta acceptance remains unproven.
   performed. Create/delete endpoints are not covered by this version contract.
 - Remaining: rendered conflict recovery/native acceptance, Liabilities, banking
   recovery/native/joint-manual dedupe and final integrated beta verification.
+
+## 2026-09-08 — owner-only Plaid Liabilities retrieval
+
+- Added explicit POST `/api/plaid/items/[id]/liabilities`, scoped to the authenticated
+  owner's persisted connection/accounts. Sandbox calls are enabled; other environments
+  require PLAID_LIABILITIES_ENABLED=true (production approval remains required).
+- Narrow shared response exposes local account identity, separate current/statement
+  balance, minimum vs mortgage next payment, confirmed provider date, individual
+  rates and student accrued interest. Missing values stay null; no invented combined
+  APR. Student note warns that servicers may repeat a combined minimum per loan.
+  Raw account numbers, provider account IDs and unrelated fields are not returned.
+- Source/lookup timestamp and cached/incomplete-data notice accompany the response.
+  No automatic saved debt edits, reminders, or payment execution. Mapping follows
+  https://plaid.com/docs/api/products/liabilities/ (reviewed September8).
+- API144 tests and all workspace typechecks pass. Six new tests cover allowlisting,
+  missing/invalid values, multiple rates, mortgage/student distinctions, ownership,
+  and non-Sandbox activation gating.
+- `./scripts/test-postgres.ps1 -Sandbox` final run passed21 migrations/5DB tests and
+  live provider integration: encrypted Item exchange with Transactions+Liabilities,
+  debt fields, nonowner404, transaction replay, login-required/update-token, unlink.
+  Initial live failures exposed local/provider item-ID mismatch in account lookup;
+  corrected query and fixture, then verified against real persisted Sandbox data.
+  All temporary provider Items were cleaned up and each isolated DB was stopped.
+- Remaining Liabilities work: Link consent/availability UX, desktop/mobile review
+  and confirmed copy into plans with provenance, refresh behavior and acceptance.
+  This is backend/Sandbox proof, not completion of the user-facing debt-data flow.
