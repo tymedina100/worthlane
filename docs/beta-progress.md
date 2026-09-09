@@ -936,3 +936,27 @@ production changes or spending. Full beta acceptance remains unproven.
   import (PATCH instead of the existing PUT handler); corrected and reran fully.
 - Historical split changes still need durable history/effect handling; this fix
   does not claim that acceptance item. Native/interactive acceptance remains open.
+
+## 2026-09-08 — first successful Plaid-enabled Android native compilation
+
+- Original session 9409 ended with exit 1 after 6m56s/402 tasks: CMake reported
+  pnpm-nested object paths above its limit, then Ninja failed with `build.ninja
+  still dirty after 100 tries`. Plaid Kotlin compilation itself passed.
+- Added opt-in `scripts/android-local.init.gradle`, used by the local build helper,
+  to set Android's CMake buildStagingDirectory to ignored `.tmp/android-cxx` per
+  module. No dependency source edits or generated-project patching. The DSL is
+  documented at https://developer.android.com/reference/tools/gradle-api/8.3/null/com/android/build/api/dsl/Cmake.
+  Ignored Kotlin's generated local compiler session directory. Gradle also installed
+  build-tools35 under the already-authorized SDK license during the first build.
+- `./scripts/build-android-local.ps1 *> .tmp/android-build-short-path.log` exited0:
+  BUILD SUCCESSFUL in1m40s;447 tasks (50executed/397cached). Failed native CMake tasks
+  rebuilt successfully for all four architectures. API typecheck also passed.
+- APK: `apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk`,151856888 bytes.
+  aapt confirms com.worthlane.mobile, min26,target36 and arm64-v8a/armeabi-v7a/x86/x86_64.
+  apksigner verify passes. SHA256:
+  `8A68EC6EC7900531BFD0898A8C0193075AD6B1E64EDC6B1ADC696FB30EE62E64`.
+- This is a local development-client APK with native Plaid linked, not a production
+  release or actual Link/reminder/device proof. No Sentry upload, paid build or
+  production banking activation. Browser computer use is available; native app
+  control is disabled in this session. Native Sandbox/device acceptance, historical
+  split effects, deduplication and complete integrated journeys remain required.
