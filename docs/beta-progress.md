@@ -1122,3 +1122,18 @@ production changes or spending. Full beta acceptance remains unproven.
 - Remaining visual finding: the personal dashboard available-balance formatter still
   rounds cents, while household money now preserves them. Full integrated solo and
   two-user financial journeys, native banking/reminders and regression builds remain.
+
+## 2026-09-09 — resumed native control, exact Today balance and bill creation
+
+- After renewed user authorization, the Computer Use skill's native sky API returned
+  the running Android emulator and captured Worthlane successfully. Native control
+  is available; the browser-only CUA restriction does not describe this separate API.
+- Fixed Today money formatting to retain cents. Android Fast Refresh displayed the
+  synthetic Jordan balance as $3,456.78 instead of $3,457. Mobile typecheck passed.
+- Created Jordan native test bill for $87.65, due 2026-09-09, through Android Quick
+  add. Observed Saved, the Upcoming row, and reopened Edit with the exact amount,
+  date, one-time recurrence and reminder Off. Fresh local API logins independently
+  confirmed one persisted unpaid bill and its absence from Casey's Upcoming list.
+- This run did not rebuild the APK or test reminder delivery, bill payment-status
+  changes, or a partner UI session. Earlier APK build and onboarding/split evidence
+  remain separate. Full beta acceptance remains open.
