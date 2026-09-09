@@ -1,4 +1,5 @@
 "use client";
+import { BankDebtDetails } from "./bank-debt-details";
 import { useEffect, useState, type FormEvent } from "react";
 import { debtPlanInputSchema, type DebtPlanInput } from "@worthlane/contracts";
 import { estimateDebtPayoff, DEBT_ESTIMATE_ASSUMPTIONS, type DebtEstimate } from "@worthlane/core";
@@ -11,7 +12,7 @@ async function request<T>(path = "", body?: unknown, method = "GET"): Promise<T>
   if (!response.ok) throw new Error(payload.error?.message ?? "Could not load the plan.");
   return payload.data;
 }
-export function DebtPlanner({ currency, onUpcomingAdded }: { currency: string; onUpcomingAdded?: () => void }) {
+export function DebtPlanner({ currency, connections, onUpcomingAdded }: { currency: string; connections: { id: string; institution: string | null }[]; onUpcomingAdded?: () => void }) {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [selected, setSelected] = useState<Plan | null>(null);
   const [debts, setDebts] = useState<DebtPlanInput["debts"]>([]);
@@ -45,7 +46,7 @@ export function DebtPlanner({ currency, onUpcomingAdded }: { currency: string; o
     };
     setBusy(true);
     try {
-      const input = debtPlanInputSchema.parse({ name: form.get("name"), startMonth: form.get("startMonth"), strategy: form.get("strategy"), monthlyPaymentMinor: number("payment"), debts: debts.map((debt, index) => ({ id: debt.id, name: form.get(`name${index}`), balanceMinor: number(`balance${index}`), minimumPaymentMinor: number(`minimum${index}`), aprBasisPoints: number(`apr${index}`), statementBalanceMinor: form.get(`statement${index}`) ? number(`statement${index}`) : null, dueDate: form.get(`due${index}`) || null, ...(form.get(`expiry${index}`) ? { promotion: { expiresOn: form.get(`expiry${index}`), aprBasisPoints: number(`promo${index}`) } } : {}) })) });
+      const input = debtPlanInputSchema.parse({ name: form.get("name"), startMonth: form.get("startMonth"), strategy: form.get("strategy"), monthlyPaymentMinor: number("payment"), debts: debts.map((debt, index) => ({ bankReference: debt.bankReference, id: debt.id, name: form.get(`name${index}`), balanceMinor: number(`balance${index}`), minimumPaymentMinor: number(`minimum${index}`), aprBasisPoints: number(`apr${index}`), statementBalanceMinor: form.get(`statement${index}`) ? number(`statement${index}`) : null, dueDate: form.get(`due${index}`) || null, ...(form.get(`expiry${index}`) ? { promotion: { expiresOn: form.get(`expiry${index}`), aprBasisPoints: number(`promo${index}`) } } : {}) })) });
       const result = estimateDebtPayoff(input);
       setDebts(input.debts);
       setEstimate(result);
@@ -57,7 +58,7 @@ export function DebtPlanner({ currency, onUpcomingAdded }: { currency: string; o
     } catch (error) { setMessage(error instanceof Error && error.name !== "ZodError" ? error.message : "Check names, amounts, dates and promotional details."); }
     finally { setBusy(false); }
   }
-  return <section className="panel workspace-panel">
+  return <><BankDebtDetails copyDisabled={busy || debts.length >= 100} connections={connections} currency={currency} onCopy={debt => { setDebts(rows => [...rows, debt]); setEstimate(null); setMessage("Reviewed debt added to this draft. Save the plan to keep it."); }} /><section className="panel workspace-panel">
     <div className="panel__header"><p className="section-kicker">Personal scope · Only you</p><h2>Debt payoff plan</h2><p>Enter an affordable monthly payment budget. These are manual estimates; no payments are made.</p></div>
     <div className="debt-plan-actions"><button type="button" className="button button--secondary" disabled={busy} onClick={() => reset(null)}>New plan</button>{plans.map(plan => <button key={plan.id} type="button" className="button button--secondary" disabled={busy} onClick={() => void open(plan.id)}>Open {plan.input.name}</button>)}</div>
     <form key={version} onSubmit={submit} onChange={() => { setEstimate(null); setMessage("Unsaved changes."); }}>
@@ -68,7 +69,7 @@ export function DebtPlanner({ currency, onUpcomingAdded }: { currency: string; o
         <label>Method<select name="strategy" defaultValue={selected?.input.strategy ?? "AVALANCHE"}><option value="AVALANCHE">Avalanche — highest APR first</option><option value="SNOWBALL">Snowball — smallest balance first</option></select></label>
       </fieldset>
       {debts.map((debt, index) => <fieldset disabled={busy} className="debt-plan-fields" key={debt.id}><legend>Debt {index + 1}</legend>
-        <label>Name<input name={`name${index}`} required maxLength={100} defaultValue={debt.name} /></label>
+        {debt.bankReference && <p>Bank details reviewed {new Date(debt.bankReference.reviewedAt).toLocaleString()}; retrieved {new Date(debt.bankReference.retrievedAt).toLocaleString()}. Values may have been edited and do not refresh automatically.</p>}<label>Name<input name={`name${index}`} required maxLength={100} defaultValue={debt.name} /></label>
         <label>Current balance ({currency})<input name={`balance${index}`} type="number" min="0" step="0.01" required defaultValue={debt.balanceMinor / 100} /></label>
         <label>Minimum monthly payment<input name={`minimum${index}`} type="number" min="0" step="0.01" required defaultValue={debt.minimumPaymentMinor / 100} /></label>
         <label>Ordinary APR (%)<input name={`apr${index}`} type="number" min="0" max="1000" step="0.01" required defaultValue={debt.aprBasisPoints / 100} /></label>
@@ -86,5 +87,5 @@ export function DebtPlanner({ currency, onUpcomingAdded }: { currency: string; o
     {estimate?.schedule[0] && <div><h3>First month's payments</h3><ul>{estimate.schedule[0].debts.map(row => <li key={row.id}>{debts.find(debt => debt.id === row.id)?.name}: {money(row.paymentMinor)}</li>)}</ul></div>}
     {selected && <div><h3>Due dates from the saved plan</h3><p>Add each confirmed minimum payment once. Reminders start off; edit the item in Upcoming. Unsaved changes are not used.</p>{selected.input.debts.filter(debt => debt.dueDate && debt.minimumPaymentMinor > 0).map(debt => <button key={debt.id} type="button" className="button button--secondary" disabled={busy} onClick={() => void addDueDate(debt.id)}>Add {debt.name}: {money(debt.minimumPaymentMinor)} due {debt.dueDate} to Upcoming</button>)}</div>}
     <details><summary>How this estimate works</summary><ul>{DEBT_ESTIMATE_ASSUMPTIONS.map(text => <li key={text}>{text}</li>)}</ul></details>
-  </section>;
+  </section></>;
 }

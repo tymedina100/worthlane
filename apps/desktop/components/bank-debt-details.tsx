@@ -1,9 +1,11 @@
 "use client";
+import { BankDebtCopy } from "./bank-debt-copy";
+import type { DebtPlanInput } from "@worthlane/contracts";
 import { PlaidLinkButton } from "./plaid-link-button";
 import type { ManagePlaid } from "../src/lib/workspace-data";
 import { useState } from "react";
 import { liabilitySnapshotSchema, type LiabilitySnapshot } from "@worthlane/contracts";
-export function BankDebtDetails({ connections }: { connections: { id: string; institution: string | null }[] }) {
+export function BankDebtDetails({ connections, currency, onCopy, copyDisabled }: { connections: { id: string; institution: string | null }[]; currency: string; onCopy: (debt: DebtPlanInput["debts"][number]) => void; copyDisabled: boolean }) {
   const [snapshot, setSnapshot] = useState<{ id: string; data: LiabilitySnapshot } | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -32,7 +34,7 @@ export function BankDebtDetails({ connections }: { connections: { id: string; in
       const money = (value: number | null) => value === null ? "Not provided" : `${(value / 100).toFixed(2)} ${debt.currency ?? "(currency not provided)"}`;
       return <article className="debt-plan-result" key={debt.accountId}><h3>{debt.name}</h3><p>{debt.kind.replaceAll("_", " ").toLowerCase()}</p><dl className="liability-details">
         <dt>Current balance</dt><dd>{money(debt.currentBalanceMinor)}</dd><dt>Statement balance</dt><dd>{money(debt.statementBalanceMinor)}</dd><dt>Minimum payment</dt><dd>{money(debt.minimumPaymentMinor)}</dd><dt>Next payment (mortgage)</dt><dd>{money(debt.nextPaymentMinor)}</dd><dt>Accrued interest</dt><dd>{money(debt.outstandingInterestMinor)}</dd><dt>Provider due date</dt><dd>{debt.dueDate ?? "Not provided"}</dd></dl>
-        <p>Reported rates (review each separately)</p>{!debt.rates.length && <p>Not provided</p>}<ul>{debt.rates.map((rate, index) => <li key={index}>{rate.kind.replaceAll("_", " ")}: {rate.percentage}% · balance subject to rate: {money(rate.balanceSubjectToRateMinor)}</li>)}</ul>{debt.notes.map(note => <p key={note}>{note}</p>)}</article>;
+        <p>Reported rates (review each separately)</p>{!debt.rates.length && <p>Not provided</p>}<ul>{debt.rates.map((rate, index) => <li key={index}>{rate.kind.replaceAll("_", " ")}: {rate.percentage}% · balance subject to rate: {money(rate.balanceSubjectToRateMinor)}</li>)}</ul>{debt.notes.map(note => <p key={note}>{note}</p>)}<BankDebtCopy key={`${debt.accountId}-${data.retrievedAt}`} debt={debt} retrievedAt={data.retrievedAt} currency={currency} onCopy={onCopy} disabled={copyDisabled} /></article>;
     })}</>}
   </section>;
 }

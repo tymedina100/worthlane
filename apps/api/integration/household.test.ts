@@ -315,7 +315,9 @@ it("persists private debt estimates across login and rejects stale edits", async
   await call(edit, stranger.token, { revision: 1, input }, 404);
   const relogin = await call(login, undefined, { email: owner.email, password });
   expect((await call(read, relogin.accessToken)).input).toEqual(saved.input);
-  const revised = await call(edit, relogin.accessToken, { revision: 1, input: { ...input, strategy: "SNOWBALL", monthlyPaymentMinor: 5000 } });
+  const bankReference = { source: "USER_REVIEWED_PLAID_LIABILITIES", retrievedAt: "2026-09-08T12:00:00.000Z", reviewedAt: "2026-09-08T12:05:00.000Z" };
+  const revised = await call(edit, relogin.accessToken, { revision: 1, input: { ...input, strategy: "SNOWBALL", monthlyPaymentMinor: 5000, debts: input.debts.map(debt => ({ ...debt, bankReference })) } });
+  expect((await call(read, relogin.accessToken)).input.debts[0].bankReference).toEqual(bankReference);
   expect(revised).toMatchObject({ revision: 2, estimate: { payoffMonth: "2026-10" } });
   await call(addDue, owner.token, { revision: 1, entryId: "card" }, 409);
   await call(edit, owner.token, { revision: 1, input }, 409);

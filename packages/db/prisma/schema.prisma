@@ -64,6 +64,7 @@ model DebtPlanEntry {
   aprBasisPoints Int
   promoAprBasisPoints Int?
   promoExpiresOn String?
+  bankReference Json?
   position Int
   plan DebtPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
   @@unique([planId, entryId])

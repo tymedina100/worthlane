@@ -783,3 +783,28 @@ production changes or spending. Full beta acceptance remains unproven.
   fixture already has Liabilities. Native consent, rendered Link/recovery/OAuth,
   confirmed copy into plans with provenance, joint/manual deduplication and final
   integrated/device acceptance remain unfinished. No deployment or spending.
+
+## 2026-09-08 — reviewed bank-debt copy and saved reference
+
+- Desktop bank-debt details now offer an explicit review form that appends to the
+  current plan draft. User confirms figures and checks for an existing debt; APR
+  must be entered explicitly, missing amounts stay blank, currency mismatch stops
+  copying, and student grouped-payment/accrued-interest warnings remain visible.
+  Copy does not save, replace existing debts, refresh figures or schedule reminders.
+- Added optional strict bankReference to debt entries and nullable JSONB migration
+  20260908210000_debt_bank_reference. It records client-declared Liabilities review
+  and retrieval timestamps, not provider verification. No tokens/account numbers
+  are accepted in this reference. Existing manual entries need no reference.
+- Both clients preserve/display the reference on editing saved plans, with an
+  explicit warning that values may have been edited and do not refresh. Mobile
+  copy UI is still pending. Existing older clients may omit this optional metadata
+  on a subsequent edit; ship current clients together to retain it.
+- Shared core47/API148 tests passed; contracts14 tests pass including legacy input
+  and strict provenance rejection. Prisma generation and all workspace typechecks
+  passed. `./scripts/test-postgres.ps1 -Http` passed22 migrations/5DB tests and the
+  complete HTTP suite. Extended DB journey saves/reopens a reference on a private
+  plan alongside existing stranger denial and revision checks. Servers stopped.
+- iOS export1944 modules/6.96MB and diff check passed. Populated copy form, draft
+  preservation across interactive actions, and native UI still need rendered QA.
+  Broader Link/consent/recovery, joint/manual deduplication and integrated acceptance
+  remain incomplete. All changes local; no production migration or deployment.

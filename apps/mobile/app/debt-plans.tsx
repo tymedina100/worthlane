@@ -11,10 +11,10 @@ import { useAuthStore } from "@/store/auth";
 import { useTheme } from "@/lib/ThemeContext";
 
 type Plan = { id: string; revision: number; input: DebtPlanInput; estimate?: DebtEstimate };
-type DraftDebt = { id: string; name: string; balance: string; minimum: string; apr: string; statement: string; due: string; promo: string; expiry: string };
+type DraftDebt = { bankReference?: DebtPlanInput["debts"][number]["bankReference"]; id: string; name: string; balance: string; minimum: string; apr: string; statement: string; due: string; promo: string; expiry: string };
 let nextId = 0;
 const blank = (): DraftDebt => ({ id: `manual-${Date.now()}-${++nextId}`, name: "", balance: "", minimum: "", apr: "", statement: "", due: "", promo: "0", expiry: "" });
-const fromDebt = (d: DebtPlanInput["debts"][number]): DraftDebt => ({ id: d.id, name: d.name, balance: String(d.balanceMinor / 100), minimum: String(d.minimumPaymentMinor / 100), apr: String(d.aprBasisPoints / 100), statement: d.statementBalanceMinor === null ? "" : String(d.statementBalanceMinor / 100), due: d.dueDate ?? "", promo: String((d.promotion?.aprBasisPoints ?? 0) / 100), expiry: d.promotion?.expiresOn ?? "" });
+const fromDebt = (d: DebtPlanInput["debts"][number]): DraftDebt => ({ bankReference: d.bankReference, id: d.id, name: d.name, balance: String(d.balanceMinor / 100), minimum: String(d.minimumPaymentMinor / 100), apr: String(d.aprBasisPoints / 100), statement: d.statementBalanceMinor === null ? "" : String(d.statementBalanceMinor / 100), due: d.dueDate ?? "", promo: String((d.promotion?.aprBasisPoints ?? 0) / 100), expiry: d.promotion?.expiresOn ?? "" });
 const cents = (value: string) => { if (!/^\d+(\.\d{1,2})?$/.test(value)) throw new Error("Enter nonnegative amounts and APRs with at most two decimals."); return Math.round(Number(value) * 100); };
 const money = (value: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value / 100);
 
@@ -43,7 +43,7 @@ function DebtPlanEditor({ userId }: { userId: string }) {
   async function calculate(save: boolean) {
     setBusy(true);
     try {
-      const input = debtPlanInputSchema.parse({ name, startMonth: month, monthlyPaymentMinor: cents(payment), strategy, debts: debts.map(d => ({ id: d.id, name: d.name, balanceMinor: cents(d.balance), minimumPaymentMinor: cents(d.minimum), aprBasisPoints: cents(d.apr), statementBalanceMinor: d.statement ? cents(d.statement) : null, dueDate: d.due || null, ...(d.expiry ? { promotion: { aprBasisPoints: cents(d.promo), expiresOn: d.expiry } } : {}) })) });
+      const input = debtPlanInputSchema.parse({ name, startMonth: month, monthlyPaymentMinor: cents(payment), strategy, debts: debts.map(d => ({ bankReference: d.bankReference, id: d.id, name: d.name, balanceMinor: cents(d.balance), minimumPaymentMinor: cents(d.minimum), aprBasisPoints: cents(d.apr), statementBalanceMinor: d.statement ? cents(d.statement) : null, dueDate: d.due || null, ...(d.expiry ? { promotion: { aprBasisPoints: cents(d.promo), expiresOn: d.expiry } } : {}) })) });
       setEstimate(estimateDebtPayoff(input));
       if (!save) { setMessage("Preview only — changes are not saved."); return; }
       const saved = selected ? await api.patch<Plan>(`/debt-plans/${encodeURIComponent(selected.id)}`, { revision: selected.revision, input }) : await api.post<Plan>("/debt-plans", input);
@@ -71,7 +71,7 @@ function DebtPlanEditor({ userId }: { userId: string }) {
       const edit = (key: keyof DraftDebt) => (value: string) => setDebts(rows => rows.map(row => row.id === debt.id ? { ...row, [key]: value } : row));
       return <View key={debt.id} style={[styles.card, { borderColor: colors.border }]}><Text style={[styles.heading, { color: colors.text }]}>Debt {index + 1}</Text>
         {field(`Debt ${index + 1} name`, debt.name, edit("name"))}{field("Current balance", debt.balance, edit("balance"), true)}{field("Minimum monthly payment", debt.minimum, edit("minimum"), true)}{field("Ordinary APR (%)", debt.apr, edit("apr"), true)}{field("Statement balance (optional)", debt.statement, edit("statement"), true)}{field("Confirmed due date (YYYY-MM-DD, optional)", debt.due, edit("due"))}{field("Promo APR (%)", debt.promo, edit("promo"), true)}{field("Promo expiry (YYYY-MM-DD, optional)", debt.expiry, edit("expiry"))}
-        {button(`Remove debt ${index + 1}`, () => { setDebts(rows => rows.filter(row => row.id !== debt.id)); changed(); }, debts.length === 1)}
+        {debt.bankReference && <Text style={{ color: colors.textMuted }}>Bank details reviewed {new Date(debt.bankReference.reviewedAt).toLocaleString()}; retrieved {new Date(debt.bankReference.retrievedAt).toLocaleString()}. Values may have been edited and do not refresh automatically.</Text>}{button(`Remove debt ${index + 1}`, () => { setDebts(rows => rows.filter(row => row.id !== debt.id)); changed(); }, debts.length === 1)}
       </View>;
     })}
     {button("Add debt", () => { setDebts(rows => [...rows, blank()]); changed(); }, debts.length >= 100)}
