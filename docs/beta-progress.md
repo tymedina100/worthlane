@@ -316,3 +316,29 @@ production changes or spending. Full beta acceptance remains unproven.
 - References: https://plaid.com/docs/link/web/ (CDN SDK),
   https://plaid.com/docs/link/update-mode/ (no re-exchange in update mode),
   https://plaid.com/docs/api/sandbox/ (test Items and login-required simulation).
+
+## 2026-09-08 — persisted application Sandbox banking
+
+- Added ./scripts/test-postgres.ps1 -Sandbox. It creates the isolated database,
+  runs ordinary DB journeys, then loads local Sandbox credentials only into a
+  child process with a random temporary encryption key. No production database
+  or durable environment file is changed. Sandbox config selects only its own
+  test file; live calls remain outside the ordinary offline suite.
+- Final run passed three existing PostgreSQL journeys plus the new app-route
+  Sandbox test: register separate users, exchange synthetic Item, persist AES-GCM
+  encrypted token/accounts, import nonempty transaction history, repeat sync with
+  unchanged row count, reject another user's sync/relink/unlink, force login
+  required, persist needsRelink/error code, issue update Link token, unlink both
+  upstream and local Item/accounts/transactions. Exit 0 and DB shutdown confirmed.
+- First run found another-user sync returned empty success; fixed requested
+  missing/non-owned Item to return 404. Also fixed Vitest config array merging
+  accidentally rerunning fresh-DB checks after population. Task-created provider
+  Item cleanup ran in the failure path; final test used normal app unlink.
+- API unit suite (136), API typecheck and git diff --check passed. Test diagnostics
+  identify stages without exposing provider headers, tokens or response bodies.
+- This verifies app route + PostgreSQL + live Sandbox, not browser Link success
+  or completed interactive reconnect. Still required: added/modified/removed and
+  pending reconciliation, joint-account/import dedupe, freshness/history signals,
+  OAuth resumption, native banking, due dates/debt and full beta regression gates.
+- Next: interactive desktop Sandbox flow with a separately scoped encryption key,
+  and deterministic reconciliation coverage. Native/mobile remains unverified.

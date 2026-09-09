@@ -1,0 +1,74 @@
+import { afterAll, expect, it } from "vitest";
+import { randomUUID } from "node:crypto";
+import { NextRequest } from "next/server";
+import { Products } from "plaid";
+import { prisma } from "@worthlane/db";
+import { plaidClient, decryptPlaidAccessToken } from "../src/lib/plaid";
+import { POST as register } from "../src/app/api/auth/register/route";
+import { POST as exchange } from "../src/app/api/plaid/exchange/route";
+import { POST as sync } from "../src/app/api/plaid/sync/route";
+import { POST as linkToken } from "../src/app/api/plaid/link-token/route";
+import { POST as unlink } from "../src/app/api/plaid/items/[id]/unlink/route";
+
+function req(token: string | undefined, body: unknown) {
+  return new NextRequest("http://localhost/api/sandbox", { method: "POST", headers: { "content-type": "application/json", ...(token ? { authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(body) });
+}
+async function data(response: Response, status = 200) {
+  expect(response.status).toBe(status);
+  return (await response.json()).data;
+}
+afterAll(() => prisma.$disconnect());
+
+it("persists encrypted Sandbox Items, repeats sync, isolates owners, records relink errors and unlinks", async () => {
+  let cleanupToken: string | undefined;
+  let stage = "registration and exchange";
+  try {
+    const session = await data(await register(req(undefined, { email: `sandbox-${randomUUID()}@worthlane.local`, password: "Synthetic-sandbox-passphrase!2026" })), 201);
+    const stranger = await data(await register(req(undefined, { email: `other-${randomUUID()}@worthlane.local`, password: "Synthetic-sandbox-passphrase!2026" })), 201);
+    const created = await plaidClient.sandboxPublicTokenCreate({ institution_id: "ins_109508", initial_products: [Products.Transactions] });
+    const linked = await data(await exchange(req(session.accessToken, { publicToken: created.data.public_token, institutionName: "Synthetic Sandbox Bank" })), 201);
+    const item = await prisma.plaidItem.findUniqueOrThrow({ where: { id: linked.plaidItem.id } });
+    cleanupToken = decryptPlaidAccessToken(item.accessTokenEncrypted);
+    expect(item.accessTokenEncrypted.startsWith("access-")).toBe(false);
+    expect(item.userId).toBe(session.user.id);
+    expect(await prisma.account.count({ where: { userId: session.user.id } })).toBeGreaterThan(0);
+    stage = "owner isolation";
+    await data(await sync(req(stranger.accessToken, { plaidItemId: item.id })), 404);
+    await data(await linkToken(req(stranger.accessToken, { platform: "web", mode: "update", plaidItemId: item.id })), 404);
+    await data(await unlink(req(stranger.accessToken, {}), { params: { id: item.id } }), 404);
+    let count = 0;
+    stage = "transaction sync and replay";
+    for (let attempt = 0; attempt < 15; attempt++) {
+      await data(await sync(req(session.accessToken, { plaidItemId: item.id, refresh: false })));
+      count = await prisma.transaction.count({ where: { userId: session.user.id } });
+      if (count > 0) break;
+      await new Promise((resolve) => setTimeout(resolve, 1_000));
+    }
+    expect(count).toBeGreaterThan(0);
+    await data(await sync(req(session.accessToken, { plaidItemId: item.id, refresh: false })));
+    expect(await prisma.transaction.count({ where: { userId: session.user.id } })).toBe(count);
+    stage = "login required and update token";
+    await plaidClient.sandboxItemResetLogin({ access_token: cleanupToken });
+    await data(await sync(req(session.accessToken, { plaidItemId: item.id })), 409);
+    const failed = await prisma.plaidItem.findUniqueOrThrow({ where: { id: item.id } });
+    expect(failed.needsRelink).toBe(true);
+    expect(failed.errorCode).toBe("ITEM_LOGIN_REQUIRED");
+    const update = await data(await linkToken(req(session.accessToken, { platform: "web", mode: "update", plaidItemId: item.id })));
+    expect(Boolean(update.linkToken)).toBe(true);
+    stage = "unlink cleanup";
+    await data(await unlink(req(session.accessToken, {}), { params: { id: item.id } }));
+    cleanupToken = undefined;
+    expect(await prisma.plaidItem.count({ where: { userId: session.user.id } })).toBe(0);
+    expect(await prisma.account.count({ where: { userId: session.user.id } })).toBe(0);
+    expect(await prisma.transaction.count({ where: { userId: session.user.id } })).toBe(0);
+  } catch (error) {
+    // Never let Axios/Vitest print request headers, public/access tokens or DB rows.
+    const code = (error as { response?: { data?: { error_code?: string } } }).response?.data?.error_code;
+    throw new Error(`Sandbox application check failed at ${stage} (${code && /^[A-Z_]+$/.test(code) ? code : "assertion or request failure"}).`);
+  } finally {
+    if (cleanupToken) {
+      try { await plaidClient.itemRemove({ access_token: cleanupToken }); }
+      catch { throw new Error("Task-created Sandbox Item cleanup failed."); }
+    }
+  }
+});

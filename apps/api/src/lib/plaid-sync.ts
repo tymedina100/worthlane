@@ -122,6 +122,9 @@ export async function syncPlaidItemsForUser(
   });
 
   let added = 0;
+  if (options.plaidItemId && items.length === 0) {
+    throw new PlaidIntegrationError("Bank connection not found.", { status: 404, code: "PLAID_ITEM_NOT_FOUND" });
+  }
   let modified = 0;
   let removed = 0;
 
