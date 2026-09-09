@@ -860,3 +860,22 @@ production changes or spending. Full beta acceptance remains unproven.
 - Still required: transaction-only consent upgrade, new/recovery/OAuth/native banking,
   native review/delivery checks, joint/manual deduplication and integrated acceptance.
   No production activation, migration, spending or deployment.
+
+## 2026-09-08 — correct mobile Link update completion
+
+- Inspection found mobile incorrectly exchanged public tokens after both create
+  and update callbacks. Update now syncs the selected existing Item; only creation
+  exchanges a required public token. Missing Item/token fails before a request.
+- Captures the linking user before token creation, checks again before opening
+  Link and before callback mutations, and suppresses alerts/query publication if
+  the user changes during completion. These guards do not prove native SDK behavior.
+- Added4 injected-request tests to the existing mobile test gate: update without
+  public token, create exchange, missing inputs/stale user rejection, and changed
+  user after request. Combined mobile suite14 tests and mobile typecheck pass.
+- Corrected a pre-existing Windows-1252 apostrophe embedded in the UTF-8 Profile
+  source; surrounding content preserved. iOS export1947 modules/6.97MB and diff
+  check passed. No banking activation or production changes.
+- Current installed SDK10.13.2 remains autolinking-excluded. Official current docs
+  https://plaid.com/docs/link/react-native/ describe SDK13 session APIs and native
+  requirements; supported SDK migration/autolinking/native build and actual device
+  banking remain the next implementation work. Do not infer completion from export.

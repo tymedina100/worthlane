@@ -23,6 +23,7 @@ import * as LocalAuthentication from "expo-local-authentication";
 import type { LinkExit, LinkSuccess } from "react-native-plaid-link-sdk";
 import { useAuthStore } from "@/store/auth";
 import { ApiError, api } from "@/lib/api";
+import { completePlaidLink } from "@/lib/plaid-completion";
 import { useSubscription } from "@/hooks/useSubscription";
 import {
   ACCOUNT_TYPES,
@@ -339,12 +340,15 @@ export default function ProfileScreen() {
   };
 
   const launchPlaid = async (mode: "create" | "update", plaidItemId?: string) => {
+    const linkingUserId = useAuthStore.getState().userId;
+    if (!linkingUserId) return;
     try {
       const { linkToken } = await api.post<{ linkToken: string }>("/plaid/link-token", {
         platform: Platform.OS === "ios" ? "ios" : "android",
         mode,
         plaidItemId,
       });
+      if (useAuthStore.getState().userId !== linkingUserId) return;
 
       // Loaded lazily so the Plaid native module (excluded from the build for
       // v1, see expo.autolinking.exclude) is never referenced while bank
@@ -356,23 +360,27 @@ export default function ProfileScreen() {
           noLoadingState: false,
         },
         onSuccess: async (success: LinkSuccess) => {
-          await handlePlaidSuccess(success, mode);
+          await handlePlaidSuccess(success, mode, linkingUserId, plaidItemId);
         },
         onExit: (exit: LinkExit) => {
-          handlePlaidExit(exit);
+          if (useAuthStore.getState().userId === linkingUserId) handlePlaidExit(exit);
         },
       });
     } catch (error) {
-      Alert.alert("Plaid unavailable", bankActionErrorMessage(error));
+      if (useAuthStore.getState().userId === linkingUserId) Alert.alert("Plaid unavailable", bankActionErrorMessage(error));
     }
   };
 
-  const handlePlaidSuccess = async (success: LinkSuccess, mode: "create" | "update") => {
+  const handlePlaidSuccess = async (success: LinkSuccess, mode: "create" | "update", linkingUserId: string, plaidItemId?: string) => {
     try {
-      await api.post("/plaid/exchange", {
+      const current = await completePlaidLink({
+        mode, plaidItemId,
         publicToken: success.publicToken,
         institutionName: success.metadata.institution?.name ?? undefined,
+        isCurrentUser: () => useAuthStore.getState().userId === linkingUserId,
+        post: (path, body) => api.post(path, body),
       });
+      if (!current) return;
 
       invalidateWorthlaneQueries();
       Alert.alert(
@@ -382,7 +390,7 @@ export default function ProfileScreen() {
           : "Your institution was linked and synced successfully."
       );
     } catch (error) {
-      Alert.alert("Connection failed", bankActionErrorMessage(error));
+      if (useAuthStore.getState().userId === linkingUserId) Alert.alert("Connection failed", bankActionErrorMessage(error));
     }
   };
 
@@ -475,7 +483,7 @@ export default function ProfileScreen() {
   };
 
   const reminderLabel = defaultReminder === "DUE_DATE" ? "On the due date" : defaultReminder === "THREE_DAYS_BEFORE" ? "Three days before" : defaultReminder === "NONE" ? "Off" : "One day before";
-  const chooseReminder = () => Alert.alert("Default reminders", "Used for new upcoming items on this login. Reminders use 9 a.m. in this device’s timezone and are cleared on logout. Existing items keep their preference.", [
+  const chooseReminder = () => Alert.alert("Default reminders", "Used for new upcoming items on this login. Reminders use 9 a.m. in this deviceâ€™s timezone and are cleared on logout. Existing items keep their preference.", [
     { text: "On due date", onPress: () => { setDefaultReminder(userId, "DUE_DATE"); setDefaultReminderState("DUE_DATE"); captureV1Event("reminder_enabled"); } },
     { text: "One day before", onPress: () => { setDefaultReminder(userId, "ONE_DAY_BEFORE"); setDefaultReminderState("ONE_DAY_BEFORE"); captureV1Event("reminder_enabled"); } },
     { text: "Three days before", onPress: () => { setDefaultReminder(userId, "THREE_DAYS_BEFORE"); setDefaultReminderState("THREE_DAYS_BEFORE"); captureV1Event("reminder_enabled"); } },
