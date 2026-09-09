@@ -58,6 +58,13 @@ try {
   await start('api', 3301, `${api}/api/accounts`);
   await start('desktop', 3303, `${desktop}/login`);
   const browser = client(desktop); const backend = client(api); const stranger = client(desktop);
+  await stranger('/api/plaid/link-token', { method: 'POST', status: 401, body: { platform: 'web', mode: 'create' } });
+  await stranger('/api/plaid/exchange', { method: 'POST', status: 401, body: { publicToken: 'synthetic-token' } });
+  await stranger('/api/plaid/link-token', { method: 'POST', status: 403, origin: 'https://untrusted.invalid', body: { platform: 'web', mode: 'create' } });
+  await stranger('/api/plaid/link-token', { method: 'POST', status: 400, body: { platform: 'web', mode: 'update' } });
+  await stranger('/api/plaid/link-token', { method: 'POST', status: 400, body: { platform: 'ios', mode: 'create' } });
+  await stranger('/api/plaid/exchange', { method: 'POST', status: 400, body: { publicToken: 'synthetic-token', accessToken: 'not-accepted' } });
+  console.log('PASS: Link/exchange BFF authentication, origin and narrow payload validation.');
   const email = `http-${randomUUID()}@worthlane.local`; const password = 'Synthetic-http-passphrase!2026';
   const registration = await browser('/api/auth/register', { method: 'POST', body: { email, password }, status: 201 });
   assert(registration.data.user.id);

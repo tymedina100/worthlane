@@ -290,3 +290,29 @@ production changes or spending. Full beta acceptance remains unproven.
 - Still required: interactive transaction classifications and privacy changes,
   historical split handling, Sandbox banking/reconciliation, due-date/debt plans,
   native/mobile acceptance and full regression builds. Next inspect banking flow.
+
+## 2026-09-08 — desktop banking entry points and live Sandbox connectivity
+
+- Added desktop Connect bank and Reconnect controls using Plaid's official CDN
+  Web SDK, with cancellation/error feedback and manual fallback. Update mode
+  syncs the existing Item rather than exchanging another public token. Extended
+  the existing same-origin authenticated BFF with narrow Link/exchange payloads.
+  Existing CSP already allows the official Plaid script/frame origins.
+- Live node scripts/test-plaid-sandbox.mjs --live-sandbox passed: create Link
+  token; create/exchange a synthetic Item; 14 Sandbox accounts; initial sync;
+  simulate ITEM_LOGIN_REQUIRED; create update-mode token; remove task-created
+  Item. Script hardcodes Sandbox base URL, requires explicit sandbox env/flag,
+  never opens the app database, and logs no credentials/tokens/response bodies.
+- This is direct provider evidence, not a persisted app sync or interactive
+  reconnect result. Local API credentials work in Sandbox; app token encryption
+  configuration still needs an isolated test key before exercising stored Items.
+- ./scripts/test-postgres.ps1 -Http passed three DB journeys and HTTP suite,
+  including new Link/exchange BFF auth, origin, platform and field validation.
+  Desktop typecheck and git diff --check passed. No production activation.
+- Next: isolated persistent app/Sandbox connect-sync-error-unlink and actual
+  desktop Link/reconnect UI. OAuth redirect resumption, native autolinking and
+  mobile Link remain incomplete; do not claim broad bank coverage yet. Preserve
+  manual fallback while proving added/modified/removed/pending reconciliation.
+- References: https://plaid.com/docs/link/web/ (CDN SDK),
+  https://plaid.com/docs/link/update-mode/ (no re-exchange in update mode),
+  https://plaid.com/docs/api/sandbox/ (test Items and login-required simulation).

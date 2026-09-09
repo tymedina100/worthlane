@@ -14,6 +14,19 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function targetFor(segments: string[], body: unknown) {
+  if (segments.length === 1 && segments[0] === "link-token") {
+    if (!isRecord(body) || Object.keys(body).some((key) => !["platform", "mode", "plaidItemId"].includes(key))) return null;
+    if (body.platform !== "web" || !["create", "update"].includes(String(body.mode))) return null;
+    if (body.mode === "update" && (typeof body.plaidItemId !== "string" || !body.plaidItemId)) return null;
+    if (body.mode === "create" && body.plaidItemId !== undefined) return null;
+    return { path: "/plaid/link-token", body };
+  }
+  if (segments.length === 1 && segments[0] === "exchange") {
+    if (!isRecord(body) || Object.keys(body).some((key) => !["publicToken", "institutionName"].includes(key))) return null;
+    if (typeof body.publicToken !== "string" || !body.publicToken || body.publicToken.length > 1024) return null;
+    if (body.institutionName !== undefined && (typeof body.institutionName !== "string" || body.institutionName.length > 200)) return null;
+    return { path: "/plaid/exchange", body };
+  }
   if (segments.length === 1 && segments[0] === "sync") {
     if (!isRecord(body) || Object.keys(body).some((key) => !["plaidItemId", "refresh"].includes(key))) return null;
     if (body.plaidItemId !== undefined && (typeof body.plaidItemId !== "string" || !body.plaidItemId)) return null;

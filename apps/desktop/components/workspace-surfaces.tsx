@@ -1,6 +1,7 @@
 "use client";
 
 import type { HouseholdSummary } from "@worthlane/contracts";
+import { PlaidLinkButton } from "./plaid-link-button";
 import { type CSSProperties, useMemo, useState } from "react";
 import {
   formatCurrencyMinor,
@@ -507,15 +508,17 @@ function PlaidConnectionControls({
 
   return (
     <div className="plaid-connection-controls">
+      <PlaidLinkButton onManage={onManage} />
       {connections.length ? connections.map((connection) => (
         <article key={connection.id}>
           <span><strong>{connection.institution ?? "Connected institution"}</strong><small>{connection.accountCount} account{connection.accountCount === 1 ? "" : "s"} - {titleCase(connection.status)}</small></span>
           <div>
+            <PlaidLinkButton onManage={onManage} itemId={connection.id} />
             <button className="button button--secondary" type="button" disabled={workingId === connection.id} onClick={() => void sync(connection)}>Sync</button>
             <button className="button button--danger" type="button" disabled={workingId === connection.id} onClick={() => void unlink(connection)}>Unlink</button>
           </div>
         </article>
-      )) : <p>No Plaid connections are attached to this login. New bank linking remains available in the mobile app.</p>}
+      )) : <p>No bank is connected yet. Connect one above or add a manual account below. Accounts stay personal until you choose to share.</p>}
       {message ? <span className="form-feedback--success" role="status">{message}</span> : null}
       {error ? <span className="form-feedback--error" role="alert">{error}</span> : null}
     </div>
