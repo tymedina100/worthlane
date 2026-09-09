@@ -631,3 +631,22 @@ production changes or spending. Full beta acceptance remains unproven.
 - Remaining: mobile per-item edit/reminder controls, rendered desktop Upcoming
   journey, physical-device foreground/delivery/permission/timezone acceptance,
   Liabilities and remaining banking/integrated beta gates.
+
+## 2026-09-08 — mobile Upcoming editor
+
+- Owner-scoped Upcoming screen now opens an editor for name, amount, confirmed
+  date, recurrence, reminder preference and active state. It uses the existing
+  PATCH contract; account reference/type are preserved. Invalid/failed saves keep
+  draft input, and closing a changed draft requires an explicit discard choice.
+- Saving updates local reminders and reports denied/unavailable/past reminders
+  separately from saved data. Auth checks suppress stale completion feedback;
+  screen/editor state and query keys are scoped to the signed-in user.
+- Today/Overdue use API household-calendar status. Other future items are grouped
+  as Upcoming instead of deriving a conflicting device-calendar week. Inactive
+  items appear separately and remain editable.
+- Mobile typecheck,11 shared contract tests,10 mocked-native reminder tests and
+  diff check passed. iOS export to `.tmp/upcoming-edit-export` passed1942 modules,
+  6.95MB Hermes bundle. These checks do not prove native editor layout/interactions.
+- Next: rendered desktop Upcoming/debt-to-item flow and native acceptance where
+  available; Liabilities, banking recovery/dedupe and full beta regression gates
+  remain. Concurrent Upcoming edits still need a conflict/idempotency contract.
