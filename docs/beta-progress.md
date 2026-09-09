@@ -474,3 +474,22 @@ production changes or spending. Full beta acceptance remains unproven.
   API136/contracts8 and workspace typechecks passed; database shutdown confirmed.
 - Next: desktop BFF and editable save/revisit UI, then mobile and obligation links.
   Bank Liabilities/recovery/native/dedupe and broad beta verification remain open.
+
+## 2026-09-08 — desktop debt-plan editor and BFF
+
+- Added private debt editor inside Goals: multiple named debts, separate current/
+  statement/minimum/APR/due fields, optional promo expiry, total monthly budget,
+  avalanche/snowball selection, preview, save, reopen and debt removal.
+- Shows estimated payoff/interest, shortfall and horizon warnings, monthly totals,
+  plus explicit model assumptions. Edits clear stale estimates; preview is labeled
+  unsaved. Revision conflicts retain entered data with a reload message.
+- Dedicated narrow BFF handles collection/read/edit, validates shared contracts,
+  uses existing HttpOnly session handling and same-origin mutation guard.
+- test-postgres.ps1 -Http passed19 migrations,5DB tests and real HTTP/BFF debt
+  create/read/edit, owner isolation, rejected extra fields and stale revision409.
+  Existing HTTP registration/refund/consent checks also passed. Servers/database
+  stopped; final workspace typechecks passed.
+- Rendered interactive editor acceptance still pending. Next: browser QA including
+  new/reopen/edit/preview and small-width layout; per-debt payment presentation,
+  mobile plan UI and obligations integration. Banking recovery/dedupe/native and
+  full beta acceptance remain open. No production changes.

@@ -876,3 +876,10 @@ body small { font-size: 12px !important; line-height: 1.45; }
   .transaction-table { border: 1px solid CanvasText; }
   .progress > span { background: Highlight; }
 }
+.debt-plan-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; border: 1px solid var(--border, #dce2d9); border-radius: 12px; padding: 16px; margin: 16px 0; min-width: 0; }
+.debt-plan-fields label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; min-width: 0; }
+.debt-plan-fields input, .debt-plan-fields select { width: 100%; min-width: 0; padding: 10px; border: 1px solid #cbd3c8; border-radius: 8px; background: white; color: #233125; }
+.debt-plan-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+.debt-plan-table { overflow-x: auto; }
+.debt-plan-table th, .debt-plan-table td { padding: 8px; text-align: left; }
+.debt-plan-result { padding: 16px 0; }

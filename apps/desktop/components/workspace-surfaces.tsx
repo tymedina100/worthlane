@@ -1,4 +1,5 @@
 "use client";
+import { DebtPlanner } from "./debt-planner";
 
 import type { HouseholdSummary } from "@worthlane/contracts";
 import { PlaidLinkButton } from "./plaid-link-button";
@@ -813,6 +814,7 @@ function GoalsSurface({
       )}
 
       <GoalPlanManager summary={summary} onManage={onManage} />
+      <DebtPlanner currency={summary.household.currency} />
 
       <section className="panel workspace-panel" aria-labelledby="personal-goals-title">
         <div className="panel__header panel__header--split">

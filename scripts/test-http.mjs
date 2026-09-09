@@ -105,6 +105,16 @@ try {
   await partner('/api/auth/login', { method: 'POST', body: { email: partnerEmail, password } });
   assert.equal((await partner('/api/household/summary')).data.household.id, joined.data.household.id);
   console.log('PASS: BFF invitation before registration, code acceptance, two-member household, private account isolation, partner login persistence.');
+  const planInput = { name: 'HTTP payoff', startMonth: '2026-09', strategy: 'AVALANCHE', monthlyPaymentMinor: 3000, debts: [{ id: 'card', name: 'Synthetic card', balanceMinor: 10000, minimumPaymentMinor: 1000, aprBasisPoints: 0 }] };
+  await partner('/api/debt-plans', { method: 'POST', status: 400, body: { ...planInput, userId: 'forged' } });
+  const plan = await browser('/api/debt-plans', { method: 'POST', status: 201, body: planInput });
+  assert.equal(plan.data.estimate.payoffMonth, '2026-12');
+  await partner(`/api/debt-plans/${plan.data.id}`, { status: 404 });
+  const revisedPlan = await browser(`/api/debt-plans/${plan.data.id}`, { method: 'PATCH', body: { revision: 1, input: { ...planInput, monthlyPaymentMinor: 5000 } } });
+  assert.equal(revisedPlan.data.revision, 2);
+  await browser(`/api/debt-plans/${plan.data.id}`, { method: 'PATCH', status: 409, body: { revision: 1, input: planInput } });
+  assert.equal((await browser(`/api/debt-plans/${plan.data.id}`)).data.input.monthlyPaymentMinor, 5000);
+  console.log('PASS: debt-plan BFF create, reopen, owner isolation, strict input and revision conflict.');
   console.log('PASS: real HTTP registration, HttpOnly session, BFF validation/origin/auth checks, refund save, logout denial, login persistence.');
   if (process.argv.includes('--interactive')) {
     const stopFile = resolve('.tmp', `stop-http-${process.pid}`);
