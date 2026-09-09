@@ -265,3 +265,28 @@ production changes or spending. Full beta acceptance remains unproven.
   including code display and setup navigation. Full mobile/native acceptance,
   historical split handling, Sandbox banking, due dates/debt and builds remain
   open. No production changes, emails or spending.
+
+## 2026-09-08 — two-login browser budget acceptance
+
+- Actual browser forms registered synthetic Alex, created a household, generated
+  Sam's invitation before Sam registered, and added a 1000 manual checking account
+  defaulting to Personal. After owner logout, Sam registered and entered the code
+  in setup to explicitly join. Sam's dashboard showed zero visible net worth and
+  no account name/detail, while Alex's fresh login showed the private 1000.
+- Alex created all acceptance fixtures through the monthly-plan form: groceries
+  600 equal (300 each), utilities 150 assigned to Sam, rent 1700 at 60/40
+  (1020/680). Total 2450; member assignments 1320/1130. Sam's fresh login and full
+  reload retained all three allocations and remaining amounts without Alex's
+  private account. This used sequential separate logins in one browser profile.
+- Screenshot QA found the dashboard responsibility grid overflowing its panel
+  beside the goal card. Reflowed each row into heading/amount, progress, then
+  member allocations; made the surrounding columns shrink to available width.
+  Follow-up screenshot at the same desktop viewport showed contained amounts.
+- ./scripts/test-postgres.ps1 -Interactive first passed three DB journeys and
+  the HTTP/BFF suite. The tab was closed. On cleanup the session handle was gone
+  and ports 55439/3301/3303 had no listeners; no servers were restarted.
+  git diff --check passed. CSS-only change was verified visually, without new
+  mirror tests. This is desktop localhost evidence, not HTTPS/native/mobile QA.
+- Still required: interactive transaction classifications and privacy changes,
+  historical split handling, Sandbox banking/reconciliation, due-date/debt plans,
+  native/mobile acceptance and full regression builds. Next inspect banking flow.
