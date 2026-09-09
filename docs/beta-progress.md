@@ -1137,3 +1137,34 @@ production changes or spending. Full beta acceptance remains unproven.
 - This run did not rebuild the APK or test reminder delivery, bill payment-status
   changes, or a partner UI session. Earlier APK build and onboarding/split evidence
   remain separate. Full beta acceptance remains open.
+
+## 2026-09-09 — categorized Quick add and calendar-date correction
+
+- Quick add now shows the manual account receiving an expense/income, requires a
+  choice when multiple accounts exist, and offers category selection. Previously it
+  silently chose the first manual account and omitted category. Queries and draft
+  lifetime are scoped to the current login; transaction saves refresh household,
+  budget and goal queries. Activity manual create/edit/delete also refreshes the
+  household summary. Entry fields stay disabled while saving, and amounts reject
+  more than two decimals before submission. No manual/import deduplication claim.
+- Native Android: added a second private zero-balance wallet via a local API fixture;
+  verified the no-account-selected validation, selected that wallet and Utilities,
+  then saved a $23.47 synthetic expense. Today immediately displayed $23.47 spent.
+  Fresh API logins verified exactly one entry on the selected account/category.
+  Jordan's permitted view applied 2,347 cents to Casey's existing 15,000-cent
+  responsibility, leaving 12,653 cents; the assignment remained entirely Casey's.
+  Casey's own view excluded Jordan's private purchase from ledger and budget spend.
+  This partner check used the API, not a concurrent partner Android session.
+- Native observation found Today labeling a bill due today as Tomorrow: the old
+  function rounded noon minus midnight to one day. Replaced it with calendar-day
+  comparison, including singular overdue wording. Android now displays Today.
+- Validation: `corepack pnpm --filter @worthlane/mobile typecheck` passed;
+  `corepack pnpm --filter @worthlane/api exec vitest run --config vitest.mobile.config.ts`
+  passed 17 checks (10 reminder mocks, 4 Plaid mocks, 3 calendar tests). The calendar
+  tests also passed with process-local TZ=America/New_York, covering local-day,
+  year, leap-day and daylight-saving boundaries. React review checked scoped state,
+  derived selection, independent queries and accessible choice states.
+- Remaining: native edit/refund/overspend flows, complete persistent solo/two-user
+  journeys, joint-account/manual import deduplication, native Sandbox banking and
+  actual reminder delivery, plus regression builds. No APK rebuild or production
+  changes in this milestone; existing build evidence remains separate.

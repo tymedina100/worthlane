@@ -366,6 +366,7 @@ export default function TransactionsScreen() {
       qc.invalidateQueries({ queryKey: ["dashboard"] });
       qc.invalidateQueries({ queryKey: ["budgets"] });
       qc.invalidateQueries({ queryKey: ["goals"] });
+      qc.invalidateQueries({ queryKey: ["household-summary"] });
     },
   });
 
@@ -378,6 +379,7 @@ export default function TransactionsScreen() {
       qc.invalidateQueries({ queryKey: ["dashboard"] });
       qc.invalidateQueries({ queryKey: ["budgets"] });
       qc.invalidateQueries({ queryKey: ["goals"] });
+      qc.invalidateQueries({ queryKey: ["household-summary"] });
     },
   });
 

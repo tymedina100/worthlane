@@ -8,13 +8,13 @@ import { api } from "@/lib/api";
 import { spacing, radius } from "@/lib/theme";
 import { useThemedStyles, type Theme } from "@/lib/ThemeContext";
 import { useAuthStore } from "@/store/auth";
+import { relativeUpcomingDate } from "@/lib/upcoming-date";
 
 const currency = (value: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(value);
 const currencyMinor = (value: number, currencyCode: string) => new Intl.NumberFormat("en-US", { style: "currency", currency: currencyCode, minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(value / 100);
 function greeting() { const hour = new Date().getHours(); return hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"; }
-function relativeDate(date: string) { const today = new Date(); today.setHours(0, 0, 0, 0); const due = new Date(`${date}T12:00:00`); const days = Math.round((due.getTime() - today.getTime()) / 86_400_000); return days === 0 ? "Today" : days === 1 ? "Tomorrow" : days < 0 ? `${Math.abs(days)} days overdue` : `In ${days} days`; }
 
-function NextRow({ item }: { item: UpcomingObligation }) { const styles = useThemedStyles(createStyles); return <View style={styles.nextRow}><View style={styles.nextMain}><Text style={styles.nextName}>{item.name}</Text><Text style={styles.nextMeta}>{item.type.replace("_", " ")}</Text></View><View style={styles.nextRight}><Text style={styles.nextAmount}>{currency(item.amount)}</Text><Text style={styles.status}>{relativeDate(item.dueDate)}</Text></View></View>; }
+function NextRow({ item }: { item: UpcomingObligation }) { const styles = useThemedStyles(createStyles); return <View style={styles.nextRow}><View style={styles.nextMain}><Text style={styles.nextName}>{item.name}</Text><Text style={styles.nextMeta}>{item.type.replace("_", " ")}</Text></View><View style={styles.nextRight}><Text style={styles.nextAmount}>{currency(item.amount)}</Text><Text style={styles.status}>{relativeUpcomingDate(item.dueDate)}</Text></View></View>; }
 
 function PartnerSnapshot({ summary }: { summary: HouseholdSummary }) {
   const styles = useThemedStyles(createStyles);
