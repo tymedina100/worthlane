@@ -671,3 +671,25 @@ production changes or spending. Full beta acceptance remains unproven.
 - This proves the named desktop path only. Concurrent edits/payment retries, native
   UI/delivery, Liabilities, banking recovery/dedupe and full regression acceptance
   remain open. No production data or provider calls used in this run.
+
+## 2026-09-08 — local cross-platform regression gates
+
+- Fresh `corepack pnpm --filter @worthlane/api build`, desktop build and web build
+  all exited0, including optimized compilation, type validation, page generation
+  and traces. Used isolated build environment values: dummy loopback database URL,
+  test JWT values, blank Plaid/Sentry credentials, upload/telemetry disabled. No
+  database connection, deployment or provider smoke was part of these builds.
+- `corepack pnpm --filter @worthlane/desktop-native test` passed14 tests. Local
+  `corepack pnpm desktop:native:pack:local` with loopback desktop URL and identity
+  autodiscovery disabled exited0: Worthlane.exe,7 archived assets and8 hardened
+  fuses verified. This is an unpacked development-only build, not a published or
+  production-signed installer and not native interactive runtime acceptance.
+- Fresh core47/contracts11/API138 tests passed196 total. Recent separate mocked
+  reminder suite remains10 passing; added its exact command to CI so future runs
+  cover session isolation/reconciliation. Remote CI has not run for local commits.
+- Non-fatal warnings: Sentry disableLogger deprecation/API-only global error handler
+  suggestion; public web Browserslist data old; native author metadata absent.
+- Remaining release gates are functional: concurrency/retries, Liabilities,
+  interactive Plaid recovery/native support, joint/manual dedupe, native UI/device
+  evidence and the complete integrated acceptance audit. Passing builds does not
+  establish beta completion or live-production behavior.

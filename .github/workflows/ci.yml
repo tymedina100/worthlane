@@ -83,6 +83,9 @@ jobs:
       - name: Test API
         run: pnpm --filter @worthlane/api test
 
+      - name: Test mobile reminder session privacy and reconciliation
+        run: pnpm --filter @worthlane/api exec vitest run --config vitest.mobile.config.ts
+
       - name: Test native desktop security and packaging manifest
         run: pnpm --filter @worthlane/desktop-native test
 
