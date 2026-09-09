@@ -13,3 +13,7 @@ export const upcomingInputSchema = z.object({
   reminderTiming: z.enum(["DUE_DATE", "ONE_DAY_BEFORE", "THREE_DAYS_BEFORE", "NONE"]).nullable().optional(),
   isActive: z.boolean().optional(),
 }).strict();
+
+const expectedUpdatedAt = z.string().datetime();
+export const upcomingEditSchema = upcomingInputSchema.partial().extend({ expectedUpdatedAt });
+export const upcomingActionSchema = z.object({ action: z.enum(["markPaid", "markUnpaid"]), expectedUpdatedAt }).strict();

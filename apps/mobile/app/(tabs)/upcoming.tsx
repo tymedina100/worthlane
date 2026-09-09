@@ -37,15 +37,17 @@ function UpcomingContent({ userId }: { userId: string }) {
   const query = useQuery({ queryKey: ["upcoming", userId], queryFn: () => api.get<UpcomingObligationsResponse>("/upcoming") });
   const update = useMutation({
     mutationFn: async ({ item, action }: { item: UpcomingObligation; action: "markPaid" | "markUnpaid" }) => {
-      const updated = await api.post<UpcomingObligation>(`/upcoming/${item.id}`, { action });
+      const updated = await api.post<UpcomingObligation>(`/upcoming/${item.id}`, { action, expectedUpdatedAt: item.updatedAt });
       if (action === "markPaid") captureV1Event("upcoming_item_marked_paid");
       await scheduleObligationReminder(userId, updated).catch(() => { Alert.alert("Payment status saved", "The device reminder could not be updated. Check notification settings before relying on it."); });
       return updated;
     },
+    onError: (error) => Alert.alert("Could not update item", error instanceof Error ? error.message : "Refresh Upcoming and try again."),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["upcoming"] }); qc.invalidateQueries({ queryKey: ["dashboard"] }); },
   });
   const remove = useMutation({
     mutationFn: async (item: UpcomingObligation) => { await cancelObligationReminder(userId, item.id); return api.delete(`/upcoming/${item.id}`); },
+    onError: (error) => Alert.alert("Could not update item", error instanceof Error ? error.message : "Refresh Upcoming and try again."),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["upcoming"] }); qc.invalidateQueries({ queryKey: ["dashboard"] }); },
   });
   const data = query.data?.items ?? [];

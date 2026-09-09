@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { upcomingInputSchema } from "@worthlane/contracts";
 import type { UpcomingObligation, ReminderTiming } from "@worthlane/types";
 import { useAuthStore } from "@/store/auth";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { scheduleObligationReminder } from "@/lib/obligation-reminders";
 import { useTheme } from "@/lib/ThemeContext";
 
@@ -33,7 +33,7 @@ export function UpcomingEditor({ item, userId, onClose }: { item: UpcomingObliga
     if (useAuthStore.getState().userId !== userId) return;
     setBusy(true); setError("");
     try {
-      const updated = await api.patch<UpcomingObligation>(`/upcoming/${encodeURIComponent(item.id)}`, parsed.data);
+      const updated = await api.patch<UpcomingObligation>(`/upcoming/${encodeURIComponent(item.id)}`, { ...parsed.data, expectedUpdatedAt: item.updatedAt });
       if (useAuthStore.getState().userId !== userId) return;
       const reminder = await scheduleObligationReminder(userId, updated).catch(() => "unavailable" as const);
       await qc.invalidateQueries({ queryKey: ["upcoming"] });
@@ -41,7 +41,7 @@ export function UpcomingEditor({ item, userId, onClose }: { item: UpcomingObliga
       if (useAuthStore.getState().userId !== userId) return;
       onClose();
       Alert.alert("Saved", reminder === "denied" || reminder === "unavailable" ? "Your item was saved, but its device reminder is unavailable. Check notification settings." : reminder === "past" ? "Your item was saved. The selected reminder time has already passed, so no reminder was scheduled." : "Your upcoming item has been updated.");
-    } catch (err) { setError(err instanceof Error ? err.message : "Could not save. Your edits are still here."); }
+    } catch (err) { if (err instanceof ApiError && err.status === 409) await qc.invalidateQueries({ queryKey: ["upcoming"] }); setError(err instanceof Error ? err.message : "Could not save. Your edits are still here."); }
     finally { setBusy(false); }
   }
   const inputStyle = { borderWidth: 1, borderColor: colors.border, borderRadius: 8, padding: 12, color: colors.text, backgroundColor: colors.surface };

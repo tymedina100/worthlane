@@ -93,12 +93,19 @@ describe("persistent household consent and budget journey", () => {
       expect((await call(listUpcoming, owner.token)).items[0].status).toBe("DUE_TODAY");
       expect((await call(dashboard, owner.token)).today.dueNextSevenDays).toBe(25);
       const pay = (req: NextRequest) => payUpcoming(req, { params: { id: bill.id } });
-      expect((await call(pay, owner.token, { action: "markPaid" })).dueDate).toBe("2026-09-30");
+      let currentBill = await call(pay, owner.token, { action: "markPaid", expectedUpdatedAt: bill.updatedAt });
+      expect(currentBill.dueDate).toBe("2026-09-30");
+      await call(pay, owner.token, { action: "markPaid", expectedUpdatedAt: bill.updatedAt }, 409);
       const editBill = (req: NextRequest) => editUpcoming(req, { params: { id: bill.id } });
-      await call(editBill, owner.token, { amount: 30, dueDate: "2026-09-30" });
-      expect((await call(pay, owner.token, { action: "markPaid" })).dueDate).toBe("2026-10-31");
+      currentBill = await call(editBill, owner.token, { amount: 30, dueDate: "2026-09-30", expectedUpdatedAt: currentBill.updatedAt });
+      currentBill = await call(pay, owner.token, { action: "markPaid", expectedUpdatedAt: currentBill.updatedAt });
+      expect(currentBill.dueDate).toBe("2026-10-31");
       expect((await prisma.upcomingObligation.findUniqueOrThrow({ where: { id: bill.id } })).anchorDay).toBe(31);
-      await call(editBill, owner.token, { dueDate: "2026-10-20" });
+      currentBill = await call(editBill, owner.token, { dueDate: "2026-10-20", expectedUpdatedAt: currentBill.updatedAt });
+      await call(editBill, owner.token, { amount: 999, expectedUpdatedAt: bill.updatedAt }, 409);
+      const simultaneous = await Promise.all([1, 2].map(() => pay(request(owner.token, { action: "markPaid", expectedUpdatedAt: currentBill.updatedAt }))));
+      expect(simultaneous.map(response => response.status).sort()).toEqual([200, 409]);
+      expect((await prisma.upcomingObligation.findUniqueOrThrow({ where: { id: bill.id } })).dueDate.toISOString().slice(0, 10)).toBe("2026-11-20");
       expect((await prisma.upcomingObligation.findUniqueOrThrow({ where: { id: bill.id } })).anchorDay).toBe(20);
     } finally { vi.useRealTimers(); }
   });

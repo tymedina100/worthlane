@@ -19,14 +19,14 @@ export function UpcomingManager({ refreshKey = 0 }: { refreshKey?: number }) {
   function edit(item: UpcomingObligation | null) { setSelected(item); setVersion(value => value + 1); }
   async function mark(item: UpcomingObligation) {
     setBusy(true);
-    try { await request(`/${encodeURIComponent(item.id)}`, { action: item.isPaid ? "markUnpaid" : "markPaid" }, "POST"); await refresh(); if (selected?.id === item.id) edit(null); setMessage(item.frequency ? "Recorded payment and advanced to the next scheduled date." : "Payment status updated."); }
+    try { await request(`/${encodeURIComponent(item.id)}`, { action: item.isPaid ? "markUnpaid" : "markPaid", expectedUpdatedAt: item.updatedAt }, "POST"); await refresh(); if (selected?.id === item.id) edit(null); setMessage(item.frequency ? "Recorded payment and advanced to the next scheduled date." : "Payment status updated."); }
     catch (error) { setMessage((error as Error).message); } finally { setBusy(false); }
   }
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form = new FormData(event.currentTarget); setBusy(true);
     try {
       const body = upcomingInputSchema.parse({ name: form.get("name"), amount: Number(form.get("amount")), dueDate: form.get("dueDate"), type: form.get("type"), frequency: form.get("frequency") || null, accountName: form.get("accountName") || null, reminderTiming: selected ? selected.reminderTiming : "NONE", isActive: form.get("active") === "on" });
-      await request(selected ? `/${encodeURIComponent(selected.id)}` : "", body, selected ? "PATCH" : "POST"); await refresh(); edit(null); setMessage("Saved upcoming item.");
+      await request(selected ? `/${encodeURIComponent(selected.id)}` : "", selected ? { ...body, expectedUpdatedAt: selected.updatedAt } : body, selected ? "PATCH" : "POST"); await refresh(); edit(null); setMessage("Saved upcoming item.");
     } catch (error) { setMessage(error instanceof Error && error.name !== "ZodError" ? error.message : "Check the name, amount and due date."); } finally { setBusy(false); }
   }
   return <section className="panel workspace-panel upcoming-panel" id="upcoming-items"><div className="panel__header"><p className="section-kicker">Personal scope · Only you</p><h2>Upcoming bills and payments</h2><p>Manual dates, including minimums added from saved debt plans. Marking paid records your action; it does not move money.</p></div>

@@ -693,3 +693,24 @@ production changes or spending. Full beta acceptance remains unproven.
   interactive Plaid recovery/native support, joint/manual dedupe, native UI/device
   evidence and the complete integrated acceptance audit. Passing builds does not
   establish beta completion or live-production behavior.
+
+## 2026-09-08 — Upcoming edit/payment conflict protection
+
+- PATCH and markPaid/markUnpaid require expectedUpdatedAt from the displayed item.
+  Shared strict contracts and both beta clients supply it. API uses owner-scoped
+  atomic compare-and-update inside a transaction; version timestamps advance at
+  least1ms even within one clock tick. Stale requests return409 without applying.
+- Retried payment requests cannot advance a recurring date twice from the same
+  displayed version. This is conflict rejection, not replay of a success receipt.
+  User feedback directs refresh/reopen; mobile edit drafts remain visible and its
+  cached list refreshes on conflict. No database migration required.
+- API138/contracts12 tests, workspace typechecks and diff check passed.
+  `./scripts/test-postgres.ps1 -Http` passed21 migrations/5DB tests plus real HTTP:
+  old payment replay409, stale edit409, and simultaneous PostgreSQL payment requests
+  yielding200/409 with a single Oct20->Nov20 advancement. HTTP verifies matching
+  desktop payloads and stale rejections alongside owner privacy. Server stopped.
+- Compatibility: older clients omitting expectedUpdatedAt now fail validation for
+  edits/payment actions. Ship API and beta clients together; no production deploy
+  performed. Create/delete endpoints are not covered by this version contract.
+- Remaining: rendered conflict recovery/native acceptance, Liabilities, banking
+  recovery/native/joint-manual dedupe and final integrated beta verification.
