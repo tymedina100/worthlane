@@ -432,3 +432,26 @@ production changes or spending. Full beta acceptance remains unproven.
   provider update timestamps, interactive Link/OAuth/native, joint/manual-import
   dedupe, historical split behavior, debt/due dates and full acceptance builds.
   No new live Sandbox run was needed for this permission-only change.
+
+## 2026-09-08 — deterministic debt-payoff calculation foundation
+
+- Added shared avalanche/snowball estimator with explicit monthly start, total
+  payment budget, debt balances/APRs/minimums and optional promo expiry date.
+  Pays all entered minimums before strategy-directed extra; redirects unused
+  payoff amounts within the month. Fixed budget continues after debts pay off.
+- Integer cents and BigInt rational monthly interest give half-up cent rounding.
+  Promo expiry prorates APR by days in that month. Exposes per-debt monthly
+  payments/interest/balances, payoff month, total interest, minimum shortfalls and
+  horizon/non-principal-reduction warnings. No invented payoff date on failure.
+- Exported assumptions for the upcoming UI: beginning-balance APR/12 model,
+  end-month payments, fixed minimums, no new charges/fees, no deferred interest.
+  This is an estimate, not lender daily-accrual or payment execution.
+- Strategy reference: https://www.consumerfinance.gov/archive/blog/how-reduce-your-debt/
+- Core tests pass (47 total, including 8 payoff fixtures): zero APR/final cap,
+  strategy comparison/conservation, cent rounding, promo date and changing priority,
+  minimum shortfall, non-amortizing/zero payments, stable ties and invalid inputs.
+  Workspace typechecks and diff check pass. API lower target required BigInt(2)
+  instead of a bigint literal; resolved without changing app target settings.
+- Next: validated persistent owned debt-plan API and edit/save/revisit UI, with
+  explicit balances/statement/minimum/due-date semantics. Liabilities/manual due
+  dates, banking recovery/dedupe, rendered QA and full beta acceptance remain open.
