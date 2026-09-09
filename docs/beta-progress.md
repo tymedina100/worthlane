@@ -532,3 +532,21 @@ production changes or spending. Full beta acceptance remains unproven.
 - Remaining: native runtime/UI acceptance, multi-debt/promo/conflict interaction,
   per-month debt detail presentation, obligations/Liabilities integration, banking
   recovery/OAuth/native/dedupe and full beta acceptance. No production release.
+
+## 2026-09-08 — explicit debt minimums into Upcoming
+
+- Added owner-only saved-debt action to create a one-date Upcoming obligation from
+  its confirmed due date and positive minimum. UI shows the exact saved amount/date
+  and states that unsaved edits are not used; this never executes a payment.
+- Plan-row revision claim serializes against edits. Stable hashed plan/entry/date
+  key makes repeated clicks idempotent and preserves existing paid/edited items.
+  New items are non-recurring with reminders NONE; no future due dates inferred.
+- Desktop BFF and desktop/mobile debt-plan controls expose the action. Mobile can
+  navigate to its existing Upcoming manager. Desktop Upcoming management is still
+  an open surface gap and must be completed for a coherent desktop journey.
+- Passed20 migrations and5 PostgreSQL tests: create, repeat without duplicates,
+  paid-state preservation, stale-plan409, owner isolation and stored date/amount.
+  Workspace typechecks and diff check passed; exact DB shutdown confirmed.
+- Still required: rendered action QA, desktop Upcoming manager, household-local
+  due status and reminder verification, Liabilities sources, mobile runtime,
+  banking recovery/native/dedupe and full integrated beta acceptance.

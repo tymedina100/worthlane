@@ -28,6 +28,13 @@ export function DebtPlanner({ currency }: { currency: string }) {
     setBusy(true);
     try { reset(await request<Plan>(`/${encodeURIComponent(id)}`)); } catch (error) { setMessage((error as Error).message); } finally { setBusy(false); }
   }
+  async function addDueDate(entryId: string) {
+    if (!selected) return;
+    setBusy(true);
+    try { const result = await request<{ message: string }>(`/${encodeURIComponent(selected.id)}/upcoming`, { entryId, revision: selected.revision }, "POST"); setMessage(result.message); }
+    catch (error) { setMessage((error as Error).message); }
+    finally { setBusy(false); }
+  }
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
@@ -77,6 +84,7 @@ export function DebtPlanner({ currency }: { currency: string }) {
     {message && <p role="status">{message}</p>}
     {estimate && <div className="debt-plan-result"><h3>{estimate.status === "PAID_OFF" ? `Estimated payoff: ${estimate.payoffMonth}` : "This plan needs adjustment"}</h3><p>Estimated interest: {money(estimate.totalInterestMinor)} · Payments in this estimate: {money(estimate.totalPaidMinor)}</p>{estimate.shortfallMinor > 0 && <p>Additional monthly amount needed for minimums: {money(estimate.shortfallMinor)}</p>}{estimate.warnings.map(warning => <p key={warning}>{warning}</p>)}<details><summary>Monthly schedule</summary><div className="debt-plan-table"><table><thead><tr><th>Month</th><th>Payment</th><th>Interest</th><th>Remaining</th></tr></thead><tbody>{estimate.schedule.map(row => <tr key={row.month}><td>{row.month}</td><td>{money(row.paymentMinor)}</td><td>{money(row.interestMinor)}</td><td>{money(row.remainingMinor)}</td></tr>)}</tbody></table></div></details></div>}
     {estimate?.schedule[0] && <div><h3>First month's payments</h3><ul>{estimate.schedule[0].debts.map(row => <li key={row.id}>{debts.find(debt => debt.id === row.id)?.name}: {money(row.paymentMinor)}</li>)}</ul></div>}
+    {selected && <div><h3>Due dates from the saved plan</h3><p>Add each confirmed minimum payment once. Reminders start off; edit the item in Upcoming. Unsaved changes are not used.</p>{selected.input.debts.filter(debt => debt.dueDate && debt.minimumPaymentMinor > 0).map(debt => <button key={debt.id} type="button" className="button button--secondary" disabled={busy} onClick={() => void addDueDate(debt.id)}>Add {debt.name}: {money(debt.minimumPaymentMinor)} due {debt.dueDate} to Upcoming</button>)}</div>}
     <details><summary>How this estimate works</summary><ul>{DEBT_ESTIMATE_ASSUMPTIONS.map(text => <li key={text}>{text}</li>)}</ul></details>
   </section>;
 }

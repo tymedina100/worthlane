@@ -50,6 +50,13 @@ function DebtPlanEditor({ userId }: { userId: string }) {
     } catch (error) { setMessage(error instanceof Error && error.name !== "ZodError" ? error.message : "Check names, amounts and dates (YYYY-MM-DD)."); }
     finally { setBusy(false); }
   }
+  async function addDueDate(entryId: string) {
+    if (!selected) return;
+    setBusy(true);
+    try { const result = await api.post<{ message: string }>(`/debt-plans/${encodeURIComponent(selected.id)}/upcoming`, { entryId, revision: selected.revision }); setMessage(result.message); }
+    catch (error) { setMessage((error as Error).message); }
+    finally { setBusy(false); }
+  }
   const button = (label: string, action: () => void, disabled = false) => <TouchableOpacity accessibilityRole="button" accessibilityLabel={label} disabled={busy || disabled} onPress={action} style={[styles.button, { borderColor: colors.border, opacity: busy || disabled ? 0.5 : 1 }]}><Text style={{ color: colors.primary, fontWeight: "700" }}>{label}</Text></TouchableOpacity>;
   const field = (label: string, value: string, update: (v: string) => void, numeric = false) => <View style={styles.field}><Text style={{ color: colors.text }}>{label}</Text><TextInput accessibilityLabel={label} value={value} onChangeText={v => { update(v); changed(); }} editable={!busy} keyboardType={numeric ? "decimal-pad" : "default"} autoCapitalize="none" style={[styles.input, { color: colors.text, borderColor: colors.border, backgroundColor: colors.surface }]} /></View>;
   return <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}><KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}><ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
@@ -74,6 +81,7 @@ function DebtPlanEditor({ userId }: { userId: string }) {
       <Text style={[styles.heading, { color: colors.text }]}>First month's payments</Text>{estimate.schedule[0]?.debts.map(row => <Text key={row.id} style={{ color: colors.text }}>{debts.find(debt => debt.id === row.id)?.name}: {money(row.paymentMinor)}</Text>)}
       {button(showSchedule ? "Hide monthly schedule" : "Show monthly schedule", () => setShowSchedule(v => !v))}{showSchedule && estimate.schedule.map(row => <Text key={row.month} style={{ color: colors.text }}>{row.month}: pay {money(row.paymentMinor)}, interest {money(row.interestMinor)}, remaining {money(row.remainingMinor)}</Text>)}
     </View>}
+    {selected && <View><Text style={[styles.heading, { color: colors.text }]}>Due dates from the saved plan</Text><Text style={{ color: colors.textMuted }}>Add each confirmed minimum once, with reminders off. Unsaved changes are not used.</Text>{selected.input.debts.filter(debt => debt.dueDate && debt.minimumPaymentMinor > 0).map(debt => <View key={debt.id}>{button(`Add ${debt.name}: ${money(debt.minimumPaymentMinor)} due ${debt.dueDate} to Upcoming`, () => void addDueDate(debt.id))}</View>)}{button("Manage Upcoming", () => router.push("/(tabs)/upcoming" as any))}</View>}
     <Text style={[styles.heading, { color: colors.text }]}>Estimate assumptions</Text>{DEBT_ESTIMATE_ASSUMPTIONS.map(text => <Text key={text} style={{ color: colors.textMuted }}>{text}</Text>)}
   </ScrollView></KeyboardAvoidingView></SafeAreaView>;
 }
