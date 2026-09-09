@@ -1040,3 +1040,30 @@ production changes or spending. Full beta acceptance remains unproven.
   history UI and full regression builds. This is Android development-client UI
   evidence with current Metro JavaScript; it does not imply a rebuilt release APK,
   iOS native acceptance, Sandbox Link success or complete beta acceptance.
+
+## 2026-09-08 — guided mobile setup with solo and household choices
+
+- Replaced the legacy welcome page with explicit solo, partner/family and invitation
+  joining paths. Solo creates a one-member plan without an invitation; household
+  creation explains separate consenting logins and private-by-default accounts.
+  Joining uses the existing invitation-code acceptance endpoint. Currency (USD)
+  and device time-zone behavior are disclosed before saving. Existing saved plans
+  resume at account, category-budget, bill and debt-plan steps.
+- Settings now offers Continue guided setup. The manual-account step opens the
+  existing form directly via a consumed route parameter; the dashboard first-account
+  action uses the same route. Updated registration tone and removed stale bank-coming-
+  soon copy from the dashboard. No bank feature flag or production setting changed.
+- Actual Android actions resumed Alex's saved setup, opened the manual form directly
+  and cancelled without creating an account. Signed Alex out, registered a fresh
+  synthetic solo login, chose Just me, entered Casey, and saved My plan without an
+  invitation. Android displayed the saved-plan guide. A fresh API login confirmed
+  one owner/member, persisted plan/name and no account leakage from Alex.
+- Dashboard visual verification also confirmed the prior cent-format fix displays
+  $1,700.01. Mobile typecheck and existing mocked native suite (10 reminder + 4 Plaid
+  tests) passed. Those mocks do not prove the new onboarding screens; native actions
+  above are the UI evidence. React review covered hook order, user-scoped queries,
+  inline error handling and disabled submission during requests.
+- Still required: invitation joining and partner/family setup through the new native
+  guide, a complete solo account-to-budget/bill/debt journey, partner-side native
+  privacy and editing checks, and full regression builds. Setup progress derives
+  from saved server data; an unfinished name/code draft is not persisted.

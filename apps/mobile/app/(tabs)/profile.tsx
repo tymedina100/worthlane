@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import * as Linking from "expo-linking";
 import * as Notifications from "expo-notifications";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -216,6 +216,7 @@ function ManualAccountModal({
 }
 
 export default function ProfileScreen() {
+  const { addAccount } = useLocalSearchParams<{ addAccount?: string }>();
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const styles = useThemedStyles(createStyles);
@@ -227,6 +228,13 @@ export default function ProfileScreen() {
   const [manualDraft, setManualDraft] = useState<ManualAccountDraft>(emptyManualDraft);
   const [defaultReminder, setDefaultReminderState] = useState<ReminderTiming>("NONE");
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (addAccount !== "1") return;
+    setManualDraft(emptyManualDraft);
+    setManualModalVisible(true);
+    router.setParams({ addAccount: undefined });
+  }, [addAccount]);
 
   useEffect(() => {
     (async () => {
@@ -538,6 +546,7 @@ export default function ProfileScreen() {
     <>
       <ScrollView style={styles.container} contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.md }]}>
         <Text style={styles.title}>Settings</Text>
+        <TouchableOpacity style={styles.secondaryButton} onPress={() => router.push("/onboarding")} accessibilityRole="button"><Text style={styles.secondaryButtonText}>Continue guided setup</Text></TouchableOpacity>
 
         <View style={styles.section}>
           <SectionHeader title="Account" />
