@@ -1168,3 +1168,28 @@ production changes or spending. Full beta acceptance remains unproven.
   journeys, joint-account/manual import deduplication, native Sandbox banking and
   actual reminder delivery, plus regression builds. No APK rebuild or production
   changes in this milestone; existing build evidence remains separate.
+
+## 2026-09-09 — native debt-plan creation, comparison and reopening
+
+- Using Jordan's existing local test login, navigated Today -> Goals -> Debt payoff
+  plans. Entered and previewed a $1,000 debt at 0% APR, $50 minimum and $100 monthly
+  budget, starting September 2026. Android showed June 2027 payoff, $0 interest and
+  $1,000 total payments. Saved through the native UI.
+- Added a second debt natively: $2,000 balance, $25 minimum, 12% APR. Avalanche
+  preview/save showed July 2029 payoff, $445.36 interest, $3,445.36 total payments,
+  and $50/$50 first-month payments. Switched to snowball, previewed and saved:
+  July 2029 payoff, $487.13 interest, $3,487.13 total payments and $75/$25 initial
+  payments. The UI distinguishes preview-only from saved state and discloses the
+  fixed-budget, month-end, no-new-purchases assumptions.
+- Fresh API logins verified one persistent plan with exact entered balances/APRs,
+  $100 monthly budget, avalanche revision 2 then snowball revision 3, and estimates
+  matching the native observations. Casey's separate login received 404 when
+  requesting Jordan's plan by ID. Partner privacy proof here is API-based.
+- Left the planner for Goals, reentered into the blank new-plan form and used Open
+  My payoff plan. Android restored the saved $100 budget, snowball selection and
+  debt data. This verifies navigation/remount reopening; native logout/login and
+  app-restart reopening remain distinct checks. No source code changes or rebuild
+  were needed for this milestone. All data is synthetic in the retained local DB.
+- Remaining debt UI acceptance includes insufficient-payment/promo warnings,
+  confirmed due-date conversion to Upcoming, and native reminder behavior. The
+  complete solo/two-user banking and financial journeys remain open.
