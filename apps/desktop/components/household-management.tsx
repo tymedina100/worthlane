@@ -228,7 +228,7 @@ export function ResponsibilityManager({
             {summary.members.map((member) => (
               <label key={member.id}>
                 <span>{member.displayName}</span>
-                <span><input type="number" min="0.01" max="100" step="0.01" value={shares[member.id] ?? ""} onChange={(event) => setShares((current) => ({ ...current, [member.id]: event.target.value }))} /><i>%</i></span>
+                <span><input type="number" min="0" max="100" step="0.01" required value={shares[member.id] ?? ""} onChange={(event) => setShares((current) => ({ ...current, [member.id]: event.target.value }))} /><i>%</i></span>
               </label>
             ))}
           </fieldset>

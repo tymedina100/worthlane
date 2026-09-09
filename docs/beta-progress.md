@@ -919,3 +919,20 @@ production changes or spending. Full beta acceptance remains unproven.
   Gradle thread inspection shows an HTTP dependency metadata request waiting for
   a response; no terminal result or APK success is claimed. Continue observing
   this same process before retrying. No production activation or spending.
+
+## 2026-09-08 — allow zero/100 custom responsibility shares
+
+- Acceptance cross-check found the shared allocation engine already supported
+  zero shares, but the request contract and desktop input rejected them. Both now
+  accept 0%; the form requires an explicit entry and shares still total 100%.
+- Contract regression covers both zero/100 orders, negative values and all-zero
+  rejection. Extended the PostgreSQL two-user journey to edit rent to 0/100 at
+  170,001 cents, reconnect Prisma, log the partner in again and verify exact saved
+  shares/remaining amounts without duplicating cents.
+- `corepack pnpm --filter @worthlane/contracts test`: 18 passed;
+  `corepack pnpm --filter @worthlane/desktop typecheck`: passed;
+  `./scripts/test-postgres.ps1`: 22 migrations and all 5 integration tests passed,
+  isolated cluster stopped. The first integration attempt used the wrong test
+  import (PATCH instead of the existing PUT handler); corrected and reran fully.
+- Historical split changes still need durable history/effect handling; this fix
+  does not claim that acceptance item. Native/interactive acceptance remains open.

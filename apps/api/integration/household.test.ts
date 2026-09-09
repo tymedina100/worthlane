@@ -17,6 +17,7 @@ import { GET as invitations } from "../src/app/api/households/invitations/route"
 import { POST as accept } from "../src/app/api/households/invitations/accept/route";
 import { GET as summary } from "../src/app/api/households/current/summary/route";
 import { POST as createResponsibility } from "../src/app/api/households/current/responsibilities/route";
+import { PUT as editResponsibility } from "../src/app/api/households/current/responsibilities/[id]/route";
 import { POST as createAccount } from "../src/app/api/accounts/route";
 import { POST as createTransaction } from "../src/app/api/transactions/route";
 import { GET as personalBudgets } from "../src/app/api/budgets/route";
@@ -287,6 +288,23 @@ describe("persistent household consent and budget journey", () => {
     expect((await readSummary(partner.token)).responsibilities.find(row => row.name === "Utilities")
       ?.allocations[0].appliedSpendMinor).toBe(0);
     await expect(getHouseholdAccountDetail(partner.id, account.id)).rejects.toThrow("Account not found");
+    const rentId = byName.get("Rent")!.id;
+    const changeRent = (req: NextRequest) => editResponsibility(req, { params: { id: rentId } });
+    await call(changeRent, freshOwner.accessToken, {
+      name: "Rent", monthlyAmountMinor: 170_001,
+      assignment: { mode: "PERCENTAGE", shares: [
+        { memberId: ownerId, basisPoints: 0 },
+        { memberId: partnerId, basisPoints: 10_000 },
+      ] },
+    });
+    await prisma.$disconnect();
+    const splitLogin = await call(login, undefined, { email: partner.email, password });
+    const zeroSplit = (await readSummary(splitLogin.accessToken)).responsibilities.find(row => row.id === rentId)!;
+    expect(zeroSplit.allocations).toEqual(expect.arrayContaining([
+      expect.objectContaining({ memberId: ownerId, shareBasisPoints: 0, assignedMinor: 0, remainingMinor: 0 }),
+      expect.objectContaining({ memberId: partnerId, shareBasisPoints: 10_000, assignedMinor: 170_001, remainingMinor: 170_001 }),
+    ]));
+    expect(zeroSplit.allocations.reduce((sum, row) => sum + row.assignedMinor, 0)).toBe(170_001);
   });
 });
 
