@@ -1,4 +1,5 @@
 import { createHash, randomBytes } from "node:crypto";
+import { rebaseBankDates } from "./bank-dates";
 import {
   acceptHouseholdPartnerInviteResultSchema,
   createHouseholdResultSchema,
@@ -137,6 +138,7 @@ export async function createHouseholdForUser(
                 : minorUnitsToDecimalString(input.incomeBasisMinor),
           },
         });
+        await rebaseBankDates(tx, userId);
         return { household, member };
       },
       { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
@@ -1585,6 +1587,7 @@ export async function acceptHouseholdPartnerInvite(
           data: { updatedAt: now },
           select: { updatedAt: true },
         });
+        await rebaseBankDates(tx, userId);
         return { member, householdUpdatedAt: household.updatedAt };
       },
       { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }

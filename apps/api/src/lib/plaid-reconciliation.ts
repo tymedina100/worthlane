@@ -2,6 +2,7 @@ import { Prisma, prisma } from "@worthlane/db";
 import type { Transaction } from "plaid";
 import { mapPlaidCategory } from "./categories";
 import { PlaidIntegrationError } from "./plaid";
+import { calendarDateInTimeZone } from "@worthlane/core";
 
 // Bank-derived spending uses posted transactions. Pending authorizations can
 // change amount or ID; a posted replacement removes any legacy pending row.
@@ -21,6 +22,8 @@ export async function applyPlaidSyncBatch(
   }
   try {
     await prisma.$transaction(async (db) => {
+      const membership = await db.householdMember.findFirst({ where: { userId: item.userId, status: "ACTIVE" }, select: { household: { select: { timezone: true } } } });
+      const timeZone = membership?.household.timezone ?? "UTC";
       const current = await db.plaidItem.findFirst({ where: { id: item.id, userId: item.userId } });
       if (!current || current.syncCursor !== item.syncCursor) throw new PlaidIntegrationError("Another sync finished. Refresh and try again.", { code: "SYNC_CONFLICT", status: 409 });
       for (const { transaction: tx, accountId, categoryId } of prepared) {
@@ -31,12 +34,13 @@ export async function applyPlaidSyncBatch(
         if (tx.pending_transaction_id) {
           await db.transaction.deleteMany({ where: { userId: item.userId, accountId, plaidTransactionId: tx.pending_transaction_id } });
         }
-        const existing = await db.transaction.findUnique({ where: { plaidTransactionId: tx.transaction_id }, select: { userId: true, categoryOverridden: true } });
+        const existing = await db.transaction.findUnique({ where: { plaidTransactionId: tx.transaction_id }, select: { userId: true, categoryOverridden: true, treatmentOverridden: true } });
         if (existing && existing.userId !== item.userId) throw new PlaidIntegrationError("Activity belongs to another connection.", { code: "SYNC_OWNER_CONFLICT", status: 409 });
-        const fields = { accountId, amount: tx.amount, date: new Date(tx.date), merchantName: tx.merchant_name ?? tx.name, categoryId };
+        const movement = ["TRANSFER_IN", "TRANSFER_OUT"].includes(tx.personal_finance_category?.primary ?? "") || tx.personal_finance_category?.detailed === "LOAN_PAYMENTS_CREDIT_CARD_PAYMENT";
+        const fields = { accountId, amount: tx.amount, bankDate: tx.date, date: calendarDateInTimeZone(tx.date, timeZone), merchantName: tx.merchant_name ?? tx.name, categoryId, spendingTreatment: movement ? "EXCLUDED" as const : "AUTO" as const };
         await db.transaction.upsert({ where: { plaidTransactionId: tx.transaction_id },
           create: { ...fields, userId: item.userId, plaidTransactionId: tx.transaction_id },
-          update: { ...fields, ...(existing?.categoryOverridden ? { categoryId: undefined } : {}) },
+          update: { ...fields, ...(existing?.categoryOverridden ? { categoryId: undefined } : {}), ...(existing?.treatmentOverridden ? { spendingTreatment: undefined } : {}) },
         });
       }
       await db.transaction.deleteMany({ where: { userId: item.userId, accountId: { in: [...accountMap.values()] }, plaidTransactionId: { in: changes.removed.map((tx) => tx.transaction_id) } } });

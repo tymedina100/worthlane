@@ -70,7 +70,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
   const updated = await prisma.transaction.update({
     where: { id: params.id },
-    data: { ...updateData, ...(updateData?.categoryId !== undefined ? { categoryOverridden: true } : {}) },
+    data: { ...updateData, ...(updateData?.categoryId !== undefined ? { categoryOverridden: true } : {}), ...(updateData?.spendingTreatment !== undefined ? { treatmentOverridden: true } : {}) },
     include: { category: true, account: true },
   });
 

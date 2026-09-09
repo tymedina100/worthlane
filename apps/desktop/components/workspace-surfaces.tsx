@@ -510,6 +510,7 @@ function PlaidConnectionControls({
     <div className="plaid-connection-controls">
       <PlaidLinkButton onManage={onManage} />
       <p>Imported spending uses posted transactions. Pending bank authorizations are excluded until they post.</p>
+      <p>Bank-labeled transfers and credit card payments are excluded from spending and income. You can change this in Transactions.</p>
       {connections.length ? connections.map((connection) => (
         <article key={connection.id}>
           <span><strong>{connection.institution ?? "Connected institution"}</strong><small>{connection.accountCount} account{connection.accountCount === 1 ? "" : "s"} - {titleCase(connection.status)}</small></span>

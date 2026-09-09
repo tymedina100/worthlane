@@ -368,3 +368,29 @@ production changes or spending. Full beta acceptance remains unproven.
 - Still required: bank-date timezone semantics, transfer/card-payment and joint
   account/import dedupe, incomplete-history/freshness signals, interactive Link
   recovery, OAuth/native banking, historical splits, debt/due dates and full builds.
+
+## 2026-09-08 — bank calendar dates and money movement defaults
+
+- Save the provider calendar posting date independently and normalize its instant
+  to the active household timezone (UTC before household setup). On create/join,
+  rebase bank dates within the onboarding transaction; manual timestamps stay put.
+  Sync reads membership inside its serializable transaction.
+- New imports labeled TRANSFER_IN/TRANSFER_OUT or credit card payment default to
+  EXCLUDED, preventing movement from inflating spending or income. Mortgage
+  payments remain expenses and wage credits remain income. Explicit user treatment
+  edits survive later sync. Desktop copy explains the editable defaults.
+- Migration preserves treatment for all historical imports conservatively because
+  older rows cannot distinguish user edits; historical AUTO movements still need
+  user review. Fresh migration deployment tested; populated legacy migration and
+  invitation-acceptance rebasing need dedicated additional fixtures.
+- Source: https://plaid.com/documents/transactions-personal-finance-category-taxonomy.csv
+- Verification: core37/API136 tests and recursive workspace typechecks passed.
+  test-postgres.ps1 -Sandbox passed 17 migrations, 4 DB integration tests and the
+  live persisted Sandbox test, including cleanup and confirmed DB shutdown.
+  DB assertions cover default movement totals, preserved overrides, household
+  date rebasing, manual timestamp preservation and subsequent synced dates.
+  git diff --check passed. Root db:generate hit the known fallback pnpm shim;
+  direct corepack pnpm --filter @worthlane/db db:generate succeeded.
+- Remaining: interactive Link/recovery, OAuth/native, joint/manual-import dedupe,
+  freshness/history indicators, historical splits, due dates/debt and full builds.
+  No production migration, deployment or spending.

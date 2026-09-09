@@ -14,6 +14,8 @@ const PLAID_CATEGORY_MAP: Record<string, { name: string; icon: string; color: st
   SUBSCRIPTION: { name: "Subscriptions", icon: "📱", color: "#BB8FCE" },
   INCOME: { name: "Income", icon: "💰", color: "#58D68D" },
   TRANSFER: { name: "Transfer", icon: "↔️", color: "#ABB2B9" },
+  TRANSFER_IN: { name: "Transfer", icon: "↔️", color: "#ABB2B9" },
+  TRANSFER_OUT: { name: "Transfer", icon: "↔️", color: "#ABB2B9" },
   LOAN_PAYMENTS: { name: "Loan Payments", icon: "🏦", color: "#EC7063" },
   MEDICAL: { name: "Medical", icon: "🏥", color: "#76D7C4" },
   EDUCATION: { name: "Education", icon: "📚", color: "#F0B27A" },

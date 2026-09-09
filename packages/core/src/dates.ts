@@ -73,6 +73,15 @@ function localMidnightToUtc(
   return new Date(result);
 }
 
+/** Normalize a bank's calendar posting date without treating it as UTC midnight. */
+export function calendarDateInTimeZone(value: string, timeZone: string): Date {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) throw new Error("Expected YYYY-MM-DD");
+  const [year, month, day] = value.split("-").map(Number) as [number, number, number];
+  const check = new Date(Date.UTC(year, month - 1, day));
+  if (check.toISOString().slice(0, 10) !== value) throw new Error("Invalid calendar date");
+  return localMidnightToUtc(year, month - 1, day, timeZone);
+}
+
 /**
  * Returns an inclusive/exclusive UTC range for the calendar month containing
  * `instant` in `timeZone`. Keeping this rule in core prevents API hosts and

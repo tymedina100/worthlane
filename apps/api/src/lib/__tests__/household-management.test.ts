@@ -15,6 +15,7 @@ const { mockPrisma, MockPrismaClientKnownRequestError } = vi.hoisted(() => {
     }
   }
   const mockPrisma = {
+    $executeRaw: vi.fn().mockResolvedValue(0),
     household: { create: vi.fn(), update: vi.fn() },
     householdMember: {
       count: vi.fn().mockResolvedValue(1),
