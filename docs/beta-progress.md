@@ -960,3 +960,83 @@ production changes or spending. Full beta acceptance remains unproven.
   production banking activation. Browser computer use is available; native app
   control is disabled in this session. Native Sandbox/device acceptance, historical
   split effects, deduplication and complete integrated journeys remain required.
+
+## 2026-09-08 — native control and Android UI verification
+
+- Correction to the preceding entry: native Windows control is available through
+  the Computer Use skill's `@oai/sky` runtime. The browser CUA tool's native-disabled
+  restriction does not describe this separate runtime. Calculator was controlled
+  through native clicks and displayed 2 + 2 = 4. No capability setting change was
+  required. Tyler explicitly resumed Computer Use after an Escape interruption.
+- Installed the authorized Android 36 Google APIs emulator image and booted
+  WorthlaneBeta using available WHPX acceleration. Enabled the test AVD's hardware
+  keyboard so native text input reaches Android. Installed the already verified
+  development APK; Metro served the app with banking, paywall and telemetry disabled
+  against the isolated local API. The prepared Metro script runs successfully after
+  replacing incompatible `--localhost --offline` flags with EXPO_OFFLINE=1.
+  Its initial automatic approval rejection was resolved by Tyler's authorization.
+- Native UI actions registered synthetic Alex, reached onboarding, opened the first
+  account path, and saved Alex test checking with $2,000.00. The saved account
+  appeared in Settings and the dashboard. This is real Android UI evidence, separate
+  from the earlier APK compilation result.
+- Created synthetic Sam and an accepted two-person household through the local API
+  fixture (not through native invitation screens). API-created Food & Drink
+  responsibility at 170,001 cents displayed correctly in Android: Alex $0 assigned,
+  Sam $1,700.01. Reversed the split through the API; reopening Household displayed
+  Alex $1,700.01 and Sam $0. Fresh API logins for both test accounts confirmed the
+  saved allocations. Native account switching and partner-side UI remain untested.
+- Opened Budget agreement history in Android and observed the prior definition:
+  Alex 0% / $0 and Sam 100% / $1,700.01, with timestamps and the change-effects
+  explanation. History is a previous plan definition, not a settled balance or
+  historical spending report. The current screen refreshes external changes when
+  reopened; no real-time cross-device update is claimed.
+- Findings still open: first-account onboarding detours through Net worth and
+  Settings; onboarding lacks an explicit solo/couple choice; mobile household
+  responsibilities have no create/edit controls, so native split editing cannot
+  pass yet. Dashboard rounds the $1,700.01 responsibility to $1,700, while household
+  detail preserves cents. Current responsibility cards omit explicit percentages.
+  Legacy manual-only/Plaid-coming-soon copy also remains. Full onboarding acceptance,
+  mobile editing, native Plaid and reminders are not passed by this test.
+
+## 2026-09-08 — durable responsibility definition history
+
+- Added atomic snapshots before responsibility replacement/removal, scoped read API
+  with bounded cursor pagination, and desktop/mobile history views. Snapshots retain
+  allowlisted prior agreement fields only. Pre-recording versions cannot be recovered
+  and are not fabricated. Edit copy explains that current-month allocations are
+  recalculated, including earlier spending; payer and transaction amounts stay intact.
+- Validation: workspace typechecks, contracts 18, API 148, and PostgreSQL 5 integration
+  tests across 23 migrations passed. Integration coverage includes replacement/removal,
+  unauthorized access, household isolation, foreign cursors and pagination. Local HTTP
+  suites also passed. Android history rendering was observed above; desktop history
+  rendering and a complete final regression build remain unverified.
+- Extended the isolated HTTP harness with a bounded 1–120 minute interactive window
+  (default 15) and added `scripts/start-mobile-local.ps1` for the scoped emulator API
+  environment. No production or paid services were enabled.
+
+## 2026-09-08 — native category budget creation and editing
+
+- Added an owner-only mobile budget editor using the existing responsibility API
+  and shared request contract. Supports one-person, equal and custom percentages,
+  explicit 0% shares, category selection, edit and confirmed removal. Opening a
+  form loads categories for the signed-in user; saving invalidates household/history
+  queries. The API continues enforcing ownership. Added the typed PUT convenience
+  method to the existing authenticated mobile request client.
+- Native emulator actions edited the existing 170,001-cent budget from 100/0 to
+  0/100 and saved it. An attempted 0/0 total was rejected without saving. Replaced
+  technical validation wording with a clear 100% total message and retested it.
+  The updated household card displayed Alex 0%/$0 and Sam 100%/$1,700.01.
+- Created Native utilities entirely through the Android form, selected Utilities,
+  entered $150.01 and saved an equal assignment. The household screen displayed
+  Alex 50%/$75.01 and Sam 50%/$75.00, conserving the odd cent. Fresh API logins for
+  both synthetic users confirmed one saved new budget and the native-edited split;
+  Sam's detailed accounts remained empty while Alex's account stayed private.
+- Responsibility cards now show explicit percentages. Dashboard household money
+  formatting preserves cents instead of rounding $1,700.01 to $1,700. Mobile
+  typecheck passed after final validation changes; React skill review checked hook
+  order, scoped queries, accessibility labels, form state and parallel invalidation.
+- Remaining verification: one-person/removal native actions, partner-side native
+  login, dashboard visual confirmation, guided solo/couple onboarding, desktop
+  history UI and full regression builds. This is Android development-client UI
+  evidence with current Metro JavaScript; it does not imply a rebuilt release APK,
+  iOS native acceptance, Sandbox Link success or complete beta acceptance.

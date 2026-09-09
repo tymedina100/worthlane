@@ -518,10 +518,22 @@ model HouseholdResponsibility {
   household   Household                           @relation(fields: [householdId], references: [id], onDelete: Cascade)
   category    Category?                           @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   allocations HouseholdResponsibilityAllocation[]
+  history     HouseholdResponsibilityHistory[]
 
   @@unique([householdId, slug])
   @@index([householdId, isActive])
   @@index([categoryId])
+}
+
+model HouseholdResponsibilityHistory {
+  id               String   @id @default(cuid())
+  responsibilityId String
+  recordedAt       DateTime @default(now())
+  definition       Json
+
+  responsibility HouseholdResponsibility @relation(fields: [responsibilityId], references: [id], onDelete: Cascade)
+
+  @@index([responsibilityId, recordedAt, id])
 }
 
 model HouseholdResponsibilityAllocation {

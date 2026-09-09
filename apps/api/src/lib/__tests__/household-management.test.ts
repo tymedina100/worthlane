@@ -284,7 +284,7 @@ describe("household management authorization", () => {
         householdId: HOUSEHOLD_ID,
         isActive: true,
       },
-      select: { id: true },
+      include: { category: true, allocations: { include: { member: true } } },
     });
 
     const equalInput = createHouseholdResponsibilitySchema.parse({

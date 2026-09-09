@@ -21,12 +21,14 @@ import {
   householdGoalContributionResultSchema,
   householdPartnerInvitationsSchema,
   householdSummarySchema,
+  responsibilityHistoryPageSchema,
   type HouseholdPartnerInvitationSummary,
   type HouseholdSummary,
 } from "@worthlane/contracts";
 import { ApiError, api } from "@/lib/api";
 import { radius, spacing } from "@/lib/theme";
 import { useAuthStore } from "@/store/auth";
+import { HouseholdBudgetEditor } from "@/components/HouseholdBudgetEditor";
 import { useTheme, useThemedStyles, type Theme } from "@/lib/ThemeContext";
 
 type SharedGoal = HouseholdSummary["sharedGoals"][number];
@@ -223,7 +225,7 @@ function ResponsibilityCard({ item, currency }: { item: Responsibility; currency
         {item.allocations.map((allocation) => (
           <View key={allocation.memberId} style={styles.allocationRow}>
             <View style={styles.inlineBetween}>
-              <Text style={styles.allocationName}>{allocation.displayName}</Text>
+              <Text style={styles.allocationName}>{allocation.displayName} · {allocation.shareBasisPoints / 100}%</Text>
               <Text style={styles.allocationAmount}>
                 {formatMoney(allocation.appliedSpendMinor, currency)} of {formatMoney(allocation.assignedMinor, currency)}
               </Text>
@@ -428,6 +430,37 @@ function GoalCard({ goal, currency }: { goal: SharedGoal; currency: string }) {
   );
 }
 
+function AgreementHistory({ summary }: { summary: HouseholdSummary }) {
+  const styles = useThemedStyles(createStyles);
+  const userId = useAuthStore(state => state.userId);
+  const [open, setOpen] = useState(false);
+  const [cursor, setCursor] = useState<string | null>(null);
+  const history = useQuery({
+    queryKey: ["responsibility-history", userId, summary.household.id, summary.household.updatedAt, cursor],
+    enabled: open && !!userId,
+    queryFn: async () => responsibilityHistoryPageSchema.parse(await api.get(`/households/current/responsibility-history${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ""}`)),
+  });
+  return <View style={styles.card}>
+    <TouchableOpacity accessibilityRole="button" accessibilityState={{ expanded: open }} onPress={() => setOpen(value => !value)}>
+      <Text style={styles.cardTitle}>Budget agreement history {open ? "−" : "+"}</Text>
+    </TouchableOpacity>
+    {open ? <>
+      <Text style={styles.rowMeta}>Changes recalculate this month’s allocations, including earlier spending. Previous agreements are saved when changed or removed. Versions from before history recording began are unavailable. These are plan definitions, not settled balances or past spending reports.</Text>
+      {history.isFetching ? <ActivityIndicator /> : null}
+      {history.isError ? <TouchableOpacity accessibilityRole="button" onPress={() => void history.refetch()}><Text style={styles.rowMeta}>History could not be loaded. Tap to try again.</Text></TouchableOpacity> : null}
+      {history.data?.entries.length === 0 ? <Text style={styles.rowMeta}>No previous agreements recorded yet.</Text> : null}
+      {history.data?.entries.map(({ id, recordedAt, definition: plan }) => <View key={id} style={styles.allocationStack}>
+        <Text style={styles.cardTitle}>{plan.name} · {formatMoney(plan.monthlyAmountMinor, plan.currency)} / month</Text>
+        <Text style={styles.rowMeta}>{plan.categoryName} · {plan.reason === "REMOVED" ? "Removed" : "Replaced"} {new Date(recordedAt).toLocaleString()}</Text>
+        <Text style={styles.rowMeta}>Previous version saved {new Date(plan.definitionUpdatedAt).toLocaleString()}</Text>
+        {plan.allocations.map(share => <Text key={share.memberId} style={styles.rowMeta}>{share.displayName}: {share.shareBasisPoints / 100}% · {formatMoney(share.assignedMinor, plan.currency)}</Text>)}
+      </View>)}
+      {history.data?.nextCursor ? <TouchableOpacity accessibilityRole="button" onPress={() => setCursor(history.data!.nextCursor)}><Text style={styles.cardTitle}>Older agreements</Text></TouchableOpacity> : null}
+      {cursor ? <TouchableOpacity accessibilityRole="button" onPress={() => setCursor(null)}><Text style={styles.cardTitle}>Latest agreements</Text></TouchableOpacity> : null}
+    </> : null}
+  </View>;
+}
+
 function HouseholdContent({ summary }: { summary: HouseholdSummary }) {
   const styles = useThemedStyles(createStyles);
   const partnerNames = summary.members
@@ -456,6 +489,8 @@ function HouseholdContent({ summary }: { summary: HouseholdSummary }) {
       </View>
 
       <AccountsSection summary={summary} />
+      <HouseholdBudgetEditor summary={summary} key={`${summary.household.id}:${summary.viewerMemberId}`} />
+      <AgreementHistory summary={summary} key={`${summary.household.id}:${summary.viewerMemberId}:${summary.household.updatedAt}`} />
 
       <SectionHeading
         title="Monthly responsibilities"

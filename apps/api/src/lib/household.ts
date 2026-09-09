@@ -9,6 +9,8 @@ import {
   householdGoalContributionResultSchema,
   householdGoalSummarySchema,
   householdResponsibilitySummarySchema,
+  responsibilityHistoryDefinitionSchema,
+  responsibilityHistoryPageSchema,
   householdSummarySchema,
   householdPartnerInviteResultSchema,
   householdPartnerInvitationsSchema,
@@ -892,6 +894,35 @@ export async function listHouseholdResponsibilities(userId: string) {
   return (await getHouseholdSummary(userId)).responsibilities;
 }
 
+export async function listResponsibilityHistory(userId: string, cursor?: string) {
+  const context = await requireHouseholdContext(userId);
+  const where = { responsibility: { householdId: context.householdId } };
+  if (cursor && !await prisma.householdResponsibilityHistory.findFirst({ where: { ...where, id: cursor }, select: { id: true } })) {
+    throw new HouseholdNotFoundError("Agreement history not found");
+  }
+  const rows = await prisma.householdResponsibilityHistory.findMany({
+    where, orderBy: [{ recordedAt: "desc" }, { id: "desc" }], take: 26,
+    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+  });
+  const entries = rows.slice(0, 25).map(row => ({
+    id: row.id, responsibilityId: row.responsibilityId,
+    recordedAt: row.recordedAt.toISOString(), definition: row.definition,
+  }));
+  return responsibilityHistoryPageSchema.parse({ entries, nextCursor: rows.length > 25 ? entries[24].id : null });
+}
+
+async function preserveResponsibilityDefinition(tx: Prisma.TransactionClient, existing: ResponsibilityRecord, reason: "REPLACED" | "REMOVED") {
+  const household = await tx.household.findUniqueOrThrow({ where: { id: existing.householdId }, select: { currency: true } });
+  const plan = serializeResponsibilityDefinition(existing);
+  const definition = responsibilityHistoryDefinitionSchema.parse({
+    name: plan.name, categoryName: plan.categoryName, currency: household.currency,
+    mode: plan.mode, monthlyAmountMinor: plan.monthlyAmountMinor,
+    definitionUpdatedAt: plan.updatedAt, reason,
+    allocations: plan.allocations.map(({ memberId, displayName, shareBasisPoints, assignedMinor }) => ({ memberId, displayName, shareBasisPoints, assignedMinor })),
+  });
+  await tx.householdResponsibilityHistory.create({ data: { responsibilityId: existing.id, definition } });
+}
+
 export async function setHouseholdIncomeBases(
   userId: string,
   input: SetHouseholdIncomeBases
@@ -981,7 +1012,7 @@ export async function updateHouseholdResponsibility(
         householdId: context.householdId,
         isActive: true,
       },
-      select: { id: true },
+      include: { category: true, allocations: { include: { member: true } } },
     });
     if (!existing) {
       throw new HouseholdNotFoundError("Household responsibility not found");
@@ -1009,6 +1040,7 @@ export async function updateHouseholdResponsibility(
         );
       }
     }
+    await preserveResponsibilityDefinition(tx, existing, "REPLACED");
     return tx.householdResponsibility.update({
       where: { id: existing.id },
       data: {
@@ -1047,11 +1079,12 @@ export async function deleteHouseholdResponsibility(
         householdId: context.householdId,
         isActive: true,
       },
-      select: { id: true },
+      include: { category: true, allocations: { include: { member: true } } },
     });
     if (!existing) {
       throw new HouseholdNotFoundError("Household responsibility not found");
     }
+    await preserveResponsibilityDefinition(tx, existing, "REMOVED");
     await tx.householdResponsibility.update({
       where: { id: existing.id },
       data: { isActive: false },

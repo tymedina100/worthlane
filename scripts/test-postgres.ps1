@@ -4,7 +4,8 @@ param(
   [switch]$Http,
   [switch]$Interactive,
   [switch]$Sandbox,
-  [switch]$SandboxInteractive
+  [switch]$SandboxInteractive,
+  [ValidateRange(1, 120)][int]$InteractiveMinutes = 15
 )
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path $PSScriptRoot -Parent
@@ -43,8 +44,8 @@ try {
     Check-Exit 'Live Sandbox application integration tests'
   }
   if ($Http -or $Interactive -or $SandboxInteractive) {
-    if ($SandboxInteractive) { node scripts/test-http.mjs --interactive --sandbox }
-    elseif ($Interactive) { node scripts/test-http.mjs --interactive }
+    if ($SandboxInteractive) { node scripts/test-http.mjs --interactive --sandbox "--interactive-minutes=$InteractiveMinutes" }
+    elseif ($Interactive) { node scripts/test-http.mjs --interactive "--interactive-minutes=$InteractiveMinutes" }
     else { node scripts/test-http.mjs }
     Check-Exit 'HTTP BFF integration tests'
   }

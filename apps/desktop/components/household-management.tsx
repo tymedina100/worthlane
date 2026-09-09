@@ -179,6 +179,7 @@ export function ResponsibilityManager({
           <p className="section-kicker">Household owner controls</p>
           <h2 id="responsibility-manager-title">Manage category budgets &amp; responsibilities</h2>
           <p>Create an assignment or choose an existing lane to edit it.</p>
+          <p>Changes recalculate this month’s allocations, including earlier spending. Previous agreements stay in Budget agreement history; transaction amounts and who paid stay the same.</p>
         </div>
         <label className="management-picker">
           <span>Working on</span>

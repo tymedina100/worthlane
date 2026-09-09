@@ -78,6 +78,30 @@ export const householdResponsibilitySummarySchema = z.object({
   updatedAt: isoDateTimeSchema,
 });
 
+// Agreement history contains plan definitions only, never payer activity or balances.
+export const responsibilityHistoryDefinitionSchema = z.object({
+  name: z.string(),
+  categoryName: z.string(),
+  currency: z.string().length(3),
+  mode: responsibilityModeSchema,
+  monthlyAmountMinor: nonNegativeMinorUnitsSchema,
+  definitionUpdatedAt: isoDateTimeSchema,
+  reason: z.enum(["REPLACED", "REMOVED"]),
+  allocations: z.array(responsibilityAllocationSummarySchema.pick({
+    memberId: true, displayName: true, shareBasisPoints: true, assignedMinor: true,
+  }).strict()),
+}).strict();
+
+export const responsibilityHistoryPageSchema = z.object({
+  entries: z.array(z.object({
+    id: z.string(), responsibilityId: z.string(), recordedAt: isoDateTimeSchema,
+    definition: responsibilityHistoryDefinitionSchema,
+  })),
+  nextCursor: z.string().nullable(),
+});
+
+export type ResponsibilityHistoryPage = z.infer<typeof responsibilityHistoryPageSchema>;
+
 export const householdGoalParticipantSummarySchema = z.object({
   memberId: z.string(),
   displayName: z.string(),

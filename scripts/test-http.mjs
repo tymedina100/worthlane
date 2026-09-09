@@ -11,6 +11,8 @@ const api = 'http://127.0.0.1:3301';
 const desktop = 'http://localhost:3303';
 const children = [];
 const logs = [];
+const interactiveMinutes = Number(process.argv.find(arg => arg.startsWith('--interactive-minutes='))?.split('=')[1] ?? 15);
+assert(Number.isInteger(interactiveMinutes) && interactiveMinutes >= 1 && interactiveMinutes <= 120, 'Interactive duration must be 1-120 minutes');
 assert(!process.argv.includes('--sandbox') || process.argv.includes('--interactive'), 'Sandbox HTTP requires interactive mode');
 const sandbox = process.argv.includes('--sandbox') ? await (await import('./sandbox-http.mjs')).sandboxHttp(db.href) : null;
 const env = { ...process.env, DATABASE_URL: db.href, NODE_ENV: 'development',
@@ -153,8 +155,8 @@ try {
       console.log(`Synthetic browser fixture login: ${email} / ${password}`);
     }
     const stopFile = resolve('.tmp', `stop-http-${process.pid}`);
-    console.log(`Interactive test app ready at ${desktop}/register. Create ${stopFile} to stop. Auto-stop after 15 minutes.`);
-    const deadline = Date.now() + 15 * 60_000;
+    console.log(`Interactive test app ready at ${desktop}/register. Create ${stopFile} to stop. Auto-stop after ${interactiveMinutes} minutes.`);
+    const deadline = Date.now() + interactiveMinutes * 60_000;
     while (!existsSync(stopFile) && Date.now() < deadline) await new Promise(r => setTimeout(r, 1000));
   }
 } finally {

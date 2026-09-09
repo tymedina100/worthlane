@@ -1,6 +1,7 @@
 "use client";
 
 import { DebtPlanner } from "./debt-planner";
+import { ResponsibilityHistory } from "./responsibility-history";
 import { UpcomingManager } from "./upcoming-manager";
 
 import type { HouseholdSummary } from "@worthlane/contracts";
@@ -411,6 +412,7 @@ function MonthlyPlanSurface({
       </section>
 
       <ResponsibilityManager summary={summary} categories={personal.categories} onManage={onManage} />
+      <ResponsibilityHistory key={`${summary.household.id}:${summary.viewerMemberId}:${summary.household.updatedAt}`} />
 
       <section className="panel workspace-panel" aria-labelledby="personal-budget-title">
         <div className="panel__header panel__header--split">

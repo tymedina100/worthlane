@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 import type { Transaction as PlaidTransaction } from "plaid";
 import { applyPlaidSyncBatch } from "../src/lib/plaid-reconciliation";
-import { createHouseholdForUser } from "../src/lib/household";
+import { createHouseholdForUser, listResponsibilityHistory } from "../src/lib/household";
 import { spendingWhere, incomeWhere } from "../src/lib/spending-treatment";
 import { weekRangeInTimeZone } from "@worthlane/core";
 import { NextRequest } from "next/server";
@@ -17,7 +17,8 @@ import { GET as invitations } from "../src/app/api/households/invitations/route"
 import { POST as accept } from "../src/app/api/households/invitations/accept/route";
 import { GET as summary } from "../src/app/api/households/current/summary/route";
 import { POST as createResponsibility } from "../src/app/api/households/current/responsibilities/route";
-import { PUT as editResponsibility } from "../src/app/api/households/current/responsibilities/[id]/route";
+import { PUT as editResponsibility, DELETE as removeResponsibility } from "../src/app/api/households/current/responsibilities/[id]/route";
+import { GET as readResponsibilityHistory } from "../src/app/api/households/current/responsibility-history/route";
 import { POST as createAccount } from "../src/app/api/accounts/route";
 import { POST as createTransaction } from "../src/app/api/transactions/route";
 import { GET as personalBudgets } from "../src/app/api/budgets/route";
@@ -305,6 +306,39 @@ describe("persistent household consent and budget journey", () => {
       expect.objectContaining({ memberId: partnerId, shareBasisPoints: 10_000, assignedMinor: 170_001, remainingMinor: 170_001 }),
     ]));
     expect(zeroSplit.allocations.reduce((sum, row) => sum + row.assignedMinor, 0)).toBe(170_001);
+    const history = await call(readResponsibilityHistory, splitLogin.accessToken);
+    expect(history.entries).toHaveLength(1);
+    const previous = history.entries[0];
+    expect(previous.definition).toMatchObject({ name: "Rent", currency: "USD", monthlyAmountMinor: 170_000, reason: "REPLACED" });
+    expect(previous.definition.allocations).toEqual(expect.arrayContaining([
+      expect.objectContaining({ memberId: ownerId, shareBasisPoints: 6000, assignedMinor: 102_000 }),
+      expect.objectContaining({ memberId: partnerId, shareBasisPoints: 4000, assignedMinor: 68_000 }),
+    ]));
+    expect(Object.keys(previous.definition.allocations[0]).sort()).toEqual(["assignedMinor", "displayName", "memberId", "shareBasisPoints"]);
+    const removeRent = (req: NextRequest) => removeResponsibility(req, { params: { id: rentId } });
+    await call(removeRent, partner.token, undefined, 403);
+    expect((await call(readResponsibilityHistory, owner.token)).entries).toEqual(history.entries);
+    await call(removeRent, owner.token);
+    expect((await readSummary(partner.token)).responsibilities.some(row => row.id === rentId)).toBe(false);
+    const afterRemoval = await call(readResponsibilityHistory, partner.token);
+    expect(afterRemoval.entries).toHaveLength(2);
+    expect(afterRemoval.entries.find((row: { id: string }) => row.id === previous.id)).toEqual(previous);
+    expect(afterRemoval.entries[0].definition).toMatchObject({ monthlyAmountMinor: 170_001, reason: "REMOVED" });
+    await call(readResponsibilityHistory, undefined, undefined, 401);
+    await call(readResponsibilityHistory, outsider.token, undefined, 404);
+    await createHouseholdForUser(outsider.id, { name: "Other household", displayName: "Other", timezone: "America/Phoenix", currency: "USD" });
+    expect((await call(readResponsibilityHistory, outsider.token)).entries).toEqual([]);
+    await expect(listResponsibilityHistory(outsider.id, previous.id)).rejects.toThrow("Agreement history not found");
+    // Exercise bounded pagination without manufacturing historical financial claims.
+    await prisma.householdResponsibilityHistory.createMany({ data: Array.from({ length: 26 }, (_, index) => ({
+      id: `synthetic-history-${suffix}-${index}`, responsibilityId: rentId, definition: previous.definition,
+    })) });
+    const firstPage = await listResponsibilityHistory(partner.id);
+    expect(firstPage.entries).toHaveLength(25);
+    const nextPage = await listResponsibilityHistory(partner.id, firstPage.nextCursor!);
+    expect(nextPage.entries).toHaveLength(3);
+    expect(new Set([...firstPage.entries, ...nextPage.entries].map(row => row.id)).size).toBe(28);
+    expect(nextPage.nextCursor).toBeNull();
   });
 });
 
