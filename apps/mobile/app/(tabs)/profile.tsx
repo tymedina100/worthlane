@@ -350,15 +350,11 @@ export default function ProfileScreen() {
       });
       if (useAuthStore.getState().userId !== linkingUserId) return;
 
-      // Loaded lazily so the Plaid native module (excluded from the build for
-      // v1, see expo.autolinking.exclude) is never referenced while bank
-      // linking is disabled.
-      const { openLink } = require("react-native-plaid-link-sdk") as typeof import("react-native-plaid-link-sdk");
-      await openLink({
-        tokenConfig: {
-          token: linkToken,
-          noLoadingState: false,
-        },
+      // Lazy loading preserves manual use in Expo Go, which has no Plaid module.
+      const { createPlaidLinkSession } = require("react-native-plaid-link-sdk") as typeof import("react-native-plaid-link-sdk");
+      const session = await createPlaidLinkSession({
+        token: linkToken,
+        onEvent: () => {},
         onSuccess: async (success: LinkSuccess) => {
           await handlePlaidSuccess(success, mode, linkingUserId, plaidItemId);
         },
@@ -366,6 +362,8 @@ export default function ProfileScreen() {
           if (useAuthStore.getState().userId === linkingUserId) handlePlaidExit(exit);
         },
       });
+      if (useAuthStore.getState().userId !== linkingUserId) return;
+      await session.open();
     } catch (error) {
       if (useAuthStore.getState().userId === linkingUserId) Alert.alert("Plaid unavailable", bankActionErrorMessage(error));
     }

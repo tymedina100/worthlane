@@ -879,3 +879,27 @@ production changes or spending. Full beta acceptance remains unproven.
   https://plaid.com/docs/link/react-native/ describe SDK13 session APIs and native
   requirements; supported SDK migration/autolinking/native build and actual device
   banking remain the next implementation work. Do not infer completion from export.
+
+## 2026-09-08 — Plaid13 native migration and Android prebuild
+
+- Pinned react-native-plaid-link-sdk13.1.0, replaced removed openLink with
+  createPlaidLinkSession/session.open, retained create/update and user guards, and
+  removed Expo's Plaid autolinking exclusion. Event callback intentionally does not
+  log banking metadata. Feature activation/production settings remain unchanged.
+- Added Expo54-compatible expo-build-properties1.0.10 with Android minSdk26.
+  Existing checked-in Android project was an older template; preserved it under
+  ignored .tmp/android-before-plaid13 and regenerated with Expo54 --no-install.
+  Current Gradle8.14.3/Expo module settings, secure-store backup exclusions and
+  generated image formats replace stale template output. Preserved application ID,
+  debug keystore and existing worthlane/com.worthlane.mobile link schemes.
+- Autolinking resolve --json found Plaid13.1.0 Android module and Apple pod/Swift
+  module. Frozen offline install, all workspace typechecks, mobile14 mocked tests
+  and iOS export1946 modules/6.97MB passed. Removed unrelated Next/Babel lock drift.
+- Android `gradlew.bat :app:assembleDebug --no-daemon` reached Expo configuration:
+  buildTools36, minSdk26, compile/target36, NDK27.1, Kotlin2.1.20. Failed at missing
+  Android SDK location (no ANDROID_HOME/ANDROID_SDK_ROOT/local.properties), after28
+  Gradle tasks. An accompanying generic autolinking warning is not native proof;
+  standalone module discovery passed, but full build still needs verification.
+- No APK/iOS native build/device success is claimed. Next: supply local Android
+  toolchain and compile; native Sandbox/UI/reminder checks and remaining banking,
+  deduplication and integrated beta acceptance. No paid cloud build or production.

@@ -57,7 +57,8 @@ module.exports = () => {
 
   return {
     ...baseConfig,
-    plugins: [...(baseConfig.plugins ?? []), ...sentryPlugin],
+    scheme: [baseConfig.scheme, "com.worthlane.mobile"],
+    plugins: [...(baseConfig.plugins ?? []), ["expo-build-properties", { android: { minSdkVersion: 26 } }], ...sentryPlugin],
     ios: {
       ...baseConfig.ios,
       associatedDomains: normalizedAssociatedDomain
