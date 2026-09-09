@@ -493,3 +493,23 @@ production changes or spending. Full beta acceptance remains unproven.
   new/reopen/edit/preview and small-width layout; per-debt payment presentation,
   mobile plan UI and obligations integration. Banking recovery/dedupe/native and
   full beta acceptance remain open. No production changes.
+
+## 2026-09-08 — interactive desktop debt-plan acceptance checkpoint
+
+- Ran test-postgres.ps1 -Interactive:19 migrations,5DB tests and HTTP/BFF checks
+  passed, then used the real in-app browser on localhost3303 with a fresh synthetic
+  login and newly created private household (Alex / Debt UI household).
+- Actual browser UI: Goals -> named UI payoff check, current balance100, minimum10,
+  zero APR, monthly budget30. Preview visibly returned December2026 payoff, zero
+  interest and100 total payments, with an unsaved-preview notice. Save succeeded.
+- Reload -> Open saved plan restored inputs and December estimate. Edited payment
+  budget to50 and saved; result changed to October2026. Expanded monthly schedule
+  showed September50/remaining50 and October50/remaining0.
+- At390x844, screenshot inspection showed readable actions/results/schedule without
+  clipped schedule columns. Restored viewport. Signed out, signed back in and
+  reopened saved plan: October2026 result confirmed in the rendered page.
+- Stopped exact interactive runner via its stop file; process exit0 and database
+  shutdown confirmed. Synthetic-only; no deployment, spending or live bank data.
+- This proves basic one-debt desktop preview/save/edit/reopen/fresh-session behavior.
+  Multi-debt/promo/conflict UI cases, per-debt payment guidance, mobile plans,
+  obligation integration and broader banking/beta acceptance remain unfinished.
