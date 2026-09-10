@@ -89,6 +89,9 @@ jobs:
       - name: Test auth privacy during analytics failures
         run: pnpm test:auth-privacy
 
+      - name: Test web Plaid startup recovery and cancellation
+        run: node --test scripts/test-plaid-web-lifecycle.mjs
+
       - name: Test native desktop security and packaging manifest
         run: pnpm --filter @worthlane/desktop-native test
 

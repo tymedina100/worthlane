@@ -15,10 +15,10 @@ files:
   - src/offline.js
   - generated/app-config.json
 extraResources:
-  - from: ../web/app/icon.png
+  - from: ../mobile/assets/icon.png
     to: branding/worthlane.png
 win:
-  icon: ../web/app/icon.png
+  icon: ../mobile/assets/icon.png
   artifactName: Worthlane-Setup-${version}-${arch}.${ext}
   target:
     - target: nsis
