@@ -64,7 +64,7 @@ Mobile API URL: set `EXPO_PUBLIC_API_URL` in `apps/mobile/.env.local` (defaults 
 - `lib/response.ts` — `ok()`, `err()`, `unauthorized()`, `notFound()` helpers; all routes use these
 - `lib/plaid.ts` — Plaid client + helper functions
 - `lib/categories.ts` — Maps Plaid categories to internal categories with caching
-- `lib/nudge-engine.ts` — Generates loss-aversion nudges; called on `GET /nudges`
+- `lib/nudge-engine.ts` — Generates calm planning updates; called on `GET /nudges`
 - `lib/dates.ts` — `startOfMonth`, `endOfMonth`, etc.
 
 ### Mobile (`apps/mobile/`)

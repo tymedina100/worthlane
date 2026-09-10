@@ -287,3 +287,16 @@ describe("nudge deduplication", () => {
     await expect(generateNudgesForUser(USER_ID)).rejects.toThrow("db down");
   });
 });
+
+it('labels recurring predictions explicitly instead of claiming a confirmed bill due date', async () => {
+  mockPrisma.budget.findMany.mockResolvedValue([]);
+  mockPrisma.streak.findMany.mockResolvedValue([]);
+  mockPrisma.goal.findMany.mockResolvedValue([]);
+  mockPrisma.transaction.aggregate.mockResolvedValue(aggResult(0));
+  mockPrisma.recurringTransaction.findMany.mockResolvedValue([{ displayName: 'Internet', averageAmount: { toNumber: () => 85.25 }, nextDueDate: new Date(Date.now() + 86400000) }]);
+  await generateNudgesForUser(USER_ID);
+  const message = mockPrisma.nudge.create.mock.calls[0][0].data.message;
+  expect(message).toContain('estimated $85.25');
+  expect(message).toContain('not a confirmed due date');
+  expect(message).not.toMatch(/overdraft|pure loss|hits tomorrow/);
+});
