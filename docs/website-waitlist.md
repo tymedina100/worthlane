@@ -1,7 +1,9 @@
 # Website beta email list — September 10, 2026
 
-Prepared for publication; **not deployed**. Existing production remains the
-approved redesign, release commit 6a0ddb2. Preview: http://localhost:3315/#beta.
+Published with explicit user approval at https://worthlane.app/#beta.
+Website source: 3f05ca8. Production READY: dpl_4XQXkFQUCwnFVhReEPHcUz6CW4cy
+(https://worthlane-7v1amadj6-tymedina100s-projects.vercel.app).
+Rollback: dpl_HgwZAmoLmcwZk8rV5MLFFdskEE2P (previous website redesign).
 
 ## Behavior and evidence
 
@@ -34,10 +36,13 @@ approved redesign, release commit 6a0ddb2. Preview: http://localhost:3315/#beta.
 
 ## Release preparation
 
-The Vercel website project currently has **no environment variables or configured
-database**. Approval is required to connect a separate production waitlist database
-and publish. Proposed provider: Neon Free, with no paid upgrade or spending.
-Check the actual plan in the account before provisioning; stop if it requires payment.
+Completed: user approved production and accepted the required Neon marketplace terms.
+Provisioned resource worthlane-waitlist (store_aFA6N8OSCbndSQ5H), plan free_v3,
+region iad1, auth=false, linked only to website production with WAITLIST_ prefix.
+Installation icfg_vqTOZTc6IRJo7Qyb56URxr6I. TLS requirement and only two public
+signup tables verified. WAITLIST_RATE_SECRET configured as a sensitive production
+variable. No paid upgrade, production app API change, or financial-data migration.
+The steps below document the completed setup and future maintenance.
 
 1. Create a dedicated `worthlane-waitlist` database on the Free plan, separate from
    financial account data. Keep TLS enabled (`sslmode=require` in connection URL).
@@ -74,3 +79,22 @@ Do not paste database secrets in chat, logs, or issue descriptions.
 The full app goal remains active. Native branding changes are preserved in the beta
 worktree. Native Plaid entitlement/dashboard configuration, complete live Sandbox Link
 recovery walkthroughs, and actual reminder delivery remain open acceptance work.
+
+## Production verification
+
+Remote build and deployment passed. Actual browser submitted a synthetic address
+on worthlane.app and displayed the confirmation. A direct database read confirmed
+exactly one saved email with consent version and timestamp. A second public POST
+with uppercase/whitespace returned200 and retained one row. Removed only that test
+address and verified zero matching rows; other contacts untouched. No email was sent.
+
+Live home/support/privacy/terms/OAuth return all200. AASA200 contains the expected
+5FBXR5M5PJ.com.worthlane.mobile and /plaid-oauth association; callback keeps
+no-referrer and does not reflect the synthetic query. Published homepage contains
+the new signup. Immediate deployment-specific error-log query returned no entries;
+this is a short release check, not long-term health monitoring. Screenshot:
+docs/evidence/website-waitlist/production-confirmation.png.
+
+Temporary production credential pull was owner-only and deleted after verification.
+For future administration pull production variables privately again; never commit
+them or run the destructive local-only test harness against this database.
