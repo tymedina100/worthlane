@@ -1613,3 +1613,20 @@ Re-read the authoritative Notion acceptance criteria. Full persistent solo/two-u
 CI run96/34520804063 on ddeac8d passed real PostgreSQL integration, workspace typecheck, shared rules/contracts/API/native-adapter/auth/security tests, mobile bundle and API/desktop/web builds. Windows packaging failed: its configured website favicon was192px, below the builder's256px minimum. Pointed executable/packaged branding at the matching1024px mobile mark and added a PNG dimension regression; all15 desktop-native tests pass locally. Windows packaging verification for this fix is pending the next PR run. Added existing four passing web Plaid lifecycle tests to CI.
 
 Fresh `WORTHLANE_TEST_PORT=55443 bash scripts/test-postgres.sh --http` initially passed10 database tests but refused HTTP startup on occupied persistent-demo ports. The harness now defaults to3316/3317 with validated overrides and per-process Next output directories. It restores only its own generated Next config references, preserving concurrent external edits. A full rerun passed10 persisted tests and all HTTP/BFF checks: registration/HttpOnly sessions, invitation-before-registration, two-member consent/privacy, refund/category saves, logout/relogin, debt save/reopen/revision conflicts, obligations/edit/paid/unpaid/deactivate, and strict auth/origin/payload validation. Exit0; isolated cluster stopped; original generated config files restored; persistent API3301 still listening. Log /tmp/worthlane-isolated-harness-verification.log. No real bank data or production DB used.
+
+## September 10 — complete candidate CI regression passed
+
+GitHub Actions run97/34521260627 on9f2175b finished with all three jobs successful:
+PostgreSQL integration, main CI and native Windows. Verified each final job outcome.
+This includes workspace typechecks, shared rules/contracts/API/native-adapter/auth
+privacy/web Link lifecycle/desktop security tests, iOS bundle export, API/desktop/web
+builds, and actual Windows packaging plus package verification. The192px icon
+regression is fixed on the Windows runner, not merely inferred from local tests.
+
+Added docs/beta-acceptance-status.md to index the brief's requirements and existing
+evidence. Full interactive Sandbox connect/reconnect/recovery/unlink/native OAuth
+is still incomplete; CI success does not close that gate. PR15 remains draft.
+Plaid/Xcode account prerequisites remain as documented. Vercel's existing PR
+integration also created preview website/desktop deployments; these are previews,
+not a new production app release or proof of a configured beta backend. No merge,
+financial production migration, live Plaid activation or purchase performed.
