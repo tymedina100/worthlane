@@ -1650,3 +1650,10 @@ Clicked Sync on Avery's saved First Platypus connection: UI confirmed synced. Co
 
 
 Switched through actual Sign out and separate Morgan login after Avery's bank connection. Morgan's dashboard lists Morgan's existing14 personal bank accounts plus the original wallet/joint fixtures; the only Avery row is the previously shared Joint test copy. Avery's new14 personal bank accounts are absent. Names/balances are similar because both use synthetic Plaid fixtures, so owner labels and row membership—not total equality alone—support the privacy observation.
+
+
+## September 10 — forced Sandbox error recovery and stale-status fix
+
+Used Plaid sandboxItemResetLogin only on Avery's synthetic Sandbox Item (exact local user, one Item, sandbox token guard). Actual desktop Sync returned re-link-required, exposing a defect: error displayed while connection still read Healthy/zero attention. Updated workspace bank mutations to refresh persisted state before reporting failures; starting new Link clears previous sync feedback. Actual required reconnect requested synthetic pass_good, completed consent, and restored Healthy with zero attention. Repeated Sandbox reset after the fix: starting from Healthy, one Sync now returned Needs Relink,14 accounts needing attention and incomplete-spending warning in the same completion update. Saved balances remained visible. Connection intentionally remains reset for the upcoming unlink check.
+
+`corepack pnpm --filter @worthlane/desktop typecheck` passed; `node --test scripts/test-plaid-web-lifecycle.mjs` passed5 tests, including regression executing the workspace mutation callback to verify failed mutations refresh before throwing. Full remote regression/build awaits the pushed code revision. Native runtime and unlink remain pending.

@@ -59,3 +59,24 @@ test('unmount removes loading timers and rejects stale callbacks', async () => {
   f.unmount(); f.callbacks.onSuccess('late-token', {}); await tick();
   assert.equal(f.timers.size, 0); assert.deepEqual(paths, ['/link-token']);
 });
+
+test('failed bank mutation refreshes persisted connection status before reporting its error', async () => {
+  const source = ts.createSourceFile('workspace-page.tsx', readFileSync(new URL('../apps/desktop/components/workspace-page.tsx', import.meta.url), 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let callback;
+  function visit(node) {
+    if (ts.isVariableDeclaration(node) && node.name.getText(source) === 'managePlaid') callback = node.initializer.arguments[0];
+    ts.forEachChild(node, visit);
+  }
+  visit(source); assert(callback, 'Workspace bank mutation callback must exist');
+  const body = ts.createPrinter().printNode(ts.EmitHint.Expression, callback, source);
+  const code = ts.transpileModule(`exports.manage = ${body}`, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText;
+  const events = []; const exports = {};
+  vm.runInNewContext(code, {
+    exports, fetch: async () => ({ status: 400, ok: false, json: async () => ({ error: 'Needs reconnect' }) }),
+    envelopeData: () => null, errorMessage: payload => payload.error,
+    loadWorkspace: async () => { events.push('refreshed'); },
+    router: { replace() { assert.fail('must not sign out on a bank error'); }, refresh() {} }, view: 'accounts',
+  });
+  await assert.rejects(exports.manage({ path: '/sync', body: { plaidItemId: 'synthetic' } }), /Needs reconnect/);
+  assert.deepEqual(events, ['refreshed']);
+});

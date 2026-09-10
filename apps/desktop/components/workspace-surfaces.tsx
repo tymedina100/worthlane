@@ -485,6 +485,12 @@ function PlaidConnectionControls({
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const manageLink: ManagePlaid = async (input) => {
+    setMessage(null);
+    setError(null);
+    return onManage(input);
+  };
+
   async function sync(connection: PlaidConnection) {
     setWorkingId(connection.id);
     setMessage(null);
@@ -516,14 +522,14 @@ function PlaidConnectionControls({
 
   return (
     <div className="plaid-connection-controls">
-      <PlaidLinkButton onManage={onManage} />
+      <PlaidLinkButton onManage={manageLink} />
       <p>Imported spending uses posted transactions. Pending bank authorizations are excluded until they post.</p>
       <p>Bank-labeled transfers and credit card payments are excluded from spending and income. You can change this in Transactions.</p>
       {connections.length ? connections.map((connection) => (
         <article key={connection.id}>
           <span><strong>{connection.institution ?? "Connected institution"}</strong><small>{connection.accountCount} account{connection.accountCount === 1 ? "" : "s"} - {titleCase(connection.status)}</small><small>{connection.dataNotice}</small><small>{connection.lastSyncAt ? `Last retrieved ${formatShortDate(connection.lastSyncAt)}` : "No activity retrieved yet"}</small></span>
           <div>
-            <PlaidLinkButton onManage={onManage} itemId={connection.id} />
+            <PlaidLinkButton onManage={manageLink} itemId={connection.id} />
             <button className="button button--secondary" type="button" disabled={workingId === connection.id} onClick={() => void sync(connection)}>Sync</button>
             <button className="button button--danger" type="button" disabled={workingId === connection.id} onClick={() => void unlink(connection)}>Unlink</button>
           </div>

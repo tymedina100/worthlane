@@ -323,10 +323,12 @@ export function WorkspacePage({ view }: { view: WorkspaceView }) {
     }
     const payload = await response.json().catch(() => null);
     const result = envelopeData<T>(payload);
+    // A failed bank operation can still persist a new connection status
+    // (for example ITEM_LOGIN_REQUIRED). Reconcile before showing its error.
+    await loadWorkspace({ background: true });
     if (!response.ok || result === null) {
       throw new Error(errorMessage(payload, "That bank connection change could not be completed."));
     }
-    await loadWorkspace({ background: true });
     return result;
   }, [loadWorkspace, router, view]);
 
