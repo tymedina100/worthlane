@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -28,6 +28,7 @@ import {
 import { ApiError, api } from "@/lib/api";
 import { radius, spacing } from "@/lib/theme";
 import { useAuthStore } from "@/store/auth";
+import { HouseholdAccountMatches } from "@/components/HouseholdAccountMatches";
 import { HouseholdBudgetEditor } from "@/components/HouseholdBudgetEditor";
 import { useTheme, useThemedStyles, type Theme } from "@/lib/ThemeContext";
 
@@ -509,6 +510,17 @@ function AgreementHistory({ summary }: { summary: HouseholdSummary }) {
   </View>;
 }
 
+function HouseholdDisclosure({ title, children }: { title: string; children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const styles = useThemedStyles(createStyles);
+  return <View style={styles.card}>
+    <TouchableOpacity accessibilityRole="button" accessibilityState={{ expanded: open }} style={{ minHeight: 48, justifyContent: "center" }} onPress={() => setOpen(value => !value)}>
+      <Text style={styles.rowTitle}>{title} {open ? "−" : "+"}</Text>
+    </TouchableOpacity>
+    {open ? children : null}
+  </View>;
+}
+
 function HouseholdContent({ summary }: { summary: HouseholdSummary }) {
   const styles = useThemedStyles(createStyles);
   const partnerNames = summary.members
@@ -534,10 +546,9 @@ function HouseholdContent({ summary }: { summary: HouseholdSummary }) {
             This total only includes your accounts plus details or summaries your partner chose to share.
           </Text>
         </View>
-        {summary.finances.bankDataNotices.map(notice => <Text key={notice.accountId} style={styles.privacyText}>{notice.message}</Text>)}
+        {summary.finances.bankDataNotices.length > 0 ? <Text style={styles.privacyText}>Bank history may be incomplete. Review coverage below.</Text> : null}
       </View>
 
-      <AccountsSection summary={summary} />
       <HouseholdBudgetEditor summary={summary} key={`${summary.household.id}:${summary.viewerMemberId}`} />
       <AgreementHistory summary={summary} key={`${summary.household.id}:${summary.viewerMemberId}:${summary.household.updatedAt}`} />
 
@@ -557,9 +568,17 @@ function HouseholdContent({ summary }: { summary: HouseholdSummary }) {
         )}
       </View>
 
+      <HouseholdDisclosure title={`Accounts & privacy · ${summary.finances.detailedAccounts.length} detailed accounts`}>
+        <AccountsSection summary={summary} />
+      </HouseholdDisclosure>
+      {summary.finances.bankDataNotices.length > 0 ? <HouseholdDisclosure title={`Bank history coverage · ${summary.finances.bankDataNotices.length} accounts`}>
+        {summary.finances.bankDataNotices.map(notice => <Text key={notice.accountId} style={styles.muted}>{notice.message}</Text>)}
+      </HouseholdDisclosure> : null}
+      <HouseholdAccountMatches householdId={summary.household.id} key={`matches:${summary.household.id}:${summary.viewerMemberId}`} />
+
       <SectionHeading
         title="Shared goals"
-        helper="Contributions use the same household goal on mobile and desktop."
+        helper="Save toward shared plans while keeping personal goals private."
       />
       <View style={styles.sectionStack}>
         {summary.sharedGoals.length ? (
@@ -747,7 +766,7 @@ export default function HouseholdScreen() {
               {joinWithCode.error ? <Text style={styles.errorText}>{joinWithCode.error.message}</Text> : null}
             </View>
           ) : null}
-          {household.data?.members.some((member) => member.isCurrentUser && member.role === "OWNER") ? (
+          {household.data && household.data.members.length < 2 && household.data.members.some((member) => member.isCurrentUser && member.role === "OWNER") ? (
             <View style={styles.card}>
               <Text style={styles.rowTitle}>Invite your partner</Text>
               <Text style={styles.muted}>They can register later. Share the code directly; no email is sent. They must use the invited email and explicitly accept within 7 days.</Text>
