@@ -32,18 +32,18 @@ const viewCopy: Record<WorkspaceView, { kicker: string; title: string; descripti
   },
   accounts: {
     kicker: "Accounts & privacy",
-    title: "One account map. Exact boundaries.",
-    description: "See your connection health and the household access your partner has intentionally granted.",
+    title: "Your accounts. Your choice.",
+    description: "Connect a bank or add an account, then choose what to share.",
   },
   goals: {
-    kicker: "Shared & personal goals",
-    title: "Build goals without blurring ownership.",
-    description: "Contribute to shared plans together while keeping your existing personal goals in their own lane.",
+    kicker: "Goals & bills",
+    title: "Make room for what matters.",
+    description: "Track upcoming bills, explore your debt payoff plan, and save toward your next goal.",
   },
   reports: {
     kicker: "Reports & analysis",
-    title: "See the plan and the detail clearly.",
-    description: "Filter shared responsibility progress and your own transaction activity without exposing private partner data.",
+    title: "Know where your money goes.",
+    description: "Review your activity, add a manual expense, and see how spending fits your plan.",
   },
 };
 

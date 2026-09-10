@@ -3,20 +3,20 @@
 // never by importing a palette directly.
 
 export const darkColors = {
-  // Backgrounds — deep navy base (premium, trust-inducing)
-  bg: "#0B0F1A",
-  surface: "#141927",
-  surfaceAlt: "#1C2333",
-  border: "#252D3D",
+  // Forest surfaces keep the mobile and desktop brand consistent.
+  bg: "#14251F",
+  surface: "#1D322A",
+  surfaceAlt: "#294136",
+  border: "#41584B",
 
-  // Brand — emerald green (growth, money, progress)
-  primary: "#34D399",
-  primaryDim: "#064E3B",
+  // Light sage actions contrast against dark forest surfaces.
+  primary: "#D4E7B5",
+  primaryDim: "#304A35",
 
   // Text
-  text: "#F1F5F9",
-  textMuted: "#94A3B8",
-  textDim: "#475569",
+  text: "#F5F3EB",
+  textMuted: "#BAC7B6",
+  textDim: "#A1B39E",
 
   // Semantic
   success: "#22C55E",
@@ -26,13 +26,13 @@ export const darkColors = {
   // Achievement accent — amber/gold for streaks & milestones
   gold: "#FBBF24",
 
-  // Budget states (loss aversion color progression)
+  // Status colors supplement explicit budget labels; never communicate by color alone.
   budgetSafe: "#22C55E",    // >50% remaining
   budgetCaution: "#F59E0B", // 20-50% remaining
   budgetDanger: "#EF4444",  // <20% remaining
 
   // Content that must contrast with `primary` (button labels etc.)
-  onPrimary: "#0B0F1A",
+  onPrimary: "#14251F",
 
   white: "#FFFFFF",
   black: "#000000",
@@ -41,21 +41,20 @@ export const darkColors = {
 export type ThemeColors = typeof darkColors;
 
 export const lightColors: ThemeColors = {
-  // Backgrounds — soft off-white, white cards ("clean & calm")
-  bg: "#F8FAFC",
+  // Warm cream canvas with clear card boundaries.
+  bg: "#F6F3EB",
   surface: "#FFFFFF",
-  surfaceAlt: "#EEF2F7",
-  border: "#CBD5E1",
+  surfaceAlt: "#EDF2E4",
+  border: "#C7CEC0",
 
-  // Brand — deeper emerald for contrast on white
-  primary: "#10B981",
-  primaryDim: "#D1FAE5",
+  // Forest actions support white labels and readable links.
+  primary: "#347457",
+  primaryDim: "#E3EED7",
 
-  // Text — dark slate (darkened for legible contrast on white: textMuted ~7:1,
-  // textDim ~4.6:1 — both meet WCAG AA, the previous values did not)
-  text: "#0F172A",
-  textMuted: "#475569",
-  textDim: "#64748B",
+  // Muted text retains readable contrast on both canvas and cards.
+  text: "#233D34",
+  textMuted: "#626D63",
+  textDim: "#626D63",
 
   // Semantic — slightly deeper for light backgrounds
   success: "#16A34A",
@@ -86,7 +85,7 @@ export const spacing = {
 export const radius = {
   sm: 8,
   md: 12,
-  lg: 16,
+  lg: 22,
   xl: 24,
   full: 9999,
 };

@@ -1442,3 +1442,10 @@ production changes or spending. Full beta acceptance remains unproven.
 - Fixed POST/PATCH transaction category authorization: only system categories or categories owned by the authenticated user may be attached. Missing and partner-private category IDs return 404; clearing remains supported.
 - Verification: API typecheck passed. Real PostgreSQL-backed HTTP suite passed, including new cross-partner category denial, own-category persistence and clearing, plus invitation/login, transaction, debt-plan and upcoming regressions.
 - Next: interactive Plaid Sandbox Link/reconnect, shared visibility and budget split readbacks, mobile visual consistency and native checks. Production remains unmodified.
+
+### 2026-09-10 — Brand consistency and clearer task labels
+
+- Extended the desktop cream/forest direction to mobile light and dark semantic palettes, with sage dark-mode actions and softer card corners. Replaced stale loss-aversion design-token commentary with explicit status-label guidance.
+- Desktop headings now describe useful actions: accounts/sharing, bills/payoff/goals, and spending/manual entry. Goals & bills content is discoverable from both navigation and page description.
+- Validation: desktop and mobile typechecks pass. Contrast calculations: muted cream text 4.87:1, white primary-action labels 5.55:1, dim dark-surface text 4.97:1, dark-mode primary labels 12.10:1. Native visual verification remains pending; Expo web currently starting its filesystem crawl.
+- Plaid interactive progress: real Sandbox Link opens; First Platypus Bank accepts user_good/pass_good and shows account consent. Continue does not yet advance in this browser session; backend provider tests do not replace this unresolved UI check. No production configuration or financial data used.
