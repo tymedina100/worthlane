@@ -1662,3 +1662,8 @@ Used Plaid sandboxItemResetLogin only on Avery's synthetic Sandbox Item (exact l
 ## September 10 — desktop Sandbox unlink verified
 
 Used actual Unlink on Avery's reset First Platypus Item. UI confirmed unlinked; reload shows zero connected institutions, only the original shared test copy, and visible net worth restored to1,434.56. PostgreSQL confirms Avery retains1account/1transaction while Morgan retains16accounts/395transactions. The removed Item no longer exists locally. A private verification script decrypted the saved synthetic token only in memory and called Sandbox itemGet: Plaid rejected the revoked token. No credential values were printed. The actual desktop connect/sync/ordinary reconnect/forced-error recovery/unlink lifecycle is now demonstrated. Native Link/OAuth remains pending despite signed installation.
+
+
+## September 10 — latest regression and native launch checkpoint
+
+CI98/34525382333 on4637de3 completed successfully: ci, postgres-integration, native-windows all success. Local API issued an iOS Sandbox Link token with HTTP200 (token value not retained in evidence). Associated-domain simulator build succeeded in /tmp/worthlane-associated-simulator-build.log, installed and launched com.worthlane.mobile on the booted iPhone16Pro18.3 simulator. Native interactive completion remains unproven: Computer getApp reports noWindowsAvailable/timeouts, including repeated exact active-Xcode Simulator path; physical iPhone currently unavailable. Asked Tyler to bring Simulator foreground. No build restart or additional native completion claim based on observation failures.
