@@ -1,3 +1,4 @@
+import { personalLedger } from "@/lib/personal-ledger";
 import { spendingWhere } from "@/lib/spending-treatment";
 import { prisma, NudgeType } from "@worthlane/db";
 import {
@@ -13,6 +14,7 @@ import { sendPushToUser } from "./push";
  * Called by the daily cron job or manually triggered.
  */
 export async function generateNudgesForUser(userId: string): Promise<void> {
+  const ledger = await personalLedger(userId);
   const now = new Date();
   const periodStart = startOfMonth(now);
   const periodEnd = endOfMonth(now);
@@ -29,10 +31,9 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
   for (const budget of budgets) {
     const spent = await prisma.transaction.aggregate({
       where: {
-        userId,
         categoryId: budget.categoryId,
         date: { gte: periodStart, lte: periodEnd },
-        ...spendingWhere,
+        ...spendingWhere, ...ledger.transactionWhere,
       },
       _sum: { amount: true },
     });
@@ -127,10 +128,9 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
 
   const impulseAgg = await prisma.transaction.aggregate({
     where: {
-      userId,
       isImpulse: true,
       date: { gte: sevenDaysAgo, lte: now },
-      ...spendingWhere,
+      ...spendingWhere, ...ledger.transactionWhere,
     },
     _sum: { amount: true },
     _count: { id: true },

@@ -1,3 +1,4 @@
+import { personalLedger } from "./personal-ledger";
 import { prisma } from "@worthlane/db";
 import {
   computeNetWorthBreakdownMinor,
@@ -45,7 +46,7 @@ export function startOfToday(): Date {
 
 /** Computes the user's current net worth and upserts today's snapshot. */
 export async function snapshotUserNetWorth(userId: string): Promise<number> {
-  const accounts = await prisma.account.findMany({ where: { userId } });
+  const { accounts } = await personalLedger(userId);
   const netWorth = computeNetWorth(accounts);
   const today = startOfToday();
 

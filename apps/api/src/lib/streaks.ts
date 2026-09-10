@@ -1,3 +1,4 @@
+import { personalLedger } from "@/lib/personal-ledger";
 import { spendingWhere } from "@/lib/spending-treatment";
 import { prisma, StreakType } from "@worthlane/db";
 import { startOfMonth, endOfMonth, startOfWeek } from "./dates";
@@ -62,6 +63,7 @@ export async function evaluateDailyCheckin(userId: string, now: Date) {
 }
 
 export async function evaluateWeeklyOnBudget(userId: string, now: Date) {
+  const ledger = await personalLedger(userId);
   const periodStart = startOfMonth(now);
   const periodEnd = endOfMonth(now);
 
@@ -71,10 +73,9 @@ export async function evaluateWeeklyOnBudget(userId: string, now: Date) {
   for (const budget of budgets) {
     const agg = await prisma.transaction.aggregate({
       where: {
-        userId,
         categoryId: budget.categoryId,
         date: { gte: periodStart, lte: periodEnd },
-        ...spendingWhere,
+        ...spendingWhere, ...ledger.transactionWhere,
       },
       _sum: { amount: true },
     });

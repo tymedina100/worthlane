@@ -1,3 +1,4 @@
+import { personalLedger } from "@/lib/personal-ledger";
 import { spendingWhere, incomeWhere } from "@/lib/spending-treatment";
 import { NextRequest } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
@@ -34,28 +35,29 @@ export async function POST(req: NextRequest) {
   }
 
   // Fetch financial context
+  const ledger = await personalLedger(userId);
   const now = new Date();
   const periodStart = startOfMonth(now);
 
   const [accounts, budgets, goals, streaks, topCategories, incomeAgg, spendingAgg] =
     await Promise.all([
-      prisma.account.findMany({ where: { userId } }),
+      Promise.resolve(ledger.accounts),
       prisma.budget.findMany({ where: { userId }, include: { category: true } }),
       prisma.goal.findMany({ where: { userId } }),
       prisma.streak.findMany({ where: { userId } }),
       prisma.transaction.groupBy({
         by: ["categoryId"],
-        where: { userId, date: { gte: periodStart, lte: now }, ...spendingWhere },
+        where: { date: { gte: periodStart, lte: now }, ...spendingWhere, ...ledger.transactionWhere },
         _sum: { amount: true },
         orderBy: { _sum: { amount: "desc" } },
         take: 5,
       }),
       prisma.transaction.aggregate({
-        where: { userId, date: { gte: periodStart, lte: now }, ...incomeWhere },
+        where: { date: { gte: periodStart, lte: now }, ...incomeWhere, ...ledger.transactionWhere },
         _sum: { amount: true },
       }),
       prisma.transaction.aggregate({
-        where: { userId, date: { gte: periodStart, lte: now }, ...spendingWhere },
+        where: { date: { gte: periodStart, lte: now }, ...spendingWhere, ...ledger.transactionWhere },
         _sum: { amount: true },
       }),
     ]);

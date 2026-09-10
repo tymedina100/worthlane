@@ -1,3 +1,4 @@
+vi.mock("@/lib/personal-ledger", () => ({ personalLedger: vi.fn(async (userId: string) => ({ accounts: [], transactionWhere: { userId } })) }));
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // vi.hoisted ensures mockPrisma is available inside the vi.mock factory (which is hoisted to top)

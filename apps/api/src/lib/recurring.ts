@@ -1,3 +1,4 @@
+import { personalLedger } from "@/lib/personal-ledger";
 import { prisma, RecurringFrequency } from "@worthlane/db";
 
 // Recurring-charge detection. Pure heuristics over the user's transaction
@@ -151,12 +152,13 @@ export function detectRecurring(transactions: TransactionLike[]): DetectedRecurr
 
 /** Runs detection over the user's last 6 months and syncs RecurringTransaction rows. */
 export async function detectRecurringForUser(userId: string): Promise<void> {
+  const ledger = await personalLedger(userId);
   const sixMonthsAgo = new Date();
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
   const transactions = await prisma.transaction.findMany({
     where: {
-      userId,
+      ...ledger.transactionWhere,
       amount: { gt: 0 },
       merchantName: { not: null },
       date: { gte: sixMonthsAgo },

@@ -1,3 +1,4 @@
+import { personalLedger } from "@/lib/personal-ledger";
 import { spendingWhere, incomeWhere } from "@/lib/spending-treatment";
 import { NextRequest } from "next/server";
 import { prisma } from "@worthlane/db";
@@ -15,6 +16,7 @@ export async function GET(req: NextRequest) {
     return unauthorized();
   }
 
+  const ledger = await personalLedger(userId);
   const now = new Date();
   const timeZone = await financialTimeZone(userId);
   const periodStart = budgetPeriod(now, timeZone, "MONTHLY").start;
@@ -28,7 +30,7 @@ export async function GET(req: NextRequest) {
 
   const [accounts, budgets, goals, streaks, topCategories, incomeAgg, impulseMonth, impulseThisWeek, impulsePrevWeek] =
     await Promise.all([
-      prisma.account.findMany({ where: { userId } }),
+      Promise.resolve(ledger.accounts),
       prisma.budget.findMany({ where: { userId }, include: { category: true } }),
       prisma.goal.findMany({ where: { userId } }),
       prisma.streak.findMany({ where: { userId } }),
@@ -36,9 +38,8 @@ export async function GET(req: NextRequest) {
       prisma.transaction.groupBy({
         by: ["categoryId"],
         where: {
-          userId,
           date: { gte: periodStart, lte: periodEnd },
-          ...spendingWhere,
+          ...spendingWhere, ...ledger.transactionWhere,
         },
         _sum: { amount: true },
         orderBy: { _sum: { amount: "desc" } },
@@ -47,26 +48,25 @@ export async function GET(req: NextRequest) {
       // Monthly income
       prisma.transaction.aggregate({
         where: {
-          userId,
           date: { gte: periodStart, lte: periodEnd },
-          ...incomeWhere, // negative = income in Plaid convention
+          ...incomeWhere, ...ledger.transactionWhere, // negative = income in Plaid convention
         },
         _sum: { amount: true },
       }),
       // Impulse this month
       prisma.transaction.aggregate({
-        where: { userId, isImpulse: true, date: { gte: periodStart, lte: periodEnd }, ...spendingWhere },
+        where: { isImpulse: true, date: { gte: periodStart, lte: periodEnd }, ...spendingWhere, ...ledger.transactionWhere },
         _sum: { amount: true },
         _count: { id: true },
       }),
       // Impulse this week (last 7 days)
       prisma.transaction.aggregate({
-        where: { userId, isImpulse: true, date: { gte: thisWeekStart, lte: now }, ...spendingWhere },
+        where: { isImpulse: true, date: { gte: thisWeekStart, lte: now }, ...spendingWhere, ...ledger.transactionWhere },
         _sum: { amount: true },
       }),
       // Impulse previous week (7-14 days ago)
       prisma.transaction.aggregate({
-        where: { userId, isImpulse: true, date: { gte: prevWeekStart, lt: thisWeekStart }, ...spendingWhere },
+        where: { isImpulse: true, date: { gte: prevWeekStart, lt: thisWeekStart }, ...spendingWhere, ...ledger.transactionWhere },
         _sum: { amount: true },
       }),
     ]);
@@ -121,9 +121,8 @@ export async function GET(req: NextRequest) {
   // Monthly spending
   const spendingAgg = await prisma.transaction.aggregate({
     where: {
-      userId,
       date: { gte: periodStart, lte: periodEnd },
-      ...spendingWhere,
+      ...spendingWhere, ...ledger.transactionWhere,
     },
     _sum: { amount: true },
   });
@@ -134,10 +133,9 @@ export async function GET(req: NextRequest) {
       const budgetStart = budgetPeriod(now, timeZone, b.period).start;
       const spent = await prisma.transaction.aggregate({
         where: {
-          userId,
           categoryId: b.categoryId,
           date: { gte: budgetStart, lte: periodEnd },
-          ...spendingWhere,
+          ...spendingWhere, ...ledger.transactionWhere,
         },
         _sum: { amount: true },
       });
