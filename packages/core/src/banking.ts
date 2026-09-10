@@ -6,17 +6,36 @@ export function bankHistoryStatus(value: string | undefined): string {
 export function countedBankAccountIds(
   accounts: readonly { id: string; userId: string; bankIdentity?: string | null }[],
   viewerUserId: string,
+  confirmedPairs: readonly { firstAccountId: string; secondAccountId: string }[] = [],
 ): Set<string> {
   const counted = new Set<string>();
-  const identities = new Set<string>();
-  // The viewer's own connection supplies their ledger. Never substitute a
-  // partner's transaction feed or infer that the feed is more complete.
+  const parents = new Map(accounts.map(account => [account.id, account.id]));
+  function root(id: string): string {
+    const parent = parents.get(id)!;
+    if (parent === id) return id;
+    const result = root(parent); parents.set(id, result); return result;
+  }
+  function join(a: string, b: string) {
+    // Hidden accounts must never connect two otherwise unrelated visible feeds.
+    if (parents.has(a) && parents.has(b)) parents.set(root(a), root(b));
+  }
+  const identities = new Map<string, string>();
+  for (const account of accounts) {
+    if (!account.bankIdentity) continue;
+    const previous = identities.get(account.bankIdentity);
+    if (previous) join(account.id, previous);
+    else identities.set(account.bankIdentity, account.id);
+  }
+  for (const pair of confirmedPairs) join(pair.firstAccountId, pair.secondAccountId);
+  // Prefer the viewer's own ledger, without substituting their partner's feed.
   const ordered = [...accounts].sort((a, b) =>
     Number(b.userId === viewerUserId) - Number(a.userId === viewerUserId) || a.id.localeCompare(b.id));
+  const seen = new Set<string>();
   for (const account of ordered) {
-    if (account.bankIdentity && identities.has(account.bankIdentity)) continue;
+    const identity = root(account.id);
+    if (seen.has(identity)) continue;
     counted.add(account.id);
-    if (account.bankIdentity) identities.add(account.bankIdentity);
+    seen.add(identity);
   }
   return counted;
 }

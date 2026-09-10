@@ -6,6 +6,7 @@ import { DuplicateReview } from "./duplicate-review";
 import { UpcomingManager } from "./upcoming-manager";
 
 import type { HouseholdSummary } from "@worthlane/contracts";
+import { AccountMatchManager } from "./account-match-manager";
 import { PlaidLinkButton } from "./plaid-link-button";
 import { type CSSProperties, useMemo, useState } from "react";
 import {
@@ -663,6 +664,7 @@ function AccountsSurface({
         </div>
       </section>
 
+      <AccountMatchManager onManage={onManage} />
       <ManualAccountManager personal={personal} onManage={onManagePersonal} />
 
       <section className="panel workspace-panel" aria-labelledby="privacy-map-title">
