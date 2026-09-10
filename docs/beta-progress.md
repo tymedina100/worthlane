@@ -1589,3 +1589,19 @@ Actual iOS18.3 simulator interaction invoked Send test reminder and displayed th
 Added Settings → Check last test, which reads Expo's actual scheduled/presented notification APIs for the current login. It distinguishes pending, presented, absent/inconclusive and stale-session states. Sending a new test dismisses older test history first, preventing an older successful test from being mistaken for the new one. It does not infer delivery from a scheduling success or an empty queue, and does not claim sound/banner proof from notification history. Added history-isolation/state and old-test-dismissal tests; all22 native adapter tests and mobile typecheck pass.
 
 Actual iOS18.3 interaction: scheduled a fresh test, dismissed the scheduling dialog, backgrounded Worthlane to Home, waited beyond10seconds, returned without restarting/signing in, then pressed Check last test. Device-backed result was Test reached notification history. This proves presentation of the new test while backgrounded, with the previously cleared history and no pending test. Combined with prior directly observed foreground banner, both foreground and background10-second test delivery are verified on the simulator. Physical-device delivery and the real9a.m. bill-date trigger remain separate acceptance checks. Plaid dashboard inventory still shows the sign-in page; native redirect/dashboard setup remains pending. No production app changes or spending.
+
+## September 10 — physical signing prerequisites verified
+
+Previous milestone was progress: background test presentation was proven and pushed.
+Current paired-device read found Tyler's iPhone16ProMax available with Developer Mode enabled.
+Attempted an actual personal-team automatic-provisioning Debug build. Xcode failed with
+No Accounts plus cached wildcard profile missing Push Notifications/aps-environment.
+No device install occurred and no capability was removed to obtain a misleading pass.
+The next action is Xcode personal-account sign-in/profile setup, not another simulator build.
+Xcode Computer inspection returned AXError.cannotComplete; signing CLI error remains authoritative.
+
+Chrome attempt for desktop Sandbox Link was explicitly blocked by another extension UI
+and requires user dismissal; no bypass attempted. Plaid dashboard still shows sign-in.
+Updated docs/plaid-local-setup.md with these exact prerequisites and removed its stale
+request for already-fulfilled website publication approval. Website signup is live;
+no further production action or spending in this milestone.

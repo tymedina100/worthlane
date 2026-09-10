@@ -25,7 +25,7 @@ Prepared files:
 Before native OAuth acceptance:
 
 1. Verify the personal team's membership supports Associated Domains and confirm the signed app's actual application identifier prefix matches the prepared file.
-2. Obtain approval to publish the two routes to the existing public `worthlane.app` website. No production changes are authorized by this document.
+2. Completed: the user approved and published the website association/return routes, full redesign, and beta signup. Do not request these approvals again. New production changes still require scoped approval.
 3. Verify HTTPS 200, JSON content type and no redirects at `https://worthlane.app/.well-known/apple-app-site-association`.
 4. Register `https://worthlane.app/plaid-oauth` in the Plaid dashboard's allowed redirect URIs. Set API `PLAID_IOS_REDIRECT_URI` to that exact value and mobile `PLAID_IOS_ASSOCIATED_DOMAIN=worthlane.app`.
 5. Rebuild the signed native app with the associated-domains entitlement. Test ordinary Link plus Sandbox OAuth App2App (`ins_132241`), reconnect, failure recovery, sync and unlink. A browser return page alone does not prove successful bank connection.
@@ -37,3 +37,30 @@ Sources: [Plaid iOS setup](https://plaid.com/docs/link/ios/), [Plaid OAuth testi
 ## Repeat the persisted-bank check
 
 With the persistent launcher running, execute `node scripts/test-persistent-sandbox.mjs --create`. Stop and restart the launcher, then execute `node scripts/test-persistent-sandbox.mjs --verify`. This creates a synthetic login and real Sandbox connection, stores its fixture credentials only in ignored mode-0600 `.tmp/persistent-sandbox-fixture.json`, and verifies fresh login, unchanged account IDs, token decryption and successful bank sync after restart. It retains that connection for continued UI acceptance; do not run the create phase again over an existing fixture. This backend persistence check does not substitute for interactive Link or OAuth evidence.
+
+## September 10 physical-device prerequisite check
+
+The paired iPhone16ProMax is available and Developer Mode is enabled. An actual
+Debug device build was attempted with the personal team5FBXR5M5PJ and automatic
+provisioning. Xcode failed before installation with:
+
+- `No Accounts: Add a new account in Accounts settings.`
+- Cached `iOS Team Provisioning Profile: *` does not support Push Notifications.
+- That profile lacks `aps-environment`.
+
+This proves the currently available signing setup cannot install this build. It
+does not establish whether the user's individual developer membership can create
+the required profiles. Sign into the personal developer account in Xcode Settings
+→ Accounts, then refresh/create an app-specific Worthlane development profile.
+Keep the correct personal team, and verify Push Notifications and Associated
+Domains before claiming native Plaid OAuth readiness. Do not remove required
+capabilities solely to make the acceptance build pass or switch to a company team.
+
+No device app was installed by this failed attempt. The simulator build and real
+foreground/background10second local-reminder evidence remain valid. A phone build
+also needs a device-reachable Sandbox API address; the current persistent API binds
+to127.0.0.1:3301 and must not be mistaken for a phone-accessible localhost URL.
+
+Plaid dashboard remains at sign-in. Chrome's banking check was blocked by an open
+extension UI; the Computer tool explicitly requires it to be completed/dismissed
+before automation resumes. No extension UI was bypassed.
