@@ -143,6 +143,9 @@ export function sendTestReminder(userId: string | null) {
     for (const notification of await Notifications.getAllScheduledNotificationsAsync()) {
       if (notification.content.data?.reminderTest) await Notifications.cancelScheduledNotificationAsync(notification.identifier);
     }
+    for (const notification of await Notifications.getPresentedNotificationsAsync()) {
+      if (notification.request.content.data?.reminderTest) await Notifications.dismissNotificationAsync(notification.request.identifier);
+    }
     if (!current()) return "not-scheduled" as const;
     const id = await Notifications.scheduleNotificationAsync({
       content: { title: "Your test reminder", body: "Worthlane reminders can reach this device. No payment is due from this test.", sound: "default", data: { reminderTest: true, reminderUserId: userId } },
@@ -150,5 +153,22 @@ export function sendTestReminder(userId: string | null) {
     });
     if (!current()) { await Notifications.cancelScheduledNotificationAsync(id); return "not-scheduled" as const; }
     return "scheduled" as const;
+  });
+}
+
+/** OS evidence only: absence is inconclusive because people can dismiss alerts. */
+export function getTestReminderStatus(userId: string | null) {
+  const started = generation;
+  return enqueue(async () => {
+    if (!userId || userId !== activeUser || started !== generation) return "stale" as const;
+    const [scheduled, presented] = await Promise.all([
+      Notifications.getAllScheduledNotificationsAsync(),
+      Notifications.getPresentedNotificationsAsync(),
+    ]);
+    if (userId !== activeUser || started !== generation) return "stale" as const;
+    const owned = (data: Record<string, unknown>) => data?.reminderTest === true && data?.reminderUserId === userId;
+    if (scheduled.some(n => owned(n.content.data))) return "pending" as const;
+    if (presented.some(n => owned(n.request.content.data))) return "presented" as const;
+    return "unknown" as const;
   });
 }

@@ -26,6 +26,27 @@ beforeEach(() => {
   mocks.permission.mockResolvedValue({ status: 'granted' }); mocks.schedule.mockResolvedValue('notification');
 });
 describe('mobile reminder session isolation (mock native adapters)', () => {
+  it('reports only the current login test history and distinguishes pending from missing', async () => {
+    const r = await import('../../mobile/src/lib/obligation-reminders');
+    await r.setReminderSession('alex');
+    const data = { reminderTest: true, reminderUserId: 'alex' };
+    mocks.presented.mockResolvedValue([{ request: { content: { data } } }]);
+    expect(await r.getTestReminderStatus('alex')).toBe('presented');
+    mocks.scheduled.mockResolvedValue([{ content: { data } }]);
+    expect(await r.getTestReminderStatus('alex')).toBe('pending');
+    mocks.scheduled.mockResolvedValue([]);
+    mocks.presented.mockResolvedValue([{ request: { content: { data: { ...data, reminderUserId: 'sam' } } } }]);
+    expect(await r.getTestReminderStatus('alex')).toBe('unknown');
+    expect(await r.getTestReminderStatus('sam')).toBe('stale');
+  });
+  it('clears the old test history before scheduling a new test', async () => {
+    const r = await import('../../mobile/src/lib/obligation-reminders');
+    await r.setReminderSession('alex');
+    mocks.presented.mockResolvedValue([{ request: { identifier: 'old-test', content: { data: { reminderTest: true, reminderUserId: 'alex' } } } }]);
+    await r.sendTestReminder('alex');
+    expect(mocks.dismiss).toHaveBeenCalledWith('old-test');
+    expect(mocks.schedule).toHaveBeenCalledOnce();
+  });
   it('presents current-login foreground reminders but suppresses old-login and signed-out deliveries', async () => {
     const r = await import('../../mobile/src/lib/obligation-reminders');
     const handle = mocks.handler.mock.calls[0][0].handleNotification;

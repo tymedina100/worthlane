@@ -35,7 +35,7 @@ import {
   getPlaidStatusTone,
 } from "@/lib/finance";
 import { PLAID_ENABLED } from "@/lib/flags";
-import { getDefaultReminder, setDefaultReminder, sendTestReminder } from "@/lib/obligation-reminders";
+import { getDefaultReminder, setDefaultReminder, sendTestReminder, getTestReminderStatus } from "@/lib/obligation-reminders";
 import { captureV1Event } from "@/lib/v1-analytics";
 import type { ReminderTiming } from "@worthlane/types";
 import { spacing, radius } from "@/lib/theme";
@@ -502,6 +502,19 @@ export default function ProfileScreen() {
       Alert.alert(result === "scheduled" ? "Test reminder scheduled" : "Reminder not scheduled", result === "scheduled" ? "Go to your Home Screen now. A test reminder will arrive in about 10 seconds. Focus and device notification settings may silence it." : result === "denied" ? "Allow Worthlane notifications in device settings, then try again." : "Sign in again before testing reminders.");
     } catch { Alert.alert("Could not schedule reminder", "Check your device notification settings and try again."); }
   };
+  const checkTestReminder = async () => {
+    try {
+      const status = await getTestReminderStatus(userId);
+      const messages = {
+        presented: ["Test reached notification history", "Your device lists the test reminder in its notification history. This confirms presentation, but does not confirm sound or a visible banner."],
+        pending: ["Test is still scheduled", "The device has not finished this test yet. Wait a few moments and check again."],
+        unknown: ["No test found", "The test may have been dismissed, cleared, or not presented. Send another test and check your device’s notification settings."],
+        stale: ["Sign in again", "Your session changed. Sign in before checking reminders."],
+      } as const;
+      const [title, message] = messages[status];
+      Alert.alert(title, message);
+    } catch { Alert.alert("Could not check test", "Try again in a moment."); }
+  };
   const enableNotifications = async () => {
     const current = await Notifications.getPermissionsAsync();
     if (current.status !== "granted") await Notifications.requestPermissionsAsync();
@@ -802,6 +815,10 @@ export default function ProfileScreen() {
           <TouchableOpacity style={[styles.card, { marginTop: spacing.sm }]} onPress={testReminder} accessibilityRole="button" accessibilityLabel="Send test reminder">
             <View style={styles.settingRow}><Text style={styles.settingLabel}>Send test reminder</Text><Text style={styles.accountEditHint}>Try it ›</Text></View>
             <Text style={styles.settingDescription}>Check delivery on this device. No bill details appear in the notification.</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.card, { marginTop: spacing.sm }]} onPress={checkTestReminder} accessibilityRole="button" accessibilityLabel="Check test reminder status">
+            <View style={styles.settingRow}><Text style={styles.settingLabel}>Check last test</Text><Text style={styles.accountEditHint}>Check ›</Text></View>
+            <Text style={styles.settingDescription}>See whether the device still has your test scheduled or in notification history.</Text>
           </TouchableOpacity>
         </View>
 
