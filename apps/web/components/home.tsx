@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { BetaSignup } from "./beta-signup";
 import { BrandMark } from "./brand";
 import { LegalHeader, SiteFooter } from "./site-chrome";
 
@@ -10,7 +11,7 @@ const questions = [
   ["Can I use it on my own?", "Yes. Start with a solo plan. Couples and families can use a household with up to two separate adult logins; joining requires an invitation and acceptance."],
   ["Does Worthlane move our money?", "No. A budget split describes responsibility. It does not transfer money, pay a bill, or create a reimbursement."],
   ["Can I connect my bank?", "Plaid bank connections are being tested in Sandbox for the beta. Live bank access is not available through this website. Manual accounts and transactions are part of the beta too."],
-  ["Can I download the beta now?", "The couples beta is still in development. This site shows the planned experience, not an invitation to connect real financial accounts. Contact us with beta questions; access and pricing will be explained before you join."],
+  ["Can I download the beta now?", "The couples beta is still in development. This site shows the planned experience, not an invitation to connect real financial accounts. Join the beta email list for invitations and availability updates. Access and pricing will be explained before you join."],
 ];
 
 function SplitExample() {
@@ -29,6 +30,6 @@ export default function Home() {
     <section className="section"><div className="site-container"><div className="section-heading"><p className="eyebrow">Room for today. A view of tomorrow.</p><h2>More of the picture.{" "}<br />Less to keep in your head.</h2></div><div className="feature-grid"><article className="feature-card feature-card--wide"><div><span className="feature-icon" aria-hidden="true">↗</span><h3>Know what’s coming.</h3><p>Keep bill and card due dates in view. Choose reminders, review dates, and mark bills paid. Predicted recurring charges stay distinct from confirmed due dates.</p></div><div className="bill-example"><p><span>UPCOMING</span><small>Example</small></p><div><span className="calendar-date">SEP<strong>20</strong></span><span>Internet<small>Monthly · manual due date</small></span><strong>$85</strong></div></div></article><article className="feature-card"><span className="feature-icon" aria-hidden="true">◎</span><h3>A payoff plan you can follow.</h3><p>Compare debt strategies with visible balances, rates, and assumptions. Save an estimate you can return to as life changes.</p><p className="card-caption">An explanation, not a promise.</p></article></div></div></section>
     <section id="privacy" className="privacy-section"><div className="site-container two-column"><div><p className="eyebrow">Together doesn’t mean everything</p><h2>A shared life.{" "}<br /><em>Personal boundaries.</em></h2><p>You shouldn’t have to surrender your privacy to make a household plan.</p><Link className="text-link" href="/privacy">Read about privacy <span aria-hidden="true">↗</span></Link></div><div className="privacy-choices"><article><span>01</span><div><h3>Personal</h3><p>Keep an account’s details visible to you.</p></div></article><article><span>02</span><div><h3>Summary only</h3><p>Share a balance without the transaction history.</p></div></article><article><span>03</span><div><h3>Shared detail</h3><p>Choose the accounts you both need to understand.</p></div></article></div></div></section>
     <section className="section"><div className="site-container faq-grid"><div className="section-heading"><p className="eyebrow">Good questions</p><h2>Before your{" "}<br />next chapter.</h2><p>Something else on your mind?{" "}<br /><Link href="/support" className="text-link">We’re here to help ↗</Link></p></div><div className="faq-list">{questions.map(([q,a]) => <details key={q}><summary>{q}<span aria-hidden="true">+</span></summary><p>{a}</p></details>)}</div></div></section>
-    <section id="beta" className="beta-section"><div className="site-container"><p className="eyebrow">A thoughtful beginning</p><h2>Good with money.{" "}<br /><em>Better, together.</em></h2><p>We’re building and testing the couples beta now. Follow along or ask about joining—we’ll explain availability before you share financial information.</p><a className="button" href="mailto:support@worthlane.app?subject=Worthlane%20beta">Ask about the beta <span aria-hidden="true">↗</span></a><p className="fine-print">Opens your email app. No bank details needed.</p></div></section>
+    <section id="beta" className="beta-section"><div className="site-container"><p className="eyebrow">A thoughtful beginning</p><h2>Good with money.{" "}<br /><em>Better, together.</em></h2><p>We’re building and testing the couples beta now. Join the email list for beta invitations and availability updates. A calmer money conversation starts here.</p><BetaSignup /></div></section>
   </main><SiteFooter /></>;
 }
