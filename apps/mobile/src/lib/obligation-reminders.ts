@@ -5,6 +5,16 @@ import type { ReminderTiming, UpcomingObligation } from "@worthlane/types";
 
 // Serialize native notification changes so a permission prompt cannot race logout.
 let activeUser: string | null = null;
+// Expo otherwise suppresses notifications while the app is open. Decide from
+// the current session synchronously so a previous login cannot show a reminder.
+Notifications.setNotificationHandler({
+  handleNotification: async notification => {
+    const data = notification.request.content.data;
+    const owned = !!activeUser && data?.reminderUserId === activeUser &&
+      (typeof data.obligationId === "string" || data.reminderTest === true);
+    return { shouldShowBanner: owned, shouldShowList: owned, shouldPlaySound: owned, shouldSetBadge: false };
+  },
+});
 let generation = 0;
 let pending: Promise<unknown> = Promise.resolve();
 function enqueue<T>(work: () => Promise<T>): Promise<T> {

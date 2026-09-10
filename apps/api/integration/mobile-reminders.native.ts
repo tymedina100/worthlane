@@ -4,6 +4,7 @@ const mocks = vi.hoisted(() => ({
   storage: new Map<string, string>(),
   cancel: vi.fn(), dismiss: vi.fn(), scheduled: vi.fn(), presented: vi.fn(),
   permission: vi.fn(), requestPermission: vi.fn(), schedule: vi.fn(),
+  handler: vi.fn(),
 }));
 vi.mock('@react-native-async-storage/async-storage', () => ({ default: {
   getItem: async (key: string) => mocks.storage.get(key) ?? null,
@@ -12,6 +13,7 @@ vi.mock('@react-native-async-storage/async-storage', () => ({ default: {
 } }));
 vi.mock('react-native', () => ({ Platform: { OS: 'ios' } }));
 vi.mock('expo-notifications', () => ({
+  setNotificationHandler: mocks.handler,
   cancelScheduledNotificationAsync: mocks.cancel, dismissNotificationAsync: mocks.dismiss,
   getAllScheduledNotificationsAsync: mocks.scheduled, getPresentedNotificationsAsync: mocks.presented,
   getPermissionsAsync: mocks.permission, requestPermissionsAsync: mocks.requestPermission,
@@ -24,6 +26,18 @@ beforeEach(() => {
   mocks.permission.mockResolvedValue({ status: 'granted' }); mocks.schedule.mockResolvedValue('notification');
 });
 describe('mobile reminder session isolation (mock native adapters)', () => {
+  it('presents current-login foreground reminders but suppresses old-login and signed-out deliveries', async () => {
+    const r = await import('../../mobile/src/lib/obligation-reminders');
+    const handle = mocks.handler.mock.calls[0][0].handleNotification;
+    const notification = { request: { content: { data: { reminderUserId: 'alex', reminderTest: true } } } };
+    expect((await handle(notification)).shouldShowBanner).toBe(false);
+    await r.setReminderSession('alex');
+    expect(await handle(notification)).toEqual({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false });
+    await r.setReminderSession('sam');
+    expect((await handle(notification)).shouldShowList).toBe(false);
+    await r.setReminderSession(null);
+    expect((await handle(notification)).shouldPlaySound).toBe(false);
+  });
   it('removes legacy/other-user schedules and delivered private reminders, preserves unrelated notifications', async () => {
     mocks.scheduled.mockResolvedValue([
       { identifier: 'legacy', content: { data: { obligationId: 'old' } } },
