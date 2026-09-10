@@ -33,6 +33,7 @@ import {
 } from "./household-management";
 import {
   ManualAccountManager,
+  ManualTransactionManager,
   PersonalBudgetManager,
   PersonalGoalManager,
 } from "./personal-management";
@@ -1062,6 +1063,7 @@ function ReportsSurface({
         </div>
         <p>Confirmed refunds reduce category spending. Exclude transfers, card repayments and confirmed duplicates to avoid counting them as purchases. Restore an excluded entry using its Budget treatment.</p>
         <DuplicateReview onManagePersonal={onManagePersonal} />
+        <ManualTransactionManager personal={personal} onManage={onManagePersonal} />
         <p role="status" aria-live="polite">{treatmentMessage}</p>
         <div className="transaction-filters" role="search">
           <label className="workspace-search">

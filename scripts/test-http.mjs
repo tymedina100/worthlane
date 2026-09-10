@@ -94,6 +94,20 @@ try {
   console.log('PASS: duplicate review BFF authentication, origin, payload validation and owner-scoped response.');
   const account = await backend('/api/accounts', { method: 'POST', token, status: 201,
     body: { name: 'HTTP synthetic checking', type: 'CHECKING', currentBalance: 100 } });
+  const categories = await browser('/api/personal/categories');
+  const manualInput = { accountId: account.data.id, categoryId: categories.data[0].id,
+    amount: 23.47, date: new Date().toISOString(), merchantName: 'Manual BFF purchase', spendingTreatment: 'AUTO' };
+  await stranger('/api/personal/transactions', { method: 'POST', body: manualInput, status: 401 });
+  await browser('/api/personal/transactions', { method: 'POST', body: manualInput, origin: 'https://untrusted.invalid', status: 403 });
+  for (const invalid of [{ userId: 'forged' }, { amount: 1.234 }, { amount: 0 }, { spendingTreatment: 'REFUND' }]) {
+    await browser('/api/personal/transactions', { method: 'POST', body: { ...manualInput, ...invalid }, status: 400 });
+  }
+  const manual = await browser('/api/personal/transactions', { method: 'POST', body: manualInput, status: 201 });
+  const refund = await browser('/api/personal/transactions', { method: 'POST', body: { ...manualInput, amount: -3.47, spendingTreatment: 'REFUND' }, status: 201 });
+  const savedActivity = (await browser('/api/personal/transactions')).data.transactions;
+  assert.equal(savedActivity.find(row => row.id === manual.data.id).amount, 23.47);
+  assert.equal(savedActivity.find(row => row.id === refund.data.id).spendingTreatment, 'REFUND');
+  console.log('PASS: manual activity BFF create/refund persistence, auth, origin, strict payload and cents.');
   const transaction = await backend('/api/transactions', { method: 'POST', token, status: 201,
     body: { accountId: account.data.id, amount: -12.34, date: new Date().toISOString() } });
   const path = `/api/personal/manage/transactions/${transaction.data.id}`;
@@ -120,6 +134,7 @@ try {
   await partner('/api/household/manage/invitations/accept', { method: 'POST',
     body: { invitationCode: invitation.data.invitationCode } });
   const joined = await partner('/api/household/summary');
+  await partner('/api/personal/transactions', { method: 'POST', body: manualInput, status: 404 });
   assert.equal(joined.data.members.length, 2);
   assert.equal(joined.data.finances.detailedAccounts.length, 0, 'Partner must not inherit private account detail');
   await partner('/api/auth/logout', { method: 'POST' });

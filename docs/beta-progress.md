@@ -1375,3 +1375,28 @@ production changes or spending. Full beta acceptance remains unproven.
 - Unknown-identity reconciliation remains incomplete; no heuristic merging added.
   Integrated partner/restart journeys, native Sandbox/reminders and regression builds
   remain required. No production actions or spending.
+
+## 2026-09-10 — desktop manual activity fallback
+
+- Continuing the solo browser journey exposed a missing desktop entry path for
+  manual spending. Reports now offers explicit manual account, category, amount,
+  description, local date/time and expense/refund/income/transfer treatment.
+  Transfers/card repayments are excluded; refunds are negative credits. Agreed
+  responsibility remains independent of payment account. Saves refresh the workspace.
+- Added a narrow authenticated BFF collection POST with same-origin validation,
+  allowed fields, nonzero amounts, cent precision and refund-sign validation.
+- Interactive synthetic Morgan account: created a $600.01 Groceries responsibility
+  assigned entirely to Morgan, entered a $23.47 purchase then a $3.47 refund on Solo
+  wallet/Food & Drink. Reports showed both retained rows and $20.00 applied to the
+  unchanged plan. Restarted API/desktop via the HTTP harness and reloaded the browser;
+  exact values remained. Screenshot `/tmp/worthlane-manual-activity.png` after load.
+- `corepack pnpm --filter @worthlane/desktop typecheck` and `git diff --check` passed.
+  React/accessibility review retained labeled native inputs, required explicit
+  account/category selection and pending-submit prevention. Browser errors empty.
+- Extended `scripts/test-http.mjs` with manual expense/refund persistence, anonymous
+  rejection, cross-origin rejection, forged fields, zero/fractional-cent inputs,
+  positive-refund rejection and partner-account isolation. Full HTTP suite passed
+  against retained loopback PostgreSQL; `/tmp/worthlane-interactive.log`.
+- Remaining: full solo bills/debt and two-user interactive acceptance, unknown-
+  identity account reconciliation, native Sandbox/reminders and regression builds.
+  No production actions or spending.
