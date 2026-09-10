@@ -1458,3 +1458,10 @@ production changes or spending. Full beta acceptance remains unproven.
 - Replaced 14 repeated page-level bank notices with one expandable account-coverage notice; the incomplete-history warning remains visible when collapsed. Per-account source messages remain accessible in the disclosure.
 - Fixed Expo web bundle parsing by enabling its supported web import.meta transform (Zustand ESM had crashed before React mounted). Guarded runtime Sentry config strings so optional telemetry cannot crash launch; default PII collection is disabled. Mobile/desktop typechecks and diff whitespace checks pass. Expo web then reached the unsupported native SecureStore boundary, so this is not a claim of web/mobile auth equivalence.
 - Native verification: generated a local iOS simulator project, installed 106 pods including ReactNativePlaidLinkSdk 13.1.0, booted an iOS 18.3 simulator, and started a local unsigned Debug build. Build and native journey evidence pending. No production changes or spending.
+
+### 2026-09-10 — Telemetry cannot block private-session cleanup
+
+- Removed email attributes from mobile analytics identity calls and disabled GeoIP enrichment. Analytics retains only the opaque user identifier when configured.
+- Wrapped optional identity/event calls so telemetry failures do not block sign-in. Logout no longer awaits analytics network flushing; failed event capture/reset cannot prevent auth token and private-cache cleanup.
+- Added CI tests executing the real auth store with failing analytics and offline API adapters. Both pass: hydrate/login/biometric login remain usable without email enrichment; offline logout clears all session credentials, private query cache and reminder ownership despite analytics exceptions. Mobile typecheck passes.
+- Native simulator build remains live and compiling. Browser automation hit a daemon/resource error during the build; pending custom-split/unlink steps are not marked verified.

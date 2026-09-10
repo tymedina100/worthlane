@@ -12,6 +12,7 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
+    "test:auth-privacy": "node --test scripts/test-auth-privacy.mjs",
     "smoke:household-demo": "node scripts/smoke-household-demo.mjs",
     "db:generate": "turbo run db:generate",
     "db:migrate": "turbo run db:migrate",

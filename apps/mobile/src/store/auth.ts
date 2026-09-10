@@ -42,11 +42,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     await setReminderSession(token && userId ? userId : null);
     if (token && userId) {
       if (isPostHogEnabled) {
-        if (email) {
-          posthog.identify(userId, { email });
-        } else {
-          posthog.identify(userId);
-        }
+        try { posthog.identify(userId); } catch { /* Optional analytics cannot block sign-in. */ }
       }
       set({ userId, email, isLoading: false, biometricEnabled, rememberedEmail });
     } else {
@@ -68,7 +64,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     await SecureStore.setItemAsync("userId", user.id);
     await SecureStore.setItemAsync("userEmail", user.email);
     if (isPostHogEnabled) {
-      posthog.identify(user.id, { email: user.email });
+      try { posthog.identify(user.id); } catch { /* Optional analytics cannot block sign-in. */ }
     }
     set({ userId: user.id, email: user.email });
     // Notification permission is requested only when the person enables a
@@ -89,7 +85,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     await SecureStore.setItemAsync("userId", user.id);
     await SecureStore.setItemAsync("userEmail", user.email);
     if (isPostHogEnabled) {
-      posthog.identify(user.id, { email: user.email });
+      try { posthog.identify(user.id); } catch { /* Optional analytics cannot block sign-in. */ }
     }
     set({ userId: user.id, email: user.email });
     // Notification permission is requested contextually from V1 reminders.
@@ -100,9 +96,10 @@ export const useAuthStore = create<AuthState>((set) => ({
     const reminderCleanup = setReminderSession(null);
     const cleanupResult = reminderCleanup.then(() => null, error => error as Error);
     if (isPostHogEnabled) {
-      posthog.capture("user logged out");
-      await posthog.flush();
-      posthog.reset();
+      // Logging out must not wait for a telemetry network request. Clear the
+      // analytics identity even if recording the event fails.
+      try { posthog.capture("user logged out"); } catch { /* Nonessential. */ }
+      try { posthog.reset(); } catch { /* Continue clearing auth credentials. */ }
     }
     const refreshToken = await SecureStore.getItemAsync("refreshToken");
     if (refreshToken) {
@@ -152,12 +149,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       throw new Error("No stored credentials. Please sign in with your password.");
     }
     if (isPostHogEnabled) {
-      if (email) {
-        posthog.identify(userId, { email });
-      } else {
+      try {
         posthog.identify(userId);
-      }
-      posthog.capture("user logged in", { method: "biometric" });
+        posthog.capture("user logged in", { method: "biometric" });
+      } catch { /* Optional analytics cannot block sign-in. */ }
     }
     await setReminderSession(userId);
     set({ userId, email });
