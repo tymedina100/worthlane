@@ -1,3 +1,4 @@
+import { spendingWhere } from "@/lib/spending-treatment";
 import { prisma, StreakType } from "@worthlane/db";
 import { startOfMonth, endOfMonth, startOfWeek } from "./dates";
 
@@ -73,7 +74,7 @@ export async function evaluateWeeklyOnBudget(userId: string, now: Date) {
         userId,
         categoryId: budget.categoryId,
         date: { gte: periodStart, lte: periodEnd },
-        amount: { gt: 0 },
+        ...spendingWhere,
       },
       _sum: { amount: true },
     });

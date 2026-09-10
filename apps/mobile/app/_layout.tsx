@@ -9,6 +9,7 @@ import { ThemeProvider, useTheme } from "@/lib/ThemeContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { configureRevenueCat } from "@/hooks/useSubscription";
 import { queryClient } from "@/lib/query-client";
+import { ReminderSync } from "@/components/ReminderSync";
 
 function ThemedApp() {
   const { colors, scheme } = useTheme();
@@ -17,6 +18,7 @@ function ThemedApp() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <AnalyticsScreenTracker />
+        <ReminderSync />
         <StatusBar style={scheme === "dark" ? "light" : "dark"} />
         <Stack
           screenOptions={{
@@ -28,6 +30,7 @@ function ThemedApp() {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="onboarding" />
           <Stack.Screen name="household" />
+          <Stack.Screen name="debt-plans" />
           <Stack.Screen name="quick-add" options={{ presentation: "modal" }} />
           <Stack.Screen name="paywall" options={{ presentation: "modal", headerShown: false }} />
         </Stack>

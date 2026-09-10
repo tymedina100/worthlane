@@ -1,3 +1,4 @@
+import { financialTimeZone } from "@/lib/budget-period";
 import { NextRequest } from "next/server";
 import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
@@ -5,7 +6,7 @@ import { err, ok, unauthorized } from "@/lib/response";
 import { obligationStatus, parseDateOnly, toDateOnly } from "@/lib/upcoming";
 import { upcomingInputSchema } from "@/lib/upcoming-validation";
 
-function serialize(row: any) {
+function serialize(row: any, timeZone: string) {
   return {
     id: row.id,
     name: row.name,
@@ -18,7 +19,7 @@ function serialize(row: any) {
     isPaid: row.isPaid,
     isActive: row.isActive,
     lastPaidAt: row.lastPaidAt?.toISOString() ?? null,
-    status: obligationStatus(row.dueDate, row.isPaid),
+    status: obligationStatus(row.dueDate, row.isPaid, new Date(), timeZone),
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
@@ -28,11 +29,12 @@ export async function GET(req: NextRequest) {
   let userId: string;
   try { ({ sub: userId } = getAuthUser(req)); } catch { return unauthorized(); }
 
+  const timeZone = await financialTimeZone(userId);
   const rows = await prisma.upcomingObligation.findMany({
     where: { userId },
     orderBy: [{ isPaid: "asc" }, { dueDate: "asc" }],
   });
-  return ok({ items: rows.map(serialize) });
+  return ok({ items: rows.map(row => serialize(row, timeZone)) });
 }
 
 export async function POST(req: NextRequest) {
@@ -48,6 +50,7 @@ export async function POST(req: NextRequest) {
       name: data.name,
       amount: data.amount,
       dueDate: parseDateOnly(data.dueDate),
+      anchorDay: parseDateOnly(data.dueDate).getUTCDate(),
       type: data.type,
       frequency: data.frequency ?? null,
       accountName: data.accountName?.trim() || null,
@@ -55,5 +58,5 @@ export async function POST(req: NextRequest) {
       isActive: data.isActive ?? true,
     },
   });
-  return ok(serialize(row), 201);
+  return ok(serialize(row, await financialTimeZone(userId)), 201);
 }

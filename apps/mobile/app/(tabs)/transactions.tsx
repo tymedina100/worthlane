@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { router } from "expo-router";
 import {
   Alert,
   FlatList,
@@ -227,10 +228,12 @@ function TransactionRow({
   tx,
   onToggleImpulse,
   onOpenManualEditor,
+  onTreatment,
 }: {
   tx: TransactionSummary;
   onToggleImpulse: () => void;
   onOpenManualEditor: () => void;
+  onTreatment: () => void;
 }) {
   const { colors } = useTheme();
   const styles = useThemedStyles(createStyles);
@@ -251,6 +254,9 @@ function TransactionRow({
       </View>
 
       <View style={styles.txRight}>
+        <TouchableOpacity onPress={onTreatment} accessibilityRole="button" accessibilityLabel="Change budget treatment">
+          <Text style={styles.txMeta}>{tx.spendingTreatment === "REFUND" ? "Refund" : tx.spendingTreatment === "EXCLUDED" ? "Excluded" : "Budget treatment"}</Text>
+        </TouchableOpacity>
         <Text style={[styles.txAmount, { color: tx.amount > 0 ? colors.danger : colors.success }]}>
           {formatSignedTransactionAmount(tx.amount)}
         </Text>
@@ -302,6 +308,27 @@ export default function TransactionsScreen() {
     },
   });
 
+  const treatmentMutation = useMutation({
+    mutationFn: ({ id, spendingTreatment }: { id: string; spendingTreatment: "AUTO" | "REFUND" | "EXCLUDED" }) =>
+      api.patch(`/transactions/${id}`, { spendingTreatment }),
+    onSuccess: () => {
+      for (const key of ["transactions", "dashboard", "budgets", "household-summary"]) {
+        qc.invalidateQueries({ queryKey: [key] });
+      }
+    },
+    onError: (error) => Alert.alert("Not saved", transactionErrorMessage(error)),
+  });
+  const chooseTreatment = (tx: TransactionSummary) => {
+    if (treatmentMutation.isPending) return;
+    const save = (spendingTreatment: "AUTO" | "REFUND" | "EXCLUDED") =>
+      treatmentMutation.mutate({ id: tx.id, spendingTreatment });
+    Alert.alert("Budget treatment", "Refunds reduce category spending. Exclude transfers, card repayments or a confirmed duplicate. Choose ordinary expense / income to restore an excluded entry.", [
+      { text: "Ordinary expense / income", onPress: () => save("AUTO") },
+      ...(tx.amount < 0 ? [{ text: "Refund", onPress: () => save("REFUND") }] : []),
+      { text: "Exclude from totals", onPress: () => save("EXCLUDED") },
+    ], { cancelable: true });
+  };
+
   const manualTransactionMutation = useMutation({
     mutationFn: async (currentDraft: ManualTransactionDraft) => {
       const absoluteAmount = Number(currentDraft.amount);
@@ -340,6 +367,7 @@ export default function TransactionsScreen() {
       qc.invalidateQueries({ queryKey: ["dashboard"] });
       qc.invalidateQueries({ queryKey: ["budgets"] });
       qc.invalidateQueries({ queryKey: ["goals"] });
+      qc.invalidateQueries({ queryKey: ["household-summary"] });
     },
   });
 
@@ -352,6 +380,7 @@ export default function TransactionsScreen() {
       qc.invalidateQueries({ queryKey: ["dashboard"] });
       qc.invalidateQueries({ queryKey: ["budgets"] });
       qc.invalidateQueries({ queryKey: ["goals"] });
+      qc.invalidateQueries({ queryKey: ["household-summary"] });
     },
   });
 
@@ -431,12 +460,13 @@ export default function TransactionsScreen() {
           <View style={styles.headerRow}>
             <View>
               <Text style={styles.title}>Activity</Text>
-              <Text style={styles.activitySubtitle}>Manually added spending and income</Text>
+              <Text style={styles.activitySubtitle}>Your bank and manual activity</Text>
             </View>
             <TouchableOpacity style={styles.addButton} onPress={openCreateModal}>
               <Text style={styles.addButtonText}>Add transaction</Text>
             </TouchableOpacity>
           </View>
+          <TouchableOpacity accessibilityRole="button" onPress={() => router.push("/duplicate-review" as any)} style={{ minHeight: 44, justifyContent: "center" }}><Text style={{ color: colors.primary, fontWeight: "700" }}>Review possible duplicates</Text></TouchableOpacity>
           <TextInput
             style={styles.search}
             placeholder="Search merchants..."
@@ -466,6 +496,7 @@ export default function TransactionsScreen() {
               tx={item}
               onToggleImpulse={() => toggleImpulse.mutate({ id: item.id, isImpulse: !item.isImpulse })}
               onOpenManualEditor={() => openEditModal(item)}
+              onTreatment={() => chooseTreatment(item)}
             />
           )}
           refreshControl={

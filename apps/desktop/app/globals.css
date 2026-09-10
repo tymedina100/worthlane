@@ -178,23 +178,23 @@ svg { display: block; }
 .summary-only-card__net dd { color: var(--green-dark); }
 
 /* Planning */
-.planning-grid { display: grid; grid-template-columns: minmax(560px, 1.3fr) minmax(360px, .8fr); align-items: start; gap: 22px; }
+.planning-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .8fr); align-items: start; gap: 22px; }
 .planning-grid .panel { margin: 0; }
 .responsibility-list { padding: 0 18px 12px; }
-.responsibility-row { display: grid; grid-template-columns: minmax(175px, 1fr) minmax(150px, .9fr) minmax(190px, 1.15fr) 86px; align-items: center; gap: 16px; min-height: 84px; padding: 11px 7px; border-top: 1px solid var(--line-soft); }
+.responsibility-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 84px; padding: 16px 7px; border-top: 1px solid var(--line-soft); }
 .responsibility-row__heading { display: flex; align-items: center; gap: 11px; }
 .category-symbol { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; border-radius: 10px; background: #eef4ef; color: var(--green-dark); font-size: 11px; font-weight: 850; }
 .responsibility-row h3 { margin: 0 0 3px; font-size: 12px; }
 .responsibility-row__heading span, .responsibility-row__progress-copy, .responsibility-row__allocations { color: var(--muted); font-size: 8px; }
-.responsibility-row__progress { display: grid; gap: 7px; }
+.responsibility-row__progress { display: grid; gap: 7px; grid-column: 1 / -1; grid-row: 2; }
 .responsibility-row__progress-copy { display: flex; justify-content: space-between; }
 .responsibility-row__progress-copy strong { color: var(--green-dark); }
-.responsibility-row__allocations { display: grid; gap: 7px; }
-.responsibility-row__allocations > span { display: flex; align-items: center; gap: 5px; }
+.responsibility-row__allocations { display: grid; gap: 7px; grid-column: 1 / -1; grid-row: 3; }
+.responsibility-row__allocations > span { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
 .responsibility-row__allocations b { color: var(--ink-soft); }
 .member-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #4aa584; }
 .member-dot--rachel { background: var(--coral); }
-.responsibility-row__amount { display: grid; gap: 3px; text-align: right; font-size: 12px; }
+.responsibility-row__amount { display: grid; grid-column: 2; grid-row: 1; gap: 3px; text-align: right; font-size: 12px; }
 .responsibility-row__amount small { color: var(--muted); font-size: 8px; font-weight: 500; }
 
 /* Goal */
@@ -876,3 +876,19 @@ body small { font-size: 12px !important; line-height: 1.45; }
   .transaction-table { border: 1px solid CanvasText; }
   .progress > span { background: Highlight; }
 }
+.debt-plan-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; border: 1px solid var(--border, #dce2d9); border-radius: 12px; padding: 16px; margin: 16px 0; min-width: 0; }
+.debt-plan-fields label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; min-width: 0; }
+.debt-plan-fields .debt-bank-reference { grid-column: 1 / -1; margin: 0; }
+.debt-plan-fields input, .debt-plan-fields select { width: 100%; min-width: 0; padding: 10px; border: 1px solid #cbd3c8; border-radius: 8px; background: white; color: #233125; }
+.debt-plan-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+.debt-plan-table { overflow-x: auto; }
+.debt-plan-table th, .debt-plan-table td { padding: 8px; text-align: left; }
+.debt-plan-result { padding: 16px 0; }
+
+.upcoming-panel { padding: 0 20px 20px; }
+.upcoming-panel .panel__header { padding: 24px 0 18px; }
+.debt-plan-fields .upcoming-active { flex-direction: row; align-items: center; gap: 10px; }
+.debt-plan-fields .upcoming-active input { width: 18px; height: 18px; margin: 0; }
+
+.liability-details { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 16px; }
+.liability-details dd { margin: 0; overflow-wrap: anywhere; }

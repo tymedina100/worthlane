@@ -1,10 +1,11 @@
+import { spendingWhere, incomeWhere } from "@/lib/spending-treatment";
 import { NextRequest } from "next/server";
 import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
 import { computeNetWorth, startOfToday } from "@/lib/net-worth";
 import { ok, unauthorized } from "@/lib/response";
-import { startOfMonth } from "@/lib/dates";
-import { obligationStatus, startOfUtcDay, toDateOnly } from "@/lib/upcoming";
+import { budgetPeriod, financialTimeZone } from "@/lib/budget-period";
+import { obligationStatus, householdCalendarDay, toDateOnly } from "@/lib/upcoming";
 
 export async function GET(req: NextRequest) {
   let userId: string;
@@ -15,7 +16,8 @@ export async function GET(req: NextRequest) {
   }
 
   const now = new Date();
-  const periodStart = startOfMonth(now);
+  const timeZone = await financialTimeZone(userId);
+  const periodStart = budgetPeriod(now, timeZone, "MONTHLY").start;
   // Cap period end at now to exclude future-dated transactions
   const periodEnd = now;
 
@@ -36,7 +38,7 @@ export async function GET(req: NextRequest) {
         where: {
           userId,
           date: { gte: periodStart, lte: periodEnd },
-          amount: { gt: 0 },
+          ...spendingWhere,
         },
         _sum: { amount: true },
         orderBy: { _sum: { amount: "desc" } },
@@ -47,29 +49,29 @@ export async function GET(req: NextRequest) {
         where: {
           userId,
           date: { gte: periodStart, lte: periodEnd },
-          amount: { lt: 0 }, // negative = income in Plaid convention
+          ...incomeWhere, // negative = income in Plaid convention
         },
         _sum: { amount: true },
       }),
       // Impulse this month
       prisma.transaction.aggregate({
-        where: { userId, isImpulse: true, date: { gte: periodStart, lte: periodEnd }, amount: { gt: 0 } },
+        where: { userId, isImpulse: true, date: { gte: periodStart, lte: periodEnd }, ...spendingWhere },
         _sum: { amount: true },
         _count: { id: true },
       }),
       // Impulse this week (last 7 days)
       prisma.transaction.aggregate({
-        where: { userId, isImpulse: true, date: { gte: thisWeekStart, lte: now }, amount: { gt: 0 } },
+        where: { userId, isImpulse: true, date: { gte: thisWeekStart, lte: now }, ...spendingWhere },
         _sum: { amount: true },
       }),
       // Impulse previous week (7-14 days ago)
       prisma.transaction.aggregate({
-        where: { userId, isImpulse: true, date: { gte: prevWeekStart, lt: thisWeekStart }, amount: { gt: 0 } },
+        where: { userId, isImpulse: true, date: { gte: prevWeekStart, lt: thisWeekStart }, ...spendingWhere },
         _sum: { amount: true },
       }),
     ]);
 
-  const todayStart = startOfUtcDay(now);
+  const todayStart = householdCalendarDay(now, timeZone);
   const sevenDaysFromNow = new Date(todayStart);
   sevenDaysFromNow.setUTCDate(sevenDaysFromNow.getUTCDate() + 7);
   const upcomingRows = await prisma.upcomingObligation.findMany({
@@ -88,7 +90,7 @@ export async function GET(req: NextRequest) {
     isPaid: row.isPaid,
     isActive: row.isActive,
     lastPaidAt: row.lastPaidAt?.toISOString() ?? null,
-    status: obligationStatus(row.dueDate, row.isPaid, now),
+    status: obligationStatus(row.dueDate, row.isPaid, now, timeZone),
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   }));
@@ -121,7 +123,7 @@ export async function GET(req: NextRequest) {
     where: {
       userId,
       date: { gte: periodStart, lte: periodEnd },
-      amount: { gt: 0 },
+      ...spendingWhere,
     },
     _sum: { amount: true },
   });
@@ -129,12 +131,13 @@ export async function GET(req: NextRequest) {
   // Budgets with spent
   const budgetsWithSpent = await Promise.all(
     budgets.map(async (b) => {
+      const budgetStart = budgetPeriod(now, timeZone, b.period).start;
       const spent = await prisma.transaction.aggregate({
         where: {
           userId,
           categoryId: b.categoryId,
-          date: { gte: periodStart, lte: periodEnd },
-          amount: { gt: 0 },
+          date: { gte: budgetStart, lte: periodEnd },
+          ...spendingWhere,
         },
         _sum: { amount: true },
       });

@@ -179,6 +179,7 @@ export function ResponsibilityManager({
           <p className="section-kicker">Household owner controls</p>
           <h2 id="responsibility-manager-title">Manage category budgets &amp; responsibilities</h2>
           <p>Create an assignment or choose an existing lane to edit it.</p>
+          <p>Changes recalculate this month’s allocations, including earlier spending. Previous agreements stay in Budget agreement history; transaction amounts and who paid stay the same.</p>
         </div>
         <label className="management-picker">
           <span>Working on</span>
@@ -228,7 +229,7 @@ export function ResponsibilityManager({
             {summary.members.map((member) => (
               <label key={member.id}>
                 <span>{member.displayName}</span>
-                <span><input type="number" min="0.01" max="100" step="0.01" value={shares[member.id] ?? ""} onChange={(event) => setShares((current) => ({ ...current, [member.id]: event.target.value }))} /><i>%</i></span>
+                <span><input type="number" min="0" max="100" step="0.01" required value={shares[member.id] ?? ""} onChange={(event) => setShares((current) => ({ ...current, [member.id]: event.target.value }))} /><i>%</i></span>
               </label>
             ))}
           </fieldset>
@@ -475,7 +476,7 @@ export function PartnerManager({
         method: "POST",
         body: parsed.data,
       });
-      setSuccess(result.message);
+      setSuccess(`${result.message}${result.invitationCode ? ` Invitation code: ${result.invitationCode}` : ""}`);
       setEmail("");
       setDisplayName("");
     } catch (caught) {
@@ -511,7 +512,7 @@ export function PartnerManager({
         <div>
           <p className="section-kicker">Separate logins, one household</p>
           <h2 id="partner-manager-title">Household members</h2>
-          <p>Invite an existing Worthlane login. The invited partner must explicitly accept.</p>
+          <p>Invite your partner even before they register. Share the private code directly; they must sign in with the invited email and accept.</p>
         </div>
         <div className="household-member-stack" aria-label={`${summary.members.length} household members`}>
           {summary.members.map((member) => <span title={member.displayName} key={member.id}>{member.displayName.slice(0, 1)}</span>)}
@@ -551,7 +552,7 @@ export function PartnerManager({
         <form className="partner-link-form" onSubmit={linkPartner}>
           <label><span>Partner email</span><input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="partner@example.com" required /></label>
           <label><span>Display name <small>optional</small></span><input value={displayName} onChange={(event) => setDisplayName(event.target.value)} maxLength={80} placeholder="Rachel" /></label>
-          <button className="button button--primary" type="submit" disabled={isSaving}>{isSaving ? "Sending..." : "Send invitation"}</button>
+          <button className="button button--primary" type="submit" disabled={isSaving}>{isSaving ? "Creating..." : "Create invitation code"}</button>
           <Feedback error={error} success={success} />
         </form>
       ) : (

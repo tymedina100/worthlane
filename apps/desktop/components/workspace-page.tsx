@@ -373,6 +373,7 @@ export function WorkspacePage({ view }: { view: WorkspaceView }) {
           </div>
         </header>
 
+        {summary.finances.bankDataNotices.map(notice => <p className="status-banner" key={notice.accountId} role="status">{notice.message}</p>)}
         <WorkspaceSurface
           view={view}
           summary={summary}

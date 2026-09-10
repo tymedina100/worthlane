@@ -1,0 +1,15 @@
+// Local Windows builds: keep CMake intermediates out of pnpm's deeply nested
+// package paths. This opt-in init script does not modify dependency sources.
+// Android DSL: https://developer.android.com/reference/tools/gradle-api/8.3/null/com/android/build/api/dsl/Cmake
+gradle.beforeProject { target ->
+  ["com.android.application", "com.android.library"].each { pluginId ->
+    target.pluginManager.withPlugin(pluginId) {
+      def stagingRoot = target.findProperty("worthlaneNativeBuildRoot")
+      if (stagingRoot == null) {
+        throw new GradleException("worthlaneNativeBuildRoot is required for the local Android build")
+      }
+      target.extensions.getByName("android").externalNativeBuild.cmake.buildStagingDirectory =
+        new File(stagingRoot.toString(), target.path.replace(':', '_'))
+    }
+  }
+}

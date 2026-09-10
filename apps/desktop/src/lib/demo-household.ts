@@ -28,6 +28,7 @@ export const demoHouseholdSummary: HouseholdSummary = {
     },
   ],
   finances: {
+    bankDataNotices: [],
     scope: "VISIBLE_TO_CALLER",
     visibleNetWorthMinor: 8_499_838,
     detailedAccounts: [

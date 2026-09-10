@@ -1,0 +1,1 @@
+ALTER TABLE "PlaidItem" ADD COLUMN "transactionHistoryStatus" TEXT NOT NULL DEFAULT 'UNKNOWN';

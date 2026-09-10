@@ -27,6 +27,8 @@ export interface AccountSummary {
 }
 
 export interface PlaidItemSummary {
+  transactionHistoryStatus: string;
+  dataNotice: string;
   id: string;
   itemId: string;
   institution: string | null;
@@ -52,6 +54,7 @@ export interface CategorySummary {
 }
 
 export interface TransactionSummary {
+  spendingTreatment?: "AUTO" | "REFUND" | "EXCLUDED";
   id: string;
   amount: number;
   date: string;

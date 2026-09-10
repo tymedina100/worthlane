@@ -1,3 +1,6 @@
+import { createHash, randomBytes } from "node:crypto";
+import { rebaseBankDates } from "./bank-dates";
+import { bankDataNotice, countedBankAccountIds } from "@worthlane/core";
 import {
   acceptHouseholdPartnerInviteResultSchema,
   createHouseholdResultSchema,
@@ -6,6 +9,8 @@ import {
   householdGoalContributionResultSchema,
   householdGoalSummarySchema,
   householdResponsibilitySummarySchema,
+  responsibilityHistoryDefinitionSchema,
+  responsibilityHistoryPageSchema,
   householdSummarySchema,
   householdPartnerInviteResultSchema,
   householdPartnerInvitationsSchema,
@@ -36,9 +41,11 @@ import {
   computeNetWorthMinor,
   monthRangeInTimeZone,
   toMinorUnits,
+  type ResponsibilityPlan,
 } from "@worthlane/core";
 import { Prisma, prisma } from "@worthlane/db";
 import { randomUUID } from "node:crypto";
+import { spendingWhere } from "./spending-treatment";
 
 export class HouseholdNotFoundError extends Error {}
 export class HouseholdConflictError extends Error {}
@@ -134,6 +141,7 @@ export async function createHouseholdForUser(
                 : minorUnitsToDecimalString(input.incomeBasisMinor),
           },
         });
+        await rebaseBankDates(tx, userId);
         return { household, member };
       },
       { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
@@ -236,6 +244,11 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
     { ownerName: string; accounts: { type: string; currentBalanceMinor: number }[] }
   >();
   const allVisibleBalances: { type: string; currentBalanceMinor: number }[] = [];
+  // Filter consent first. Even the existence of an unshared matching account
+  // must not affect totals, notices, or which transaction feed is selected.
+  const permittedAccounts = accounts.filter(account => account.userId === userId ||
+    account.householdAccesses.some(access => access.memberId === context.memberId && access.visibility !== "PERSONAL"));
+  const countedIds = countedBankAccountIds(permittedAccounts, userId);
 
   for (const account of accounts) {
     const owner = memberByUserId.get(account.userId);
@@ -270,11 +283,11 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
         isOwner,
         updatedAt: account.updatedAt.toISOString(),
       });
-      allVisibleBalances.push(balance);
+      if (countedIds.has(account.id)) allVisibleBalances.push(balance);
       continue;
     }
 
-    if (visibility === "SUMMARY") {
+    if (visibility === "SUMMARY" && countedIds.has(account.id)) {
       const ownerSummary = summaryAccountsByOwner.get(owner.id) ?? {
         ownerName: owner.displayName,
         accounts: [],
@@ -284,6 +297,17 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
       allVisibleBalances.push(balance);
     }
   }
+
+  // Only accounts with permitted transaction detail can contribute bank notices.
+  // Summary/private access must not reveal the existence or health of a connection.
+  const detailedIds = new Set(detailedAccounts.map(account => account.id));
+  const bankAccounts = accounts.filter(account => detailedIds.has(account.id) && account.source === "PLAID");
+  const bankItems = bankAccounts.length ? await prisma.plaidItem.findMany({ where: { OR: bankAccounts.filter(account => account.plaidItemId).map(account => ({ userId: account.userId, itemId: account.plaidItemId! })) } }) : [];
+  const bankDataNotices = bankAccounts.map(account => {
+    const item = bankItems.find(item => item.itemId === account.plaidItemId && item.userId === account.userId);
+    const duplicateNotice = countedIds.has(account.id) ? "" : " This confirmed repeat connection is available for review, but its balance and activity are not added again to household totals. Your own connection is used in this view.";
+    return { accountId: account.id, message: `${account.name}: ${item ? bankDataNotice({ ...item, lastSyncAt: item.lastSyncAt?.toISOString() ?? null }, new Date()) : "Bank history coverage is unconfirmed. Spending totals may be incomplete."}${duplicateNotice}` };
+  });
 
   const summaryOnlyByOwner = [...summaryAccountsByOwner.entries()].map(
     ([ownerMemberId, summary]) => {
@@ -301,11 +325,11 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
   const participatingAccountIds = accounts
     .filter(
       (account) =>
-        account.userId === userId ||
+        countedIds.has(account.id) && (account.userId === userId ||
         account.householdAccesses.some(
           (access) =>
             access.memberId === context.memberId && access.visibility === "SHARED"
-        )
+        ))
     )
     .map((account) => account.id);
   const categoryIds = responsibilities
@@ -320,8 +344,8 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
           where: {
             accountId: { in: participatingAccountIds },
             categoryId: { in: categoryIds },
-            amount: { gt: 0 },
-            date: { gte: month.start, lt: month.end },
+            ...spendingWhere,
+            date: { gte: month.start, lt: month.end, lte: now },
           },
           _sum: { amount: true },
         })
@@ -341,8 +365,7 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
       (allocation) => allocation.memberId
     );
     const totalMinor = toMinorUnits(responsibility.monthlyAmount.toNumber());
-    const targetAllocations = allocateResponsibility(
-      totalMinor,
+    const responsibilityPlan: ResponsibilityPlan =
       responsibility.mode === "MEMBER"
         ? { mode: "MEMBER", memberId: allocationMemberIds[0] ?? "" }
         : responsibility.mode === "EQUAL"
@@ -353,7 +376,17 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
                 memberId: allocation.memberId,
                 basisPoints: allocation.shareBasisPoints ?? 0,
               })),
-            }
+            };
+    const targetAllocations = allocateResponsibility(totalMinor, responsibilityPlan);
+    // Responsibility follows the agreed plan, independently of the payer.
+    // Only caller-permitted activity enters this total.
+    const visibleSpendMinor = members.reduce((total, member) => total +
+      (responsibility.categoryId
+        ? appliedSpendByMemberAndCategory.get(`${member.id}:${responsibility.categoryId}`) ?? 0
+        : 0), 0);
+    const appliedAllocations = new Map(
+      allocateResponsibility(visibleSpendMinor, responsibilityPlan)
+        .map(allocation => [allocation.memberId, allocation.amountMinor])
     );
     const equalBasisPoints =
       responsibility.mode === "EQUAL"
@@ -376,11 +409,7 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
         const source = responsibility.allocations.find(
           (allocation) => allocation.memberId === target.memberId
         );
-        const appliedSpendMinor = responsibility.categoryId
-          ? appliedSpendByMemberAndCategory.get(
-              `${target.memberId}:${responsibility.categoryId}`
-            ) ?? 0
-          : 0;
+        const appliedSpendMinor = appliedAllocations.get(target.memberId) ?? 0;
         const shareBasisPoints =
           responsibility.mode === "MEMBER"
             ? 10_000
@@ -469,6 +498,7 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
   });
 
   return householdSummarySchema.parse({
+    asOf: now.toISOString(),
     household: {
       id: household.id,
       name: household.name,
@@ -489,6 +519,7 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
           : toMinorUnits(member.incomeBasis.toNumber()),
     })),
     finances: {
+      bankDataNotices,
       scope: "VISIBLE_TO_CALLER",
       visibleNetWorthMinor: computeNetWorthMinor(allVisibleBalances),
       detailedAccounts,
@@ -869,6 +900,35 @@ export async function listHouseholdResponsibilities(userId: string) {
   return (await getHouseholdSummary(userId)).responsibilities;
 }
 
+export async function listResponsibilityHistory(userId: string, cursor?: string) {
+  const context = await requireHouseholdContext(userId);
+  const where = { responsibility: { householdId: context.householdId } };
+  if (cursor && !await prisma.householdResponsibilityHistory.findFirst({ where: { ...where, id: cursor }, select: { id: true } })) {
+    throw new HouseholdNotFoundError("Agreement history not found");
+  }
+  const rows = await prisma.householdResponsibilityHistory.findMany({
+    where, orderBy: [{ recordedAt: "desc" }, { id: "desc" }], take: 26,
+    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+  });
+  const entries = rows.slice(0, 25).map(row => ({
+    id: row.id, responsibilityId: row.responsibilityId,
+    recordedAt: row.recordedAt.toISOString(), definition: row.definition,
+  }));
+  return responsibilityHistoryPageSchema.parse({ entries, nextCursor: rows.length > 25 ? entries[24].id : null });
+}
+
+async function preserveResponsibilityDefinition(tx: Prisma.TransactionClient, existing: ResponsibilityRecord, reason: "REPLACED" | "REMOVED") {
+  const household = await tx.household.findUniqueOrThrow({ where: { id: existing.householdId }, select: { currency: true } });
+  const plan = serializeResponsibilityDefinition(existing);
+  const definition = responsibilityHistoryDefinitionSchema.parse({
+    name: plan.name, categoryName: plan.categoryName, currency: household.currency,
+    mode: plan.mode, monthlyAmountMinor: plan.monthlyAmountMinor,
+    definitionUpdatedAt: plan.updatedAt, reason,
+    allocations: plan.allocations.map(({ memberId, displayName, shareBasisPoints, assignedMinor }) => ({ memberId, displayName, shareBasisPoints, assignedMinor })),
+  });
+  await tx.householdResponsibilityHistory.create({ data: { responsibilityId: existing.id, definition } });
+}
+
 export async function setHouseholdIncomeBases(
   userId: string,
   input: SetHouseholdIncomeBases
@@ -958,7 +1018,7 @@ export async function updateHouseholdResponsibility(
         householdId: context.householdId,
         isActive: true,
       },
-      select: { id: true },
+      include: { category: true, allocations: { include: { member: true } } },
     });
     if (!existing) {
       throw new HouseholdNotFoundError("Household responsibility not found");
@@ -986,6 +1046,7 @@ export async function updateHouseholdResponsibility(
         );
       }
     }
+    await preserveResponsibilityDefinition(tx, existing, "REPLACED");
     return tx.householdResponsibility.update({
       where: { id: existing.id },
       data: {
@@ -1024,11 +1085,12 @@ export async function deleteHouseholdResponsibility(
         householdId: context.householdId,
         isActive: true,
       },
-      select: { id: true },
+      include: { category: true, allocations: { include: { member: true } } },
     });
     if (!existing) {
       throw new HouseholdNotFoundError("Household responsibility not found");
     }
+    await preserveResponsibilityDefinition(tx, existing, "REMOVED");
     await tx.householdResponsibility.update({
       where: { id: existing.id },
       data: { isActive: false },
@@ -1408,6 +1470,9 @@ export async function linkHouseholdPartner(
   userId: string,
   input: LinkHouseholdPartner
 ): Promise<HouseholdPartnerInviteResult> {
+  const invitationCode = randomBytes(24).toString("hex");
+  const inviteTokenHash = createHash("sha256").update(invitationCode).digest("hex");
+  const invitedEmail = input.email.trim().toLowerCase();
   await runHouseholdMutation(
     userId,
     true,
@@ -1417,7 +1482,7 @@ export async function linkHouseholdPartner(
         where: { email: { equals: input.email, mode: "insensitive" } },
         select: { id: true, email: true },
       });
-      if (!target || target.id === userId) return;
+      if (target?.id === userId) return;
       const occupiedPartnerSlot = await tx.householdMember.findFirst({
         where: {
           householdId: context.householdId,
@@ -1427,15 +1492,16 @@ export async function linkHouseholdPartner(
             { status: "INVITED", updatedAt: { gte: inviteCutoff } },
           ],
         },
-        select: { userId: true },
+        select: { userId: true, invitedEmail: true },
       });
       if (
         occupiedPartnerSlot &&
-        occupiedPartnerSlot.userId !== target.id
+        occupiedPartnerSlot.userId !== target?.id &&
+        occupiedPartnerSlot.invitedEmail !== invitedEmail
       ) {
         return;
       }
-      const occupiedElsewhere = await tx.householdMember.findFirst({
+      const occupiedElsewhere = target ? await tx.householdMember.findFirst({
         where: {
           userId: target.id,
           OR: [
@@ -1445,31 +1511,32 @@ export async function linkHouseholdPartner(
           NOT: { householdId: context.householdId },
         },
         select: { id: true },
-      });
+      }) : null;
       if (occupiedElsewhere) return;
-      const existing = await tx.householdMember.findUnique({
+      const existing = (target ? await tx.householdMember.findUnique({
         where: {
           householdId_userId: {
             householdId: context.householdId,
             userId: target.id,
           },
         },
+      }) : null) ?? await tx.householdMember.findFirst({
+        where: { householdId: context.householdId, invitedEmail, userId: null },
       });
       if (
-        existing?.status === "ACTIVE" ||
-        (existing?.status === "INVITED" && existing.updatedAt >= inviteCutoff)
+        existing?.status === "ACTIVE"
       ) {
         return;
       }
       const displayName =
-        input.displayName ?? existing?.displayName ?? defaultPartnerName(target.email);
+        input.displayName ?? existing?.displayName ?? defaultPartnerName(invitedEmail);
       if (existing) {
         await tx.householdAccountAccess.deleteMany({
           where: {
             householdId: context.householdId,
             OR: [
               { memberId: existing.id },
-              { account: { userId: target.id } },
+              ...(target ? [{ account: { userId: target.id } }] : []),
             ],
           },
         });
@@ -1479,6 +1546,8 @@ export async function linkHouseholdPartner(
             displayName,
             role: "MEMBER",
             status: "INVITED",
+            invitedEmail,
+            inviteTokenHash,
             joinedAt: null,
             endedAt: null,
             updatedAt: now,
@@ -1488,7 +1557,9 @@ export async function linkHouseholdPartner(
         await tx.householdMember.create({
           data: {
             householdId: context.householdId,
-            userId: target.id,
+            userId: target?.id ?? null,
+            invitedEmail,
+            inviteTokenHash,
             displayName,
             role: "MEMBER",
             status: "INVITED",
@@ -1499,13 +1570,15 @@ export async function linkHouseholdPartner(
   );
   return householdPartnerInviteResultSchema.parse({
     status: "PENDING",
-    message: "If this email is eligible, a partner invitation is pending.",
+    invitationCode,
+    message: "If the invited email is eligible, this private code lets your partner join. Share it directly; no email is sent. They can register with the invited email, then enter the code in household setup within 7 days. A new code replaces an earlier invitation to the same partner. Joining requires their acceptance and an available household slot.",
   });
 }
 
 export async function acceptHouseholdPartnerInvite(
   userId: string,
-  invitationId: string
+  invitationId?: string,
+  invitationCode?: string
 ): Promise<AcceptHouseholdPartnerInviteResult> {
   try {
     const result = await prisma.$transaction(
@@ -1519,10 +1592,13 @@ export async function acceptHouseholdPartnerInvite(
         if (activeMembership) {
           throw new HouseholdConflictError("User already has an active household");
         }
+        const recipient = invitationCode ? await tx.user.findUnique({ where: { id: userId }, select: { email: true } }) : null;
         const invite = await tx.householdMember.findFirst({
           where: {
-            id: invitationId,
-            userId,
+            ...(invitationCode ? {
+              inviteTokenHash: createHash("sha256").update(invitationCode).digest("hex"),
+              invitedEmail: recipient?.email.toLowerCase() ?? "",
+            } : { id: invitationId, userId, inviteTokenHash: null }),
             status: "INVITED",
             updatedAt: { gte: inviteCutoff },
           },
@@ -1542,9 +1618,12 @@ export async function acceptHouseholdPartnerInvite(
         if (!owner) {
           throw new HouseholdNotFoundError("Partner invitation not found");
         }
+        if (await tx.householdMember.count({ where: { householdId: invite.householdId, status: "ACTIVE" } }) >= 2) {
+          throw new HouseholdConflictError("This household already has two members");
+        }
         const member = await tx.householdMember.update({
           where: { id: invite.id },
-          data: { status: "ACTIVE", joinedAt: now, endedAt: null },
+          data: { userId, status: "ACTIVE", joinedAt: now, endedAt: null, inviteTokenHash: null, invitedEmail: null },
         });
         await tx.householdMember.updateMany({
           where: {
@@ -1559,6 +1638,7 @@ export async function acceptHouseholdPartnerInvite(
           data: { updatedAt: now },
           select: { updatedAt: true },
         });
+        await rebaseBankDates(tx, userId);
         return { member, householdUpdatedAt: household.updatedAt };
       },
       { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
@@ -1597,6 +1677,7 @@ export async function listHouseholdPartnerInvitations(
     where: {
       userId,
       status: "INVITED",
+      inviteTokenHash: null,
       updatedAt: { gte: inviteCutoff },
     },
     include: {

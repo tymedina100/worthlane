@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
   try {
     return ok(
-      await acceptHouseholdPartnerInvite(userId, parsed.data.invitationId)
+      await acceptHouseholdPartnerInvite(userId, parsed.data.invitationId, parsed.data.invitationCode)
     );
   } catch (error) {
     return householdErrorResponse(

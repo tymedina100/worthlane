@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import * as Linking from "expo-linking";
 import * as Notifications from "expo-notifications";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -23,6 +23,7 @@ import * as LocalAuthentication from "expo-local-authentication";
 import type { LinkExit, LinkSuccess } from "react-native-plaid-link-sdk";
 import { useAuthStore } from "@/store/auth";
 import { ApiError, api } from "@/lib/api";
+import { completePlaidLink } from "@/lib/plaid-completion";
 import { useSubscription } from "@/hooks/useSubscription";
 import {
   ACCOUNT_TYPES,
@@ -215,17 +216,25 @@ function ManualAccountModal({
 }
 
 export default function ProfileScreen() {
+  const { addAccount } = useLocalSearchParams<{ addAccount?: string }>();
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const styles = useThemedStyles(createStyles);
-  const { email, logout, biometricEnabled, enableBiometric, disableBiometric } = useAuthStore();
+  const { userId, email, logout, biometricEnabled, enableBiometric, disableBiometric } = useAuthStore();
   const { isPremium } = useSubscription();
   const [biometricSupported, setBiometricSupported] = useState(false);
   const [biometricLabel, setBiometricLabel] = useState("Biometrics");
   const [manualModalVisible, setManualModalVisible] = useState(false);
   const [manualDraft, setManualDraft] = useState<ManualAccountDraft>(emptyManualDraft);
-  const [defaultReminder, setDefaultReminderState] = useState<ReminderTiming>("ONE_DAY_BEFORE");
+  const [defaultReminder, setDefaultReminderState] = useState<ReminderTiming>("NONE");
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (addAccount !== "1") return;
+    setManualDraft(emptyManualDraft);
+    setManualModalVisible(true);
+    router.setParams({ addAccount: undefined });
+  }, [addAccount]);
 
   useEffect(() => {
     (async () => {
@@ -244,7 +253,7 @@ export default function ProfileScreen() {
     })();
   }, []);
 
-  useEffect(() => { getDefaultReminder().then(setDefaultReminderState); }, []);
+  useEffect(() => { getDefaultReminder(userId).then(setDefaultReminderState); }, [userId]);
 
   const accountsQuery = useQuery({
     queryKey: ["accounts"],
@@ -339,40 +348,45 @@ export default function ProfileScreen() {
   };
 
   const launchPlaid = async (mode: "create" | "update", plaidItemId?: string) => {
+    const linkingUserId = useAuthStore.getState().userId;
+    if (!linkingUserId) return;
     try {
       const { linkToken } = await api.post<{ linkToken: string }>("/plaid/link-token", {
         platform: Platform.OS === "ios" ? "ios" : "android",
         mode,
         plaidItemId,
       });
+      if (useAuthStore.getState().userId !== linkingUserId) return;
 
-      // Loaded lazily so the Plaid native module (excluded from the build for
-      // v1, see expo.autolinking.exclude) is never referenced while bank
-      // linking is disabled.
-      const { openLink } = require("react-native-plaid-link-sdk") as typeof import("react-native-plaid-link-sdk");
-      await openLink({
-        tokenConfig: {
-          token: linkToken,
-          noLoadingState: false,
-        },
+      // Lazy loading preserves manual use in Expo Go, which has no Plaid module.
+      const { createPlaidLinkSession } = require("react-native-plaid-link-sdk") as typeof import("react-native-plaid-link-sdk");
+      const session = await createPlaidLinkSession({
+        token: linkToken,
+        onEvent: () => {},
         onSuccess: async (success: LinkSuccess) => {
-          await handlePlaidSuccess(success, mode);
+          await handlePlaidSuccess(success, mode, linkingUserId, plaidItemId);
         },
         onExit: (exit: LinkExit) => {
-          handlePlaidExit(exit);
+          if (useAuthStore.getState().userId === linkingUserId) handlePlaidExit(exit);
         },
       });
+      if (useAuthStore.getState().userId !== linkingUserId) return;
+      await session.open();
     } catch (error) {
-      Alert.alert("Plaid unavailable", bankActionErrorMessage(error));
+      if (useAuthStore.getState().userId === linkingUserId) Alert.alert("Plaid unavailable", bankActionErrorMessage(error));
     }
   };
 
-  const handlePlaidSuccess = async (success: LinkSuccess, mode: "create" | "update") => {
+  const handlePlaidSuccess = async (success: LinkSuccess, mode: "create" | "update", linkingUserId: string, plaidItemId?: string) => {
     try {
-      await api.post("/plaid/exchange", {
+      const current = await completePlaidLink({
+        mode, plaidItemId,
         publicToken: success.publicToken,
         institutionName: success.metadata.institution?.name ?? undefined,
+        isCurrentUser: () => useAuthStore.getState().userId === linkingUserId,
+        post: (path, body) => api.post(path, body),
       });
+      if (!current) return;
 
       invalidateWorthlaneQueries();
       Alert.alert(
@@ -382,7 +396,7 @@ export default function ProfileScreen() {
           : "Your institution was linked and synced successfully."
       );
     } catch (error) {
-      Alert.alert("Connection failed", bankActionErrorMessage(error));
+      if (useAuthStore.getState().userId === linkingUserId) Alert.alert("Connection failed", bankActionErrorMessage(error));
     }
   };
 
@@ -475,11 +489,11 @@ export default function ProfileScreen() {
   };
 
   const reminderLabel = defaultReminder === "DUE_DATE" ? "On the due date" : defaultReminder === "THREE_DAYS_BEFORE" ? "Three days before" : defaultReminder === "NONE" ? "Off" : "One day before";
-  const chooseReminder = () => Alert.alert("Default reminders", "Used for new upcoming items. You can change it later.", [
-    { text: "On due date", onPress: () => { setDefaultReminder("DUE_DATE"); setDefaultReminderState("DUE_DATE"); captureV1Event("reminder_enabled"); } },
-    { text: "One day before", onPress: () => { setDefaultReminder("ONE_DAY_BEFORE"); setDefaultReminderState("ONE_DAY_BEFORE"); captureV1Event("reminder_enabled"); } },
-    { text: "Three days before", onPress: () => { setDefaultReminder("THREE_DAYS_BEFORE"); setDefaultReminderState("THREE_DAYS_BEFORE"); captureV1Event("reminder_enabled"); } },
-    { text: "No reminders", style: "destructive", onPress: () => { setDefaultReminder("NONE"); setDefaultReminderState("NONE"); } },
+  const chooseReminder = () => Alert.alert("Default reminders", "Used for new upcoming items on this login. Reminders use 9 a.m. in this device’s timezone and are cleared on logout. Existing items keep their preference.", [
+    { text: "On due date", onPress: () => { setDefaultReminder(userId, "DUE_DATE"); setDefaultReminderState("DUE_DATE"); captureV1Event("reminder_enabled"); } },
+    { text: "One day before", onPress: () => { setDefaultReminder(userId, "ONE_DAY_BEFORE"); setDefaultReminderState("ONE_DAY_BEFORE"); captureV1Event("reminder_enabled"); } },
+    { text: "Three days before", onPress: () => { setDefaultReminder(userId, "THREE_DAYS_BEFORE"); setDefaultReminderState("THREE_DAYS_BEFORE"); captureV1Event("reminder_enabled"); } },
+    { text: "No reminders", style: "destructive", onPress: () => { setDefaultReminder(userId, "NONE"); setDefaultReminderState("NONE"); } },
     { text: "Cancel", style: "cancel" },
   ]);
   const enableNotifications = async () => {
@@ -532,6 +546,7 @@ export default function ProfileScreen() {
     <>
       <ScrollView style={styles.container} contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.md }]}>
         <Text style={styles.title}>Settings</Text>
+        <TouchableOpacity style={styles.secondaryButton} onPress={() => router.push("/onboarding")} accessibilityRole="button"><Text style={styles.secondaryButtonText}>Continue guided setup</Text></TouchableOpacity>
 
         <View style={styles.section}>
           <SectionHeader title="Account" />
@@ -630,6 +645,7 @@ export default function ProfileScreen() {
                     </View>
 
                     <Text style={styles.bankSyncText}>{formatRelativeSyncTime(item.lastSyncAt)}</Text>
+                    <Text style={styles.bankSyncText}>{item.dataNotice}</Text>
                     {item.errorMessage ? <Text style={styles.bankError}>{item.errorMessage}</Text> : null}
 
                     {linkedAccounts.map((account) => (

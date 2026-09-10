@@ -73,6 +73,15 @@ function localMidnightToUtc(
   return new Date(result);
 }
 
+/** Normalize a bank's calendar posting date without treating it as UTC midnight. */
+export function calendarDateInTimeZone(value: string, timeZone: string): Date {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) throw new Error("Expected YYYY-MM-DD");
+  const [year, month, day] = value.split("-").map(Number) as [number, number, number];
+  const check = new Date(Date.UTC(year, month - 1, day));
+  if (check.toISOString().slice(0, 10) !== value) throw new Error("Invalid calendar date");
+  return localMidnightToUtc(year, month - 1, day, timeZone);
+}
+
 /**
  * Returns an inclusive/exclusive UTC range for the calendar month containing
  * `instant` in `timeZone`. Keeping this rule in core prevents API hosts and
@@ -90,4 +99,15 @@ export function monthRangeInTimeZone(
   const end = localMidnightToUtc(local.year, local.month, 1, timeZone);
 
   return { start, end, year: local.year, month: local.month };
+}
+
+/** Sunday-start calendar week, preserving Worthlane's existing week convention. */
+export function weekRangeInTimeZone(instant: Date, timeZone: string): { start: Date; end: Date } {
+  if (Number.isNaN(instant.getTime())) throw new Error("instant must be a valid date");
+  const local = partsAt(instant, timeZone);
+  const weekday = new Date(Date.UTC(local.year, local.month - 1, local.day)).getUTCDay();
+  return {
+    start: localMidnightToUtc(local.year, local.month - 1, local.day - weekday, timeZone),
+    end: localMidnightToUtc(local.year, local.month - 1, local.day - weekday + 7, timeZone),
+  };
 }

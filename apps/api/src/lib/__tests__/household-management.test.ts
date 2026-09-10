@@ -15,8 +15,10 @@ const { mockPrisma, MockPrismaClientKnownRequestError } = vi.hoisted(() => {
     }
   }
   const mockPrisma = {
+    $executeRaw: vi.fn().mockResolvedValue(0),
     household: { create: vi.fn(), update: vi.fn() },
     householdMember: {
+      count: vi.fn().mockResolvedValue(1),
       findFirst: vi.fn(),
       findMany: vi.fn(),
       findUnique: vi.fn(),
@@ -282,7 +284,7 @@ describe("household management authorization", () => {
         householdId: HOUSEHOLD_ID,
         isActive: true,
       },
-      select: { id: true },
+      include: { category: true, allocations: { include: { member: true } } },
     });
 
     const equalInput = createHouseholdResponsibilitySchema.parse({

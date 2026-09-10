@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -21,12 +21,14 @@ import {
   householdGoalContributionResultSchema,
   householdPartnerInvitationsSchema,
   householdSummarySchema,
+  responsibilityHistoryPageSchema,
   type HouseholdPartnerInvitationSummary,
   type HouseholdSummary,
 } from "@worthlane/contracts";
 import { ApiError, api } from "@/lib/api";
 import { radius, spacing } from "@/lib/theme";
 import { useAuthStore } from "@/store/auth";
+import { HouseholdBudgetEditor } from "@/components/HouseholdBudgetEditor";
 import { useTheme, useThemedStyles, type Theme } from "@/lib/ThemeContext";
 
 type SharedGoal = HouseholdSummary["sharedGoals"][number];
@@ -49,7 +51,7 @@ function formatMoney(amountMinor: number, currency: string): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
-    minimumFractionDigits: 0,
+    minimumFractionDigits: amountMinor % 100 === 0 ? 0 : 2,
     maximumFractionDigits: 2,
   }).format(amountMinor / 100);
 }
@@ -168,6 +170,10 @@ function AccountsSection({ summary }: { summary: HouseholdSummary }) {
         )}
       </View>
 
+      {summary.finances.detailedAccounts.filter(account => account.isOwner).map(account => (
+        <AccountSharing key={account.id} account={account} />
+      ))}
+
       {summary.finances.summaryOnlyByOwner.length ? (
         <View style={styles.summaryStack}>
           {summary.finances.summaryOnlyByOwner.map((owner) => (
@@ -203,6 +209,50 @@ function AccountsSection({ summary }: { summary: HouseholdSummary }) {
   );
 }
 
+const sharingChoices = [
+  { value: "PERSONAL", label: "Private", description: "Only you can see this account. Its balance and activity are excluded from your partner’s household view." },
+  { value: "SUMMARY", label: "Summary only", description: "Your partner can see totals that include this account’s balance. The account name and transactions stay hidden." },
+  { value: "SHARED", label: "Shared detail", description: "Your partner can see this account’s name, balance and transaction history, including new activity. It is included in their household totals." },
+] as const;
+
+function AccountSharing({ account }: { account: DetailedAccount }) {
+  const styles = useThemedStyles(createStyles);
+  const userId = useAuthStore(state => state.userId);
+  const client = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [visibility, setVisibility] = useState(account.visibility);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  useEffect(() => setVisibility(account.visibility), [account.visibility]);
+  async function save() {
+    if (saving || visibility === account.visibility) return;
+    setSaving(true); setMessage(null);
+    try {
+      await api.patch(`/households/current/accounts/${encodeURIComponent(account.id)}/visibility`, { visibility });
+      await client.invalidateQueries({ queryKey: ["household-summary", userId] });
+      setMessage("Visibility saved.");
+    } catch (caught) { setMessage(caught instanceof Error ? caught.message : "Visibility could not be saved."); }
+    finally { setSaving(false); }
+  }
+  return <View style={[styles.card, { marginTop: spacing.sm }]}>
+    <TouchableOpacity accessibilityRole="button" accessibilityState={{ expanded: open }} onPress={() => setOpen(value => !value)}>
+      <Text style={styles.rowTitle}>Sharing for {account.name} {open ? "−" : "+"}</Text>
+      <Text style={styles.rowMeta}>Only you can change who sees this account.</Text>
+    </TouchableOpacity>
+    {open ? <>
+      {sharingChoices.map(choice => <TouchableOpacity key={choice.value} accessibilityRole="radio" accessibilityState={{ checked: visibility === choice.value, disabled: saving }} disabled={saving} style={[styles.retryButton, { minHeight: 44, justifyContent: "center" }]} onPress={() => { setVisibility(choice.value); setMessage(null); }}>
+        <Text style={styles.retryText}>{visibility === choice.value ? "✓ " : ""}{choice.label}</Text>
+      </TouchableOpacity>)}
+      <Text style={styles.rowMeta}>{sharingChoices.find(choice => choice.value === visibility)?.description}</Text>
+      <Text style={styles.rowMeta}>This does not change who paid or your agreed budget responsibilities. You can change visibility later.</Text>
+      <TouchableOpacity accessibilityRole="button" accessibilityState={{ disabled: saving || visibility === account.visibility }} disabled={saving || visibility === account.visibility} style={[styles.primaryButton, (saving || visibility === account.visibility) && { opacity: 0.5 }]} onPress={() => void save()}>
+        <Text style={styles.primaryButtonText}>{saving ? "Saving…" : "Save visibility"}</Text>
+      </TouchableOpacity>
+      {message ? <Text accessibilityLiveRegion="polite" style={styles.rowMeta}>{message}</Text> : null}
+    </> : null}
+  </View>;
+}
+
 function ResponsibilityCard({ item, currency }: { item: Responsibility; currency: string }) {
   const styles = useThemedStyles(createStyles);
 
@@ -219,10 +269,11 @@ function ResponsibilityCard({ item, currency }: { item: Responsibility; currency
       </View>
 
       <View style={styles.allocationStack}>
+        <Text style={styles.rowMeta}>Visible spending follows your agreed split, regardless of who paid. Private partner activity is excluded.</Text>
         {item.allocations.map((allocation) => (
           <View key={allocation.memberId} style={styles.allocationRow}>
             <View style={styles.inlineBetween}>
-              <Text style={styles.allocationName}>{allocation.displayName}</Text>
+              <Text style={styles.allocationName}>{allocation.displayName} · {allocation.shareBasisPoints / 100}%</Text>
               <Text style={styles.allocationAmount}>
                 {formatMoney(allocation.appliedSpendMinor, currency)} of {formatMoney(allocation.assignedMinor, currency)}
               </Text>
@@ -427,6 +478,37 @@ function GoalCard({ goal, currency }: { goal: SharedGoal; currency: string }) {
   );
 }
 
+function AgreementHistory({ summary }: { summary: HouseholdSummary }) {
+  const styles = useThemedStyles(createStyles);
+  const userId = useAuthStore(state => state.userId);
+  const [open, setOpen] = useState(false);
+  const [cursor, setCursor] = useState<string | null>(null);
+  const history = useQuery({
+    queryKey: ["responsibility-history", userId, summary.household.id, summary.household.updatedAt, cursor],
+    enabled: open && !!userId,
+    queryFn: async () => responsibilityHistoryPageSchema.parse(await api.get(`/households/current/responsibility-history${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ""}`)),
+  });
+  return <View style={styles.card}>
+    <TouchableOpacity accessibilityRole="button" accessibilityState={{ expanded: open }} onPress={() => setOpen(value => !value)}>
+      <Text style={styles.cardTitle}>Budget agreement history {open ? "−" : "+"}</Text>
+    </TouchableOpacity>
+    {open ? <>
+      <Text style={styles.rowMeta}>Changes recalculate this month’s allocations, including earlier spending. Previous agreements are saved when changed or removed. Versions from before history recording began are unavailable. These are plan definitions, not settled balances or past spending reports.</Text>
+      {history.isFetching ? <ActivityIndicator /> : null}
+      {history.isError ? <TouchableOpacity accessibilityRole="button" onPress={() => void history.refetch()}><Text style={styles.rowMeta}>History could not be loaded. Tap to try again.</Text></TouchableOpacity> : null}
+      {history.data?.entries.length === 0 ? <Text style={styles.rowMeta}>No previous agreements recorded yet.</Text> : null}
+      {history.data?.entries.map(({ id, recordedAt, definition: plan }) => <View key={id} style={styles.allocationStack}>
+        <Text style={styles.cardTitle}>{plan.name} · {formatMoney(plan.monthlyAmountMinor, plan.currency)} / month</Text>
+        <Text style={styles.rowMeta}>{plan.categoryName} · {plan.reason === "REMOVED" ? "Removed" : "Replaced"} {new Date(recordedAt).toLocaleString()}</Text>
+        <Text style={styles.rowMeta}>Previous version saved {new Date(plan.definitionUpdatedAt).toLocaleString()}</Text>
+        {plan.allocations.map(share => <Text key={share.memberId} style={styles.rowMeta}>{share.displayName}: {share.shareBasisPoints / 100}% · {formatMoney(share.assignedMinor, plan.currency)}</Text>)}
+      </View>)}
+      {history.data?.nextCursor ? <TouchableOpacity accessibilityRole="button" onPress={() => setCursor(history.data!.nextCursor)}><Text style={styles.cardTitle}>Older agreements</Text></TouchableOpacity> : null}
+      {cursor ? <TouchableOpacity accessibilityRole="button" onPress={() => setCursor(null)}><Text style={styles.cardTitle}>Latest agreements</Text></TouchableOpacity> : null}
+    </> : null}
+  </View>;
+}
+
 function HouseholdContent({ summary }: { summary: HouseholdSummary }) {
   const styles = useThemedStyles(createStyles);
   const partnerNames = summary.members
@@ -452,9 +534,12 @@ function HouseholdContent({ summary }: { summary: HouseholdSummary }) {
             This total only includes your accounts plus details or summaries your partner chose to share.
           </Text>
         </View>
+        {summary.finances.bankDataNotices.map(notice => <Text key={notice.accountId} style={styles.privacyText}>{notice.message}</Text>)}
       </View>
 
       <AccountsSection summary={summary} />
+      <HouseholdBudgetEditor summary={summary} key={`${summary.household.id}:${summary.viewerMemberId}`} />
+      <AgreementHistory summary={summary} key={`${summary.household.id}:${summary.viewerMemberId}:${summary.household.updatedAt}`} />
 
       <SectionHeading
         title="Monthly responsibilities"
@@ -499,6 +584,11 @@ export default function HouseholdScreen() {
   const [displayName, setDisplayName] = useState("");
   const [income, setIncome] = useState("");
   const [setupError, setSetupError] = useState<string | null>(null);
+  const [invitationCode, setInvitationCode] = useState("");
+  const [partnerEmail, setPartnerEmail] = useState("");
+  const createInvite = useMutation({
+    mutationFn: () => api.post<{ message: string; invitationCode?: string }>("/households/current/partners/link", { email: partnerEmail.trim() }),
+  });
   const household = useQuery({
     queryKey: ["household-summary", userId],
     queryFn: async () => householdSummarySchema.parse(
@@ -531,6 +621,10 @@ export default function HouseholdScreen() {
     onSuccess: async () => {
       await household.refetch();
     },
+  });
+  const joinWithCode = useMutation({
+    mutationFn: () => api.post("/households/invitations/accept", { invitationCode: invitationCode.trim() }),
+    onSuccess: async () => { setInvitationCode(""); await household.refetch(); },
   });
 
   function submitHouseholdSetup() {
@@ -644,6 +738,31 @@ export default function HouseholdScreen() {
             acceptingId={acceptInvitation.isPending ? acceptInvitation.variables ?? null : null}
             onAccept={(id) => acceptInvitation.mutate(id)}
           />
+          {isMissingHousehold ? (
+            <View style={styles.card}>
+              <Text style={styles.rowTitle}>Joining your partner?</Text>
+              <Text style={styles.muted}>Sign in with the invited email and enter their private code. Accepting joins the shared plan; your account details stay personal until you choose to share them.</Text>
+              <TextInput accessibilityLabel="Invitation code" style={styles.noteInput} value={invitationCode} onChangeText={setInvitationCode} autoCapitalize="none" placeholder="Invitation code" />
+              <TouchableOpacity style={styles.primaryButton} disabled={joinWithCode.isPending} onPress={() => joinWithCode.mutate()}><Text style={styles.primaryButtonText}>Accept and join household</Text></TouchableOpacity>
+              {joinWithCode.error ? <Text style={styles.errorText}>{joinWithCode.error.message}</Text> : null}
+            </View>
+          ) : null}
+          {household.data?.members.some((member) => member.isCurrentUser && member.role === "OWNER") ? (
+            <View style={styles.card}>
+              <Text style={styles.rowTitle}>Invite your partner</Text>
+              <Text style={styles.muted}>They can register later. Share the code directly; no email is sent. They must use the invited email and explicitly accept within 7 days.</Text>
+              <TextInput accessibilityLabel="Partner email" style={styles.noteInput} value={partnerEmail} onChangeText={setPartnerEmail} autoCapitalize="none" keyboardType="email-address" placeholder="Partner email" />
+              <TouchableOpacity style={styles.primaryButton} disabled={createInvite.isPending} onPress={() => createInvite.mutate()}><Text style={styles.primaryButtonText}>Create invitation code</Text></TouchableOpacity>
+              {createInvite.data ? <View style={{ gap: spacing.sm }}>
+                <Text style={styles.muted}>{createInvite.data.message}</Text>
+                {createInvite.data.invitationCode ? <>
+                  <Text style={styles.inputLabel}>Invitation code · press and hold to copy</Text>
+                  <Text selectable accessibilityLabel="Generated invitation code" style={[styles.muted, { fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }]}>{createInvite.data.invitationCode}</Text>
+                </> : null}
+              </View> : null}
+              {createInvite.error ? <Text style={styles.errorText}>{createInvite.error.message}</Text> : null}
+            </View>
+          ) : null}
           {acceptInvitation.error ? (
             <View style={styles.errorCard}><Text style={styles.muted}>{acceptInvitation.error.message}</Text></View>
           ) : null}

@@ -22,7 +22,28 @@ export default function HouseholdSetupPage() {
   const [income, setIncome] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [invitationCode, setInvitationCode] = useState("");
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+
+  async function join(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsSaving(true);
+    setError(null);
+    try {
+      const response = await fetch("/api/household/manage/invitations/accept", {
+        method: "POST", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ invitationCode: invitationCode.trim() }),
+      });
+      const payload = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(payloadMessage(payload, "Check your code and make sure you signed in with the invited email."));
+      router.replace("/dashboard");
+      router.refresh();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Unable to join household.");
+      setIsSaving(false);
+    }
+  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -79,6 +100,12 @@ export default function HouseholdSetupPage() {
             <div className="login-form__meta"><span>{timezone}</span><span>USD</span></div>
             <div className="login-error" role="alert">{error ? <><Icon name="lock" />{error}</> : null}</div>
             <button className="button button--primary button--wide" type="submit" disabled={isSaving}>{isSaving ? "Creating..." : "Create household"}</button>
+          </form>
+          <form className="login-form" onSubmit={join}>
+            <h2>Joining your partner?</h2>
+            <p>Use the private code they shared with you and sign in with the invited email. Accepting joins the shared plan; account details stay personal until you choose to share them.</p>
+            <label><span>Invitation code</span><input value={invitationCode} onChange={(event) => setInvitationCode(event.target.value)} required autoComplete="off" /></label>
+            <button className="button button--primary button--wide" type="submit" disabled={isSaving}>Accept and join household</button>
           </form>
         </div>
       </section>

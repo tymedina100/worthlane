@@ -22,6 +22,7 @@ export type PersonalCategory = {
 };
 
 export type PersonalTransaction = {
+  spendingTreatment?: "AUTO" | "REFUND" | "EXCLUDED";
   id: string;
   amount: number;
   date: string;
@@ -67,6 +68,8 @@ export type PersonalAccount = {
 };
 
 export type PlaidConnection = {
+  transactionHistoryStatus: string;
+  dataNotice: string;
   id: string;
   itemId: string;
   institution: string | null;

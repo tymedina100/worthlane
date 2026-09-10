@@ -22,8 +22,13 @@ describe("calculateBudgetProgress", () => {
     expect(calculateBudgetProgress(0, 0).percentUsed).toBe(0);
   });
 
-  it("rejects fractional minor units and negative spending", () => {
+  it("rejects fractional minor units and negative budgets", () => {
     expect(() => calculateBudgetProgress(10_000.5, 2_000)).toThrow("safe integer");
-    expect(() => calculateBudgetProgress(10_000, -1)).toThrow("cannot be negative");
+    expect(() => calculateBudgetProgress(-1, 0)).toThrow("cannot be negative");
+  });
+  it("preserves net refunds without clamping money", () => {
+    expect(calculateBudgetProgress(60_000, -2_000)).toMatchObject({
+      spentMinor: -2_000, remainingMinor: 62_000,
+    });
   });
 });

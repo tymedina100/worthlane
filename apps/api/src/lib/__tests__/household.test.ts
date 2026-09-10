@@ -261,6 +261,7 @@ describe("household summary privacy", () => {
           date: {
             gte: new Date("2026-07-01T07:00:00.000Z"),
             lt: new Date("2026-08-01T07:00:00.000Z"),
+            lte: now,
           },
         }),
       })

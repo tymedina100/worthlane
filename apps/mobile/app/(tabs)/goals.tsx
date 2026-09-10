@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { router } from "expo-router";
 import {
   View,
   Text,
@@ -439,6 +440,7 @@ export default function GoalsScreen() {
         </View>
 
         {isLoading && <Text style={typography.body}>Loading goals...</Text>}
+        <TouchableOpacity accessibilityRole="button" onPress={() => router.push("/debt-plans" as any)} style={styles.submitButton}><Text style={styles.submitButtonText}>Plan debt payoff — avalanche or snowball</Text></TouchableOpacity>
         {goals?.map((g) => (
           <GoalCard
             key={g.id}

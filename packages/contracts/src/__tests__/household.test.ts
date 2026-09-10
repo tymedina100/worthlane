@@ -105,6 +105,25 @@ describe("household management contracts", () => {
     ).toBe("PERCENTAGE");
   });
 
+  it("accepts a zero/100 percentage split but rejects negative and all-zero shares", () => {
+    const input = (first: number, second: number) => ({
+      name: "Utilities",
+      monthlyAmountMinor: 15_001,
+      assignment: {
+        mode: "PERCENTAGE",
+        shares: [
+          { memberId: "member-1", basisPoints: first },
+          { memberId: "member-2", basisPoints: second },
+        ],
+      },
+    });
+    expect(createHouseholdResponsibilitySchema.parse(input(0, 10_000)).assignment)
+      .toEqual(input(0, 10_000).assignment);
+    expect(createHouseholdResponsibilitySchema.safeParse(input(10_000, 0)).success).toBe(true);
+    expect(createHouseholdResponsibilitySchema.safeParse(input(-1, 10_001)).success).toBe(false);
+    expect(createHouseholdResponsibilitySchema.safeParse(input(0, 0)).success).toBe(false);
+  });
+
   it("rejects duplicate or incomplete percentage allocations", () => {
     const common = { name: "Housing", monthlyAmountMinor: 240_000 };
     expect(() =>
@@ -192,5 +211,8 @@ describe("household management contracts", () => {
       acceptHouseholdPartnerInviteSchema.parse({ invitationId: "invite-1" })
     ).toEqual({ invitationId: "invite-1" });
     expect(() => acceptHouseholdPartnerInviteSchema.parse({})).toThrow();
+    expect(acceptHouseholdPartnerInviteSchema.parse({ invitationCode: "a".repeat(48) }).invitationCode).toHaveLength(48);
+    expect(() => acceptHouseholdPartnerInviteSchema.parse({ invitationCode: "short" })).toThrow();
+    expect(() => acceptHouseholdPartnerInviteSchema.parse({ invitationId: "id", invitationCode: "a".repeat(48) })).toThrow();
   });
 });

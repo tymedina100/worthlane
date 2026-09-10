@@ -72,6 +72,14 @@ function responsibilityLabel(
   return `${responsibility.allocations[0]?.displayName ?? "One member"} owns`;
 }
 
+function planMonth(summary: HouseholdSummary, includeYear = false) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    ...(includeYear ? { year: "numeric" as const } : {}),
+    timeZone: summary.household.timezone,
+  }).format(new Date(summary.asOf ?? summary.household.updatedAt));
+}
+
 export function ProgressBar({
   value,
   label,
@@ -240,7 +248,7 @@ function ResponsibilitiesSection({ summary }: { summary: HouseholdSummary }) {
           <h2 id="responsibilities-title">Household category budgets</h2>
           <p>Plan who covers what without turning every purchase into an IOU.</p>
         </div>
-        <span className="month-chip">July 2026</span>
+        <span className="month-chip">{planMonth(summary, true)}</span>
       </div>
 
       <div className="responsibility-list">
@@ -265,7 +273,7 @@ function ResponsibilitiesSection({ summary }: { summary: HouseholdSummary }) {
               </div>
               <div className="responsibility-row__progress">
                 <div className="responsibility-row__progress-copy">
-                  <span>{formatCurrencyMinor(usedMinor, currency, { hideCents: true })} applied</span>
+                  <span>{formatCurrencyMinor(usedMinor, currency, { hideCents: true })} visible spending · applied by agreed split</span>
                   <strong>{formatPercent(percentUsed)}</strong>
                 </div>
                 <ProgressBar value={percentUsed} label={`${responsibility.name} progress`} />
@@ -276,6 +284,7 @@ function ResponsibilitiesSection({ summary }: { summary: HouseholdSummary }) {
                     <i className={`member-dot member-dot--${allocation.displayName.toLowerCase()}`} />
                     <b>{allocation.displayName}</b>
                     {formatPercent(allocation.shareBasisPoints / 100)} · {formatCurrencyMinor(allocation.assignedMinor, currency, { hideCents: true })}
+                    {" · "}{formatCurrencyMinor(allocation.remainingMinor, currency)} remaining from visible activity
                   </span>
                 ))}
               </div>
@@ -767,6 +776,7 @@ export function HouseholdDashboard({ mode, initialSummary }: HouseholdDashboardP
           </div>
         </header>
 
+        {summary.finances.bankDataNotices.map(notice => <p className="status-banner" key={notice.accountId} role="status">{notice.message}</p>)}
         <section className="metric-grid" aria-label="Household summary">
           <article className="metric-card metric-card--primary">
             <div className="metric-card__top">
@@ -783,7 +793,7 @@ export function HouseholdDashboard({ mode, initialSummary }: HouseholdDashboardP
           <article className="metric-card">
             <div className="metric-card__top">
               <span>Monthly plan</span>
-              <span className="metric-card__mini">July</span>
+              <span className="metric-card__mini">{planMonth(summary)}</span>
             </div>
             <strong>{formatCurrencyMinor(totals?.monthlyPlanMinor ?? 0, currency, { hideCents: true })}</strong>
             <p>{formatCurrencyMinor(totals?.appliedMinor ?? 0, currency, { hideCents: true })} applied so far</p>

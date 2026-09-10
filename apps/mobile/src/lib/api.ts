@@ -195,6 +195,8 @@ async function* apiStream(path: string, body?: unknown): AsyncGenerator<string> 
 
 export const api = {
   get: <T>(path: string) => apiRequest<T>(path, { method: "GET" }),
+  put: <T>(path: string, body: unknown) =>
+    apiRequest<T>(path, { method: "PUT", body: JSON.stringify(body) }),
   post: <T>(path: string, body?: unknown) =>
     apiRequest<T>(path, { method: "POST", ...(body !== undefined ? { body: JSON.stringify(body) } : {}) }),
   patch: <T>(path: string, body?: unknown) =>

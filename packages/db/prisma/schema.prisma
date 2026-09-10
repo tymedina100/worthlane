@@ -21,6 +21,7 @@ model User {
   categories            Category[]
   budgets               Budget[]
   goals                 Goal[]
+  debtPlans             DebtPlan[]
   goalContributions     GoalContribution[]
   streaks               Streak[]
   nudges                Nudge[]
@@ -36,6 +37,39 @@ model User {
 // Refresh tokens are opaque client credentials. Only a SHA-256 digest is
 // persisted, while the signed JWT identifies this row and its rotation family.
 // Consumed rows remain as replay-detection records until their user is deleted.
+model DebtPlan {
+  id String @id @default(cuid())
+  userId String
+  name String
+  startMonth String
+  strategy String
+  monthlyPayment Decimal @db.Decimal(12,2)
+  revision Int @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  debts DebtPlanEntry[]
+  @@index([userId, createdAt])
+}
+
+model DebtPlanEntry {
+  id String @id @default(cuid())
+  planId String
+  entryId String
+  name String
+  balance Decimal @db.Decimal(12,2)
+  minimumPayment Decimal @db.Decimal(12,2)
+  statementBalance Decimal? @db.Decimal(12,2)
+  dueDate String?
+  aprBasisPoints Int
+  promoAprBasisPoints Int?
+  promoExpiresOn String?
+  bankReference Json?
+  position Int
+  plan DebtPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  @@unique([planId, entryId])
+}
+
 model RefreshSession {
   id           String    @id
   userId       String
@@ -73,6 +107,7 @@ model Account {
   id              String        @id @default(cuid())
   userId          String
   plaidAccountId  String?       @unique
+  bankIdentity    String? // hashed provider persistent identity; never returned to clients
   plaidItemId     String?
   plaidCursor     String? // for transactions sync
   name            String
@@ -87,6 +122,8 @@ model Account {
   user              User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions      Transaction[]
   householdAccesses HouseholdAccountAccess[]
+
+  @@unique([userId, bankIdentity])
 }
 
 model Category {
@@ -105,6 +142,12 @@ model Category {
   @@unique([userId, name])
 }
 
+enum SpendingTreatment {
+  AUTO
+  REFUND
+  EXCLUDED
+}
+
 model Transaction {
   id                 String   @id @default(cuid())
   userId             String
@@ -114,7 +157,11 @@ model Transaction {
   date               DateTime
   merchantName       String?
   categoryId         String?
+  categoryOverridden Boolean @default(false)
+  bankDate           String?
+  treatmentOverridden Boolean @default(false)
   isManual           Boolean  @default(false)
+  spendingTreatment  SpendingTreatment @default(AUTO)
   isImpulse          Boolean  @default(false) // user-flagged impulse purchase
   note               String?
   createdAt          DateTime @default(now())
@@ -277,6 +324,7 @@ model PlaidItem {
   errorCode            String?
   errorMessage         String?
   syncCursor           String?
+  transactionHistoryStatus String @default("UNKNOWN")
   lastSyncAt           DateTime?
   lastWebhookAt        DateTime?
   createdAt            DateTime        @default(now())
@@ -305,6 +353,8 @@ enum UpcomingObligationType {
 // User-entered obligations are separate from Plaid-derived recurring data so
 // V1 stays reliable without a bank connection.
 model UpcomingObligation {
+  anchorDay      Int?
+  sourceKey      String?                @unique
   id             String                 @id @default(cuid())
   userId         String
   name           String
@@ -414,6 +464,8 @@ model HouseholdMember {
   id          String                @id @default(cuid())
   householdId String
   userId      String?
+  invitedEmail String?
+  inviteTokenHash String? @unique
   displayName String
   role        HouseholdRole         @default(MEMBER)
   status      HouseholdMemberStatus @default(INVITED)
@@ -469,10 +521,22 @@ model HouseholdResponsibility {
   household   Household                           @relation(fields: [householdId], references: [id], onDelete: Cascade)
   category    Category?                           @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   allocations HouseholdResponsibilityAllocation[]
+  history     HouseholdResponsibilityHistory[]
 
   @@unique([householdId, slug])
   @@index([householdId, isActive])
   @@index([categoryId])
+}
+
+model HouseholdResponsibilityHistory {
+  id               String   @id @default(cuid())
+  responsibilityId String
+  recordedAt       DateTime @default(now())
+  definition       Json
+
+  responsibility HouseholdResponsibility @relation(fields: [responsibilityId], references: [id], onDelete: Cascade)
+
+  @@index([responsibilityId, recordedAt, id])
 }
 
 model HouseholdResponsibilityAllocation {

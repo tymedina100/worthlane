@@ -1,8 +1,11 @@
 # Worthlane
 
-Worthlane V1 is a calm, manual-first personal-finance companion. It answers
-three questions without requiring a bank connection: where do I stand today,
-what is coming next, and what should I enter or handle now?
+Worthlane helps people build a life together without merging all their money.
+The active couples-first beta supports solo users and households managed by up
+to two consenting adults, with one coherent budget and private personal finances.
+See [product principles](PRODUCT_PRINCIPLES.md) and [beta evidence](docs/beta-progress.md).
+The existing manual-first foundation below is implemented scope, not proof that
+the complete beta has passed acceptance.
 
 Worthlane is also growing into a multi-platform product. The Expo mobile app
 remains the first-class client for quick daily interactions, while a separate
@@ -255,11 +258,45 @@ corepack pnpm --filter @worthlane/mobile exec expo export --platform ios --outpu
 corepack pnpm smoke:household-demo
 ~~~
 
+For the PostgreSQL-backed route integration journey on Windows, run
+`./scripts/test-postgres.ps1`. It creates a fresh synthetic-only cluster under
+ignored `.tmp`, migrates it, tests real registration/consent/budget persistence
+and account visibility, and stops the cluster in `finally`. PostgreSQL 17 is the
+default; override `-PostgresBin` or `-Port` as needed. Clusters are retained for
+diagnosis. This does not run browser/mobile UI or Plaid acceptance tests.
+
+Add `-Http` to run `scripts/test-http.mjs` after the database journey. It starts
+local API/desktop servers on ports 3301/3303 and checks real cookie sessions,
+origin/auth validation, classification persistence, logout and fresh login.
+Servers are stopped afterward. This HTTP client inspects cookies but is not a
+browser and does not prove Secure-cookie behavior or visual/interactive UX.
+
+CI runs the same suite against an ephemeral PostgreSQL service. A separately
+provisioned local test database can run `corepack pnpm --filter @worthlane/api test:integration`
+with `WORTHLANE_TEST_DATABASE_URL` pointing explicitly to `127.0.0.1`, an explicit
+port, and database `worthlane_beta_test`. The integration config refuses other
+targets and never falls back to the application's normal database URL.
+
 Generation, typechecks, unit tests, and builds use a syntactically valid
 `DATABASE_URL` but do not require a running database. Applying migrations,
 seeding, and checking cross-client persisted updates do require PostgreSQL.
 
-## Roadmap
+## Beta milestones (September 8, 2026)
+
+1. Reconcile product instructions and establish a fresh tested baseline.
+2. Prove guided solo/two-login onboarding and persisted owned/equal/custom category
+   budgets, consent, privacy, responsibility versus payer, and remaining amounts.
+3. Prove Plaid Sandbox connect/reconnect/sync/recovery/unlink, transaction
+   reconciliation and freshness, while preserving manual fallback.
+4. Integrate confirmed due dates/reminders and saved avalanche/snowball debt plans
+   with deterministic APR, minimum-payment, promotion and rounding calculations.
+5. Pass PostgreSQL integration, interactive solo/two-user journeys and regression
+   builds. Record exact evidence; production changes and spending require approval.
+
+## Historical V1 roadmap
+
+The following records the earlier release breakdown. Required banking, debt and
+persistent journey verification are now beta requirements in the milestones above.
 
 ### V1
 

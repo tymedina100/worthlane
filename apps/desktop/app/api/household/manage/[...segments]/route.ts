@@ -35,6 +35,9 @@ type ProxyTarget = {
 };
 
 function targetFor(method: string, segments: string[]): ProxyTarget | null {
+  if (segments.length === 1 && segments[0] === "responsibility-history" && method === "GET") {
+    return { path: "/households/current/responsibility-history" };
+  }
   if (segments.length === 1 && segments[0] === "responsibilities") {
     if (method === "GET") return { path: "/households/current/responsibilities" };
     if (method === "POST") {
@@ -137,6 +140,13 @@ async function proxy(
   const target = targetFor(request.method, segments);
   if (!target) {
     return errorResponse("Household management route not found", 404, "NOT_FOUND");
+  }
+  if (segments[0] === "responsibility-history") {
+    const cursor = request.nextUrl.searchParams.get("cursor");
+    if (cursor !== null) {
+      if (!cursor || cursor.length > 191) return errorResponse("Invalid history cursor", 400, "VALIDATION_ERROR");
+      target.path += `?cursor=${encodeURIComponent(cursor)}`;
+    }
   }
 
   let body: unknown;

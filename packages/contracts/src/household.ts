@@ -62,9 +62,9 @@ export const responsibilityAllocationSummarySchema = z.object({
   displayName: z.string(),
   shareBasisPoints: z.number().int().min(0).max(10_000),
   assignedMinor: nonNegativeMinorUnitsSchema,
-  appliedSpendMinor: nonNegativeMinorUnitsSchema,
+  appliedSpendMinor: signedMinorUnitsSchema,
   remainingMinor: signedMinorUnitsSchema,
-  percentUsed: percentSchema,
+  percentUsed: z.number().finite(),
 });
 
 export const householdResponsibilitySummarySchema = z.object({
@@ -77,6 +77,30 @@ export const householdResponsibilitySummarySchema = z.object({
   allocations: z.array(responsibilityAllocationSummarySchema),
   updatedAt: isoDateTimeSchema,
 });
+
+// Agreement history contains plan definitions only, never payer activity or balances.
+export const responsibilityHistoryDefinitionSchema = z.object({
+  name: z.string(),
+  categoryName: z.string(),
+  currency: z.string().length(3),
+  mode: responsibilityModeSchema,
+  monthlyAmountMinor: nonNegativeMinorUnitsSchema,
+  definitionUpdatedAt: isoDateTimeSchema,
+  reason: z.enum(["REPLACED", "REMOVED"]),
+  allocations: z.array(responsibilityAllocationSummarySchema.pick({
+    memberId: true, displayName: true, shareBasisPoints: true, assignedMinor: true,
+  }).strict()),
+}).strict();
+
+export const responsibilityHistoryPageSchema = z.object({
+  entries: z.array(z.object({
+    id: z.string(), responsibilityId: z.string(), recordedAt: isoDateTimeSchema,
+    definition: responsibilityHistoryDefinitionSchema,
+  })),
+  nextCursor: z.string().nullable(),
+});
+
+export type ResponsibilityHistoryPage = z.infer<typeof responsibilityHistoryPageSchema>;
 
 export const householdGoalParticipantSummarySchema = z.object({
   memberId: z.string(),
@@ -112,6 +136,8 @@ export const householdGoalSummarySchema = z.object({
 });
 
 export const householdSummarySchema = z.object({
+  // Optional for compatibility with older clients and saved demo snapshots.
+  asOf: isoDateTimeSchema.optional(),
   household: z.object({
     id: z.string(),
     name: z.string(),
@@ -122,6 +148,7 @@ export const householdSummarySchema = z.object({
   viewerMemberId: z.string(),
   members: z.array(householdMemberSummarySchema),
   finances: z.object({
+    bankDataNotices: z.array(z.object({ accountId: z.string(), message: z.string() })).default([]),
     scope: z.literal("VISIBLE_TO_CALLER"),
     visibleNetWorthMinor: signedMinorUnitsSchema,
     detailedAccounts: z.array(householdAccountSummarySchema),
@@ -214,7 +241,7 @@ const percentageResponsibilitySchema = z
         z
           .object({
             memberId: identifierSchema,
-            basisPoints: z.number().int().min(1).max(10_000),
+            basisPoints: z.number().int().min(0).max(10_000),
           })
           .strict()
       )
@@ -352,6 +379,7 @@ export const linkHouseholdPartnerSchema = z
 export const householdPartnerInviteResultSchema = z.object({
   status: z.literal("PENDING"),
   message: z.string(),
+  invitationCode: z.string().optional(),
 });
 
 export const householdPartnerInvitationSummarySchema = z.object({
@@ -368,8 +396,9 @@ export const householdPartnerInvitationsSchema = z.array(
 );
 
 export const acceptHouseholdPartnerInviteSchema = z
-  .object({ invitationId: identifierSchema })
-  .strict();
+  .object({ invitationId: identifierSchema.optional(), invitationCode: z.string().trim().regex(/^[a-f0-9]{48}$/).optional() })
+  .strict()
+  .refine((value) => Boolean(value.invitationId) !== Boolean(value.invitationCode), "Provide an invitation ID or code");
 
 export const acceptHouseholdPartnerInviteResultSchema = z.object({
   member: householdMemberSummarySchema,

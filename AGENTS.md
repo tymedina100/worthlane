@@ -2,13 +2,26 @@
 
 This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
 
+## Current product authority
+
+Follow [PRODUCT_PRINCIPLES.md](PRODUCT_PRINCIPLES.md) and the linked September 8,
+2026 Notion acceptance criteria. The active goal is a couples-first budgeting
+beta, also usable solo or by families managed by at most two consenting logins.
+Preserve architecture and privacy; use calm language. Historical loss-aversion
+and manual-only V1 rules are superseded. Record evidence in
+[docs/beta-progress.md](docs/beta-progress.md) and Notion/TylerOS. Sandbox and
+local synthetic tests are authorized; spending and production changes need approval.
+
 ## Stack
 
 - **Monorepo**: pnpm workspaces + Turborepo
 - **Mobile**: Expo (React Native) — `apps/mobile`
+- **Desktop**: Next.js planning client/BFF — `apps/desktop`; Electron shell — `apps/desktop-native`
+- **Public site**: `apps/web`
 - **API**: Next.js 14 (API routes only, no pages) — `apps/api`
 - **Database**: PostgreSQL via Prisma — `packages/db`
 - **Shared types**: TypeScript — `packages/types`
+- **Shared rules/contracts**: deterministic finance — `packages/core`; runtime validation — `packages/contracts`
 - **Auth**: JWT (access token 15m / refresh token 30d) stored in expo-secure-store
 - **Banking**: Plaid (sandbox by default)
 
@@ -68,11 +81,11 @@ Mobile API URL: set `EXPO_PUBLIC_API_URL` in `apps/mobile/.env.local` (defaults 
 
 ## Key Design Patterns
 
-**Loss aversion UX**: Budget messages always frame remaining budget as what will be *lost*, not what has been spent. See `getLossAversionMessage()` in `apps/mobile/app/(tabs)/budgets.tsx`.
+**Budget UX**: Show the agreed responsibility, permitted spending, and remaining amount in calm language. Responsibility, actual payer, and account visibility are independent. Do not leak private finances through aggregates.
 
-**Streak logic**: `POST /streaks/checkin` extends streak if last activity was yesterday, resets to 1 if older. Dashboard auto-triggers check-in on mount.
+**Legacy streak logic**: Existing streak endpoints are compatibility code, not a requirement to add gamification or pressure to the beta.
 
-**Nudge engine**: `generateNudgesForUser()` in `lib/nudge-engine.ts` is called on `GET /nudges`. Deduplicates by type+day. Uses loss-aversion language in all messages.
+**Nudge engine**: `generateNudgesForUser()` in `lib/nudge-engine.ts` is called on `GET /nudges` and deduplicates by type+day. Existing loss-aversion copy is legacy behavior; new or revised messages must follow the current product principles.
 
 **Transaction amounts**: Follow Plaid convention — positive = expense (debit), negative = income (credit).
 
