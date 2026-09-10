@@ -6,7 +6,7 @@ import {
   fromMinorUnits,
   toMinorUnits,
 } from "@worthlane/core";
-import { startOfMonth, endOfMonth } from "./dates";
+import { budgetPeriod, financialTimeZone } from "./budget-period";
 import { sendPushToUser } from "./push";
 
 /**
@@ -16,8 +16,7 @@ import { sendPushToUser } from "./push";
 export async function generateNudgesForUser(userId: string): Promise<void> {
   const ledger = await personalLedger(userId);
   const now = new Date();
-  const periodStart = startOfMonth(now);
-  const periodEnd = endOfMonth(now);
+  const timeZone = await financialTimeZone(userId);
 
   const [budgets, streaks, goals] = await Promise.all([
     prisma.budget.findMany({ where: { userId }, include: { category: true } }),
@@ -29,10 +28,11 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
 
   // --- Budget updates ---
   for (const budget of budgets) {
+    const { start: periodStart, end: periodEnd } = budgetPeriod(now, timeZone, budget.period);
     const spent = await prisma.transaction.aggregate({
       where: {
         categoryId: budget.categoryId,
-        date: { gte: periodStart, lte: periodEnd },
+        date: { gte: periodStart, lt: periodEnd, lte: now },
         ...spendingWhere, ...ledger.transactionWhere,
       },
       _sum: { amount: true },

@@ -1,10 +1,11 @@
 vi.mock("@/lib/personal-ledger", () => ({ personalLedger: vi.fn(async (userId: string) => ({ accounts: [], transactionWhere: { userId } })) }));
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 // vi.hoisted ensures mockPrisma is available inside the vi.mock factory (which is hoisted to top)
 const { mockPrisma } = vi.hoisted(() => {
   const mockPrisma = {
     user: { findUnique: vi.fn(), update: vi.fn() },
+    householdMember: { findFirst: vi.fn() },
     budget: { findMany: vi.fn() },
     streak: { findMany: vi.fn() },
     goal: { findMany: vi.fn() },
@@ -36,7 +37,7 @@ function makeCategory(name = "Food") {
 }
 
 function makeBudget(amount: number, categoryId = "cat-1") {
-  return { id: "bud-1", userId: USER_ID, amount: { toNumber: () => amount }, categoryId, category: makeCategory() };
+  return { id: "bud-1", userId: USER_ID, period: "MONTHLY", amount: { toNumber: () => amount }, categoryId, category: makeCategory() };
 }
 
 function makeStreak(currentCount: number, lastActivityAt: Date | null) {
@@ -53,6 +54,7 @@ function aggResult(amount: number, count = 0) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mockPrisma.householdMember.findFirst.mockResolvedValue(null);
   // No push token by default → sendPushToUser is a no-op in tests
   mockPrisma.user.findUnique.mockResolvedValue(null);
   mockPrisma.nudge.findFirst.mockResolvedValue(null);
@@ -62,10 +64,40 @@ beforeEach(() => {
   mockPrisma.recurringTransaction.findMany.mockResolvedValue([]);
 });
 
+afterEach(() => vi.useRealTimers());
+
 describe("BUDGET_WARNING nudge", () => {
   beforeEach(() => {
     mockPrisma.streak.findMany.mockResolvedValue([]);
     mockPrisma.goal.findMany.mockResolvedValue([]);
+  });
+
+  it("uses the household week across a UTC month boundary and excludes future activity", async () => {
+    vi.useFakeTimers();
+    const now = new Date("2026-06-01T03:00:00Z"); // Sunday evening in Phoenix
+    vi.setSystemTime(now);
+    mockPrisma.householdMember.findFirst.mockResolvedValue({ household: { timezone: "America/Phoenix" } });
+    mockPrisma.budget.findMany.mockResolvedValue([{ ...makeBudget(100), period: "WEEKLY" }]);
+    await generateNudgesForUser(USER_ID);
+    expect(mockPrisma.transaction.aggregate.mock.calls[0][0].where.date).toEqual({
+      gte: new Date("2026-05-31T07:00:00Z"), // Existing Sunday-start budget policy
+      lt: new Date("2026-06-07T07:00:00Z"),
+      lte: now,
+    });
+  });
+
+  it("uses the household month when UTC has already entered the next month", async () => {
+    vi.useFakeTimers();
+    const now = new Date("2026-06-01T03:00:00Z");
+    vi.setSystemTime(now);
+    mockPrisma.householdMember.findFirst.mockResolvedValue({ household: { timezone: "America/Phoenix" } });
+    mockPrisma.budget.findMany.mockResolvedValue([makeBudget(100)]);
+    await generateNudgesForUser(USER_ID);
+    expect(mockPrisma.transaction.aggregate.mock.calls[0][0].where.date).toEqual({
+      gte: new Date("2026-05-01T07:00:00Z"),
+      lt: new Date("2026-06-01T07:00:00Z"),
+      lte: now,
+    });
   });
 
   it("generates nudge when spending is over budget", async () => {

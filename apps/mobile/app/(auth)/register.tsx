@@ -1,3 +1,4 @@
+import { BrandIdentity } from "@/components/BrandIdentity";
 import { useState } from "react";
 import {
   View,
@@ -50,6 +51,7 @@ export default function RegisterScreen() {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.header}>
+        <BrandIdentity />
         <Text style={styles.title}>Create Account</Text>
         <Text style={styles.subtitle}>A clearer money plan, on your own or together.</Text>
       </View>
