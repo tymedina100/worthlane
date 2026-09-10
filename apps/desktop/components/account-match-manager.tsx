@@ -15,6 +15,7 @@ export function AccountMatchManager({ onManage }: { onManage: ManageHousehold })
   const [message, setMessage] = useState('');
   async function load() {
     setBusy(true);
+    setMessage('');
     try { setData(await onManage<Matches>({ path: '/account-matches', method: 'GET' })); }
     catch (error) { setMessage(error instanceof Error ? error.message : 'Could not load account matches.'); }
     finally { setBusy(false); }

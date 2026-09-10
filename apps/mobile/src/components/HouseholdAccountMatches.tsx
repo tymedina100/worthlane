@@ -25,6 +25,12 @@ export function HouseholdAccountMatches({ householdId }: { householdId: string }
   const selectedAccount = query.data?.accounts.find(account => account.id === first);
   const candidates = query.data?.accounts.filter(account => account.id !== first && account.type === selectedAccount?.type) ?? [];
   const name = (id: string) => { const account = query.data?.accounts.find(account => account.id === id); return account ? `${account.ownerName} · ${account.name}` : 'Account'; };
+  async function refresh() {
+    setMessage('');
+    // A partner may have confirmed or revoked a match on another device.
+    // Refresh the figures alongside the consent state, not just this modal.
+    await Promise.all([query.refetch(), client.invalidateQueries({ queryKey: ['household-summary', userId] })]);
+  }
   async function save(body: { accountId: string; otherAccountId: string; confirmedSameAccount: true } | { id: string }) {
     if (busy) return;
     setBusy(true); setMessage('');
@@ -49,7 +55,7 @@ export function HouseholdAccountMatches({ householdId }: { householdId: string }
           <Text style={styles.helper}>Removing a match or withdrawing detail sharing restores separate counting. Budget agreements and who paid do not change.</Text>
           {query.isPending && <Text style={styles.helper}>Loading account matches…</Text>}
           {query.isError && <Text accessibilityRole="alert" style={styles.helper}>Could not load matches. Check your connection and refresh.</Text>}
-          <TouchableOpacity accessibilityRole="button" disabled={busy || query.isFetching} style={styles.option} onPress={() => void query.refetch()}><Text style={styles.text}>Refresh matches</Text></TouchableOpacity>
+          <TouchableOpacity accessibilityRole="button" disabled={busy || query.isFetching} style={styles.option} onPress={() => void refresh().catch(() => setMessage('Could not refresh household totals. Try again.'))}><Text style={styles.text}>Refresh matches</Text></TouchableOpacity>
           {!!message && <Text accessibilityLiveRegion="polite" style={styles.helper}>{message}</Text>}
           {query.data?.matches.map(match => <View key={match.id} style={styles.card}>
             <Text style={styles.heading}>{name(match.firstAccountId)} ↔ {name(match.secondAccountId)}</Text>
