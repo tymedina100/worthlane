@@ -12,7 +12,7 @@ This starts API port 3301 and desktop port 3303. Mobile uses `EXPO_PUBLIC_API_UR
 
 `test-http.mjs --interactive --sandbox` is different: it creates temporary connections and revokes them on completion. It now removes their local account/transaction records too. Existing records from older test runs are not silently deleted; they may reference previously revoked Sandbox Items. Use a fresh synthetic login for persistent testing until those old fixtures are cleaned up.
 
-## Prepared iOS association — not published
+## iOS association — approved website routes published
 
 The user confirmed ownership of `worthlane.app`. The local personal Apple Development certificate has organizational unit/team ID `5FBXR5M5PJ`. This does not prove paid-program membership or entitlement availability. Do not use the separate company signing identity for Worthlane without user direction.
 
@@ -30,7 +30,7 @@ Before native OAuth acceptance:
 4. Register `https://worthlane.app/plaid-oauth` in the Plaid dashboard's allowed redirect URIs. Set API `PLAID_IOS_REDIRECT_URI` to that exact value and mobile `PLAID_IOS_ASSOCIATED_DOMAIN=worthlane.app`.
 5. Rebuild the signed native app with the associated-domains entitlement. Test ordinary Link plus Sandbox OAuth App2App (`ins_132241`), reconnect, failure recovery, sync and unlink. A browser return page alone does not prove successful bank connection.
 
-On September 10 the public association endpoint returned 404. The local prepared endpoint and callback passed HTTP assertions and callback content was opened interactively. Publication, dashboard registration, Apple entitlement validation and native OAuth are pending.
+On September 10 the user approved publishing only the website association and return routes. Isolated release commit a48cb06 was based on the then-live 10cd6fa plus only these three files. Vercel deployment dpl_6Fdf3WDxt6TjD4oE235MRatCv9VB is READY in production at worthlane.app. Public HTTPS checks passed both routes without redirects, exact association app/path and JSON content type, script-free callback with no reflected query values, no-referrer/CSP, and homepage 200. Apple’s association CDN also returns the expected app ID. Dashboard registration, Worthlane app entitlement validation and native OAuth remain pending. The release source is pushed on codex/plaid-return-release; preserve these files in future website releases. No API/database deployment or production Plaid activation was performed.
 
 Sources: [Plaid iOS setup](https://plaid.com/docs/link/ios/), [Plaid OAuth testing](https://plaid.com/docs/link/oauth/), [Apple associated domains](https://developer.apple.com/documentation/xcode/supporting-associated-domains).
 
