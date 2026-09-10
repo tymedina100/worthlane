@@ -1,17 +1,17 @@
 :root {
-  --ink: #142421;
+  --ink: #233d34;
   --ink-soft: #42544f;
-  --muted: #73827d;
-  --canvas: #f3f5ef;
-  --paper: #ffffff;
-  --line: #dce3dc;
+  --muted: #626d63;
+  --canvas: #f6f3eb;
+  --paper: #fffefa;
+  --line: #e2e3d7;
   --line-soft: #e9ede8;
-  --navy: #0b2027;
-  --navy-2: #103039;
-  --green: #1f7a67;
-  --green-dark: #155c50;
-  --mint: #b9ead5;
-  --mint-soft: #e4f6ed;
+  --navy: #203e35;
+  --navy-2: #2b5143;
+  --green: #347457;
+  --green-dark: #28583f;
+  --mint: #d4e7b5;
+  --mint-soft: #edf2e4;
   --coral: #ff8b68;
   --gold: #efc965;
   --danger: #b8463f;
@@ -892,3 +892,29 @@ body small { font-size: 12px !important; line-height: 1.45; }
 
 .liability-details { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 16px; }
 .liability-details dd { margin: 0; overflow-wrap: anywhere; }
+
+/* Worthlane: warm everyday planning, with quiet hierarchy and legible controls. */
+.sidebar { background: var(--navy); }
+.sidebar__brand { font-size: 24px; font-weight: 650; letter-spacing: -.045em; }
+.sidebar__mark { border-radius: 12px; width: 40px; height: 40px; }
+.sidebar__nav { gap: 7px; }
+.sidebar__nav-item { min-height: 48px; }
+.sidebar__nav-item.is-active { background: var(--mint); color: var(--navy); }
+.sidebar__eyebrow { color: #b1c2b5; }
+.dashboard-header h1, .login-story h1 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; letter-spacing: -.045em; line-height: 1.12; }
+.dashboard-header h1 { font-size: clamp(32px, 3.5vw, 48px); }
+.dashboard-header { padding-block: 8px 12px; }
+.panel, .metric-card { border-radius: 22px; box-shadow: 0 5px 22px rgba(44, 57, 38, .035); }
+.panel__header { padding-top: 28px; }
+.metric-card > strong { font-variant-numeric: tabular-nums; letter-spacing: -.035em; }
+.metric-card--primary { background: var(--navy); }
+.login-story { background: var(--navy); }
+.login-form-panel { background: var(--canvas); }
+.login-form select { width: 100%; min-height: 48px; border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; background: var(--paper); color: var(--ink); font: inherit; }
+.management-form input, .management-form select { min-height: 46px; background: var(--paper); }
+.button { border-radius: 14px; }
+.transaction-table__row:hover { background: var(--mint-soft); }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

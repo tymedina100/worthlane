@@ -99,10 +99,8 @@ export function WorthlaneMark({ className }: { className?: string }) {
       role="img"
       aria-label="Worthlane"
     >
-      <path
-        d="M6 9.5 12.9 30h5.7L21 22.3 23.4 30h5.7L36 9.5h-6.2l-3.7 13.1-2.7-8.8h-4.8l-2.7 8.8-3.7-13.1H6Z"
-        fill="currentColor"
-      />
+      <path d="M7 11 14 29 20 16 26 29 33 11" fill="none" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M15 7h10" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
     </svg>
   );
 }

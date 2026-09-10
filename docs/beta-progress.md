@@ -1420,3 +1420,18 @@ production changes or spending. Full beta acceptance remains unproven.
   Record paid and advance date. Bill's advanced date and saved-plan reopen still
   need independent readback. Created an invitation and registered a separate Avery
   login; acceptance and partner visibility checks remain next. Synthetic data only.
+
+## 2026-09-10 — visual refresh direction requested
+
+- User added an aesthetic UI revamp using HCI/psychology and allowed logo changes.
+  Began desktop direction: ivory canvas, forest navigation, soft chartreuse selection,
+  serif page headings, quieter shadows, larger controls, tabular financial numerals
+  and reduced-motion support. W mark now suggests two paths with a shared horizon.
+- Renamed Shared goals navigation to Goals & bills so due dates and debt tools can
+  be found by recognition. No financial or permission semantics changed.
+- Desktop typecheck/diff check passed. Browser reload verified computed ivory canvas
+  and forest navigation; no browser errors. Screenshot `/tmp/worthlane-warm-ui.png`.
+- This is a first desktop visual pass, not completion of the requested revamp.
+  Remaining design work: page composition/progressive disclosure, mobile consistency,
+  responsive and contrast checks, logo consistency across assets, complete journey QA.
+  Full Plaid setup remains an explicit workstream alongside beta acceptance.
