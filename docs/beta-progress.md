@@ -1400,3 +1400,23 @@ production changes or spending. Full beta acceptance remains unproven.
 - Remaining: full solo bills/debt and two-user interactive acceptance, unknown-
   identity account reconciliation, native Sandbox/reminders and regression builds.
   No production actions or spending.
+
+## 2026-09-10 — fresh Plaid Sandbox backend validation
+
+- User explicitly requested full Plaid setup. Located existing Sandbox credentials
+  in the older local finance checkout, verified its environment is sandbox, and
+  copied only Plaid client/secret/environment into ignored mode-0600 API local config.
+  No credential values were printed, committed or sent to Notion.
+- Ran `WORTHLANE_TEST_DATABASE_URL=postgresql://worthlane_test@127.0.0.1:55439/worthlane_beta_test node scripts/run-plaid-integration.mjs`.
+  Passed real provider test in 14.88 seconds: encrypted Item persistence, accounts,
+  Liabilities statement/minimum/due-date fields, transaction sync/replay, owner
+  isolation, forced login-required recovery state/update-token creation and unlink.
+  Test-created Sandbox Item removed. Log `/tmp/worthlane-plaid-sandbox.log`.
+- This is backend Sandbox evidence. Interactive Link/reconnect completion, native
+  configuration and reminders remain open; no production activation claim.
+- Before Plaid setup, browser saved Morgan card payoff: $100 current balance, 0% APR,
+  $10 minimum, $50 monthly budget, estimated October 2026 payoff and $0 interest.
+  Browser also created monthly Internet bill $45.67 due September 20 and invoked
+  Record paid and advance date. Bill's advanced date and saved-plan reopen still
+  need independent readback. Created an invitation and registered a separate Avery
+  login; acceptance and partner visibility checks remain next. Synthetic data only.
