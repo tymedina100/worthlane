@@ -14,3 +14,10 @@ Thumbs.db
 apps/desktop-native/generated/
 apps/desktop-native/release/
 apps/mobile/android/.kotlin/
+# EAS archives use root ignore rules; exclude machine-specific native outputs.
+apps/mobile/android/build/
+apps/mobile/android/app/build/
+apps/mobile/android/.gradle/
+apps/mobile/android/.cxx/
+apps/mobile/android/app/.cxx/
+apps/mobile/android/local.properties
