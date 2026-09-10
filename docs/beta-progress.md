@@ -1332,3 +1332,25 @@ production changes or spending. Full beta acceptance remains unproven.
 - Remaining: unknown-identity account reconciliation, native Sandbox and reminder
   delivery, partner/restart integrated journeys and regression builds. Native tool
   restriction remains; browser control works. No spending or production changes.
+
+## 2026-09-10 — macOS persisted regression and exact desktop totals
+
+- Continued from merged main `10cd6fa` in `/Users/tylermedina/worthlane-beta-work`
+  on `codex/beta-acceptance`. The Desktop checkout had cloud-offloaded Git files;
+  this separate local checkout preserves it and avoids blocking file hydration.
+- Desktop `hideCents` now omits only zero cents. Reports, household allocations,
+  goals and budget headline amounts retain fractional cents (e.g. $33.47), while
+  whole-dollar amounts remain compact. Explicit compact chart notation is unchanged.
+- Added `bash scripts/test-postgres.sh --http` for macOS/Linux with an isolated,
+  loopback-only synthetic cluster, explicit test database, migrations and cleanup.
+  It never selects the normal application database. Cluster retained after shutdown.
+- Fresh run passed all 8 PostgreSQL tests and all HTTP/BFF checks: consent before
+  joining, invitation before registration, two-user isolation, login persistence,
+  refunds, debt-plan reopen/conflicts, upcoming edits/payment states and duplicate
+  review authentication/origin checks. Command log: `/tmp/worthlane-postgres-verification.log`.
+- `corepack pnpm --filter @worthlane/desktop typecheck` and `git diff --check` passed.
+  Direct formatter assertions passed for 3347, -3347, 1, 30000 and 30001 minor units.
+- These are persisted API/BFF checks, not interactive UI, native reminder delivery
+  or new Plaid Sandbox proof. Remaining acceptance includes unknown-identity account
+  reconciliation, native Sandbox/reminders, integrated interactive/restart journeys
+  and regression builds. No production actions or spending in this milestone.
