@@ -1435,3 +1435,10 @@ production changes or spending. Full beta acceptance remains unproven.
   Remaining design work: page composition/progressive disclosure, mobile consistency,
   responsive and contrast checks, logo consistency across assets, complete journey QA.
   Full Plaid setup remains an explicit workstream alongside beta acceptance.
+
+### 2026-09-10 — Consenting second login and category privacy
+
+- Interactive: Avery registered in an independent browser session after Morgan created an invitation, explicitly accepted it, and saw the persisted $600.01 grocery responsibility plan. Morgan's personal wallet and $20 net grocery activity remained hidden; Avery's visible account total was $0.
+- Fixed POST/PATCH transaction category authorization: only system categories or categories owned by the authenticated user may be attached. Missing and partner-private category IDs return 404; clearing remains supported.
+- Verification: API typecheck passed. Real PostgreSQL-backed HTTP suite passed, including new cross-partner category denial, own-category persistence and clearing, plus invitation/login, transaction, debt-plan and upcoming regressions.
+- Next: interactive Plaid Sandbox Link/reconnect, shared visibility and budget split readbacks, mobile visual consistency and native checks. Production remains unmodified.

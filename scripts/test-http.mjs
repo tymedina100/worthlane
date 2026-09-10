@@ -135,6 +135,21 @@ try {
     body: { invitationCode: invitation.data.invitationCode } });
   const joined = await partner('/api/household/summary');
   await partner('/api/personal/transactions', { method: 'POST', body: manualInput, status: 404 });
+  const partnerSession = await backend('/api/auth/login', { method: 'POST', body: { email: partnerEmail, password } });
+  const privateCategory = await backend('/api/categories', { method: 'POST', token: partnerSession.data.accessToken, status: 201,
+    body: { name: 'Partner private category', icon: 'P', color: '#123456' } });
+  for (const categoryId of [privateCategory.data.id, 'missing-category']) {
+    await browser('/api/personal/transactions', { method: 'POST', body: { ...manualInput, categoryId }, status: 404 });
+    await backend(`/api/transactions/${manual.data.id}`, { method: 'PATCH', token, body: { categoryId }, status: 404 });
+  }
+  const personalCategory = await backend('/api/categories', { method: 'POST', token, status: 201,
+    body: { name: 'My private category', icon: 'M', color: '#654321' } });
+  await backend(`/api/transactions/${manual.data.id}`, { method: 'PATCH', token, body: { categoryId: personalCategory.data.id } });
+  const categoryReadback = (await browser('/api/personal/transactions')).data.transactions.find(row => row.id === manual.data.id);
+  assert.equal(categoryReadback.category.id, personalCategory.data.id);
+  await backend(`/api/transactions/${manual.data.id}`, { method: 'PATCH', token, body: { categoryId: null } });
+  assert.equal((await browser('/api/personal/transactions')).data.transactions.find(row => row.id === manual.data.id).category, null);
+  console.log('PASS: transaction categories reject partner-private and missing IDs, allow own categories and clearing.');
   assert.equal(joined.data.members.length, 2);
   assert.equal(joined.data.finances.detailedAccounts.length, 0, 'Partner must not inherit private account detail');
   await partner('/api/auth/logout', { method: 'POST' });
