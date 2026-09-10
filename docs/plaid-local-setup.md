@@ -33,3 +33,7 @@ Before native OAuth acceptance:
 On September 10 the public association endpoint returned 404. The local prepared endpoint and callback passed HTTP assertions and callback content was opened interactively. Publication, dashboard registration, Apple entitlement validation and native OAuth are pending.
 
 Sources: [Plaid iOS setup](https://plaid.com/docs/link/ios/), [Plaid OAuth testing](https://plaid.com/docs/link/oauth/), [Apple associated domains](https://developer.apple.com/documentation/xcode/supporting-associated-domains).
+
+## Repeat the persisted-bank check
+
+With the persistent launcher running, execute `node scripts/test-persistent-sandbox.mjs --create`. Stop and restart the launcher, then execute `node scripts/test-persistent-sandbox.mjs --verify`. This creates a synthetic login and real Sandbox connection, stores its fixture credentials only in ignored mode-0600 `.tmp/persistent-sandbox-fixture.json`, and verifies fresh login, unchanged account IDs, token decryption and successful bank sync after restart. It retains that connection for continued UI acceptance; do not run the create phase again over an existing fixture. This backend persistence check does not substitute for interactive Link or OAuth evidence.

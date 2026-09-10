@@ -2,6 +2,16 @@ import { PostHog } from "posthog-node";
 
 type EventProperties = Record<string, unknown>;
 
+// Financial values, record identifiers and profile updates must never enter
+// product analytics. New callers get no new fields without explicit review.
+function safeProperties(properties?: EventProperties): EventProperties {
+  const safe: EventProperties = {};
+  if (properties?.method === "password") safe.method = "password";
+  if (typeof properties?.mode === "string" && ["create", "update"].includes(properties.mode)) safe.mode = properties?.mode;
+  if (typeof properties?.platform === "string" && ["ios", "android", "web"].includes(properties.platform)) safe.platform = properties?.platform;
+  return safe;
+}
+
 let client: PostHog | null | undefined;
 
 function getClient() {
@@ -38,9 +48,10 @@ export async function captureServerEvent({
     await posthog.captureImmediate({
       distinctId,
       event,
-      properties,
+      properties: safeProperties(properties),
+      disableGeoip: true,
     });
   } catch (error) {
-    console.error("PostHog capture failed", error);
+    console.error("PostHog capture failed; request details omitted.");
   }
 }

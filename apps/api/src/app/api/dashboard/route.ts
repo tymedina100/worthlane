@@ -229,7 +229,6 @@ export async function GET(req: NextRequest) {
       previousWeekTotal: Number(impulsePrevWeek._sum.amount ?? 0),
     },
     today: {
-      availableBalance: accounts.length ? accounts.reduce((sum, account) => sum + account.currentBalance.toNumber(), 0) : null,
       spentThisMonth: Number(spendingAgg._sum.amount ?? 0),
       receivedThisMonth: Math.abs(Number(incomeAgg._sum.amount ?? 0)),
       dueNextSevenDays,
