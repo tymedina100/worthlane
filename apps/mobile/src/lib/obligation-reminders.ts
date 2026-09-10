@@ -22,13 +22,13 @@ export function setReminderSession(userId: string | null): Promise<void> {
     const scheduled = await Notifications.getAllScheduledNotificationsAsync();
     for (const notification of scheduled) {
       const data = notification.content.data;
-      if (data?.obligationId && (!userId || data.reminderUserId !== userId)) {
+      if ((data?.obligationId || data?.reminderTest) && (!userId || data.reminderUserId !== userId)) {
         await Notifications.cancelScheduledNotificationAsync(notification.identifier);
       }
     }
     const presented = await Notifications.getPresentedNotificationsAsync();
     for (const notification of presented) {
-      if (notification.request.content.data?.obligationId) {
+      if (notification.request.content.data?.obligationId || notification.request.content.data?.reminderTest) {
         await Notifications.dismissNotificationAsync(notification.request.identifier);
       }
     }
@@ -72,7 +72,7 @@ async function schedule(userId: string | null, item: UpcomingObligation, started
     if (trigger <= new Date()) return "past" as const;
     const id = await Notifications.scheduleNotificationAsync({
       content: { title: "Upcoming payment", body: "Open Worthlane to review your upcoming items.", sound: "default", data: { obligationId: item.id, reminderUserId: userId } },
-      trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: trigger },
+      trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: trigger, ...(Platform.OS === "android" ? { channelId: "obligations" } : {}) },
     });
     if (started !== generation || userId !== activeUser) {
       await Notifications.cancelScheduledNotificationAsync(id);
@@ -115,5 +115,30 @@ export function reconcileObligationReminders(userId: string, load: () => Promise
       if (await schedule(userId, item, started, false) === "denied") denied = true;
     }
     return denied ? "denied" as const : "checked" as const;
+  });
+}
+
+
+/** Let a signed-in person verify device delivery without exposing financial data. */
+export function sendTestReminder(userId: string | null) {
+  const started = generation;
+  return enqueue(async () => {
+    const current = () => !!userId && userId === activeUser && started === generation;
+    if (!current()) return "not-scheduled" as const;
+    let permission = await Notifications.getPermissionsAsync();
+    if (permission.status !== "granted") permission = await Notifications.requestPermissionsAsync();
+    if (permission.status !== "granted") return "denied" as const;
+    if (!current()) return "not-scheduled" as const;
+    if (Platform.OS === "android") await Notifications.setNotificationChannelAsync("obligations", { name: "Upcoming reminders", importance: Notifications.AndroidImportance.DEFAULT });
+    for (const notification of await Notifications.getAllScheduledNotificationsAsync()) {
+      if (notification.content.data?.reminderTest) await Notifications.cancelScheduledNotificationAsync(notification.identifier);
+    }
+    if (!current()) return "not-scheduled" as const;
+    const id = await Notifications.scheduleNotificationAsync({
+      content: { title: "Your test reminder", body: "Worthlane reminders can reach this device. No payment is due from this test.", sound: "default", data: { reminderTest: true, reminderUserId: userId } },
+      trigger: { type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, seconds: 10, repeats: false, ...(Platform.OS === "android" ? { channelId: "obligations" } : {}) },
+    });
+    if (!current()) { await Notifications.cancelScheduledNotificationAsync(id); return "not-scheduled" as const; }
+    return "scheduled" as const;
   });
 }

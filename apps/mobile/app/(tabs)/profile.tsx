@@ -35,7 +35,7 @@ import {
   getPlaidStatusTone,
 } from "@/lib/finance";
 import { PLAID_ENABLED } from "@/lib/flags";
-import { getDefaultReminder, setDefaultReminder } from "@/lib/obligation-reminders";
+import { getDefaultReminder, setDefaultReminder, sendTestReminder } from "@/lib/obligation-reminders";
 import { captureV1Event } from "@/lib/v1-analytics";
 import type { ReminderTiming } from "@worthlane/types";
 import { spacing, radius } from "@/lib/theme";
@@ -496,6 +496,12 @@ export default function ProfileScreen() {
     { text: "No reminders", style: "destructive", onPress: () => { setDefaultReminder(userId, "NONE"); setDefaultReminderState("NONE"); } },
     { text: "Cancel", style: "cancel" },
   ]);
+  const testReminder = async () => {
+    try {
+      const result = await sendTestReminder(userId);
+      Alert.alert(result === "scheduled" ? "Test reminder scheduled" : "Reminder not scheduled", result === "scheduled" ? "Go to your Home Screen now. A test reminder will arrive in about 10 seconds. Focus and device notification settings may silence it." : result === "denied" ? "Allow Worthlane notifications in device settings, then try again." : "Sign in again before testing reminders.");
+    } catch { Alert.alert("Could not schedule reminder", "Check your device notification settings and try again."); }
+  };
   const enableNotifications = async () => {
     const current = await Notifications.getPermissionsAsync();
     if (current.status !== "granted") await Notifications.requestPermissionsAsync();
@@ -792,6 +798,10 @@ export default function ProfileScreen() {
           <TouchableOpacity style={styles.card} onPress={enableNotifications} accessibilityRole="button" accessibilityLabel="Enable notifications">
             <View style={styles.settingRow}><Text style={styles.settingLabel}>Notifications</Text><Text style={styles.accountEditHint}>Manage ›</Text></View>
             <Text style={styles.settingDescription}>Turn on calm reminders only when you want them.</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.card, { marginTop: spacing.sm }]} onPress={testReminder} accessibilityRole="button" accessibilityLabel="Send test reminder">
+            <View style={styles.settingRow}><Text style={styles.settingLabel}>Send test reminder</Text><Text style={styles.accountEditHint}>Try it ›</Text></View>
+            <Text style={styles.settingDescription}>Check delivery on this device. No bill details appear in the notification.</Text>
           </TouchableOpacity>
         </View>
 
