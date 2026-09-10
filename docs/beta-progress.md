@@ -1630,3 +1630,8 @@ Plaid/Xcode account prerequisites remain as documented. Vercel's existing PR
 integration also created preview website/desktop deployments; these are previews,
 not a new production app release or proof of a configured beta backend. No merge,
 financial production migration, live Plaid activation or purchase performed.
+
+
+## September 10 — Plaid return registration verified
+
+Tyler completed Xcode/Plaid sign-in and connected the phone. After explicit approval of the shared Plaid redirect setting and user password verification, reopened Developers/API and verified `https://worthlane.app/plaid-oauth` persisted alongside the existing Railway URI. Configured the ignored local API redirect and mobile associated-domain environment. No production Plaid activation or spending. Native device build remains running; signed entitlement, installation and complete interactive banking lifecycle remain unverified. TylerOS project and Plaid task updated with evidence and next steps.

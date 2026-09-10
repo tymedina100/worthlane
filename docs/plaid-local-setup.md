@@ -27,10 +27,10 @@ Before native OAuth acceptance:
 1. Verify the personal team's membership supports Associated Domains and confirm the signed app's actual application identifier prefix matches the prepared file.
 2. Completed: the user approved and published the website association/return routes, full redesign, and beta signup. Do not request these approvals again. New production changes still require scoped approval.
 3. Verify HTTPS 200, JSON content type and no redirects at `https://worthlane.app/.well-known/apple-app-site-association`.
-4. Register `https://worthlane.app/plaid-oauth` in the Plaid dashboard's allowed redirect URIs. Set API `PLAID_IOS_REDIRECT_URI` to that exact value and mobile `PLAID_IOS_ASSOCIATED_DOMAIN=worthlane.app`.
+4. Completed September 10: after scoped approval and password verification, reopened the Vantage team redirect settings and verified `https://worthlane.app/plaid-oauth` persisted alongside the existing Railway address. Local ignored API `PLAID_IOS_REDIRECT_URI` and mobile `PLAID_IOS_ASSOCIATED_DOMAIN=worthlane.app` are configured. Running processes and native entitlements still need verification.
 5. Rebuild the signed native app with the associated-domains entitlement. Test ordinary Link plus Sandbox OAuth App2App (`ins_132241`), reconnect, failure recovery, sync and unlink. A browser return page alone does not prove successful bank connection.
 
-On September 10 the user approved publishing only the website association and return routes. Isolated release commit a48cb06 was based on the then-live 10cd6fa plus only these three files. Vercel deployment dpl_6Fdf3WDxt6TjD4oE235MRatCv9VB is READY in production at worthlane.app. Public HTTPS checks passed both routes without redirects, exact association app/path and JSON content type, script-free callback with no reflected query values, no-referrer/CSP, and homepage 200. Apple’s association CDN also returns the expected app ID. Dashboard registration, Worthlane app entitlement validation and native OAuth remain pending. The release source is pushed on codex/plaid-return-release; preserve these files in future website releases. No API/database deployment or production Plaid activation was performed.
+On September 10 the user approved publishing only the website association and return routes. Isolated release commit a48cb06 was based on the then-live 10cd6fa plus only these three files. Vercel deployment dpl_6Fdf3WDxt6TjD4oE235MRatCv9VB is READY in production at worthlane.app. Public HTTPS checks passed both routes without redirects, exact association app/path and JSON content type, script-free callback with no reflected query values, no-referrer/CSP, and homepage 200. Apple’s association CDN also returns the expected app ID. Dashboard registration was subsequently completed as recorded above; Worthlane app entitlement validation and native OAuth remain pending. The release source is pushed on codex/plaid-return-release; preserve these files in future website releases. No API/database deployment or production Plaid activation was performed.
 
 Sources: [Plaid iOS setup](https://plaid.com/docs/link/ios/), [Plaid OAuth testing](https://plaid.com/docs/link/oauth/), [Apple associated domains](https://developer.apple.com/documentation/xcode/supporting-associated-domains).
 
@@ -38,7 +38,7 @@ Sources: [Plaid iOS setup](https://plaid.com/docs/link/ios/), [Plaid OAuth testi
 
 With the persistent launcher running, execute `node scripts/test-persistent-sandbox.mjs --create`. Stop and restart the launcher, then execute `node scripts/test-persistent-sandbox.mjs --verify`. This creates a synthetic login and real Sandbox connection, stores its fixture credentials only in ignored mode-0600 `.tmp/persistent-sandbox-fixture.json`, and verifies fresh login, unchanged account IDs, token decryption and successful bank sync after restart. It retains that connection for continued UI acceptance; do not run the create phase again over an existing fixture. This backend persistence check does not substitute for interactive Link or OAuth evidence.
 
-## September 10 physical-device prerequisite check
+## September 10 initial physical-device prerequisite check
 
 The paired iPhone16ProMax is available and Developer Mode is enabled. An actual
 Debug device build was attempted with the personal team5FBXR5M5PJ and automatic
@@ -61,6 +61,8 @@ foreground/background10second local-reminder evidence remain valid. A phone buil
 also needs a device-reachable Sandbox API address; the current persistent API binds
 to127.0.0.1:3301 and must not be mistaken for a phone-accessible localhost URL.
 
-Plaid dashboard remains at sign-in. Chrome's banking check was blocked by an open
+Tyler subsequently signed into Xcode and Plaid. The phone was rechecked connected. A generic iOS development build is compiling in `/tmp/worthlane-generic-build-after-signin.log`; no successful signed build or installation is claimed yet.
+
+Chrome's banking check was blocked by an open
 extension UI; the Computer tool explicitly requires it to be completed/dismissed
 before automation resumes. No extension UI was bypassed.
