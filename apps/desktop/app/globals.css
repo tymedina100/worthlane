@@ -918,3 +918,7 @@ body small { font-size: 12px !important; line-height: 1.45; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+.bank-coverage-notices summary { cursor: pointer; font-weight: 650; min-height: 24px; }
+.bank-coverage-notices summary:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+.bank-coverage-notices ul { padding-left: 20px; display: grid; gap: 10px; }
