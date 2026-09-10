@@ -1354,3 +1354,24 @@ production changes or spending. Full beta acceptance remains unproven.
   or new Plaid Sandbox proof. Remaining acceptance includes unknown-identity account
   reconciliation, native Sandbox/reminders, integrated interactive/restart journeys
   and regression builds. No production actions or spending in this milestone.
+
+## 2026-09-10 — explicit desktop solo setup and browser persistence
+
+- Browser verification found desktop setup only offered Create household. Added
+  explicit Just me / Couple or family selection, generic name placeholder, private
+  solo wording and Create my plan action. Both use the existing one/two-member model;
+  choosing solo never requires an invitation and can later add one consenting partner.
+- Interactive browser against the retained local PostgreSQL database: registered a
+  new synthetic login, selected Just me, created Morgan's My plan, added Solo wallet
+  with $1,234.56, signed out, signed back in and saw the same plan and exact balance.
+  Dashboard marked the wallet Personal. Browser reported no page errors. Screenshot:
+  `/tmp/worthlane-solo-persisted.png`. This verifies these actions, not a full solo
+  budget/bills/debt journey or the second partner UI.
+- Runtime: restarted retained synthetic cluster on 55439 and ran
+  `WORTHLANE_TEST_DATABASE_URL=postgresql://worthlane_test@127.0.0.1:55439/worthlane_beta_test node scripts/test-http.mjs --interactive --interactive-minutes=60`.
+  Existing full HTTP/BFF checks passed before interactive testing. Browser commands
+  used `npx --yes agent-browser --session worthlane-beta` (open, snapshot, select,
+  fill, click, screenshot, errors). Desktop typecheck and diff check passed.
+- Unknown-identity reconciliation remains incomplete; no heuristic merging added.
+  Integrated partner/restart journeys, native Sandbox/reminders and regression builds
+  remain required. No production actions or spending.
