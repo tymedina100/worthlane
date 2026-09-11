@@ -1958,3 +1958,38 @@ D7C7C0D2-5966-476B-8234-80B80FCAF7B8 test
 .tmp/native-date-reminder-delivery.yaml passed all actions. Screenshot captured
 with xcrun simctl io on that same laptop Simulator. CI104/34648733644 for65c8b22
 is currently running; previous CI103 is not substituted for this new code.
+
+
+## September 11 — CI104 green and local Android SDK ready
+
+CI104/34648733644 on65c8b22 completed all three jobs successfully. Native DATE
+background banner proof remains in b35fe07. Follow-up OS-history button attempt
+did not display a result because its control remained below the viewport; do not
+claim that separate action passed. The directly captured background banner is
+the delivery evidence.
+
+Installed Google's Apple Silicon command-line tools15859902 with published SHA256
+835b62a26162b229b441d1f6d4680383815a270809eb33522c0d480fa5002c4e.
+New scripts/setup-android-sdk-macos.sh mirrors the authorized Windows helper,
+requires explicit --accept-license, checks archive integrity and installs only
+platform-tools, platform36, build-tools36, NDK27.1.12297006 and CMake3.22.1 into
+ignored .tmp/android-sdk. Actual install exited0; bash syntax/diff checks passed.
+Official source: https://developer.android.com/studio#command-tools .
+Removed only regenerable Worthlane iOS Intermediates.noindex directories to
+recover about3.2GiB; built app products and test databases were preserved.
+
+Local API lacked PLAID_ANDROID_PACKAGE_NAME; added com.worthlane.mobile to ignored
+.env.local. First API probe omitted required mode and correctly returned400;
+corrected mode:create request reached Plaid but failed INVALID_FIELD. A direct
+Sandbox-only diagnostic confirmed: Android package name must be configured in
+the developer dashboard. No tokens/secrets were logged. Requested approval for
+exact shared dashboard addition com.worthlane.mobile, since production setting
+changes require approval. This is an external setting dependency, not an app
+compilation defect or live-banking activation.
+
+Local ARM64 Android debug build started with JDK21, scoped Android SDK and Gradle
+cache, Sentry upload disabled, max2workers/Xmx1536m and
+-PreactNativeArchitectures=arm64-v8a. API URL uses Android emulator10.0.2.2:3301/api
+and Plaid is enabled. Log /tmp/worthlane-android-macos-build.log. Build completion
+and emulator lifecycle remain unverified. iOS Simulator shut down to release RAM;
+its saved state is retained. No physical-phone operations or spending.
