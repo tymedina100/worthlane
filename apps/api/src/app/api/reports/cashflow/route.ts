@@ -1,3 +1,4 @@
+import { personalLedger } from "@/lib/personal-ledger";
 import { NextRequest } from "next/server";
 import { toMinorUnits, fromMinorUnits, monthRangeInTimeZone } from "@worthlane/core";
 import { prisma } from "@worthlane/db";
@@ -18,6 +19,7 @@ export async function GET(req: NextRequest) {
   const monthsParam = Number(req.nextUrl.searchParams.get("months") ?? 6);
   const months = Number.isInteger(monthsParam) && monthsParam >= 1 && monthsParam <= 24 ? monthsParam : 6;
 
+  const ledger = await personalLedger(userId);
   const now = new Date();
   const timeZone = await financialTimeZone(userId);
   const ranges = [monthRangeInTimeZone(now, timeZone)];
@@ -27,7 +29,7 @@ export async function GET(req: NextRequest) {
   const start = ranges[0].start;
 
   const transactions = await prisma.transaction.findMany({
-    where: { userId, date: { gte: start, lte: now } },
+    where: { ...ledger.transactionWhere, date: { gte: start, lte: now } },
     select: { amount: true, date: true, spendingTreatment: true },
   });
 

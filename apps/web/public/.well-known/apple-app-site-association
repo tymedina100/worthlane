@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["5FBXR5M5PJ.com.worthlane.mobile"],
+        "components": [
+          { "/": "/plaid-oauth", "comment": "Return to Worthlane after bank authorization" }
+        ]
+      }
+    ]
+  }
+}

@@ -1,3 +1,4 @@
+import { personalLedger } from "@/lib/personal-ledger";
 import { spendingWhere } from "@/lib/spending-treatment";
 import { NextRequest } from "next/server";
 import { z } from "zod";
@@ -23,6 +24,7 @@ export async function GET(req: NextRequest) {
     return unauthorized();
   }
 
+  const ledger = await personalLedger(userId);
   const now = new Date();
   const timeZone = await financialTimeZone(userId);
 
@@ -39,19 +41,17 @@ export async function GET(req: NextRequest) {
       const [spent, prevSpentAgg, history] = await Promise.all([
         prisma.transaction.aggregate({
           where: {
-            userId,
             categoryId: b.categoryId,
             date: { gte: periodStart, lt: periodEnd, lte: now },
-            ...spendingWhere,
+            ...spendingWhere, ...ledger.transactionWhere,
           },
           _sum: { amount: true },
         }),
         prisma.transaction.aggregate({
           where: {
-            userId,
             categoryId: b.categoryId,
             date: { gte: prevStart, lt: prevEnd },
-            ...spendingWhere,
+            ...spendingWhere, ...ledger.transactionWhere,
           },
           _sum: { amount: true },
         }),

@@ -7,6 +7,7 @@ type LinkHandler = { open(): void; destroy(): void };
 type LinkSdk = { create(options: {
   token: string;
   onSuccess(token: string | null, metadata: { institution?: { name?: string } | null }): void;
+  onEvent(eventName: string): void;
   onExit(error: { display_message?: string | null } | null): void;
 }): LinkHandler };
 
@@ -30,22 +31,56 @@ function loadSdk() {
 
 export function PlaidLinkButton({ onManage, itemId, includeLiabilities = false }: { onManage: ManagePlaid; itemId?: string; includeLiabilities?: boolean }) {
   const [busy, setBusy] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const handler = useRef<LinkHandler | null>(null);
   const mounted = useRef(true);
-  useEffect(() => { mounted.current = true; return () => { mounted.current = false; handler.current?.destroy(); }; }, []);
+  const attempt = useRef(0);
+  const active = useRef(false);
+  const loadingTimer = useRef<number | null>(null);
+  function clearLoadingTimer() {
+    if (loadingTimer.current !== null) window.clearTimeout(loadingTimer.current);
+    loadingTimer.current = null;
+  }
+  function finish(text: string) {
+    attempt.current++;
+    active.current = false;
+    clearLoadingTimer();
+    const previous = handler.current;
+    handler.current = null;
+    previous?.destroy();
+    if (mounted.current) { setBusy(false); setSaving(false); setMessage(text); }
+  }
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; attempt.current++; active.current = false; clearLoadingTimer(); handler.current?.destroy(); handler.current = null; };
+  }, []);
 
   async function connect() {
-    setBusy(true);
-    setMessage("");
+    if (active.current) return;
+    active.current = true;
+    const started = ++attempt.current;
+    const current = () => mounted.current && started === attempt.current;
+    let completed = false;
+    setBusy(true); setSaving(false); setMessage("");
+    loadingTimer.current = window.setTimeout(() => {
+      if (current()) finish("Bank linking did not open. Try again, use another browser, or add a manual account.");
+    }, 30_000);
     try {
       const { linkToken } = await onManage<{ linkToken: string }>({ path: "/link-token", body: { platform: "web", mode: itemId ? "update" : "create", ...(itemId ? { plaidItemId: itemId } : {}), ...(includeLiabilities ? { includeLiabilities: true } : {}) } });
+      if (!current()) return;
       const sdk = await loadSdk();
-      if (!mounted.current) return;
+      if (!current()) return;
       handler.current?.destroy();
       handler.current = sdk.create({
         token: linkToken,
+        // OPEN is a stable, real-time event. Once Link is visible, let the
+        // person complete consent at their own pace instead of timing it out.
+        onEvent: event => { if (current() && event === "OPEN") clearLoadingTimer(); },
         onSuccess: (publicToken, metadata) => {
+          if (!current() || completed) return;
+          completed = true;
+          clearLoadingTimer(); setSaving(true);
           void (async () => {
             try {
               if (itemId) {
@@ -54,23 +89,24 @@ export function PlaidLinkButton({ onManage, itemId, includeLiabilities = false }
                 if (!publicToken) throw new Error("Bank linking did not return a token. Please try again.");
                 await onManage({ path: "/exchange", body: { publicToken, ...(metadata.institution?.name ? { institutionName: metadata.institution.name } : {}) } });
               }
-              if (mounted.current) setMessage(includeLiabilities ? "Link completed. Use Check debt details to retrieve available data. Your saved plans have not changed." : "Connection saved. Review account freshness and choose what to share.");
+              if (current()) finish(includeLiabilities ? "Link completed. Use Check debt details to retrieve available data. Your saved plans have not changed." : "Connection saved. Review account freshness and choose what to share.");
             } catch (error) {
-              if (mounted.current) setMessage(error instanceof Error ? error.message : "Connection could not be saved. Please try again.");
-            } finally { if (mounted.current) setBusy(false); }
+              if (current()) finish(error instanceof Error ? error.message : "Connection could not be saved. Please try again.");
+            }
           })();
         },
-        onExit: (error) => {
-          if (mounted.current) { setBusy(false); setMessage(error?.display_message ?? "Bank linking closed. You can retry or use a manual account."); }
+        onExit: error => {
+          if (current() && !completed) finish(error?.display_message ?? "Bank linking closed. You can retry or use a manual account.");
         },
       });
       handler.current.open();
     } catch (error) {
-      if (mounted.current) { setBusy(false); setMessage(error instanceof Error ? error.message : "Bank linking is unavailable. Use a manual account or try again."); }
+      if (current()) finish(error instanceof Error ? error.message : "Bank linking is unavailable. Use a manual account or try again.");
     }
   }
   return <div>
-    <button className="button button--secondary" type="button" disabled={busy} onClick={() => void connect()}>{busy ? "Connecting…" : includeLiabilities ? "Review debt-data consent" : itemId ? "Reconnect" : "Connect bank"}</button>
+    <button className="button button--secondary" type="button" disabled={busy} onClick={() => void connect()}>{busy ? saving ? "Saving connection…" : "Connecting…" : includeLiabilities ? "Review debt-data consent" : itemId ? "Reconnect" : "Connect bank"}</button>
+    {busy && !saving ? <button className="button button--secondary" type="button" onClick={() => finish("Bank linking cancelled. You can retry or add a manual account.")}>Cancel bank linking</button> : null}
     {message ? <p role="status">{message}</p> : null}
   </div>;
 }

@@ -50,6 +50,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  distDir: /^\.next-http-\d+$/.test(process.env.WORTHLANE_HTTP_DIST_DIR ?? "") ? process.env.WORTHLANE_HTTP_DIST_DIR : ".next",
   reactStrictMode: true,
   transpilePackages: ["@worthlane/contracts"],
   async headers() {

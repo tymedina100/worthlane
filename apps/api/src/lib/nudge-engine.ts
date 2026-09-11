@@ -1,3 +1,4 @@
+import { personalLedger } from "@/lib/personal-ledger";
 import { spendingWhere } from "@/lib/spending-treatment";
 import { prisma, NudgeType } from "@worthlane/db";
 import {
@@ -5,17 +6,17 @@ import {
   fromMinorUnits,
   toMinorUnits,
 } from "@worthlane/core";
-import { startOfMonth, endOfMonth } from "./dates";
+import { budgetPeriod, financialTimeZone } from "./budget-period";
 import { sendPushToUser } from "./push";
 
 /**
- * Generates loss-aversion nudges for a user based on their current financial state.
+ * Generates calm planning updates for a user based on their current financial state.
  * Called by the daily cron job or manually triggered.
  */
 export async function generateNudgesForUser(userId: string): Promise<void> {
+  const ledger = await personalLedger(userId);
   const now = new Date();
-  const periodStart = startOfMonth(now);
-  const periodEnd = endOfMonth(now);
+  const timeZone = await financialTimeZone(userId);
 
   const [budgets, streaks, goals] = await Promise.all([
     prisma.budget.findMany({ where: { userId }, include: { category: true } }),
@@ -25,14 +26,14 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
 
   const nudges: { type: NudgeType; message: string }[] = [];
 
-  // --- Budget nudges (loss aversion framing) ---
+  // --- Budget updates ---
   for (const budget of budgets) {
+    const { start: periodStart, end: periodEnd } = budgetPeriod(now, timeZone, budget.period);
     const spent = await prisma.transaction.aggregate({
       where: {
-        userId,
         categoryId: budget.categoryId,
-        date: { gte: periodStart, lte: periodEnd },
-        ...spendingWhere,
+        date: { gte: periodStart, lt: periodEnd, lte: now },
+        ...spendingWhere, ...ledger.transactionWhere,
       },
       _sum: { amount: true },
     });
@@ -48,12 +49,12 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
     if (remaining < 0) {
       nudges.push({
         type: NudgeType.BUDGET_WARNING,
-        message: `You've gone $${Math.abs(remaining).toFixed(0)} over your ${budget.category.name} budget. That's money taken from your savings.`,
+        message: `${budget.category.name} is $${Math.abs(remaining).toFixed(2)} over the current plan. Review recent activity or adjust the budget.`,
       });
     } else if (progress.percentUsed >= 80) {
       nudges.push({
         type: NudgeType.BUDGET_WARNING,
-        message: `Only $${remaining.toFixed(0)} left before you lose your ${budget.category.name} budget. You've been on track — don't slip now.`,
+        message: `$${remaining.toFixed(2)} left in ${budget.category.name}. Check whether the plan still fits your upcoming needs.`,
       });
     }
   }
@@ -72,7 +73,7 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
     if (!isActiveToday && isActiveYesterday && streak.currentCount >= 2) {
       nudges.push({
         type: NudgeType.STREAK_AT_RISK,
-        message: `Your ${streak.currentCount}-day streak is at risk. Check in now to keep it alive.`,
+        message: `You have a ${streak.currentCount}-day check-in history. Review your plan whenever it works for you.`,
       });
     }
   }
@@ -89,7 +90,7 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
       if (Math.floor(percent) === milestone) {
         nudges.push({
           type: NudgeType.GOAL_MILESTONE,
-          message: `You've reached ${milestone}% of your "${goal.name}" goal. Keep going — you're ${100 - milestone}% away from finishing.`,
+          message: `You've reached ${milestone}% of your "${goal.name}" goal. Review your next contribution when you’re ready.`,
         });
       }
     }
@@ -117,7 +118,7 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
     const when = daysAway === 0 ? "today" : daysAway === 1 ? "tomorrow" : `in ${daysAway} days`;
     nudges.push({
       type: NudgeType.BILL_DUE,
-      message: `${bill.displayName} ($${bill.averageAmount.toNumber().toFixed(0)}) hits ${when}. Make sure the money is there — overdraft fees are pure loss.`,
+      message: `${bill.displayName}: an estimated $${bill.averageAmount.toNumber().toFixed(2)} recurring charge may occur ${when}. This is a prediction, not a confirmed due date; check with the provider.`,
     });
   }
 
@@ -127,10 +128,9 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
 
   const impulseAgg = await prisma.transaction.aggregate({
     where: {
-      userId,
       isImpulse: true,
       date: { gte: sevenDaysAgo, lte: now },
-      ...spendingWhere,
+      ...spendingWhere, ...ledger.transactionWhere,
     },
     _sum: { amount: true },
     _count: { id: true },
@@ -142,7 +142,7 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
   if (impulseTotal > 0) {
     nudges.push({
       type: NudgeType.WEEKLY_SUMMARY,
-      message: `You made ${impulseCount} impulse ${impulseCount === 1 ? "buy" : "buys"} this week totaling $${impulseTotal.toFixed(0)}. That's $${impulseTotal.toFixed(0)} that didn't go toward your goals.`,
+      message: `You marked ${impulseCount} impulse ${impulseCount === 1 ? "purchase" : "purchases"} this week totaling $${impulseTotal.toFixed(2)}. Review these when planning next week.`,
     });
   }
 
@@ -157,7 +157,7 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
   if (impulseFlaggedToday) {
     nudges.push({
       type: NudgeType.IMPULSE_FLAG,
-      message: `You flagged ${impulseFlaggedToday.merchantName ?? "a purchase"} as an impulse buy today ($${Number(impulseFlaggedToday.amount).toFixed(0)}). That's awareness — now use it.`,
+      message: `You flagged ${impulseFlaggedToday.merchantName ?? "a purchase"} as an impulse buy today ($${Number(impulseFlaggedToday.amount).toFixed(2)}). You can revisit the label or adjust your plan.`,
     });
   }
 
@@ -167,7 +167,7 @@ export async function generateNudgesForUser(userId: string): Promise<void> {
   for (const nudge of nudges) {
     try {
       await prisma.nudge.create({ data: { userId, day, ...nudge } });
-      await sendPushToUser(userId, nudge.message);
+      await sendPushToUser(userId);
     } catch (error) {
       const isDuplicate =
         typeof error === "object" && error !== null && (error as { code?: string }).code === "P2002";

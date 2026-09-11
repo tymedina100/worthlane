@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { AppState, Text } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { UpcomingObligationsResponse } from "@worthlane/types";
 import { useAuthStore } from "@/store/auth";
 import { api } from "@/lib/api";
 import { reconcileObligationReminders } from "@/lib/obligation-reminders";
 
 export function ReminderSync() {
+  const insets = useSafeAreaInsets();
   const userId = useAuthStore(state => state.userId);
   const [warning, setWarning] = useState("");
   useEffect(() => {
@@ -28,5 +30,5 @@ export function ReminderSync() {
     const listener = AppState.addEventListener("change", state => { if (state === "active") void sync(); });
     return () => { disposed = true; listener.remove(); };
   }, [userId]);
-  return userId && warning ? <Text accessibilityRole="alert" style={{ backgroundColor: "#fff4dc", color: "#493b20", padding: 12 }}>{warning}</Text> : null;
+  return userId && warning ? <Text accessibilityRole="alert" style={{ backgroundColor: "#fff4dc", color: "#493b20", padding: 12, paddingTop: insets.top + 12 }}>{warning}</Text> : null;
 }

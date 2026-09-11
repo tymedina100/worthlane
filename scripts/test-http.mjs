@@ -1,21 +1,47 @@
 import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
-import { mkdirSync, openSync, closeSync, existsSync } from 'node:fs';
+import { mkdirSync, openSync, closeSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 
 const db = new URL(process.env.WORTHLANE_TEST_DATABASE_URL ?? 'http://invalid');
 assert(db.protocol === 'postgresql:' && db.hostname === '127.0.0.1' && db.pathname === '/worthlane_beta_test');
-const api = 'http://127.0.0.1:3301';
-const desktop = 'http://localhost:3303';
+const apiPort = Number(process.env.WORTHLANE_HTTP_API_PORT ?? 3316);
+const desktopPort = Number(process.env.WORTHLANE_HTTP_DESKTOP_PORT ?? 3317);
+assert([apiPort, desktopPort].every(port => Number.isInteger(port) && port > 1024 && port < 65536) && apiPort !== desktopPort,
+  'HTTP test ports must be distinct integers between1025 and65535');
+const api = `http://127.0.0.1:${apiPort}`;
+const desktop = `http://localhost:${desktopPort}`;
 const children = [];
 const logs = [];
+const distDir = `.next-http-${process.pid}`;
+const generatedInputs = ['api', 'desktop'].flatMap(app => ['tsconfig.json', 'next-env.d.ts']
+  .map(name => resolve('apps', app, name))).filter(existsSync)
+  .map(path => ({ path, original: readFileSync(path, 'utf8') }));
+function restoreGeneratedInputs() {
+  for (const { path, original } of generatedInputs) {
+    const current = readFileSync(path, 'utf8');
+    if (current === original) continue;
+    let safe = current.replaceAll(distDir, '.next') === original;
+    if (path.endsWith('tsconfig.json')) {
+      const normalize = text => {
+        const config = JSON.parse(text);
+        config.include = [...new Set((config.include ?? []).filter(value => !value.startsWith(`${distDir}/`)))].sort();
+        return JSON.stringify(config);
+      };
+      safe = normalize(current) === normalize(original);
+    }
+    if (safe) writeFileSync(path, original);
+    else console.warn(`Preserved concurrent changes in ${path}; inspect generated test references.`);
+  }
+}
 const interactiveMinutes = Number(process.argv.find(arg => arg.startsWith('--interactive-minutes='))?.split('=')[1] ?? 15);
 assert(Number.isInteger(interactiveMinutes) && interactiveMinutes >= 1 && interactiveMinutes <= 120, 'Interactive duration must be 1-120 minutes');
 assert(!process.argv.includes('--sandbox') || process.argv.includes('--interactive'), 'Sandbox HTTP requires interactive mode');
 const sandbox = process.argv.includes('--sandbox') ? await (await import('./sandbox-http.mjs')).sandboxHttp(db.href) : null;
 const env = { ...process.env, DATABASE_URL: db.href, NODE_ENV: 'development',
+  WORTHLANE_HTTP_DIST_DIR: distDir,
   WORTHLANE_API_URL: `${api}/api`, NEXT_TELEMETRY_DISABLED: '1',
   JWT_SECRET: 'http-integration-only-access-secret-32-characters',
   JWT_REFRESH_SECRET: 'http-integration-only-refresh-secret-32-characters',
@@ -60,8 +86,8 @@ function client(base) {
 }
 mkdirSync('.tmp', { recursive: true });
 try {
-  await start('api', 3301, `${api}/api/accounts`);
-  await start('desktop', 3303, `${desktop}/login`);
+  await start('api', apiPort, `${api}/api/accounts`);
+  await start('desktop', desktopPort, `${desktop}/login`);
   const browser = client(desktop); const backend = client(api); const stranger = client(desktop);
   await stranger('/api/plaid/link-token', { method: 'POST', status: 401, body: { platform: 'web', mode: 'create' } });
   await stranger('/api/plaid/exchange', { method: 'POST', status: 401, body: { publicToken: 'synthetic-token' } });
@@ -94,6 +120,20 @@ try {
   console.log('PASS: duplicate review BFF authentication, origin, payload validation and owner-scoped response.');
   const account = await backend('/api/accounts', { method: 'POST', token, status: 201,
     body: { name: 'HTTP synthetic checking', type: 'CHECKING', currentBalance: 100 } });
+  const categories = await browser('/api/personal/categories');
+  const manualInput = { accountId: account.data.id, categoryId: categories.data[0].id,
+    amount: 23.47, date: new Date().toISOString(), merchantName: 'Manual BFF purchase', spendingTreatment: 'AUTO' };
+  await stranger('/api/personal/transactions', { method: 'POST', body: manualInput, status: 401 });
+  await browser('/api/personal/transactions', { method: 'POST', body: manualInput, origin: 'https://untrusted.invalid', status: 403 });
+  for (const invalid of [{ userId: 'forged' }, { amount: 1.234 }, { amount: 0 }, { spendingTreatment: 'REFUND' }]) {
+    await browser('/api/personal/transactions', { method: 'POST', body: { ...manualInput, ...invalid }, status: 400 });
+  }
+  const manual = await browser('/api/personal/transactions', { method: 'POST', body: manualInput, status: 201 });
+  const refund = await browser('/api/personal/transactions', { method: 'POST', body: { ...manualInput, amount: -3.47, spendingTreatment: 'REFUND' }, status: 201 });
+  const savedActivity = (await browser('/api/personal/transactions')).data.transactions;
+  assert.equal(savedActivity.find(row => row.id === manual.data.id).amount, 23.47);
+  assert.equal(savedActivity.find(row => row.id === refund.data.id).spendingTreatment, 'REFUND');
+  console.log('PASS: manual activity BFF create/refund persistence, auth, origin, strict payload and cents.');
   const transaction = await backend('/api/transactions', { method: 'POST', token, status: 201,
     body: { accountId: account.data.id, amount: -12.34, date: new Date().toISOString() } });
   const path = `/api/personal/manage/transactions/${transaction.data.id}`;
@@ -120,6 +160,22 @@ try {
   await partner('/api/household/manage/invitations/accept', { method: 'POST',
     body: { invitationCode: invitation.data.invitationCode } });
   const joined = await partner('/api/household/summary');
+  await partner('/api/personal/transactions', { method: 'POST', body: manualInput, status: 404 });
+  const partnerSession = await backend('/api/auth/login', { method: 'POST', body: { email: partnerEmail, password } });
+  const privateCategory = await backend('/api/categories', { method: 'POST', token: partnerSession.data.accessToken, status: 201,
+    body: { name: 'Partner private category', icon: 'P', color: '#123456' } });
+  for (const categoryId of [privateCategory.data.id, 'missing-category']) {
+    await browser('/api/personal/transactions', { method: 'POST', body: { ...manualInput, categoryId }, status: 404 });
+    await backend(`/api/transactions/${manual.data.id}`, { method: 'PATCH', token, body: { categoryId }, status: 404 });
+  }
+  const personalCategory = await backend('/api/categories', { method: 'POST', token, status: 201,
+    body: { name: 'My private category', icon: 'M', color: '#654321' } });
+  await backend(`/api/transactions/${manual.data.id}`, { method: 'PATCH', token, body: { categoryId: personalCategory.data.id } });
+  const categoryReadback = (await browser('/api/personal/transactions')).data.transactions.find(row => row.id === manual.data.id);
+  assert.equal(categoryReadback.category.id, personalCategory.data.id);
+  await backend(`/api/transactions/${manual.data.id}`, { method: 'PATCH', token, body: { categoryId: null } });
+  assert.equal((await browser('/api/personal/transactions')).data.transactions.find(row => row.id === manual.data.id).category, null);
+  console.log('PASS: transaction categories reject partner-private and missing IDs, allow own categories and clearing.');
   assert.equal(joined.data.members.length, 2);
   assert.equal(joined.data.finances.detailedAccounts.length, 0, 'Partner must not inherit private account detail');
   await partner('/api/auth/logout', { method: 'POST' });
@@ -176,5 +232,6 @@ try {
     else child.kill('SIGTERM');
   }
   for (const log of logs) closeSync(log);
+  restoreGeneratedInputs();
   if (sandbox) await sandbox.cleanup();
 }

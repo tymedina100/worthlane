@@ -18,6 +18,7 @@ function payloadMessage(payload: unknown, fallback: string) {
 export default function HouseholdSetupPage() {
   const router = useRouter();
   const [householdName, setHouseholdName] = useState("Our household");
+  const [setupMode, setSetupMode] = useState("household");
   const [displayName, setDisplayName] = useState("");
   const [income, setIncome] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -85,21 +86,27 @@ export default function HouseholdSetupPage() {
         <div className="login-brand"><span><WorthlaneMark /></span><strong>worthlane</strong></div>
         <div className="login-story__copy">
           <p className="section-kicker">Start personal, invite intentionally</p>
-          <h1>Create your planning household.</h1>
-          <p>You become the owner. Your partner joins later through their own Worthlane login and explicit acceptance.</p>
+          <h1>A money plan for your life.</h1>
+          <p>Start on your own or plan as a couple or family. A household can have up to two adults with separate, consenting logins.</p>
         </div>
         <p className="login-story__foot"><Icon name="lock" /> No account detail is shared by default.</p>
       </section>
       <section className="login-form-panel">
         <div className="login-form-wrap">
-          <div className="login-form-heading"><p className="section-kicker">Household setup</p><h2>Name the plan</h2><p>You can update responsibilities, privacy, and goals after setup.</p></div>
+          <div className="login-form-heading"><p className="section-kicker">Your setup</p><h2>Who are you planning for?</h2><p>You can update responsibilities, privacy, and goals after setup.</p></div>
           <form className="login-form" onSubmit={submit}>
-            <label><span>Your display name</span><input value={displayName} onChange={(event) => setDisplayName(event.target.value)} maxLength={80} placeholder="Tyler" required autoFocus /></label>
-            <label><span>Household name</span><input value={householdName} onChange={(event) => setHouseholdName(event.target.value)} maxLength={100} required /></label>
+            <label><span>Plan setup</span><select value={setupMode} disabled={isSaving} onChange={(event) => {
+              const next = event.target.value;
+              setSetupMode(next);
+              setHouseholdName(name => name === "Our household" || name === "My plan" ? (next === "solo" ? "My plan" : "Our household") : name);
+            }}><option value="solo">Just me</option><option value="household">Couple or family</option></select></label>
+            <p>{setupMode === "solo" ? "No invitation needed. Your accounts and budgets stay personal. You can invite one partner later if you choose." : "You start as the owner. Invite one partner after setup; they must accept using their own login before joining. Account details stay private until you choose to share them."}</p>
+            <label><span>Your display name</span><input value={displayName} onChange={(event) => setDisplayName(event.target.value)} maxLength={80} placeholder="Your name" required autoFocus /></label>
+            <label><span>Plan name</span><input value={householdName} onChange={(event) => setHouseholdName(event.target.value)} maxLength={100} required /></label>
             <label><span>Monthly income <small>optional, for proportional goals</small></span><input value={income} onChange={(event) => setIncome(event.target.value)} inputMode="decimal" placeholder="6000.00" /></label>
             <div className="login-form__meta"><span>{timezone}</span><span>USD</span></div>
             <div className="login-error" role="alert">{error ? <><Icon name="lock" />{error}</> : null}</div>
-            <button className="button button--primary button--wide" type="submit" disabled={isSaving}>{isSaving ? "Creating..." : "Create household"}</button>
+            <button className="button button--primary button--wide" type="submit" disabled={isSaving}>{isSaving ? "Creating..." : setupMode === "solo" ? "Create my plan" : "Create household plan"}</button>
           </form>
           <form className="login-form" onSubmit={join}>
             <h2>Joining your partner?</h2>

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Stack, usePathname } from "expo-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
+import { ActivityIndicator, View } from "react-native";
 import { Sentry } from "@/lib/sentry";
 import { isPostHogEnabled, posthog } from "@/lib/posthog";
 import { useAuthStore } from "@/store/auth";
@@ -13,6 +14,9 @@ import { ReminderSync } from "@/components/ReminderSync";
 
 function ThemedApp() {
   const { colors, scheme } = useTheme();
+  const { userId, isLoading } = useAuthStore();
+
+  if (isLoading) return <View style={{ flex: 1, backgroundColor: colors.bg, justifyContent: "center" }}><ActivityIndicator color={colors.primary} /></View>;
 
   return (
     <ErrorBoundary>
@@ -27,12 +31,19 @@ function ThemedApp() {
           }}
         >
           <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="onboarding" />
-          <Stack.Screen name="household" />
-          <Stack.Screen name="debt-plans" />
-          <Stack.Screen name="quick-add" options={{ presentation: "modal" }} />
-          <Stack.Screen name="paywall" options={{ presentation: "modal", headerShown: false }} />
+          <Stack.Protected guard={!!userId}>
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="onboarding" />
+            <Stack.Screen name="household" />
+            <Stack.Screen name="debt-plans" />
+            <Stack.Screen name="accounts" />
+            <Stack.Screen name="categories" />
+            <Stack.Screen name="duplicate-review" />
+            <Stack.Screen name="recurring" />
+            <Stack.Screen name="reports" />
+            <Stack.Screen name="quick-add" options={{ presentation: "modal" }} />
+            <Stack.Screen name="paywall" options={{ presentation: "modal", headerShown: false }} />
+          </Stack.Protected>
         </Stack>
       </QueryClientProvider>
     </ErrorBoundary>

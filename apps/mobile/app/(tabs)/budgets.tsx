@@ -31,25 +31,25 @@ function getBudgetColor(percentUsed: number, colors: Theme["colors"]): string {
   return colors.success;
 }
 
-// Loss-aversion framing: emphasize what's at stake, not what's spent
-function getLossAversionMessage(b: BudgetWithSpent): { text: string; urgent: boolean } {
+// Concrete status and a next step, without guilt or streak pressure.
+function getBudgetMessage(b: BudgetWithSpent): { text: string; urgent: boolean } {
   if (b.remaining < 0) {
-    return { text: `You're $${Math.abs(b.remaining).toFixed(0)} over. Every dollar here is a dollar stolen from your savings.`, urgent: true };
+    return { text: `$${Math.abs(b.remaining).toFixed(2)} over the plan. Review activity or adjust the budget.`, urgent: true };
   }
   if (b.percentUsed >= 90) {
-    return { text: `Almost gone — only $${b.remaining.toFixed(0)} stands between you and blowing this budget.`, urgent: true };
+    return { text: `$${b.remaining.toFixed(2)} remaining. Check upcoming needs before your next purchase.`, urgent: true };
   }
   if (b.percentUsed >= 70) {
-    return { text: `$${b.remaining.toFixed(0)} left. You've been consistent — don't lose your streak now.`, urgent: false };
+    return { text: `$${b.remaining.toFixed(2)} left. You can adjust the plan as your needs change.`, urgent: false };
   }
-  return { text: `$${b.remaining.toFixed(0)} remaining. You're on track.`, urgent: false };
+  return { text: `$${b.remaining.toFixed(2)} remaining in your plan.`, urgent: false };
 }
 
 function BudgetCard({ budget, onEdit, onDelete }: { budget: BudgetWithSpent; onEdit: () => void; onDelete: () => void }) {
   const { colors } = useTheme();
   const styles = useThemedStyles(createStyles);
   const color = getBudgetColor(budget.percentUsed, colors);
-  const { text, urgent } = getLossAversionMessage(budget);
+  const { text, urgent } = getBudgetMessage(budget);
 
   return (
     <View style={styles.card}>
@@ -334,7 +334,7 @@ export default function BudgetsScreen() {
           <EmptyState
             icon="pie-chart"
             title="No budgets yet"
-            body="Set a budget to start tracking your spending with loss-aversion nudges."
+            body="Set a category budget to see spending, remaining amounts, and your next steps."
             actionLabel="Create a Budget"
             onAction={() => setCreateVisible(true)}
           />

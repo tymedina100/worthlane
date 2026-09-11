@@ -24,6 +24,7 @@ import type { LinkExit, LinkSuccess } from "react-native-plaid-link-sdk";
 import { useAuthStore } from "@/store/auth";
 import { ApiError, api } from "@/lib/api";
 import { completePlaidLink } from "@/lib/plaid-completion";
+import { plaidExitError } from "@/lib/plaid-exit";
 import { useSubscription } from "@/hooks/useSubscription";
 import {
   ACCOUNT_TYPES,
@@ -35,7 +36,7 @@ import {
   getPlaidStatusTone,
 } from "@/lib/finance";
 import { PLAID_ENABLED } from "@/lib/flags";
-import { getDefaultReminder, setDefaultReminder } from "@/lib/obligation-reminders";
+import { getDefaultReminder, setDefaultReminder, sendTestReminder, getTestReminderStatus } from "@/lib/obligation-reminders";
 import { captureV1Event } from "@/lib/v1-analytics";
 import type { ReminderTiming } from "@worthlane/types";
 import { spacing, radius } from "@/lib/theme";
@@ -261,12 +262,15 @@ export default function ProfileScreen() {
   });
 
   const syncMutation = useMutation({
+    onMutate: () => ({ userId: useAuthStore.getState().userId }),
     mutationFn: (plaidItemId?: string) =>
       api.post("/plaid/sync", plaidItemId ? { plaidItemId, refresh: true } : { refresh: true }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["accounts"] });
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    onSettled: async (_data, error, _variables, context) => {
+      if (!context?.userId || useAuthStore.getState().userId !== context.userId) return;
+      await invalidateWorthlaneQueries();
+      if (error && useAuthStore.getState().userId === context.userId) {
+        Alert.alert("Could not sync", bankActionErrorMessage(error));
+      }
     },
   });
 
@@ -313,11 +317,11 @@ export default function ProfileScreen() {
   });
 
   const unlinkMutation = useMutation({
+    onMutate: () => ({ userId: useAuthStore.getState().userId }),
     mutationFn: (plaidItemId: string) => api.post(`/plaid/items/${plaidItemId}/unlink`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["accounts"] });
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    onSettled: async (_data, _error, _variables, context) => {
+      if (!context?.userId || useAuthStore.getState().userId !== context.userId) return;
+      await invalidateWorthlaneQueries();
     },
   });
 
@@ -341,10 +345,10 @@ export default function ProfileScreen() {
     await disableBiometric();
   };
 
-  const invalidateWorthlaneQueries = () => {
-    queryClient.invalidateQueries({ queryKey: ["accounts"] });
-    queryClient.invalidateQueries({ queryKey: ["transactions"] });
-    queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+  const invalidateWorthlaneQueries = async () => {
+    await Promise.all([
+      "accounts", "transactions", "dashboard", "household-summary", "budgets", "net-worth", "reports", "recurring",
+    ].map((key) => queryClient.invalidateQueries({ queryKey: [key] })));
   };
 
   const launchPlaid = async (mode: "create" | "update", plaidItemId?: string) => {
@@ -388,7 +392,8 @@ export default function ProfileScreen() {
       });
       if (!current) return;
 
-      invalidateWorthlaneQueries();
+      await invalidateWorthlaneQueries();
+      if (useAuthStore.getState().userId !== linkingUserId) return;
       Alert.alert(
         mode === "update" ? "Connection repaired" : "Bank connected",
         mode === "update"
@@ -396,13 +401,16 @@ export default function ProfileScreen() {
           : "Your institution was linked and synced successfully."
       );
     } catch (error) {
+      if (useAuthStore.getState().userId !== linkingUserId) return;
+      await invalidateWorthlaneQueries();
       if (useAuthStore.getState().userId === linkingUserId) Alert.alert("Connection failed", bankActionErrorMessage(error));
     }
   };
 
   const handlePlaidExit = (exit: LinkExit) => {
-    if (exit.error) {
-      Alert.alert("Plaid closed", bankActionErrorMessage(new ApiError(exit.error.displayMessage ?? exit.error.errorMessage ?? "Plaid exited with an error.", 400, exit.error.errorCode)));
+    const error = plaidExitError(exit.error);
+    if (error) {
+      Alert.alert("Plaid closed", bankActionErrorMessage(new ApiError(error.message, 400, error.code)));
     }
   };
 
@@ -454,6 +462,8 @@ export default function ProfileScreen() {
   };
 
   const confirmUnlink = (plaidItem: PlaidItemSummary) => {
+    const unlinkingUserId = useAuthStore.getState().userId;
+    if (!unlinkingUserId) return;
     Alert.alert(
       `Unlink ${plaidItem.institution ?? "institution"}?`,
       "This removes the linked accounts and imported transactions for that institution.",
@@ -463,10 +473,11 @@ export default function ProfileScreen() {
           text: "Unlink",
           style: "destructive",
           onPress: async () => {
+            if (useAuthStore.getState().userId !== unlinkingUserId) return;
             try {
               await unlinkMutation.mutateAsync(plaidItem.id);
             } catch (error) {
-              Alert.alert("Could not unlink", bankActionErrorMessage(error));
+              if (useAuthStore.getState().userId === unlinkingUserId) Alert.alert("Could not unlink", bankActionErrorMessage(error));
             }
           },
         },
@@ -496,6 +507,25 @@ export default function ProfileScreen() {
     { text: "No reminders", style: "destructive", onPress: () => { setDefaultReminder(userId, "NONE"); setDefaultReminderState("NONE"); } },
     { text: "Cancel", style: "cancel" },
   ]);
+  const testReminder = async () => {
+    try {
+      const result = await sendTestReminder(userId);
+      Alert.alert(result === "scheduled" ? "Test reminder scheduled" : "Reminder not scheduled", result === "scheduled" ? "Go to your Home Screen now. A test reminder will arrive in about 10 seconds. Focus and device notification settings may silence it." : result === "denied" ? "Allow Worthlane notifications in device settings, then try again." : "Sign in again before testing reminders.");
+    } catch { Alert.alert("Could not schedule reminder", "Check your device notification settings and try again."); }
+  };
+  const checkTestReminder = async () => {
+    try {
+      const status = await getTestReminderStatus(userId);
+      const messages = {
+        presented: ["Test reached notification history", "Your device lists the test reminder in its notification history. This confirms presentation, but does not confirm sound or a visible banner."],
+        pending: ["Test is still scheduled", "The device has not finished this test yet. Wait a few moments and check again."],
+        unknown: ["No test found", "The test may have been dismissed, cleared, or not presented. Send another test and check your device’s notification settings."],
+        stale: ["Sign in again", "Your session changed. Sign in before checking reminders."],
+      } as const;
+      const [title, message] = messages[status];
+      Alert.alert(title, message);
+    } catch { Alert.alert("Could not check test", "Try again in a moment."); }
+  };
   const enableNotifications = async () => {
     const current = await Notifications.getPermissionsAsync();
     if (current.status !== "granted") await Notifications.requestPermissionsAsync();
@@ -793,11 +823,19 @@ export default function ProfileScreen() {
             <View style={styles.settingRow}><Text style={styles.settingLabel}>Notifications</Text><Text style={styles.accountEditHint}>Manage ›</Text></View>
             <Text style={styles.settingDescription}>Turn on calm reminders only when you want them.</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={[styles.card, { marginTop: spacing.sm }]} onPress={testReminder} accessibilityRole="button" accessibilityLabel="Send test reminder">
+            <View style={styles.settingRow}><Text style={styles.settingLabel}>Send test reminder</Text><Text style={styles.accountEditHint}>Try it ›</Text></View>
+            <Text style={styles.settingDescription}>Check delivery on this device. No bill details appear in the notification.</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.card, { marginTop: spacing.sm }]} onPress={checkTestReminder} accessibilityRole="button" accessibilityLabel="Check test reminder status">
+            <View style={styles.settingRow}><Text style={styles.settingLabel}>Check last test</Text><Text style={styles.accountEditHint}>Check ›</Text></View>
+            <Text style={styles.settingDescription}>See whether the device still has your test scheduled or in notification history.</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.section}>
           <SectionHeader title="Worthlane" />
-          <View style={[styles.card, { marginBottom: spacing.sm }]}><Text style={styles.settingLabel}>Plaid coming soon</Text><Text style={styles.settingDescription}>Automatic bank syncing with Plaid is coming soon. For now, Worthlane keeps things simple with fast manual entry.</Text></View>
+          <View style={[styles.card, { marginBottom: spacing.sm }]}><Text style={styles.settingLabel}>Track your way</Text><Text style={styles.settingDescription}>Use bank connections when available, or keep tracking manually. You choose which account details your household can see.</Text></View>
           <TouchableOpacity style={[styles.card, { marginBottom: spacing.sm }]} onPress={suggestFeature} accessibilityRole="button" accessibilityLabel="Suggest a feature"><View style={styles.settingRow}><Text style={styles.settingLabel}>Suggest a feature</Text><Text style={styles.accountEditHint}>›</Text></View><Text style={styles.settingDescription}>Tell us what would make Worthlane more useful.</Text></TouchableOpacity>
           <TouchableOpacity style={[styles.card, { marginBottom: spacing.sm }]} onPress={() => Linking.openURL("https://worthlane.app/privacy")}><Text style={styles.settingLabel}>Privacy policy</Text></TouchableOpacity>
           <TouchableOpacity style={[styles.card, { marginBottom: spacing.sm }]} onPress={() => Linking.openURL("https://worthlane.app/terms")} accessibilityRole="button" accessibilityLabel="Open terms of use"><Text style={styles.settingLabel}>Terms of use</Text></TouchableOpacity>

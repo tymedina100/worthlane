@@ -1,0 +1,188 @@
+Skip to planning workspace
+worthlane
+HOUSEHOLD
+My plan
+Morgan + Avery
+WORKSPACE
+Overview
+Alt+1
+Monthly plan
+Alt+2
+Accounts & privacy
+Alt+3
+Goals & bills
+Alt+4
+Reports
+Alt+5
+Privacy stays personal
+You decide what your partner sees.
+M
+Morgan
+Household member
+
+GOALS & BILLS
+
+Make room for what matters.
+
+Track upcoming bills, explore your debt payoff plan, and save toward your next goal.
+
+Updated 11:14 AM
+Bank history may be incomplete · 16 accounts
+SHARED GOALS FUNDED
+$0
+
+of $0 planned together
+
+YOUR PERSONAL GOALS
+$0
+
+0 private goals in your account
+
+SHARED GOAL COUNT
+0
+
+Visible to both household members
+
+No shared goals are configured yet.
+
+HOUSEHOLD OWNER CONTROLS
+
+Design a shared goal
+
+Create an equal, custom-dollar, or income-proportional contribution plan.
+
+Working on
++ New shared goal
+Name
+Target amount
+$
+Target date
+Contribution plan
+Equal
+Custom dollars
+Income proportional
+Create shared goal
+
+PERSONAL SCOPE · ONLY YOU
+
+Bank debt details
+
+Check supported linked debts, then confirm the figures on your statement before entering them in your plan. Checking does not change a saved plan.
+
+Check First Platypus Bank debt details
+
+Review permission to share debt details through Plaid. This does not share them with your partner.
+
+Review debt-data consent
+
+PERSONAL SCOPE · ONLY YOU
+
+Debt payoff plan
+
+Enter an affordable monthly payment budget. These are manual estimates; no payments are made.
+
+New plan
+Open Morgan card payoff
+Plan details
+Plan name
+First payment month
+Monthly payment budget (USD)
+Method
+Avalanche — highest APR first
+Snowball — smallest balance first
+Debt 1
+Name
+Current balance (USD)
+Minimum monthly payment
+Ordinary APR (%)
+Statement balance (optional)
+Confirmed due date (optional)
+Promo APR (%)
+Promo expiry (optional)
+Remove debt 1
+
+Statement balances and due dates are reference details. This estimate uses current balances and month-end payments; reminders are not scheduled here.
+
+Add debt
+Preview estimate
+Save plan
+
+Saved. You can reopen this plan after signing in again.
+
+Estimated payoff: 2026-10
+
+Estimated interest: $0.00 · Payments in this estimate: $100.00
+
+Monthly schedule
+First month's payments
+Synthetic card: $50.00
+Due dates from the saved plan
+
+Add each confirmed minimum payment once. Reminders start off; edit the item in Upcoming. Unsaved changes are not used.
+
+How this estimate works
+
+PERSONAL SCOPE · ONLY YOU
+
+Upcoming bills and payments
+
+Manual dates, including minimums added from saved debt plans. Marking paid records your action; it does not move money.
+
+New upcoming item
+Refresh upcoming items
+Internet bill
+
+45.67 USD · 2026-10-20 · upcoming
+
+Edit Internet bill
+Record paid and advance date
+New upcoming item
+Name
+Amount (USD)
+Confirmed due date
+Type
+Bill
+Credit card
+Subscription
+Other
+Repeat
+One date only
+Weekly
+Every two weeks
+Monthly
+Quarterly
+Yearly
+Account reference (optional)
+Active
+
+New items have reminders off. Manage device reminders in mobile Upcoming. Existing reminder preferences are preserved.
+
+Save upcoming item
+
+PERSONAL SCOPE · ONLY YOU
+
+Your personal goals
+
+Existing personal goals remain private unless you intentionally create a household goal.
+
+Desktop controls active
+Manage personal goals
+
+This changes only your own goal records.
+
++ New personal goal
+Name
+Target
+$
+Current
+$
+Target date
+Goal type
+Savings
+Debt payoff
+Purchase
+Emergency fund
+Create personal goal
+No personal goals are configured yet.
+Personal detail stays private by default; shared data follows household permissions.
+Keyboard: Alt+1–5 switches workspace views · America/Phoenix

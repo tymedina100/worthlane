@@ -86,8 +86,17 @@ jobs:
       - name: Test mobile reminder session privacy and reconciliation
         run: pnpm --filter @worthlane/api exec vitest run --config vitest.mobile.config.ts
 
+      - name: Test auth privacy during analytics failures
+        run: pnpm test:auth-privacy
+
+      - name: Test web Plaid startup recovery and cancellation
+        run: node --test scripts/test-plaid-web-lifecycle.mjs
+
       - name: Test native desktop security and packaging manifest
         run: pnpm --filter @worthlane/desktop-native test
+
+      - name: Test mobile release configuration
+        run: node --test scripts/test-mobile-release-config.mjs
 
       - name: Bundle mobile client
         run: pnpm --filter @worthlane/mobile exec expo export --platform ios --output-dir "$RUNNER_TEMP/worthlane-mobile-export"

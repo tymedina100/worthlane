@@ -10,6 +10,7 @@ dist/
 .tmp/
 .DS_Store
 Thumbs.db
+**/.next-http-*/
 *.tsbuildinfo
 apps/desktop-native/generated/
 apps/desktop-native/release/

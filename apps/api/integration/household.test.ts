@@ -1,3 +1,5 @@
+import { POST as confirmMatchRoute, GET as listMatchRoute } from "../src/app/api/households/current/account-matches/route";
+import { confirmAccountMatch, listAccountMatches, revokeAccountMatch } from "../src/lib/account-matches";
 import { afterAll, describe, expect, it, vi } from "vitest";
 import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
@@ -26,6 +28,7 @@ import { POST as createTransaction } from "../src/app/api/transactions/route";
 import { GET as duplicateReview, POST as confirmDuplicate } from "../src/app/api/transactions/duplicates/route";
 import { PATCH as editTransaction } from "../src/app/api/transactions/[id]/route";
 import { signAccessToken } from "../src/lib/auth";
+import { GET as personalNetWorth } from "../src/app/api/accounts/net-worth/route";
 import { GET as personalBudgets } from "../src/app/api/budgets/route";
 import { GET as dashboard } from "../src/app/api/dashboard/route";
 import { GET as spendingReport } from "../src/app/api/reports/spending/route";
@@ -555,4 +558,101 @@ it("reviews manual/import matches privately and confirms only unchanged entries"
   expect((await older.json()).data.entries[0].manual.id).toBe(manual.id);
   const foreignCursor = await duplicateReview(new NextRequest(`http://localhost/api/transactions/duplicates?cursor=${manual.id}`, { headers: { authorization: `Bearer ${otherToken}` } }));
   expect(foreignCursor.status).toBe(404);
+});
+
+
+it("requires both owners to confirm unknown-identity copies, counts once and revokes consent", async () => {
+  const users = await Promise.all(["match-owner", "match-partner", "match-outsider"].map(name => prisma.user.create({ data: { email: `${name}-${suffix}@worthlane.local`, passwordHash: "unusable-fixture-hash" } })));
+  const [owner, partner, outsider] = users;
+  const household = await createHouseholdForUser(owner.id, { name: "Explicit matches", displayName: "Alex", timezone: "UTC", currency: "USD" });
+  const partnerMember = await prisma.householdMember.create({ data: { householdId: household.householdId, userId: partner.id, displayName: "Sam", status: "ACTIVE", role: "MEMBER" } });
+  const accounts = await Promise.all([owner, partner].map(user => prisma.account.create({ data: { userId: user.id, name: "Joint checking", source: "PLAID", type: "CHECKING", currentBalance: 100 } })));
+  const [a,b] = accounts;
+  const ownerToken = signAccessToken({ sub: owner.id, email: owner.email });
+  await call(listMatchRoute, undefined, undefined, 401);
+  await call(confirmMatchRoute, undefined, { accountId: a.id, otherAccountId: b.id, confirmedSameAccount: true }, 401);
+  await call(confirmMatchRoute, ownerToken, { accountId: a.id, otherAccountId: b.id }, 400);
+  await call(confirmMatchRoute, ownerToken, { accountId: a.id, otherAccountId: b.id, confirmedSameAccount: true, userId: partner.id }, 400);
+
+  const category = await prisma.category.findFirstOrThrow({ where: { name: "Utilities", isSystem: true } });
+  await createHouseholdResponsibility(owner.id, { name: "Matched utilities", categoryId: category.id, monthlyAmountMinor: 15000, assignment: { mode: "EQUAL", memberIds: [household.memberId, partnerMember.id] } });
+  for (const account of accounts) await prisma.transaction.create({ data: { accountId: account.id, userId: account.userId, amount: 10, categoryId: category.id, date: new Date() } });
+  const applied = (state: Awaited<ReturnType<typeof getHouseholdSummary>>) => state.responsibilities[0].allocations.reduce((sum, row) => sum + row.appliedSpendMinor, 0);
+
+  await expect(confirmAccountMatch(owner.id, a.id, b.id)).rejects.toThrow('Account not found');
+  for (const [index,user] of [owner,partner].entries()) await setHouseholdAccountVisibility(user.id, accounts[index].id, { visibility: "SHARED" });
+  expect((await getHouseholdSummary(owner.id)).finances.visibleNetWorthMinor).toBe(20000);
+  const proposal = await confirmAccountMatch(owner.id, a.id, b.id);
+  expect(proposal.status).toBe('PENDING');
+  expect((await getHouseholdSummary(owner.id)).finances.visibleNetWorthMinor).toBe(20000);
+  expect((await listAccountMatches(partner.id)).matches[0].canConfirm).toBe(true);
+  await expect(confirmAccountMatch(outsider.id, a.id, b.id)).rejects.toThrow();
+  const confirmed = await confirmAccountMatch(partner.id, b.id, a.id);
+  expect(confirmed.status).toBe('CONFIRMED');
+  for (const user of [owner,partner]) expect(applied(await getHouseholdSummary(user.id))).toBe(1000);
+  for (const user of [owner,partner]) {
+    const personal = await call(dashboard, signAccessToken({ sub: user.id, email: user.email }));
+    expect(personal.netWorth).toBe(100);
+    expect(personal.monthlySpending).toBe(10);
+  }
+  expect(await prisma.transaction.count({ where: { accountId: { in: [a.id,b.id] } } })).toBe(2);
+
+  for (const user of [owner,partner]) expect((await getHouseholdSummary(user.id)).finances.visibleNetWorthMinor).toBe(10000);
+  expect(await prisma.account.count({ where: { id: { in: [a.id,b.id] } } })).toBe(2);
+  await revokeAccountMatch(partner.id, confirmed.id);
+  expect(applied(await getHouseholdSummary(owner.id))).toBe(2000);
+  expect((await getHouseholdSummary(owner.id)).finances.visibleNetWorthMinor).toBe(20000);
+  const competing = await prisma.account.create({ data: { userId: partner.id, name: "Other checking", source: "PLAID", type: "CHECKING", currentBalance: 50 } });
+  await setHouseholdAccountVisibility(partner.id, competing.id, { visibility: "SHARED" });
+  const races = await Promise.allSettled([confirmAccountMatch(owner.id, a.id, b.id), confirmAccountMatch(owner.id, a.id, competing.id)]);
+  expect(races.filter(result => result.status === 'fulfilled')).toHaveLength(1);
+  await setHouseholdAccountVisibility(owner.id, a.id, { visibility: "PERSONAL" });
+  expect((await listAccountMatches(partner.id)).matches).toHaveLength(0);
+  expect(await prisma.householdAccountMatch.count({ where: { householdId: household.householdId } })).toBe(0);
+  await setHouseholdAccountVisibility(owner.id, a.id, { visibility: "SHARED" });
+  await confirmAccountMatch(owner.id, a.id, b.id);
+  await Promise.allSettled([
+    confirmAccountMatch(partner.id, a.id, b.id),
+    setHouseholdAccountVisibility(owner.id, a.id, { visibility: "PERSONAL" }),
+  ]);
+  const access = await prisma.householdAccountAccess.findUniqueOrThrow({ where: { accountId_memberId: { accountId: a.id, memberId: partnerMember.id } } });
+  if (access.visibility === "PERSONAL") expect(await prisma.householdAccountMatch.count({ where: { householdId: household.householdId } })).toBe(0);
+  await setHouseholdAccountVisibility(owner.id, a.id, { visibility: "PERSONAL" });
+  expect(await prisma.householdAccountMatch.count({ where: { householdId: household.householdId } })).toBe(0);
+  await prisma.householdMember.update({ where: { id: partnerMember.id }, data: { status: "LEFT" } });
+});
+
+it("counts a solo owner's confirmed duplicate feed once across personal totals and restores it on revoke", async () => {
+  const row = await prisma.user.create({ data: { email: `solo-feed-match-${suffix}@worthlane.local`, passwordHash: 'unusable-fixture-hash' } });
+  const user = { ...row, token: signAccessToken({ sub: row.id, email: row.email }) };
+  await createHouseholdForUser(user.id, { name: 'Solo feeds', displayName: 'Solo', timezone: 'UTC', currency: 'USD' });
+  const category = await prisma.category.findFirstOrThrow({ where: { name: 'Utilities', isSystem: true } });
+  await prisma.budget.create({ data: { userId: user.id, categoryId: category.id, amount: 50 } });
+  const accounts = await Promise.all([0,1].map(() => prisma.account.create({ data: { userId: user.id, name: 'Same checking', type: 'CHECKING', source: 'PLAID', currentBalance: 100 } })));
+  for (const account of accounts) for (const amount of [10, -2, -30]) {
+    await prisma.transaction.create({ data: { userId: user.id, accountId: account.id, categoryId: category.id, amount, spendingTreatment: amount === -2 ? 'REFUND' : 'AUTO', date: new Date() } });
+  }
+  const verify = async (copies: number) => {
+    const home = await call(dashboard, user.token);
+    expect(home.netWorth).toBe(100 * copies);
+    expect((await call(personalNetWorth, user.token)).current).toBe(100 * copies);
+    expect(home.monthlySpending).toBe(8 * copies);
+    expect(home.monthlyIncome).toBe(30 * copies);
+    const budgets = await call(personalBudgets, user.token);
+    expect(budgets[0].spent).toBe(8 * copies);
+    const report = await call(spendingReport, user.token);
+    expect(report.totalSpending).toBe(8 * copies);
+    expect(report.income).toBe(30 * copies);
+    const flow = await call(cashflow, user.token);
+    expect(flow.months.at(-1).spending).toBe(8 * copies);
+    expect(flow.months.at(-1).income).toBe(30 * copies);
+  };
+  await verify(2);
+  const match = await confirmAccountMatch(user.id, accounts[0].id, accounts[1].id);
+  expect(match.status).toBe('CONFIRMED');
+  await verify(1);
+  await revokeAccountMatch(user.id, match.id);
+  await verify(2);
+  expect(await prisma.transaction.count({ where: { userId: user.id } })).toBe(6);
+  expect(await prisma.account.count({ where: { userId: user.id } })).toBe(2);
 });

@@ -31,8 +31,8 @@ analytics. Those integrations remain isolated and disabled by default.
 
 ## Multi-platform household milestone
 
-- New users can create an owner household and invite one existing Worthlane
-  login; the target must explicitly accept from desktop or mobile.
+- New users can create an owner household and invite one partner, including someone who
+  still needs to register; the target must explicitly accept from desktop or mobile.
 - Account owners choose personal, summary-only, or fully shared partner access.
 - Personal budgets remain private. Household category budgets are modeled as
   monthly responsibilities assigned to one partner, split equally, or split by
@@ -40,8 +40,8 @@ analytics. Those integrations remain isolated and disabled by default.
 - Shared goals support equal, custom-dollar, and income-proportional plans plus
   synchronized contribution history. The demo starts with Universal Orlando.
 - Desktop provides planning, personal and household management, reports,
-  filtering, account privacy, and safe sync/unlink controls for existing Plaid
-  connections. Native bank link/relink initiation remains in mobile.
+  filtering, account privacy, and Plaid Link Web connect/relink, sync and unlink.
+  Mobile uses the native Plaid SDK. See the beta acceptance index for proof by client.
 - Refresh tokens are hash-only persisted, rotate once, revoke their family on
   replay/logout, and are invalidated across all sessions after password reset.
 
@@ -220,9 +220,9 @@ Optional integrations:
 
 | Variable | Default | Notes |
 |---|---|---|
-| EXPO_PUBLIC_PLAID_ENABLED | false | Enables existing Plaid flows for later testing. |
+| EXPO_PUBLIC_PLAID_ENABLED | false | Enables native Plaid Link; use the configured Sandbox API for beta checks. |
 | PLAID_CLIENT_ID, PLAID_SECRET, PLAID_ENV | unset | Server-only Plaid credentials; required only for bank linking/sync. |
-| PLAID_WEB_REDIRECT_URI | unset | Optional API redirect for a future desktop Plaid Link Web flow. |
+| PLAID_WEB_REDIRECT_URI | unset | Optional API redirect for desktop Plaid Link Web; configure only an approved return URL. |
 | EXPO_PUBLIC_ENABLE_AI | false | Keeps the existing assistant outside V1. |
 | EXPO_PUBLIC_ENABLE_PAYWALL | false | Keeps RevenueCat/paywalls outside V1. |
 | EXPO_PUBLIC_REVENUECAT_IOS_KEY | unset | Used only when the paywall flag is enabled. |
@@ -307,18 +307,23 @@ persistent journey verification are now beta requirements in the milestones abov
 - Reminders
 - Feature suggestions
 
-### V1.1
+### Active couples beta
 
-- Desktop Plaid Link Web and relink initiation
-- PostgreSQL-backed CI integration and client-level end-to-end tests
-- Imported transaction reconciliation
-- Recurring-charge detection connected to real transactions
+- Guided solo and two-login household setup with explicit invitation consent
+- Owned, equal and custom-percentage category responsibilities and saved history
+- Desktop Plaid Link Web and native Link, repair, sync and unlink
+- PostgreSQL-backed CI integration and recorded persistent client journeys
+- Imported transaction reconciliation and explicit duplicate-account consent
+- Recurring-charge predictions labeled separately from confirmed obligations
+- Saved, deterministic avalanche and snowball debt estimates
+
+Implementation and verification are separate: consult
+[beta acceptance status](docs/beta-acceptance-status.md) for remaining checks.
 
 ### V1.2
 
 - AI insights
 - Personalized recommendations
-- Debt payoff guidance
 - Spending-change suggestions
 - Explainable, nonjudgmental financial coaching
 
@@ -330,8 +335,8 @@ date-only field until a native date picker is introduced. Local notifications
 depend on the OS and cannot be guaranteed after an app is uninstalled or
 system-level notifications are disabled.
 
-Desktop can sync or unlink existing Plaid connections but intentionally sends
-new link/relink initiation to mobile until Plaid Link Web is implemented. The
+Desktop supports bank connect, repair, sync and unlink through its authenticated
+BFF. Native mobile uses the Plaid SDK. The
 initial household sync model uses refetch-on-focus plus 60-second desktop
 polling rather than realtime sockets. Physical iOS interaction must be verified
 on macOS or a device; Windows CI/local validation uses an Expo production iOS

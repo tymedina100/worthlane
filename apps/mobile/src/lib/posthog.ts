@@ -22,7 +22,7 @@ function createPostHog(): PostHog {
   return new PostHogClass(posthogKey, {
     host: posthogHost,
     captureAppLifecycleEvents: true,
-    disableGeoip: false,
+    disableGeoip: true,
   });
 }
 
