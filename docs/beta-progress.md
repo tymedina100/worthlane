@@ -1795,3 +1795,36 @@ not completed App2App or import. Screenshots: `app2app-safari-bank.png`,
 `app2app-checking-selected.png`, `app2app-bank-consent.png`,
 `app2app-return-pending.png`. Next: trace SDK return events and session handling,
 then finish the final brief audit. No production or phone action is required.
+
+
+## September 11 — App2App completion and honest native cancellation
+
+A fresh App2App attempt completed the actual Safari login/MFA/checking consent
+and returned to Your accounts within native Plaid, explicitly naming First
+Platypus Bank - OAuth App2App. Continue and Finish without saving completed
+Bank connected. Fresh PostgreSQL read: HEALTHY, no relink flag,
+HISTORICAL_UPDATE_COMPLETE, 2 total accounts/150 transactions (original manual
+fixture plus selected checking and149 imports). Screenshots:
+`app2app-return-selected-account.png`, `app2app-bank-connected.png`.
+The prior stalled attempt remains recorded; its cause is not proven. Temporary
+local diagnostics showed OPEN_OAUTH, then FAIL_OAUTH followed by SELECT_ACCOUNT,
+SUCCESS and HANDOFF in the completed attempt; no error code was provided. Do not
+label that intermediate event alone as a failed connection. Diagnostic code was
+removed completely; no callback URLs, tokens or banking metadata were logged.
+
+Separately, the previous cancellation displayed a false Plaid closed error.
+The installed iOS v13 SDK source serializes a normal nil error as an empty
+dictionary. Added `plaidExitError` to treat absent/empty errors as cancellation
+while preserving real error codes and nonempty messages. Empty display messages
+now fall back to the actual error message. Actual native verification opened a
+new Link session, exited its consent screen, and returned to Settings without
+Plaid closed; the existing healthy App2App account remained visible. Screenshots:
+`native-cancel-false-error-before.png`, `native-cancel-no-error.png`.
+
+Verification: `corepack pnpm --filter @worthlane/api exec vitest run --config
+vitest.mobile.config.ts` passed24 tests including two new exit-payload tests;
+`corepack pnpm test:auth-privacy` passed16; mobile typecheck and diff check passed.
+The initial targeted test was not discovered until its explicit config include
+was added; the final full suite includes it. Next: current CI, final persisted
+client/privacy and platform coverage audit, and PR/task acceptance handoff.
+All runtime work remains laptop-only Sandbox; no production changes or spending.

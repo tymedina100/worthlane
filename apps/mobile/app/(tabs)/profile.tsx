@@ -24,6 +24,7 @@ import type { LinkExit, LinkSuccess } from "react-native-plaid-link-sdk";
 import { useAuthStore } from "@/store/auth";
 import { ApiError, api } from "@/lib/api";
 import { completePlaidLink } from "@/lib/plaid-completion";
+import { plaidExitError } from "@/lib/plaid-exit";
 import { useSubscription } from "@/hooks/useSubscription";
 import {
   ACCOUNT_TYPES,
@@ -407,8 +408,9 @@ export default function ProfileScreen() {
   };
 
   const handlePlaidExit = (exit: LinkExit) => {
-    if (exit.error) {
-      Alert.alert("Plaid closed", bankActionErrorMessage(new ApiError(exit.error.displayMessage ?? exit.error.errorMessage ?? "Plaid exited with an error.", 400, exit.error.errorCode)));
+    const error = plaidExitError(exit.error);
+    if (error) {
+      Alert.alert("Plaid closed", bankActionErrorMessage(new ApiError(error.message, 400, error.code)));
     }
   };
 
