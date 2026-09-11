@@ -1,0 +1,155 @@
+Skip to planning workspace
+worthlane
+HOUSEHOLD
+My plan
+Jamie
+WORKSPACE
+Overview
+Alt+1
+Monthly plan
+Alt+2
+Accounts & privacy
+Alt+3
+Goals & bills
+Alt+4
+Reports
+Alt+5
+Privacy stays personal
+You decide what your partner sees.
+J
+Jamie
+Household member
+
+REPORTS & ANALYSIS
+
+Know where your money goes.
+
+Review your activity, add a manual expense, and see how spending fits your plan.
+
+Updated 2:02 PM
+3.3%
+APPLIED
+
+RESPONSIBILITY PROGRESS
+
+$20
+
+of $600.01 in caller-visible shared categories
+
+VISIBLE TRANSACTION ROWS
+2
+
+All returned personal rows are loaded
+
+SHARED GOALS
+$0
+
+Saved toward household goals
+
+HOUSEHOLD REPORT
+
+Responsibility progress by category
+
+Current-month plan versus permitted activity; no private partner transactions are exposed.
+
+Member scope
+Household
+Jamie
+Sort
+Largest plan
+Most applied
+Name
+Jamie groceries
+Food & Drink
+$20.00
+of $600.01
+Applied against plan
+Over-plan activity is shown as 100% with the exact value retained.
+
+PERSONAL DETAIL · ONLY YOU
+
+Transactions & category analysis
+
+Your own detailed transaction feed. Partner activity remains governed by household privacy.
+
+Your transactions
+
+Confirmed refunds reduce category spending. Exclude transfers, card repayments and confirmed duplicates to avoid counting them as purchases. Restore an excluded entry using its Budget treatment.
+
+Review possible duplicates
+Add manual activity
+
+Choose the account that paid and the matching category. This does not change the category's agreed responsibility. Transfers and card repayments are excluded from spending.
+
+Paid from
+Choose a manual account
+Jamie wallet
+Activity category
+Choose a category
+Education
+Entertainment
+Food & Drink
+Health & Fitness
+Home
+Income
+Loan Payments
+Medical
+Other
+Personal Care
+Shopping
+Subscriptions
+Transfer
+Transportation
+Travel
+Utilities
+Description
+Activity amount $
+Activity type
+Expense
+Refund
+Income
+Transfer or card repayment
+Date and time (your local time)
+Save activity
+Activity saved. Totals reflect the category and budget treatment.
+
+Search activity
+Category
+All categories
+Food & Drink
+Account
+All accounts
+Jamie wallet
+Flow
+All activity
+Expenses
+Income
+Clear
+Expense mix: top 1 of 1 categories Activity: 2 of 2 transactions
+Expense mix
+
+Based on the currently loaded and filtered personal rows.
+
+Food & Drink
+$20.00
+ACTIVITY
+CATEGORY
+ACCOUNT
+AMOUNT
+Jamie grocery refund
+Sep 11, 2026 · Manual
+Food & Drink
+Ordinary expense / income
+Refund
+Exclude from totals
+Jamie wallet
+-$3.47
+Jamie grocery trip
+Sep 11, 2026 · Manual
+Food & Drink
+Ordinary expense / income
+Exclude from totals
+Jamie wallet
+$23.47
+Personal detail stays private by default; shared data follows household permissions.
+Keyboard: Alt+1–5 switches workspace views · America/Phoenix

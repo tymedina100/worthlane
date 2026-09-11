@@ -1865,3 +1865,39 @@ rendered controls, not seeded screenshots. No additional executable change or
 production operation was made. Final acceptance remains open: finish integrated
 solo coverage review, current platform coverage (especially Android), and final
 PR/task handoff. Physical phone work is excluded by user instruction.
+
+
+## September 11 — one fresh solo identity through saved planning
+
+Created synthetic Jamie through the actual desktop registration form in browser
+session worthlane-final. Selected Just me, entered Jamie, and created My plan
+without an invitation. Added Jamie wallet1234.56 through Accounts & privacy.
+Created Jamie groceries600.01, Food & Drink, One member/Jamie. Added expense23.47
+and refund3.47 through Reports; rendered net spending20.00. After a fresh login,
+the dashboard retained the personal wallet, Jamie-owned600.01 budget,20 applied
+and580.01 remaining.
+
+Saved Jamie solo payoff through Goals & bills: current100, statement90, minimum10,
+APR0, affordable monthly50, Avalanche, startSeptember2026. Saved card dueSeptember25
+and Jamie internet45.67 dueSeptember20, monthly. Actual sign-out, login and reopen
+retained these values, October2026 payoff, zero estimated interest and100total
+payments. No other identity's accounts/plans were visible. These are manual
+fallback checks, not a new solo Plaid lifecycle claim.
+
+Date-entry limitation: agent-browser fill and calendar clicks reported success
+but left date values empty. Keyboard attempts also lost the original browser
+session; a fresh sign-in recovered the persisted data. Used the native HTMLInput
+value setter and bubbling input/change events on the visible due0/dueDate fields,
+then actual Save buttons and fresh-login readback. This verifies form persistence,
+not successful keyboard/calendar entry. No API calls or database writes were
+used to populate this journey. Calendar interaction remains to be independently
+checked with reliable control. The amount control's accessibility tree exposed
+float32 precision, but rendered/saved amount is45.67.
+
+Evidence: docs/evidence/2026-09-11/jamie-solo-{account-created,spending,
+fresh-login,plan-and-bill,plan-fresh-login,bill-fresh-login}.txt.
+Commands used the installed agent-browser Node entrypoint with session
+worthlane-final: open, snapshot -i, fill, select, click, get text body and the
+explicit DOM date-fill fallback described above. No executable changes; current
+code retains CI103 proof. Next: independently resolve calendar interaction,
+actual date-trigger reminder delivery, current Android banking and final PR audit.
