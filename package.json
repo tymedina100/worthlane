@@ -12,7 +12,7 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "test:auth-privacy": "node --test scripts/test-auth-privacy.mjs scripts/test-mobile-session.mjs",
+    "test:auth-privacy": "node --test scripts/test-auth-privacy.mjs scripts/test-mobile-session.mjs scripts/test-native-bank-return.mjs",
     "smoke:household-demo": "node scripts/smoke-household-demo.mjs",
     "db:generate": "turbo run db:generate",
     "db:migrate": "turbo run db:migrate",
