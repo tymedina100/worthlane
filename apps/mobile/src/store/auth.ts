@@ -3,7 +3,7 @@ import * as SecureStore from "expo-secure-store";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
-import { api } from "@/lib/api";
+import { api, setSessionExpiredHandler } from "@/lib/api";
 import { isPostHogEnabled, posthog } from "@/lib/posthog";
 import { clearPrivateQueryCache } from "@/lib/query-client";
 
@@ -18,6 +18,7 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  expireSession: () => Promise<void>;
   hydrate: () => Promise<void>;
   enableBiometric: () => Promise<void>;
   disableBiometric: () => Promise<void>;
@@ -32,6 +33,21 @@ export const useAuthStore = create<AuthState>((set) => ({
   isLoading: true,
   biometricEnabled: false,
   rememberedEmail: null,
+
+  expireSession: async () => {
+    const cleanup = setReminderSession(null).catch(() => {});
+    // Remove the signed-in UI immediately; do not call the logout endpoint
+    // from a rejected refresh or recursively attempt another refresh.
+    set({ userId: null, email: null });
+    if (isPostHogEnabled) {
+      try { posthog.reset(); } catch { /* Local privacy cleanup still runs. */ }
+    }
+    await clearPrivateQueryCache();
+    for (const key of ["accessToken", "refreshToken", "userId", "userEmail"]) {
+      await SecureStore.deleteItemAsync(key);
+    }
+    await cleanup;
+  },
 
   hydrate: async () => {
     const token = await SecureStore.getItemAsync("accessToken");
@@ -188,3 +204,5 @@ export const useAuthStore = create<AuthState>((set) => ({
     await api.post("/push/register", { token });
   },
 }));
+
+setSessionExpiredHandler(() => useAuthStore.getState().expireSession());

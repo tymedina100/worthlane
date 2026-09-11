@@ -44,6 +44,11 @@ async function getAccessToken(): Promise<string | null> {
 // Single-flight: concurrent 401s share one refresh instead of racing each other
 // (the second refresh would rotate tokens out from under the first retry).
 let refreshInFlight: Promise<string | null> | null = null;
+let onSessionExpired: (() => Promise<void>) | undefined;
+
+export function setSessionExpiredHandler(handler: () => Promise<void>): void {
+  onSessionExpired = handler;
+}
 
 function refreshTokens(): Promise<string | null> {
   if (!refreshInFlight) {
@@ -56,7 +61,10 @@ function refreshTokens(): Promise<string | null> {
 
 async function doRefreshTokens(): Promise<string | null> {
   const refreshToken = await SecureStore.getItemAsync("refreshToken");
-  if (!refreshToken) return null;
+  if (!refreshToken) {
+    await onSessionExpired?.();
+    return null;
+  }
 
   const res = await fetch(`${API_URL}/auth/refresh`, {
     method: "POST",
@@ -64,9 +72,23 @@ async function doRefreshTokens(): Promise<string | null> {
     body: JSON.stringify({ refreshToken }),
   });
 
-  if (!res.ok) return null;
+  if (!res.ok) {
+    // A rejected refresh ends this login. Temporary server/network failures
+    // must preserve credentials so the person can retry when service returns.
+    if (res.status === 401 || res.status === 403) {
+      if (await SecureStore.getItemAsync("refreshToken") === refreshToken) {
+        await onSessionExpired?.();
+      }
+      return null;
+    }
+    throw new ApiError("Could not refresh your session. Please try again.", res.status);
+  }
 
   const { data } = await res.json();
+  // A response from a previous login must not replace newer credentials.
+  if (await SecureStore.getItemAsync("refreshToken") !== refreshToken) {
+    return null;
+  }
   await SecureStore.setItemAsync("accessToken", data.accessToken);
   await SecureStore.setItemAsync("refreshToken", data.refreshToken);
   return data.accessToken;
@@ -91,7 +113,7 @@ export async function apiRequest<T>(
   let res = await makeRequest(token);
 
   // Auto-refresh on 401
-  if (res.status === 401) {
+  if (res.status === 401 && !path.startsWith("/auth/")) {
     token = await refreshTokens();
     if (!token) throw new ApiError("Session expired", 401);
     res = await makeRequest(token);
