@@ -1936,3 +1936,25 @@ and unreliable Maestro tab/dialog taps prevented reaching Send test reminder.
 No scheduling/presentation success is claimed yet. Current Simulator shows
 Open in Worthlane confirmation from local profile deep-link navigation; resolving
 that prompt is the next interactive action. No phone or production operation.
+
+
+## September 11 — native DATE-trigger background banner proven
+
+After resolving the local Open in Worthlane prompt with a coordinate double-tap,
+Settings opened. Actual Send test reminder reported Test reminder scheduled;
+dismissed OK and pressed Home. A fresh simctl screenshot captured Your test
+reminder visibly presented over the iOS Home Screen with the generic test copy.
+Evidence: native-date-trigger-background-banner.png. Current source65c8b22 uses
+a DATE trigger ten seconds ahead; no timing override or diagnostic logging was
+inserted. This proves background banner delivery through the same native DATE
+trigger type as obligations. Existing adapter regression independently checks
+the selected obligation date minus reminder offset at local9am, recurrence
+replacement, privacy and session cleanup. We did not wait until a real9am bill
+trigger or test a physical phone, and do not claim those additional checks.
+
+Native run: JAVA_HOME set to localJDK21, MAESTRO_CLI_NO_ANALYTICS=1 and
+MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true; maestro --device
+D7C7C0D2-5966-476B-8234-80B80FCAF7B8 test
+.tmp/native-date-reminder-delivery.yaml passed all actions. Screenshot captured
+with xcrun simctl io on that same laptop Simulator. CI104/34648733644 for65c8b22
+is currently running; previous CI103 is not substituted for this new code.
