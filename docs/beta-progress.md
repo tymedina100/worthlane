@@ -1918,3 +1918,21 @@ The earlier agent-browser fill/grid-click limitation is retained in the prior
 entry, but direct keyboard interaction with the actual controls now proves
 editable card and bill dates. No product code change was needed. Remaining work:
 actual date-trigger OS delivery, current Android banking and final PR acceptance.
+
+
+## September 11 — align reminder diagnostic with bill date triggers
+
+Changed the existing Send test reminder diagnostic from TIME_INTERVAL to DATE
+ten seconds in the future, matching the native OS trigger type used for actual
+obligations. Generic text, session ownership, pending/history replacement and
+logout cleanup are preserved. Updated the existing regression to require a Date
+within the actual before/after scheduling bounds.
+
+`corepack pnpm --filter @worthlane/api exec vitest run --config
+vitest.mobile.config.ts`:24 passed. Mobile typecheck and diff check passed.
+Native Jamie login loaded the desktop-created1234.56 balance,20spending and
+45.67 bill. DATE-trigger delivery is still in progress: password-save prompt
+and unreliable Maestro tab/dialog taps prevented reaching Send test reminder.
+No scheduling/presentation success is claimed yet. Current Simulator shows
+Open in Worthlane confirmation from local profile deep-link navigation; resolving
+that prompt is the next interactive action. No phone or production operation.

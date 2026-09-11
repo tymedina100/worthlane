@@ -149,7 +149,8 @@ export function sendTestReminder(userId: string | null) {
     if (!current()) return "not-scheduled" as const;
     const id = await Notifications.scheduleNotificationAsync({
       content: { title: "Your test reminder", body: "Worthlane reminders can reach this device. No payment is due from this test.", sound: "default", data: { reminderTest: true, reminderUserId: userId } },
-      trigger: { type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, seconds: 10, repeats: false, ...(Platform.OS === "android" ? { channelId: "obligations" } : {}) },
+      // Exercise the same native date-trigger path as real upcoming obligations.
+      trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: new Date(Date.now() + 10_000), ...(Platform.OS === "android" ? { channelId: "obligations" } : {}) },
     });
     if (!current()) { await Notifications.cancelScheduledNotificationAsync(id); return "not-scheduled" as const; }
     return "scheduled" as const;

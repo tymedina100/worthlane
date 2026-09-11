@@ -174,10 +174,14 @@ it('schedules a generic test, replaces pending tests and cancels it on logout', 
   const r = await import('../../mobile/src/lib/obligation-reminders');
   await r.setReminderSession('alex');
   mocks.scheduled.mockResolvedValue([{ identifier: 'old-test', content: { data: { reminderTest: true, reminderUserId: 'alex' } } }]);
+  const beforeSchedule = Date.now();
   expect(await r.sendTestReminder('alex')).toBe('scheduled');
   expect(mocks.cancel).toHaveBeenCalledWith('old-test');
   const payload = mocks.schedule.mock.calls[0][0];
-  expect(payload.trigger).toMatchObject({ seconds: 10, repeats: false });
+  expect(payload.trigger.type).toBe('date');
+  expect(payload.trigger.date).toBeInstanceOf(Date);
+  expect(payload.trigger.date.getTime()).toBeGreaterThanOrEqual(beforeSchedule + 10_000);
+  expect(payload.trigger.date.getTime()).toBeLessThanOrEqual(Date.now() + 10_000);
   expect(payload.content.body).not.toContain(item.name);
   expect(payload.content.data).toEqual({ reminderTest: true, reminderUserId: 'alex' });
   mocks.scheduled.mockResolvedValue([{ identifier: 'test', content: payload.content }]);
