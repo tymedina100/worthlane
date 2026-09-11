@@ -1717,3 +1717,51 @@ Actual Simulator Sync now reached the API with200 and advanced Avery's saved las
 Reset only Avery's exact local Sandbox Item with sandboxItemResetLogin. Actual native Sync returned409; the database persisted NEEDS_RELINK/ITEM_LOGIN_REQUIRED, but the screen remained Healthy with no alert. Screenshot native-failed-sync-stale.png proves the mismatch. Changed native sync to refresh persisted financial queries on both success and failure before displaying an error. Bank connect/repair/unlink now also invalidate household totals, budgets, net-worth, reports and recurrence. Late completion and unlink-confirmation actions are guarded against a changed login.
 
 Repeated actual Sync after the fix returned409 and displayed Could not sync / institution needs re-link, with the Needs relink status, incomplete-spending warning and saved110 balance visible behind the alert. Screenshot native-failed-sync-repair-message.png. Five executable mutation-callback tests cover refresh-before-error, successful refresh, late results across logins, login change during refresh and uncertain unlink results; all passed. Mobile typecheck passed. Added the suite to CI's existing auth/privacy command. The first healthy-to-error transition after a successful repair remains a follow-up check; current evidence proves the stale defect before changes and the corrected failed operation after changes. Native repair/unlink/App2App and final acceptance remain pending.
+
+
+## September 11 — required native OAuth repair preserves saved records
+
+On pushed code 87d6156, completed the actual native Relink flow after a forced
+Sandbox login expiration. Used the published lowercase Sandbox credentials,
+selected the existing checking account, returned through OAuth, and completed
+Finish without saving. The app displays Connection repaired and Healthy.
+
+Fresh `node .tmp/native-lifecycle-state.mjs` passed after the asynchronous sync
+completed: same Item, same account IDs, same transaction IDs; Healthy and no
+relink flag; 2 total accounts and 150 transactions. The comparison uses the
+pre-repair private snapshot, not just aggregate counts. An earlier check ran
+before sync completed and correctly still observed Needs relink; the later
+assertion and native success screen provide completion evidence. Screenshot:
+`docs/evidence/2026-09-11/native-required-repair-success.png`.
+
+CI101/34640584603 (45b97ea) and CI102/34641852325 (87d6156) passed all three
+jobs: CI, PostgreSQL integration and native Windows packaging.
+
+Repeated Healthy-to-error transition also passed: after a second Sandbox reset,
+Maestro tapped the actual native Sync now control. The app immediately displayed
+Could not sync, Needs relink, a missing-recent-activity warning and the retained
+110 checking balance. Evidence: `native-repeat-expiration.png`. The macOS window
+click helper was unavailable; Maestro successfully performed these native taps.
+Next: native unlink/provider revocation, App2App and final brief audit.
+No phone, live banking or production changes.
+
+
+Native Unlink was then performed through the visible confirmation dialog.
+`node .tmp/prepare-avery-unlink.mjs` captured the current encrypted Sandbox Item
+reference before the action; `node .tmp/verify-avery-unlink.mjs` passed afterward:
+Item removed, one original account remains, provider rejects revoked access token.
+`node .tmp/native-unlink-preservation.mjs --snapshot` before confirmation and
+`node .tmp/native-unlink-preservation.mjs` afterward proved exact IDs of the
+original manual account/transaction and all Morgan Items/accounts/transactions
+were preserved. These private helpers remain ignored and do not expose secrets.
+Native screen shows Nothing linked yet. Screenshots: `native-unlink-confirmation.png`
+and `native-unlinked.png` under the September 11 evidence directory.
+
+Cold restart (`simctl terminate` then `simctl launch` for the laptop simulator)
+retained the removal: dashboard restored original 100 net worth, 10 spending
+and both saved upcoming bills; Settings shows Nothing linked yet. The first
+Maestro tab-label tap did not navigate; a second coordinate tap succeeded with
+an explicit Nothing linked yet assertion and a fresh screenshot. Evidence:
+`native-unlinked-dashboard-reopened.png` and `native-unlinked-reopened.png`.
+Native connect/sync/required repair/repeated error/unlink lifecycle is now proven
+for the ordinary OAuth institution. App2App and final acceptance audit remain.
