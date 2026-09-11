@@ -26,6 +26,13 @@ Physical-device installation is additional release evidence and is required befo
 claiming phone readiness; it is not a substitute for the brief's core journeys.
 Likewise, do not add follow-on forecasting or gamification to extend this goal.
 
-Existing production website approvals are fulfilled. No approval exists here to
-deploy the financial API, migrate live financial data, enable production Plaid,
-purchase services, merge/release automatically, or submit an app to a store.
+Existing production website approvals are fulfilled. Tyler subsequently authorized starting Plaid production setup and store
+preparation, but explicitly prohibited submission. No paid services, live-data
+migration, automatic merge/release or store submission is authorized. See
+production-preparation.md for the current scope and remaining gates.
+
+Android now builds and runs in the laptop emulator; login rendered but the first
+Jamie attempt returned Invalid credentials, so current persisted Android journeys
+remain unverified. Apple draft promotional text/description were saved and reloaded;
+review notes remain stale after failed persistence. Store status is still Prepare
+for Submission with manual release.

@@ -95,6 +95,9 @@ jobs:
       - name: Test native desktop security and packaging manifest
         run: pnpm --filter @worthlane/desktop-native test
 
+      - name: Test mobile release configuration
+        run: node --test scripts/test-mobile-release-config.mjs
+
       - name: Bundle mobile client
         run: pnpm --filter @worthlane/mobile exec expo export --platform ios --output-dir "$RUNNER_TEMP/worthlane-mobile-export"
 

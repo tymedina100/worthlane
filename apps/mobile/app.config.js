@@ -30,8 +30,20 @@ module.exports = () => {
 
   if (isReleaseProfile) {
     const releaseApiUrl = requireReleaseEnv("EXPO_PUBLIC_API_URL", apiUrl);
-    if (/localhost|127\.0\.0\.1|0\.0\.0\.0/.test(releaseApiUrl)) {
-      throw new Error("EXPO_PUBLIC_API_URL must point to a deployed API in preview and production builds.");
+    let releaseUrl;
+    try {
+      releaseUrl = new URL(releaseApiUrl);
+    } catch {
+      throw new Error("EXPO_PUBLIC_API_URL must be a valid HTTPS URL in preview and production builds.");
+    }
+    const host = releaseUrl.hostname.toLowerCase();
+    // Release credentials must never travel over HTTP or to a development host.
+    // Require a DNS host; this also excludes emulator aliases and private IPs.
+    if (releaseUrl.protocol !== "https:" || releaseUrl.username || releaseUrl.password ||
+        releaseUrl.search || releaseUrl.hash || !host.includes(".") ||
+        /^[\d.]+$/.test(host) || host.includes(":") ||
+        /(^|\.)(localhost|local|test|invalid)$/.test(host)) {
+      throw new Error("EXPO_PUBLIC_API_URL must use HTTPS and a deployed DNS host without credentials, query, or fragment in preview and production builds.");
     }
     // The Plaid OAuth associated domain only matters once bank linking is
     // actually enabled; Sentry is observability, not a functional

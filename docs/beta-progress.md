@@ -1993,3 +1993,42 @@ cache, Sentry upload disabled, max2workers/Xmx1536m and
 and Plaid is enabled. Log /tmp/worthlane-android-macos-build.log. Build completion
 and emulator lifecycle remain unverified. iOS Simulator shut down to release RAM;
 its saved state is retained. No physical-phone operations or spending.
+
+
+## September 11 — Android runtime and production/store preparation
+
+Android assembleDebug succeeded in36m30s (435 tasks). APK147776732bytes, SHA256
+3e1fc29bf408af452f9a1240785b9390891593e3f164c07f91f1d729e65204b7; apksigner verified.
+Package com.worthlane.mobile, min26/target36. Official API36 Google APIs arm64
+image rev7 checksum matched SHA1 5a99183b6d924da606260e45fd41a3eb8eca6eb7.
+WorthlaneLaptop emulator5554 boot_completed=1; APK installed, Metro8083 bundled
+2079modules. Actual login screen renders. First Jamie sign-in returned Invalid
+credentials; no saved Android journey success is claimed yet.
+
+To fit the emulator, removed regenerable worktree build caches, stopped disposable
+PostgreSQL test clusters after verifying shut-down state, downloaded archives after
+extraction, and the local NDK/Gradle cache after build completion. Preserved active
+postgres-rGeeqxRH, source, native apps/dSYMs, APK and simulator state. Reinstall
+NDK before another native Android build. No physical phone work.
+
+Tyler authorized starting Plaid production and store preparation, explicitly no
+store submission. Spending remains gated. This authorizes necessary production
+Plaid setup/package registration; current obstacle is browser access, not repeated
+permission. Embedded Plaid is signed in per Tyler; automation Chrome remains at
+sign-in. No production credentials, live Item or billing change was made.
+
+Verified existing Apple record6766112205 under Tyler Andrew Medina. Replaced old
+loss-aversion promotional text/description with couples-first copy; saved and
+reloaded, exact promo and description prefix persisted. Manual release remains
+selected and status remains Prepare for Submission. Review notes did not persist
+after two save/reload attempts; old manual-only notes remain. New review notes and
+candidate keywords are retained in docs/store-listing-draft.md, not claimed saved.
+Native DOM value setters/input/change events were needed after browser fill was
+a no-op; successful fields were verified by reload, not by tool success messages.
+
+Hardened preview/production mobile API configuration to reject HTTP, malformed
+addresses, local/emulator IPs, credentials, queries and fragments. Development
+routing remains available. node --test scripts/test-mobile-release-config.mjs:
+3 passed; git diff --check passed; CI now includes the configuration tests.
+New CI is not yet claimed green. Production-preparation.md records remaining
+dashboard, signing, hosted-service, privacy and deletion/revocation work.
