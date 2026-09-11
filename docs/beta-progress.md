@@ -2054,3 +2054,23 @@ Tyler's production-setup authorization. Plaid requires Verify your password befo
 saving; requested the user complete that identity check. Registration is NOT yet
 claimed persisted. Do not request redundant setup approval. No paid plan/live Item
 or production credential activation; no store submission.
+
+
+## September 11 — account deletion retains revocation retry state
+
+DELETE /auth/account previously continued local deletion after any Plaid failure,
+losing the encrypted token needed to revoke provider access later. It now returns
+503 ACCOUNT_DELETION_RETRY_REQUIRED on failure, preserves local user/data/tokens,
+and explains that some connections may already be disconnected. A retry accepts
+ITEM_NOT_FOUND, matching the existing unlink route. Logs contain a generic error
+instead of provider request objects that may contain tokens. No schema change.
+
+Focused vitest command: corepack pnpm --filter @worthlane/api exec vitest run
+src/app/api/auth/account/__tests__/route.test.ts
+src/lib/__tests__/account-deletion.test.ts —7 passed. Coverage includes auth,
+owner scoping, successful ordering, partial failure followed by idempotent retry,
+decryption failure and manual-only deletion. API typecheck and diff check passed.
+Persistent local HTTP proof: newly registered synthetic manual-only user201,
+DELETE200 with deleted:true, subsequent login401; no retained test credentials.
+No production account was touched. Hosted/live revocation remains unverified.
+Plaid package-save dialog is still awaiting the user's password verification.

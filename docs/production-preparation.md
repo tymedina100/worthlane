@@ -36,9 +36,10 @@ Dashboard access and provider permissions still need verification.
    Items or flip the test database into production.
 5. Verify HTTPS webhooks, signature validation, sync/recovery and revocation against
    the selected service before live onboarding.
-6. Resolve account-deletion failure handling: auth/account currently attempts
-   provider revocation then deletes local data even when revocation fails. A
-   durable retry or retryable failure path is needed before production onboarding.
+6. Account deletion now returns a retryable503 and retains local data/tokens when
+   revocation fails; ITEM_NOT_FOUND is accepted during retry. Seven focused tests
+   and a persistent manual-only delete/relogin check pass. Production-service
+   end-to-end revocation remains part of launch verification.
 7. Reconcile public privacy disclosures with actual enabled production services;
    verify support, backup/restore and final acceptance. Real bank connections
    require the account owner's consent. No real-bank credentials requested here.
