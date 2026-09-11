@@ -2032,3 +2032,25 @@ routing remains available. node --test scripts/test-mobile-release-config.mjs:
 3 passed; git diff --check passed; CI now includes the configuration tests.
 New CI is not yet claimed green. Production-preparation.md records remaining
 dashboard, signing, hosted-service, privacy and deletion/revocation work.
+
+
+## September 11 — Android saved solo readbacks and Plaid access verified
+
+The existing synthetic Jamie credentials returned200 from local auth/login.
+Cleared/re-entered the Android password through adb input, then sign-in succeeded.
+No app/auth code change was needed. Native dashboard shows1234.56net worth,20net
+spending and Jamie internet45.67 due in10days. Actual Activity shows expense23.47
+and refund3.47. Upcoming shows monthly bill due2026-09-21. Opened Goals by native
+deep link, tapped Plan debt payoff then Open Jamie solo payoff: budget50, Avalanche,
+current100/minimum10/APR0/statement90/confirmed due2026-09-26. Captured UI XML
+readbacks and rendered dashboard PNG in evidence/2026-09-11/android-jamie-*.
+This proves saved solo readbacks, not full Android create/edit/banking lifecycle.
+
+Separate automation Chrome now has signed-in Plaid Vantage access. Launch Center
+states approved for Production and approved to test with real data. Product-specific
+entitlements, plan and billing remain unverified. Developers/API had no Android
+package names. Prepared exact com.worthlane.mobile and clicked Save changes under
+Tyler's production-setup authorization. Plaid requires Verify your password before
+saving; requested the user complete that identity check. Registration is NOT yet
+claimed persisted. Do not request redundant setup approval. No paid plan/live Item
+or production credential activation; no store submission.

@@ -36,3 +36,10 @@ Jamie attempt returned Invalid credentials, so current persisted Android journey
 remain unverified. Apple draft promotional text/description were saved and reloaded;
 review notes remain stale after failed persistence. Store status is still Prepare
 for Submission with manual release.
+
+
+Latest Android update: Jamie login succeeded after password re-entry. Native saved
+dashboard, activity, bill and debt-field readbacks passed; see android-jamie evidence.
+Full current Android lifecycle remains open. Plaid Chrome is now signed in; team
+reports Production approval, exact products/billing unverified. Android package
+Save awaits provider password verification, not additional user authorization.

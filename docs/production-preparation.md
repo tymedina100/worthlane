@@ -57,3 +57,14 @@ Plaid's old launch checklist now points to the personalized
 Check the account's actual tier before
 [production access or paid upgrade](https://support.plaid.com/hc/en-us/articles/39917307426967-How-do-I-upgrade-from-the-Trial-plan-to-a-paid-Production-plan).
 Store preparation is tracked in store-listing-draft.md; no store submission.
+
+
+## Latest verification
+
+Android Jamie sign-in succeeded after clearing/re-entering the password. Saved
+balance/spending/bill/debt fields were read in the native UI; evidence is in
+beta-progress.md. Earlier Invalid credentials is resolved as test-input failure.
+Plaid Chrome access is now available. Vantage Launch Center explicitly reports
+Production/real-data approval, but exact product access and billing are unverified.
+Android registration is prepared and awaits Plaid password verification before
+Save completes; the user has been asked to perform that identity check.
