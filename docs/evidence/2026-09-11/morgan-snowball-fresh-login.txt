@@ -1,0 +1,105 @@
+- button "Open Next.js Dev Tools" [expanded=false, ref=e37]
+- link "Skip to planning workspace" [ref=e1]
+- link "Worthlane worthlane" [ref=e2]
+- link "Overview Alt+1" [ref=e7]
+- link "Monthly plan Alt+2" [ref=e8]
+- link "Accounts & privacy Alt+3" [ref=e9]
+- link "Goals & bills Alt+4" [ref=e10]
+- link "Reports Alt+5" [ref=e11]
+- button "Sign out" [ref=e3]
+- heading "Make room for what matters." [level=1, ref=e12]
+- button "Refresh planning data" [ref=e13]
+- region "Goals summary" [ref=e4]
+- region "Design a shared goal" [ref=e5]
+  - heading "Design a shared goal" [level=2, ref=e14]
+  - combobox "Working on" [expanded=false, ref=e27]: + New shared goal
+    - option "+ New shared goal" [selected, ref=e44]
+  - textbox "Name" [required, ref=e38]
+  - textbox "Target amount $" [required, ref=e39]
+  - spinbutton "Month Month" [ref=e73]: 0
+  - spinbutton "Day Day" [ref=e74]: 0
+  - spinbutton "Year Year" [ref=e75]: 0
+  - button "Show date picker" [ref=e45]
+  - combobox "Contribution plan" [expanded=false, ref=e40]: Equal
+    - option "Equal" [selected, ref=e65]
+    - option "Custom dollars" [ref=e66]
+    - option "Income proportional" [ref=e67]
+  - button "Create shared goal" [ref=e28]
+- heading "Bank debt details" [level=2, ref=e15]
+- button "Check First Platypus Bank debt details" [ref=e16]
+- button "Review debt-data consent" [ref=e29]
+- heading "Debt payoff plan" [level=2, ref=e17]
+- button "New plan" [ref=e18]
+- button "Open Morgan card payoff" [ref=e19]
+- textbox "Plan name" [required, ref=e46]: Morgan card payoff
+- spinbutton "Month Month" [ref=e92]: 9
+- spinbutton "Year Year" [ref=e93]: 2026
+- button "Show month picker" [ref=e68]
+- spinbutton "Monthly payment budget (USD)" [required, ref=e47]: 50
+- combobox "Method" [expanded=false, ref=e48]: Snowball — smallest balance first
+  - option "Avalanche — highest APR first" [ref=e76]
+  - option "Snowball — smallest balance first" [selected, ref=e77]
+- textbox "Name" [required, ref=e49]: Synthetic card
+- spinbutton "Current balance (USD)" [required, ref=e50]: 100
+- spinbutton "Minimum monthly payment" [required, ref=e51]: 10
+- spinbutton "Ordinary APR (%)" [required, ref=e52]: 0
+- spinbutton "Statement balance (optional)" [ref=e53]
+- spinbutton "Month Month" [ref=e94]: 0
+- spinbutton "Day Day" [ref=e95]: 0
+- spinbutton "Year Year" [ref=e96]: 0
+- button "Show date picker" [ref=e69]
+- spinbutton "Promo APR (%)" [ref=e54]: 0
+- spinbutton "Month Month" [ref=e97]: 0
+- spinbutton "Day Day" [ref=e98]: 0
+- spinbutton "Year Year" [ref=e99]: 0
+- button "Show date picker" [ref=e70]
+- button "Remove debt 1" [disabled, ref=e41]
+- button "Add debt" [ref=e30]
+- button "Preview estimate" [ref=e31]
+- button "Save plan" [ref=e32]
+- heading "Estimated payoff: 2026-10" [level=3, ref=e20]
+- heading "First month's payments" [level=3, ref=e21]
+- heading "Due dates from the saved plan" [level=3, ref=e22]
+- heading "Upcoming bills and payments" [level=2, ref=e23]
+- button "New upcoming item" [ref=e24]
+- button "Refresh upcoming items" [ref=e25]
+- button "Edit Internet bill" [ref=e33]
+- button "Record paid and advance date" [ref=e34]
+- textbox "Name" [required, ref=e55]
+- spinbutton "Amount (USD)" [required, ref=e56]
+- spinbutton "Month Month" [ref=e100]: 0
+- spinbutton "Day Day" [ref=e101]: 0
+- spinbutton "Year Year" [ref=e102]: 0
+- button "Show date picker" [ref=e71]
+- combobox "Type" [expanded=false, ref=e57]: Bill
+  - option "Bill" [selected, ref=e78]
+  - option "Credit card" [ref=e79]
+  - option "Subscription" [ref=e80]
+  - option "Other" [ref=e81]
+- combobox "Repeat" [expanded=false, ref=e58]: One date only
+  - option "One date only" [selected, ref=e82]
+  - option "Weekly" [ref=e83]
+  - option "Every two weeks" [ref=e84]
+  - option "Monthly" [ref=e85]
+  - option "Quarterly" [ref=e86]
+  - option "Yearly" [ref=e87]
+- textbox "Account reference (optional)" [ref=e59]
+- checkbox "Active" [checked=true, ref=e42]
+- button "Save upcoming item" [ref=e35]
+- region "Your personal goals" [ref=e6]
+  - heading "Your personal goals" [level=2, ref=e26]
+  - combobox [expanded=false, ref=e36]: + New personal goal
+    - option "+ New personal goal" [selected, ref=e60]
+  - textbox "Name" [required, ref=e61]
+  - textbox "Target $" [required, ref=e62]
+  - textbox "Current $" [required, ref=e63]: 0.00
+  - spinbutton "Month Month" [ref=e103]: 0
+  - spinbutton "Day Day" [ref=e104]: 0
+  - spinbutton "Year Year" [ref=e105]: 0
+  - button "Show date picker" [ref=e72]
+  - combobox "Goal type" [expanded=false, ref=e64]: Savings
+    - option "Savings" [selected, ref=e88]
+    - option "Debt payoff" [ref=e89]
+    - option "Purchase" [ref=e90]
+    - option "Emergency fund" [ref=e91]
+  - button "Create personal goal" [ref=e43]

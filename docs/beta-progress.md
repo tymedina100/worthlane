@@ -1828,3 +1828,40 @@ The initial targeted test was not discovered until its explicit config include
 was added; the final full suite includes it. Next: current CI, final persisted
 client/privacy and platform coverage audit, and PR/task acceptance handoff.
 All runtime work remains laptop-only Sandbox; no production changes or spending.
+
+
+## September 11 — fresh two-login debt and bank privacy readbacks
+
+Current code f47e5ffee31d829d0772a5c8b34904e5f59ac37c passed all three
+GitHub CI103 jobs (run34645896747): ci, postgres-integration and
+native-windows. Inspected terminal job/step conclusions through GitHub; this
+includes the native cancellation tests and all existing regression builds.
+
+Using actual browser session worthlane-final at localhost:3303, signed into
+Morgan, opened Morgan card payoff, changed Method to Snowball and saved.
+Signed out, signed into Avery, and opened Avery native payoff (created earlier
+in the iOS app). Current100, statement90, minimum10, APR0, monthly50,
+confirmedSeptember25 and October2026 estimated payoff persisted. Morgan’s plan
+was absent. Repeating Add minimum to Upcoming returned “This due-date item
+already exists”; a fresh database read retained exactly two Avery obligations.
+Avery’s dashboard showed the personal App2App checking account; Morgan’s
+private banking accounts were absent. Morgan’s preceding dashboard excluded
+Avery’s personal App2App account. Account-owner/access labels, rather than
+coincidentally equal Sandbox balances, establish these UI visibility checks.
+
+Signed out of Avery, signed into Morgan again and reopened Morgan card payoff.
+The fresh rendered selected option is Snowball, monthly50 and payoffOctober2026;
+Avery’s plan is absent. Evidence files under docs/evidence/2026-09-11:
+- morgan-saved-planning-readback.txt
+- morgan-snowball-fresh-login.txt
+- avery-bank-privacy-readback.txt
+- avery-native-plan-desktop-readback.txt
+- avery-debt-minimum-repeat.txt
+
+Commands: agent-browser --session worthlane-final open/snapshot/click/fill/select
+and get text body through its installed Node entrypoint; separate sign-out/login
+forms were used, with synthetic test identities only. Snapshot files record
+rendered controls, not seeded screenshots. No additional executable change or
+production operation was made. Final acceptance remains open: finish integrated
+solo coverage review, current platform coverage (especially Android), and final
+PR/task handoff. Physical phone work is excluded by user instruction.
