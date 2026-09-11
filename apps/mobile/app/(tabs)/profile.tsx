@@ -261,12 +261,15 @@ export default function ProfileScreen() {
   });
 
   const syncMutation = useMutation({
+    onMutate: () => ({ userId: useAuthStore.getState().userId }),
     mutationFn: (plaidItemId?: string) =>
       api.post("/plaid/sync", plaidItemId ? { plaidItemId, refresh: true } : { refresh: true }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["accounts"] });
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    onSettled: async (_data, error, _variables, context) => {
+      if (!context?.userId || useAuthStore.getState().userId !== context.userId) return;
+      await invalidateWorthlaneQueries();
+      if (error && useAuthStore.getState().userId === context.userId) {
+        Alert.alert("Could not sync", bankActionErrorMessage(error));
+      }
     },
   });
 
@@ -313,11 +316,11 @@ export default function ProfileScreen() {
   });
 
   const unlinkMutation = useMutation({
+    onMutate: () => ({ userId: useAuthStore.getState().userId }),
     mutationFn: (plaidItemId: string) => api.post(`/plaid/items/${plaidItemId}/unlink`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["accounts"] });
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    onSettled: async (_data, _error, _variables, context) => {
+      if (!context?.userId || useAuthStore.getState().userId !== context.userId) return;
+      await invalidateWorthlaneQueries();
     },
   });
 
@@ -341,10 +344,10 @@ export default function ProfileScreen() {
     await disableBiometric();
   };
 
-  const invalidateWorthlaneQueries = () => {
-    queryClient.invalidateQueries({ queryKey: ["accounts"] });
-    queryClient.invalidateQueries({ queryKey: ["transactions"] });
-    queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+  const invalidateWorthlaneQueries = async () => {
+    await Promise.all([
+      "accounts", "transactions", "dashboard", "household-summary", "budgets", "net-worth", "reports", "recurring",
+    ].map((key) => queryClient.invalidateQueries({ queryKey: [key] })));
   };
 
   const launchPlaid = async (mode: "create" | "update", plaidItemId?: string) => {
@@ -388,7 +391,8 @@ export default function ProfileScreen() {
       });
       if (!current) return;
 
-      invalidateWorthlaneQueries();
+      await invalidateWorthlaneQueries();
+      if (useAuthStore.getState().userId !== linkingUserId) return;
       Alert.alert(
         mode === "update" ? "Connection repaired" : "Bank connected",
         mode === "update"
@@ -396,6 +400,8 @@ export default function ProfileScreen() {
           : "Your institution was linked and synced successfully."
       );
     } catch (error) {
+      if (useAuthStore.getState().userId !== linkingUserId) return;
+      await invalidateWorthlaneQueries();
       if (useAuthStore.getState().userId === linkingUserId) Alert.alert("Connection failed", bankActionErrorMessage(error));
     }
   };
@@ -454,6 +460,8 @@ export default function ProfileScreen() {
   };
 
   const confirmUnlink = (plaidItem: PlaidItemSummary) => {
+    const unlinkingUserId = useAuthStore.getState().userId;
+    if (!unlinkingUserId) return;
     Alert.alert(
       `Unlink ${plaidItem.institution ?? "institution"}?`,
       "This removes the linked accounts and imported transactions for that institution.",
@@ -463,10 +471,11 @@ export default function ProfileScreen() {
           text: "Unlink",
           style: "destructive",
           onPress: async () => {
+            if (useAuthStore.getState().userId !== unlinkingUserId) return;
             try {
               await unlinkMutation.mutateAsync(plaidItem.id);
             } catch (error) {
-              Alert.alert("Could not unlink", bankActionErrorMessage(error));
+              if (useAuthStore.getState().userId === unlinkingUserId) Alert.alert("Could not unlink", bankActionErrorMessage(error));
             }
           },
         },
