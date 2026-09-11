@@ -1901,3 +1901,20 @@ worthlane-final: open, snapshot -i, fill, select, click, get text body and the
 explicit DOM date-fill fallback described above. No executable changes; current
 code retains CI103 proof. Next: independently resolve calendar interaction,
 actual date-trigger reminder delivery, current Android banking and final PR audit.
+
+
+## September 11 — actual keyboard/calendar dates resolved
+
+Using the existing Jamie login, clicked the rendered card due-date Day segment,
+pressed ArrowUp then Tab. Read-only DOM inspection showed2026-09-26, changed
+fromSeptember25. Clicked Save plan. Opened Edit Jamie internet, clicked its
+actual Show date picker, pressed ArrowRight and Enter to selectSeptember21
+(previouslySeptember20), then Save upcoming item. Reloaded the page, reopened
+Jamie solo payoff, and inspected rendered text: card minimum dueSeptember26 and
+bill45.67 dueSeptember21 persisted. No DOM setters, API calls or test-data writes
+were used for these edits. Evidence: jamie-keyboard-calendar-reloaded.txt.
+
+The earlier agent-browser fill/grid-click limitation is retained in the prior
+entry, but direct keyboard interaction with the actual controls now proves
+editable card and bill dates. No product code change was needed. Remaining work:
+actual date-trigger OS delivery, current Android banking and final PR acceptance.
