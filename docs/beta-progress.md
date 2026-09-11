@@ -1765,3 +1765,33 @@ an explicit Nothing linked yet assertion and a fresh screenshot. Evidence:
 `native-unlinked-dashboard-reopened.png` and `native-unlinked-reopened.png`.
 Native connect/sync/required repair/repeated error/unlink lifecycle is now proven
 for the ordinary OAuth institution. App2App and final acceptance audit remain.
+
+
+## September 11 — final instruction-drift follow-up
+
+The acceptance audit found stale README/architecture sections still limiting
+desktop to sync/unlink, requiring an already registered invitee, and listing
+deterministic debt guidance and PostgreSQL CI as future work. Corrected those
+statements against the implemented BFF routes, invitation service, saved debt
+flows and CI workflow. Preserved the distinction between implementation,
+interactive evidence and production release approval. `git diff --check` passed.
+No executable code changed in this documentation correction.
+
+App2App verification is in progress using the official Sandbox institution
+First Platypus Bank - OAuth App2App (ins_132241). Actual Link search/selection
+opened Safari, published Sandbox login/MFA succeeded, and the checking account
+was visibly selected. Inspected the actual consent checkbox accessibility value
+to select it after earlier reported taps did not change its state. Return and
+import are not yet verified at this checkpoint. Official test procedure:
+https://plaid.com/docs/link/oauth/#app-to-app-authentication .
+
+App2App checkpoint: consent was visibly checked, and Connect returned from
+Safari to the existing native Plaid session (Safari return indicator visible).
+However, the SDK stayed at Log into First Platypus Bank instead of progressing
+to selected-account confirmation. A delayed screenshot confirmed that state;
+no exchange request occurred. Fresh local SQL still shows Avery with 0 Items,
+1 original account and 1 original transaction. This proves app handoff only,
+not completed App2App or import. Screenshots: `app2app-safari-bank.png`,
+`app2app-checking-selected.png`, `app2app-bank-consent.png`,
+`app2app-return-pending.png`. Next: trace SDK return events and session handling,
+then finish the final brief audit. No production or phone action is required.

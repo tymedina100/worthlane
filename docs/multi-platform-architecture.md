@@ -89,11 +89,13 @@ attribution, and dissolves a one-person household when its last user is deleted.
 
 Plaid client secrets and encrypted access tokens remain API-only. Both clients
 read the same canonical user-owned Plaid items, accounts, and transactions.
-Mobile retains native link/relink initiation. Desktop can inspect connection
-health and safely sync or unlink existing connections through same-origin BFF
-routes; only an internal item ID reaches browser code. The API supports a `web`
-link-token platform for future Plaid Link Web work, but the desktop intentionally
-does not claim that link initiation is complete.
+Mobile uses the native Plaid SDK for connect and repair. Desktop uses Plaid Link
+Web through authenticated same-origin link-token and exchange BFF routes, and
+can inspect health, sync and unlink. Link/public tokens are short-lived client
+handoff values; provider credentials and access tokens remain server-side.
+Both clients refresh saved financial state after failed bank operations because
+an error can persist a Needs relink state. The beta acceptance index records
+actual Sandbox lifecycle proof and remaining platform checks.
 
 ### Native Windows shell and production topology
 
@@ -155,9 +157,10 @@ storage, HTTP adapters, layouts, controls, and charts remain client-specific.
 ## Household, privacy, and consent
 
 Each partner uses a separate `User` login. A user without a household can create
-one and becomes its owner. The owner sends an invitation to an existing login;
+one and becomes its owner. The owner can invite a partner before registration;
 the API returns a generic pending response to avoid account enumeration. The
-target login must explicitly accept within seven days. Pending invitations do
+intended partner must register or sign in and explicitly accept the invitation
+code within seven days. Pending invitations do
 not grant access, and a household is limited to two active/pending members.
 
 Account visibility is caller-relative:
@@ -221,15 +224,16 @@ and revokes both smoke sessions.
 - Household timezone drives monthly responsibility windows, including DST edges.
 - Plaid ownership is never cloned; partner access is a permission over canonical
   data.
-- Desktop link/relink initiation remains a documented mobile boundary until
-  Plaid Link Web and public-token exchange BFF routes are implemented.
+- Desktop Link uses narrowly scoped BFF routes and Plaid CSP allowances; keep
+  same-origin mutation validation and server-side access-token storage intact.
 - A production native installer requires a deployed HTTPS `apps/desktop` BFF
   origin; the shell intentionally rejects HTTP and localhost in release builds.
 - The installer must be code-signed in a protected release environment before
   distribution. Signing keys and certificates must not be committed.
-- A production release should still add PostgreSQL-backed CI integration tests
-  and physical-device mobile QA; local unit/build/export checks do not replace
-  those environments.
+- PostgreSQL-backed CI integration tests now run against an isolated database;
+  release acceptance must also retain interactive client evidence. Physical-device
+  QA is required before claiming phone readiness; simulator, unit, build and export
+  evidence must be labeled accurately. Current verification is laptop-only.
 
 ## Verification commands
 
