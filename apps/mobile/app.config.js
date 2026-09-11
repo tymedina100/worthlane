@@ -12,6 +12,13 @@ module.exports = () => {
   const isReleaseProfile = easBuildProfile === "preview" || easBuildProfile === "production";
   const apiUrl = process.env.EXPO_PUBLIC_API_URL?.trim();
   const associatedDomain = process.env.PLAID_IOS_ASSOCIATED_DOMAIN?.trim();
+  const appleTeamId = (process.env.APPLE_TEAM_ID || baseConfig.ios?.appleTeamId)?.trim();
+  if (associatedDomain && !appleTeamId) {
+    throw new Error("APPLE_TEAM_ID is required when PLAID_IOS_ASSOCIATED_DOMAIN is configured; it must match the website association.");
+  }
+  if (appleTeamId && !/^[A-Z0-9]{10}$/.test(appleTeamId)) {
+    throw new Error("APPLE_TEAM_ID must be the 10-character Apple development team ID.");
+  }
   const sentryDsn = process.env.EXPO_PUBLIC_SENTRY_DSN?.trim();
   const sentryEnvironment = process.env.EXPO_PUBLIC_SENTRY_ENVIRONMENT?.trim();
   const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN?.trim();
@@ -61,6 +68,7 @@ module.exports = () => {
     plugins: [...(baseConfig.plugins ?? []), ["expo-build-properties", { android: { minSdkVersion: 26 } }], ...sentryPlugin],
     ios: {
       ...baseConfig.ios,
+      appleTeamId,
       associatedDomains: normalizedAssociatedDomain
         ? Array.from(
             new Set([

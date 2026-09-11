@@ -38,7 +38,41 @@ Sources: [Plaid iOS setup](https://plaid.com/docs/link/ios/), [Plaid OAuth testi
 
 With the persistent launcher running, execute `node scripts/test-persistent-sandbox.mjs --create`. Stop and restart the launcher, then execute `node scripts/test-persistent-sandbox.mjs --verify`. This creates a synthetic login and real Sandbox connection, stores its fixture credentials only in ignored mode-0600 `.tmp/persistent-sandbox-fixture.json`, and verifies fresh login, unchanged account IDs, token decryption and successful bank sync after restart. It retains that connection for continued UI acceptance; do not run the create phase again over an existing fixture. This backend persistence check does not substitute for interactive Link or OAuth evidence.
 
-## September 10 initial physical-device prerequisite check
+## Laptop-only simulator acceptance — current workflow
+
+Tyler directed all further work to the laptop on September 11. Do not inspect,
+install on, or require the physical phone for these checks. Local Maestro/XCTest
+can drive the simulator and capture the rendered native/Plaid flow.
+
+Set `APPLE_TEAM_ID=5FBXR5M5PJ` alongside
+`PLAID_IOS_ASSOCIATED_DOMAIN=worthlane.app` in ignored mobile `.env.local`.
+`app.config.js` requires an explicit team when the associated domain is set and
+carries it into all generated iOS targets. After
+changing either value, regenerate the native project and rebuild; editing Metro
+variables does not update native entitlements.
+
+```sh
+# From apps/mobile, after the ignored local environment is configured:
+corepack pnpm exec expo prebuild --platform ios --no-install
+xcodebuild -workspace ios/Worthlane.xcworkspace -scheme Worthlane \
+  -configuration Debug -sdk iphonesimulator \
+  -destination id=D7C7C0D2-5966-476B-8234-80B80FCAF7B8 \
+  -derivedDataPath ../../.tmp/ios-derived \
+  DEVELOPMENT_TEAM=5FBXR5M5PJ CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- build
+```
+
+Do not rely only on `codesign --entitlements` for a simulator app: the ordinary
+signature may have an empty entitlement dictionary. Inspect the generated
+`Worthlane.app-Simulated.xcent` and the built simulator Mach-O entitlement section.
+The application identifier must be `5FBXR5M5PJ.com.worthlane.mobile`, and the
+associated domain must include `applinks:worthlane.app`. The earlier September 10
+simulator build silently selected a different team prefix; a passing build did
+not prove the required domain association. The September 11 rebuild passed, was installed in the simulator, and its actual
+Mach-O entitlement section matches the live website association (see
+`docs/evidence/2026-09-11/simulator-association.json`). Successful native
+authorization still requires a fresh interactive check.
+
+## September 10 initial physical-device prerequisite check (historical; superseded)
 
 The paired iPhone16ProMax is available and Developer Mode is enabled. An actual
 Debug device build was attempted with the personal team5FBXR5M5PJ and automatic
@@ -61,8 +95,6 @@ foreground/background10second local-reminder evidence remain valid. A phone buil
 also needs a device-reachable Sandbox API address; the current persistent API binds
 to127.0.0.1:3301 and must not be mistaken for a phone-accessible localhost URL.
 
-Tyler subsequently signed into Xcode and Plaid. The phone was rechecked connected. A generic iOS development build is compiling in `/tmp/worthlane-generic-build-after-signin.log`; no successful signed build or installation is claimed yet.
+Tyler subsequently signed into Xcode and Plaid. Later September 10 progress records a successful personal-team signed build and installation; see `beta-progress.md`. These are historical results. Current work is laptop-only, and the original failed-build prerequisite above is no longer an active blocker.
 
-Chrome's banking check was blocked by an open
-extension UI; the Computer tool explicitly requires it to be completed/dismissed
-before automation resumes. No extension UI was bypassed.
+A historical Chrome extension UI interruption was not bypassed. Desktop Sandbox acceptance later completed; current native interaction uses the laptop simulator through Maestro.
