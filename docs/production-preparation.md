@@ -6,27 +6,30 @@ Laptop-only work remains binding. This supersedes the previous blanket Plaid
 production-preparation gate, including necessary Android package registration.
 Dashboard access and provider permissions still need verification.
 
-## Verified state
+## Verified state as of September 14
 
-- Desktop/iOS Simulator Sandbox lifecycle evidence remains in beta-progress.md.
-- Android debug build succeeded in36m30s; APK installed on laptop emulator5554,
-  boot completed and Metro loaded2079modules. Login screen rendered, but the first
-  Jamie login returned Invalid credentials. Investigate input/session before
-  claiming Android persisted-journey success. No phone operation.
-- Apple record6766112205 is accessible, Prepare for Submission, manual release.
-  Updated promotional text and couples-first description persisted after reload.
-  Review notes edits did not persist after two save/reload attempts; the old
-  manual-only notes remain and must be corrected before any submission.
-- Tyler's embedded Plaid browser is signed in. Available automation uses a
-  separate Chrome session, still at Welcome back. Production tier, permissions
-  and pricing are unverified; no production secret was copied or activated.
+- Desktop, iOS Simulator and Android emulator have recorded Sandbox banking
+  lifecycle evidence. Android standard Link, repeat sync, forced-error repair,
+  provider-revoking unlink and OAuth connect now pass with persisted comparisons.
+- Separate Android Morgan/Avery logins verify custom split persistence and privacy.
+  CI112 on executable commit b85d3da passed all three jobs.
+- Android package com.worthlane.mobile was saved in Plaid; fresh Sandbox Link-token
+  requests succeed. The previously approved HTTPS iOS redirect remains recorded.
+- Apple record6766112205 previously showed Prepare for Submission/manual release.
+  Promotional text/description persisted; private review notes still require correction.
+- Fresh in-app browser inspection September14 now shows Plaid Welcome back and
+  App Store Connect login (authResult=FAILED). The Mac is locked; Computer Use
+  reports native access unavailable until Tyler unlocks it. A sign-in request is
+  pending. This is a session/access blocker, not evidence of missing Production approval.
+- Earlier Vantage Launch Center showed real-data approval. Product entitlements,
+  billing and production secrets have not been verified or activated.
 
 ## Plaid setup work remaining
 
 1. Inspect the Vantage team's Launch Center, access tier and app/company profile.
    Do not invent security questionnaire answers or accept paid terms.
-2. Register exact Android package com.worthlane.mobile. Preserve the approved
-   worthlane.app/plaid-oauth redirect and existing integrations.
+2. Completed: exact Android package com.worthlane.mobile registered. Preserve the
+   approved worthlane.app/plaid-oauth redirect and existing integrations.
 3. Verify Transactions access and optional Liabilities permission. Existing code
    requests Transactions and only adds Liabilities consent when requested. No
    payment/transfer product is needed.
@@ -60,20 +63,10 @@ Check the account's actual tier before
 Store preparation is tracked in store-listing-draft.md; no store submission.
 
 
-## Latest verification
+## Release-specific limits
 
-Android Jamie sign-in succeeded after clearing/re-entering the password. Saved
-balance/spending/bill/debt fields were read in the native UI; evidence is in
-beta-progress.md. Earlier Invalid credentials is resolved as test-input failure.
-Plaid Chrome access is now available. Vantage Launch Center explicitly reports
-Production/real-data approval, but exact product access and billing are unverified.
-Android registration is prepared and awaits Plaid password verification before
-Save completes; the user has been asked to perform that identity check.
-
-
-September14: Android package save completed and fresh Android Sandbox Link token
-creation returns200. Password gate resolved. Native Link now opens; OAuth reaches
-bank consent and returns to native Link but has not reached account confirmation.
-CI107 on0ad4085 passed all three jobs. Native Android test reminder background
-notification was verified and captured; full lifecycle and store preparation remain
-open. Check the square Android notification artwork before final release.
+No production bank Item, live-data migration, paid plan or store submission has
+been made. Production requires verified entitlements, separate hosted API/data
+and secrets, release-service deletion/webhook checks, truthful disclosures and
+store signing/assets. Check the square Android notification artwork before release.
+See [completion audit](beta-completion-audit.md) for the current evidence boundary.
