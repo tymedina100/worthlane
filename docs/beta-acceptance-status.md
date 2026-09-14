@@ -48,7 +48,10 @@ resolved the earlier ambiguous selection/blank captures without an app code chan
 Standard forced-error repair retained all16 account IDs/545 transaction IDs;
 unlink revoked provider access and retained exactly OAuth/manual2 account IDs and
 151 transaction IDs. Native screenshots and DB comparisons recorded September14.
-The final native two-user coverage audit and current CI remain open.
+Fresh Android Morgan edit/Avery login verifies persisted60/40 custom shares,
+110% validation, exact cent totals and4 permitted accounts versus Morgan17.
+PostgreSQL confirms6000/4000 basis points and2 history versions. CI112 onb85d3da
+passes all3jobs. Final requirement-by-requirement evidence audit remains open.
 
 Apple draft promotional text/description were saved and reloaded; review notes
 remain stale after failed persistence. Store status remains Prepare for Submission

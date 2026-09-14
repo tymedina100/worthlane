@@ -2219,3 +2219,34 @@ android-unlinked PNG/XML files. No production changes or phone access.
 Android standard connect/sync/forced-error repair/unlink and OAuth connect now have
 interactive persisted evidence. Final native two-user coverage audit, current CI
 and release/store preparation remain; do not infer full beta completion.
+
+## September 14 — fresh Android two-login custom split and privacy readback
+
+CI112/34867048364 on b85d3da completed all3jobs successfully (ci,
+postgres-integration, native-windows), including unit/API/contracts, native privacy
+and reminder checks, persisted household tests and regression builds.
+
+Signed Jamie out through native confirmation; observed cleared login screen.
+Signed Morgan in with separate synthetic credentials. Own net worth -75,829.59;
+household viewer total -75,729.59, including only permitted partner data.
+Opened existing Groceries600.01 equal agreement in native editor. Selected
+Custom %, entered60/50 and saved: rejected with shares must total100% message.
+Corrected Avery to40 and saved. Morgan's native plan showed360.01/240 responsibility,
+33.80/22.53 applied,326.21/217.47 remaining; historical-effect notice was visible
+in editor. No payer or account-visibility edits were made.
+
+Signed Morgan out; signed Avery in with independent credentials. Avery's own
+net worth210 and own2 upcoming items appeared. Household viewer total1544.56.
+Same saved60/40 plan and exact cent-rounded applied/remaining amounts loaded.
+Expanded Accounts & privacy: only4 detailed accounts — Morgan shared wallet
+1234.56, two explicitly shared100 test copies, and Avery's own private110
+Plaid checking. Morgan's14 private bank accounts and Jamie's data did not appear.
+Morgan's screen had17 detailed accounts; this intentional difference follows
+privacy, not a missing household balance.
+
+Independent PostgreSQL read confirms Groceries600.01 PERCENTAGE, Morgan6000/Avery4000
+basis points, with2 historical agreement versions retained. Synthetic agreement
+left at60/40 for further checks. Evidence android-custom-saved, android-avery-split,
+android-avery-privacy PNG/XML plus fresh-login and invalid-split XML. No new code
+this milestone. Re-read current Notion acceptance criteria. Final integrated
+evidence audit and production/store preparation remain; no submission.
