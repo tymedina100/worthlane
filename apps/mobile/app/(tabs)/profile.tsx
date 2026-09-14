@@ -678,17 +678,6 @@ export default function ProfileScreen() {
                     <Text style={styles.bankSyncText}>{item.dataNotice}</Text>
                     {item.errorMessage ? <Text style={styles.bankError}>{item.errorMessage}</Text> : null}
 
-                    {linkedAccounts.map((account) => (
-                      <View key={account.id} style={styles.accountRow}>
-                        <View style={{ flex: 1 }}>
-                          <Text style={styles.accountName}>{account.name}</Text>
-                          <Text style={styles.accountMeta}>
-                            {accountTypeLabel(account.type)} - {formatCurrency(account.currentBalance)}
-                          </Text>
-                        </View>
-                      </View>
-                    ))}
-
                     <View style={styles.bankActions}>
                       <TouchableOpacity
                         style={[styles.inlineButton, syncMutation.isPending && styles.buttonDisabled]}
@@ -704,6 +693,17 @@ export default function ProfileScreen() {
                         <Text style={styles.inlineDangerButtonText}>Unlink</Text>
                       </TouchableOpacity>
                     </View>
+
+                    {linkedAccounts.map((account) => (
+                      <View key={account.id} style={styles.accountRow}>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.accountName}>{account.name}</Text>
+                          <Text style={styles.accountMeta}>
+                            {accountTypeLabel(account.type)} - {formatCurrency(account.currentBalance)}
+                          </Text>
+                        </View>
+                      </View>
+                    ))}
                   </View>
                 );
               })}

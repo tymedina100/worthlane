@@ -2189,3 +2189,33 @@ Sandbox OAuth connection/import proof, not live banking, repair or unlink proof.
 Updated acceptance index to remove resolved password/Android connection gates.
 Next complete Android forced-error repair and unlink with identity-preservation
 readbacks, then finish the remaining two-user native coverage audit.
+
+## September 14 — Android expired-connection repair and unlink verified
+
+Reset only Jamie's standard First Platypus Sandbox Item using the provider's
+Sandbox reset-login endpoint (token asserted Sandbox, kept out of output).
+Captured baseline account/transaction IDs in ignored local diagnostic JSON.
+Actual Sync every institution failed with re-link guidance; native card showed
+Needs relink, incomplete-spending notice and retained balances.
+
+Found repair controls below all14 bank accounts. Moved the existing action row
+immediately after connection status/error and before account rows. No banking
+behavior changed. Mobile typecheck and diff check pass. Emulator screenshot
+confirms visible Relink beside status; actual tap launches update-mode Link.
+Reauthenticated with public Sandbox password, confirmed accounts and finished
+without a separate Plaid account. Native Connection repaired alert captured.
+Independent DB comparison proves all16 account IDs and545 transaction IDs were
+unchanged and both Items HEALTHY, needsRelink false.
+
+Tapped native Unlink on standard institution and confirmed institution-specific
+removal. Diagnostic retained that Sandbox provider token only in process memory
+until local deletion, then itemGet returned ITEM_NOT_FOUND: provider access is
+revoked. Exact surviving IDs match the pre-repair baseline for OAuth account and
+manual account (2), and all149 OAuth imports plus2 manual transactions (151).
+The remaining OAuth Item is HEALTHY. Native screen confirms only OAuth institution
+and Jamie wallet remain. Evidence android-recovery-actions, android-repaired and
+android-unlinked PNG/XML files. No production changes or phone access.
+
+Android standard connect/sync/forced-error repair/unlink and OAuth connect now have
+interactive persisted evidence. Final native two-user coverage audit, current CI
+and release/store preparation remain; do not infer full beta completion.
