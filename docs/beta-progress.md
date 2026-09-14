@@ -2074,3 +2074,35 @@ Persistent local HTTP proof: newly registered synthetic manual-only user201,
 DELETE200 with deleted:true, subsequent login401; no retained test credentials.
 No production account was touched. Hosted/live revocation remains unverified.
 Plaid package-save dialog is still awaiting the user's password verification.
+
+
+## September 14 — Android registration, reminder delivery and CI107
+
+Recovered interrupted September11 work: real Android notification shade displayed
+Your test reminder with generic no-payment-due copy after Settings > Send test
+reminder > scheduled confirmation > Home. Saved XML and screenshot, visually
+inspected, under evidence/2026-09-11/android-reminder-delivery.*. This proves native
+DATE-trigger background delivery, not a real9am bill trigger or physical phone.
+The rendered Android notification icon appears as a square; check final release
+notification artwork before store preparation is complete.
+
+Plaid dashboard reported Android package names saved after Tyler's password check.
+The interrupted token probe returned200. A fresh September14 local authenticated
+Android create-mode request returned200 with a Sandbox Link token (withheld).
+Previous INVALID_FIELD registration error is resolved; no further password/setup
+approval is needed for this addition. Production tier/products/billing still need
+separate verification; no live bank Item or paid plan was activated.
+
+CI107/34654449068 on0ad40857c2eb21a85082ec676fb6481e5b550b9e completed all3jobs
+successfully, including PostgreSQL integrations, regression builds and Windows.
+
+Actual Android Connect bank opened Plaid, Continue without phone number reached
+institution search, and First Platypus Bank OAuth launched the external bank page.
+Configured emulator Chrome without an account, declined notifications. Synthetic
+user_good/pass_good and1234 reached bank consent. An initial selection check used
+Back and returned to login; repeated login/MFA and bank consent returned to native
+Plaid, but it remains at67percent Continue to log in rather than account confirmation.
+No Android OAuth connection success/imports claimed. Account selection did not
+appear in the bank confirmation summary; this interaction needs investigation.
+No app changes made for this attempt. evidence/2026-09-14/android-oauth-return-pending.xml
+records the returned native state. Continue this remaining lifecycle check.

@@ -43,3 +43,10 @@ dashboard, activity, bill and debt-field readbacks passed; see android-jamie evi
 Full current Android lifecycle remains open. Plaid Chrome is now signed in; team
 reports Production approval, exact products/billing unverified. Android package
 Save awaits provider password verification, not additional user authorization.
+
+
+September14: Android registration gate resolved, fresh Sandbox Link token200.
+Actual Android background test reminder delivered; screenshot/XML saved. CI107
+on0ad4085 passed all jobs. Android OAuth still pending after external consent
+returns to native Link at67percent; no connection success is claimed. See latest
+beta-progress entry for exact evidence and interaction limits.

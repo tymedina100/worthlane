@@ -69,3 +69,11 @@ Plaid Chrome access is now available. Vantage Launch Center explicitly reports
 Production/real-data approval, but exact product access and billing are unverified.
 Android registration is prepared and awaits Plaid password verification before
 Save completes; the user has been asked to perform that identity check.
+
+
+September14: Android package save completed and fresh Android Sandbox Link token
+creation returns200. Password gate resolved. Native Link now opens; OAuth reaches
+bank consent and returns to native Link but has not reached account confirmation.
+CI107 on0ad4085 passed all three jobs. Native Android test reminder background
+notification was verified and captured; full lifecycle and store preparation remain
+open. Check the square Android notification artwork before final release.
