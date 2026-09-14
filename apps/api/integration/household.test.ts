@@ -102,11 +102,11 @@ describe("persistent household consent and budget journey", () => {
       expect(bill.status).toBe("DUE_TODAY");
       expect((await call(listUpcoming, owner.token)).items[0].status).toBe("DUE_TODAY");
       expect((await call(dashboard, owner.token)).today.dueNextSevenDays).toBe(25);
-      const pay = (req: NextRequest) => payUpcoming(req, { params: { id: bill.id } });
+      const pay = (req: NextRequest) => payUpcoming(req, { params: Promise.resolve({ id: bill.id }) });
       let currentBill = await call(pay, owner.token, { action: "markPaid", expectedUpdatedAt: bill.updatedAt });
       expect(currentBill.dueDate).toBe("2026-09-30");
       await call(pay, owner.token, { action: "markPaid", expectedUpdatedAt: bill.updatedAt }, 409);
-      const editBill = (req: NextRequest) => editUpcoming(req, { params: { id: bill.id } });
+      const editBill = (req: NextRequest) => editUpcoming(req, { params: Promise.resolve({ id: bill.id }) });
       currentBill = await call(editBill, owner.token, { amount: 30, dueDate: "2026-09-30", expectedUpdatedAt: currentBill.updatedAt });
       currentBill = await call(pay, owner.token, { action: "markPaid", expectedUpdatedAt: currentBill.updatedAt });
       expect(currentBill.dueDate).toBe("2026-10-31");
@@ -298,7 +298,7 @@ describe("persistent household consent and budget journey", () => {
       ?.allocations[0].appliedSpendMinor).toBe(0);
     await expect(getHouseholdAccountDetail(partner.id, account.id)).rejects.toThrow("Account not found");
     const rentId = byName.get("Rent")!.id;
-    const changeRent = (req: NextRequest) => editResponsibility(req, { params: { id: rentId } });
+    const changeRent = (req: NextRequest) => editResponsibility(req, { params: Promise.resolve({ id: rentId }) });
     await call(changeRent, freshOwner.accessToken, {
       name: "Rent", monthlyAmountMinor: 170_001,
       assignment: { mode: "PERCENTAGE", shares: [
@@ -323,7 +323,7 @@ describe("persistent household consent and budget journey", () => {
       expect.objectContaining({ memberId: partnerId, shareBasisPoints: 4000, assignedMinor: 68_000 }),
     ]));
     expect(Object.keys(previous.definition.allocations[0]).sort()).toEqual(["assignedMinor", "displayName", "memberId", "shareBasisPoints"]);
-    const removeRent = (req: NextRequest) => removeResponsibility(req, { params: { id: rentId } });
+    const removeRent = (req: NextRequest) => removeResponsibility(req, { params: Promise.resolve({ id: rentId }) });
     await call(removeRent, partner.token, undefined, 403);
     expect((await call(readResponsibilityHistory, owner.token)).entries).toEqual(history.entries);
     await call(removeRent, owner.token);
@@ -359,8 +359,8 @@ it("persists private debt estimates across login and rejects stale edits", async
   const saved = await call(saveDebtPlan, owner.token, input, 201);
   expect(saved.estimate).toMatchObject({ status: "PAID_OFF", totalPaidMinor: 10000, totalInterestMinor: 0, payoffMonth: "2026-12" });
   expect(saved.input.debts[0]).toMatchObject({ balanceMinor: 10000, statementBalanceMinor: 8500, minimumPaymentMinor: 1000, dueDate: "2026-09-20" });
-  const read = (req: NextRequest) => readDebtPlan(req, { params: { id: saved.id } });
-  const addDue = (req: NextRequest) => addDebtDueDate(req, { params: { id: saved.id } });
+  const read = (req: NextRequest) => readDebtPlan(req, { params: Promise.resolve({ id: saved.id }) });
+  const addDue = (req: NextRequest) => addDebtDueDate(req, { params: Promise.resolve({ id: saved.id }) });
   await call(addDue, stranger.token, { revision: 1, entryId: "card" }, 404);
   const due = await call(addDue, owner.token, { revision: 1, entryId: "card" });
   expect(due).toMatchObject({ amount: 10, dueDate: "2026-09-20", alreadyExists: false });
@@ -369,7 +369,7 @@ it("persists private debt estimates across login and rejects stale edits", async
   expect(repeated).toMatchObject({ id: due.id, alreadyExists: true });
   expect(await prisma.upcomingObligation.count({ where: { userId: owner.id } })).toBe(1);
   expect(await prisma.upcomingObligation.findUniqueOrThrow({ where: { id: due.id } })).toMatchObject({ isPaid: true, frequency: null, reminderTiming: "NONE" });
-  const edit = (req: NextRequest) => editDebtPlan(req, { params: { id: saved.id } });
+  const edit = (req: NextRequest) => editDebtPlan(req, { params: Promise.resolve({ id: saved.id }) });
   await call(read, stranger.token, undefined, 404);
   expect(await call(listDebtPlans, stranger.token)).toEqual([]);
   await call(edit, stranger.token, { revision: 1, input }, 404);
@@ -547,7 +547,7 @@ it("reviews manual/import matches privately and confirms only unchanged entries"
   expect(await prisma.transaction.count({ where: { userId: owner.id } })).toBe(2);
   expect((await prisma.transaction.aggregate({ where: { userId: owner.id, ...spendingWhere }, _sum: { amount: true } }))._sum.amount?.toNumber()).toBe(23.47);
   expect((await call(duplicateReview, token)).entries).toHaveLength(0);
-  await call(req => editTransaction(req, { params: { id: manual.id } }), token, { spendingTreatment: "AUTO" });
+  await call(req => editTransaction(req, { params: Promise.resolve({ id: manual.id }) }), token, { spendingTreatment: "AUTO" });
   expect((await call(duplicateReview, token)).entries).toHaveLength(1);
   await prisma.transaction.createMany({ data: Array.from({ length: 21 }, (_, index) => ({ userId: owner.id, accountId: manualAccount.id, amount: 999, date: new Date(date.getTime() + 86400000 + index), isManual: true })) });
   const page = await call(duplicateReview, token);

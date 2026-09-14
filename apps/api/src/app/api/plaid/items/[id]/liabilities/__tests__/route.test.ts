@@ -5,7 +5,7 @@ vi.mock("@worthlane/db", () => ({ prisma: { plaidItem: { findFirst: mocks.item }
 vi.mock("@/lib/auth", () => ({ getAuthUser: mocks.auth }));
 vi.mock("@/lib/plaid", () => ({ plaidClient: { liabilitiesGet: mocks.get }, decryptPlaidAccessToken: mocks.decrypt, toPlaidIntegrationError: () => ({ message: "Unavailable", status: 502, code: "PLAID_ERROR" }) }));
 import { POST } from "../route";
-const call = () => POST(new NextRequest("http://localhost/api/plaid/items/item/liabilities", { method: "POST" }), { params: { id: "item" } });
+const call = () => POST(new NextRequest("http://localhost/api/plaid/items/item/liabilities", { method: "POST" }), { params: Promise.resolve({ id: "item" }) });
 beforeEach(() => {
   vi.resetAllMocks(); vi.stubEnv("PLAID_ENV", "sandbox"); vi.stubEnv("PLAID_LIABILITIES_ENABLED", "false");
   mocks.auth.mockReturnValue({ sub: "owner" }); mocks.item.mockResolvedValue({ id: "item", itemId: "provider-item", accessTokenEncrypted: "cipher" });

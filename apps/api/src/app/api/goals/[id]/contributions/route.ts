@@ -11,7 +11,8 @@ const createSchema = z.object({
   note: z.string().optional(),
 });
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   let userId: string;
   try {
     ({ sub: userId } = getAuthUser(req));
@@ -74,7 +75,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   return ok({ contribution, goal: updatedGoal }, 201);
 }
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   let userId: string;
   try {
     ({ sub: userId } = getAuthUser(req));

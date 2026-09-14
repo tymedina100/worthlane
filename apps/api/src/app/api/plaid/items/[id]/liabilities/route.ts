@@ -4,7 +4,8 @@ import { getAuthUser } from "@/lib/auth";
 import { ok, err, unauthorized, notFound } from "@/lib/response";
 import { decryptPlaidAccessToken, plaidClient, toPlaidIntegrationError } from "@/lib/plaid";
 import { liabilitySnapshot } from "@/lib/plaid-liabilities";
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   let userId: string;
   try { ({ sub: userId } = getAuthUser(req)); } catch { return unauthorized(); }
   const item = await prisma.plaidItem.findFirst({ where: { id: params.id, userId } });

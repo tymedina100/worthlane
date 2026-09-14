@@ -124,19 +124,19 @@ describe("PATCH /api/categories/:id", () => {
 
   it("returns 401 when not authenticated", async () => {
     mockGetAuthUser.mockImplementation(() => { throw new Error("Unauthorized"); });
-    const res = await PATCH(makeReq("PATCH", "http://localhost/api/categories/cat-1", { name: "Updated" }), { params: { id: "cat-1" } });
+    const res = await PATCH(makeReq("PATCH", "http://localhost/api/categories/cat-1", { name: "Updated" }), { params: Promise.resolve({ id: "cat-1" }) });
     expect(res.status).toBe(401);
   });
 
   it("returns 403 when editing a system category", async () => {
     mockPrisma.category.findUnique.mockResolvedValue(makeCategory({ isSystem: true, userId: null }));
-    const res = await PATCH(makeReq("PATCH", "http://localhost/api/categories/cat-1", { name: "Updated" }), { params: { id: "cat-1" } });
+    const res = await PATCH(makeReq("PATCH", "http://localhost/api/categories/cat-1", { name: "Updated" }), { params: Promise.resolve({ id: "cat-1" }) });
     expect(res.status).toBe(403);
   });
 
   it("returns 404 when category belongs to another user", async () => {
     mockPrisma.category.findUnique.mockResolvedValue(makeCategory({ userId: "other-user" }));
-    const res = await PATCH(makeReq("PATCH", "http://localhost/api/categories/cat-1", { name: "Updated" }), { params: { id: "cat-1" } });
+    const res = await PATCH(makeReq("PATCH", "http://localhost/api/categories/cat-1", { name: "Updated" }), { params: Promise.resolve({ id: "cat-1" }) });
     expect(res.status).toBe(404);
   });
 
@@ -147,7 +147,7 @@ describe("PATCH /api/categories/:id", () => {
       .mockResolvedValueOnce(null); // duplicate name check
     mockPrisma.category.update.mockResolvedValue(updated);
 
-    const res = await PATCH(makeReq("PATCH", "http://localhost/api/categories/cat-1", { name: "Updated" }), { params: { id: "cat-1" } });
+    const res = await PATCH(makeReq("PATCH", "http://localhost/api/categories/cat-1", { name: "Updated" }), { params: Promise.resolve({ id: "cat-1" }) });
     const body = await res.json() as { data: any };
 
     expect(res.status).toBe(200);
@@ -166,25 +166,25 @@ describe("DELETE /api/categories/:id", () => {
 
   it("returns 403 when deleting a system category", async () => {
     mockPrisma.category.findUnique.mockResolvedValue(makeCategory({ isSystem: true, userId: null }));
-    const res = await DELETE(makeReq("DELETE", "http://localhost/api/categories/cat-1"), { params: { id: "cat-1" } });
+    const res = await DELETE(makeReq("DELETE", "http://localhost/api/categories/cat-1"), { params: Promise.resolve({ id: "cat-1" }) });
     expect(res.status).toBe(403);
   });
 
   it("returns 400 when category is in use by a budget", async () => {
     mockPrisma.budget.findFirst.mockResolvedValue({ id: "budget-1" });
-    const res = await DELETE(makeReq("DELETE", "http://localhost/api/categories/cat-1"), { params: { id: "cat-1" } });
+    const res = await DELETE(makeReq("DELETE", "http://localhost/api/categories/cat-1"), { params: Promise.resolve({ id: "cat-1" }) });
     expect(res.status).toBe(400);
   });
 
   it("returns 400 when category is in use by a transaction", async () => {
     mockPrisma.transaction.findFirst.mockResolvedValue({ id: "tx-1" });
-    const res = await DELETE(makeReq("DELETE", "http://localhost/api/categories/cat-1"), { params: { id: "cat-1" } });
+    const res = await DELETE(makeReq("DELETE", "http://localhost/api/categories/cat-1"), { params: Promise.resolve({ id: "cat-1" }) });
     expect(res.status).toBe(400);
   });
 
   it("deletes and returns confirmation", async () => {
     mockPrisma.category.delete.mockResolvedValue({});
-    const res = await DELETE(makeReq("DELETE", "http://localhost/api/categories/cat-1"), { params: { id: "cat-1" } });
+    const res = await DELETE(makeReq("DELETE", "http://localhost/api/categories/cat-1"), { params: Promise.resolve({ id: "cat-1" }) });
     const body = await res.json() as { data: any };
 
     expect(res.status).toBe(200);

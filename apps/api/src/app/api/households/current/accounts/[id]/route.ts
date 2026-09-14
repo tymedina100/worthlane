@@ -4,10 +4,8 @@ import { getHouseholdAccountDetail } from "@/lib/household";
 import { householdErrorResponse } from "@/lib/household-http";
 import { ok, unauthorized } from "@/lib/response";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   let userId: string;
   try {
     ({ sub: userId } = getAuthUser(req));

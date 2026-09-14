@@ -4,10 +4,7 @@ const { withSentryConfig } = require("@sentry/nextjs");
 const nextConfig = {
   distDir: /^\.next-http-\d+$/.test(process.env.WORTHLANE_HTTP_DIST_DIR ?? "") ? process.env.WORTHLANE_HTTP_DIST_DIR : ".next",
   // API-only; no pages needed beyond API routes.
-  experimental: {
-    instrumentationHook: true,
-    serverComponentsExternalPackages: ["@prisma/client", "bcryptjs"],
-  },
+  serverExternalPackages: ["@prisma/client", "bcryptjs"],
 };
 
 module.exports = withSentryConfig(nextConfig, {

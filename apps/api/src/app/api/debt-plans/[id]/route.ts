@@ -6,14 +6,16 @@ import { estimateDebtPayoff } from "@worthlane/core";
 import { getAuthUser } from "@/lib/auth";
 import { ok, err, unauthorized, notFound } from "@/lib/response";
 import { debtPlanData, debtPlanResult } from "@/lib/debt-plans";
-type Context = { params: { id: string } };
-export async function GET(req: NextRequest, { params }: Context) {
+type Context = { params: Promise<{ id: string }> };
+export async function GET(req: NextRequest, props: Context) {
+  const params = await props.params;
   let userId: string;
   try { userId = getAuthUser(req).sub; } catch { return unauthorized(); }
   const plan = await prisma.debtPlan.findFirst({ where: { id: params.id, userId }, include: { debts: true } });
   return plan ? ok(debtPlanResult(plan)) : notFound();
 }
-export async function PATCH(req: NextRequest, { params }: Context) {
+export async function PATCH(req: NextRequest, props: Context) {
+  const params = await props.params;
   let userId: string;
   try { userId = getAuthUser(req).sub; } catch { return unauthorized(); }
   const parsed = z.object({ revision: z.number().int().positive(), input: debtPlanInputSchema }).strict().safeParse(await req.json().catch(() => null));

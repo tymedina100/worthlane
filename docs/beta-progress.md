@@ -2386,3 +2386,32 @@ attestations dueSeptember9; exact categories recorded in production-preparation.
 Questionnaire March8 completion is historical, not proof remediation is complete.
 No security attestation submitted; controls need evidence review, including
 consumer/internal MFA and policies.
+
+### September 14 — truthful privacy attestation and Next.js security patch
+
+User authorized attestations only when true. Verified live public /privacy page
+in browser (September10 content), read exact Plaid statement, submitted only
+"has published a privacy policy", and verified Attested. Zero-trust already showed
+Attested when inspected; this agent did not submit or verify that separate claim.
+Consumer MFA and other organization-wide controls remain unverified.
+
+Ran corepack pnpm audit --prod --json: baseline metadata reported6 critical,100
+high,80 moderate,12 low across1177 dependencies, including28 Next advisories.
+These counts are registry findings, not verified exploitable paths. Followed
+official Next15 guide and next-async-request-api codemod; updated19 API route
+handlers and test callers to async params, moved serverExternalPackages config,
+and upgraded API/desktop/web to Next15.5.25 and React19.1.9. No mobile RN upgrade.
+Rescan reports zero Next advisories; remaining2 critical,81 high,60 moderate,8 low
+need triage/remediation. Critical remainder is mobile tooling shell-quote and tar.
+Sources: https://github.com/advisories/GHSA-2xp9-vwfh-vxw4 and
+https://github.com/advisories/GHSA-p293-qw3h-jr36.
+
+Validation: all3 app typechecks pass;163 API tests pass; API/desktop/web production
+builds pass with synthetic environment and isolated .next-http-3399 outputs.
+WORTHLANE_TEST_PORT=55449 bash scripts/test-postgres.sh passes10 PostgreSQL tests
+after fresh migration and stops its own cluster. An initial run on retained
+Sandbox passed9/10 but correctly rejected the fresh-bootstrap test's zero-user
+assumption (32 existing synthetic users); retained data was not reset. Fresh
+cluster .tmp/postgres-dqIhAPO7 retained stopped. Generated build path edits to
+tsconfig/next-env reverted; actual builds validated new generated route types.
+Interactive post-upgrade checks and CI remain next. No production deployment.

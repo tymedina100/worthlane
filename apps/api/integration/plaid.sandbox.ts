@@ -37,12 +37,12 @@ it("persists encrypted Sandbox Items, repeats sync, isolates owners, records rel
     stage = "owner isolation";
     await data(await sync(req(stranger.accessToken, { plaidItemId: item.id })), 404);
     await data(await linkToken(req(stranger.accessToken, { platform: "web", mode: "update", plaidItemId: item.id })), 404);
-    await data(await unlink(req(stranger.accessToken, {}), { params: { id: item.id } }), 404);
+    await data(await unlink(req(stranger.accessToken, {}), { params: Promise.resolve({ id: item.id }) }), 404);
     stage = "liability fields and owner isolation";
-    await data(await liabilities(req(stranger.accessToken, {}), { params: { id: item.id } }), 404);
+    await data(await liabilities(req(stranger.accessToken, {}), { params: Promise.resolve({ id: item.id }) }), 404);
     let liabilityData: any;
     for (let attempt = 0; attempt < 15; attempt++) {
-      const response = await liabilities(req(session.accessToken, {}), { params: { id: item.id } });
+      const response = await liabilities(req(session.accessToken, {}), { params: Promise.resolve({ id: item.id }) });
       if (response.status === 200) { liabilityData = await data(response); break; }
       const failure = await response.json();
       if (failure.error?.code !== "PRODUCT_NOT_READY") {
@@ -93,7 +93,7 @@ it("persists encrypted Sandbox Items, repeats sync, isolates owners, records rel
     const consent = await data(await linkToken(req(session.accessToken, { platform: "web", mode: "update", plaidItemId: item.id, includeLiabilities: true })));
     expect(Boolean(consent.linkToken)).toBe(true);
     stage = "unlink cleanup";
-    await data(await unlink(req(session.accessToken, {}), { params: { id: item.id } }));
+    await data(await unlink(req(session.accessToken, {}), { params: Promise.resolve({ id: item.id }) }));
     cleanupToken = undefined;
     expect(await prisma.plaidItem.count({ where: { userId: session.user.id } })).toBe(0);
     expect(await prisma.account.count({ where: { userId: session.user.id } })).toBe(0);
