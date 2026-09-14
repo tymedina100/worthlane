@@ -17,20 +17,28 @@ Dashboard access and provider permissions still need verification.
   requests succeed. The previously approved HTTPS iOS redirect remains recorded.
 - Apple record6766112205 previously showed Prepare for Submission/manual release.
   Promotional text/description persisted; private review notes still require correction.
-- Fresh in-app browser inspection September14 now shows Plaid Welcome back and
-  App Store Connect login (authResult=FAILED). The Mac is locked; Computer Use
-  reports native access unavailable until Tyler unlocks it. A sign-in request is
-  pending. This is a session/access blocker, not evidence of missing Production approval.
-- Earlier Vantage Launch Center showed real-data approval. Product entitlements,
-  billing and production secrets have not been verified or activated.
+- Provider sessions restored September14: in-app Plaid Vantage and Apple draft are
+  signed in; Mac native inventory is available again.
+- Plaid Products shows Transactions Enabled (54/200 displayed) and Balance Enabled
+  (0/200 displayed); these counters are recorded without inferring their time window.
+  Liabilities is available to select but is not marked enabled. Selection was
+  cleared; Add products was not clicked and no entitlement was changed.
+- Plaid Plans explicitly identifies current Pay As You Go, no monthly minimum,
+  month-to-month commitment. Billing lists active Transactions at $0.30 per
+  Item/month and Balance at $0.10 per call. Do not infer live usage is free or that
+  any additional product is included. No plan/payment changes or paid calls made.
+- Apple review-note save now reveals required first name, last name, email and
+  phone fields. Corrected notes/keywords are prepared on screen, not claimed saved.
+  User has been asked which private App Review contact to enter, or to fill it.
 
 ## Plaid setup work remaining
 
-1. Inspect the Vantage team's Launch Center, access tier and app/company profile.
+1. Pay As You Go tier and active Transactions/Balance rates verified. Continue
+   app/company profile and institution requirements review.
    Do not invent security questionnaire answers or accept paid terms.
 2. Completed: exact Android package com.worthlane.mobile registered. Preserve the
    approved worthlane.app/plaid-oauth redirect and existing integrations.
-3. Verify Transactions access and optional Liabilities permission. Existing code
+3. Transactions is enabled; optional Liabilities remains unenabled. Existing code
    requests Transactions and only adds Liabilities consent when requested. No
    payment/transfer product is needed.
 4. Inspect existing hosting before selecting production API/desktop endpoints.

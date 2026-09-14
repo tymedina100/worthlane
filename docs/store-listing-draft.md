@@ -31,7 +31,7 @@ A partner joins by accepting an invitation and keeps a separate login. Choose pe
 
 A calm place to plan what matters, together.
 
-## Candidate keywords (not saved)
+## Candidate keywords (save not verified)
 
 couples,budget,household,bills,debt,payoff,expenses,spending,shared,finance,savings,money
 
@@ -64,3 +64,13 @@ Account deletion is available under Settings > Delete account. Before submission
 Sources: [Apple app records](https://developer.apple.com/help/app-store-connect/create-an-app-record/add-a-new-app),
 [Apple privacy](https://developer.apple.com/help/app-store-connect/manage-app-information/manage-app-privacy).
 
+
+## September 14 save diagnostic
+
+Restored signed-in Apple draft. Promotional text and description still present;
+manual release remains selected. Prepared updated notes mentioning Android proof
+and the candidate keywords. Save exposed four required review-contact fields:
+first name, last name, email, phone. This explains the failed private-note save;
+it is not a browser sign-in blocker now. Awaiting the user-designated private
+review contact or direct entry. Do not invent contact details, reviewer credentials
+or claim the new notes/keywords persisted. No Add for Review or submission.

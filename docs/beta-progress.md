@@ -2268,3 +2268,21 @@ syntax, Expo import and git diff check pass. This fixes source resources; a new
 APK and delivered OS banner still require verification, and are not claimed.
 Existing installed debug APK still contains the old artwork. No production change,
 store submission, phone access or spending.
+
+## September 14 — provider access restored; actual rates and store-save blocker
+
+Mac native inventory now available; separate in-app Plaid and Apple tabs signed
+in. Vantage Products marks Transactions and Balance Enabled; Liabilities not
+enabled. Selected Liabilities to inspect UI, then cleared selection without
+Add products. Plans identifies Pay As You Go/current/no monthly minimum. Billing
+active rates: Transactions0.30USD per Item/month; Balance0.10USD per call.
+No paid request, plan change, payment edit, production key activation or new
+product permission. These rates are live dashboard evidence, not inferred docs.
+
+Apple existing record remains Prepare for Submission/manual release. Existing
+couples promo/description retained. Prepared corrected review notes and keywords;
+Save exposed four missing review-contact fields (first/last name,email,phone).
+Requested user-designated contact for these private Apple fields or direct entry.
+New notes/keywords persistence remains unproven; no reviewer credentials invented
+and no submission. Updated preparation docs to remove expired-session blockers
+and record exact rates/contact dependency.
