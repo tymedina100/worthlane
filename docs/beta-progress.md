@@ -2751,3 +2751,17 @@ passwords. Three existing mobile release-config tests also pass. Added the
 reproducible runner to CI with Java21. This tests configuration gating, not a
 signed artifact or the Android Gradle plugin build; final upload-certificate and
 AAB/APK signature verification remain required. See store-listing-draft.md.
+
+### September 14 — signing guard and candidate CI verified
+
+GitHub CI139/34890340960 on 4f9eb9e completed all three jobs successfully:
+ci, postgres-integration and native-windows. The CI job includes the actual
+Gradle signing guard fixtures; database tests apply migrations to isolated
+PostgreSQL and verify persisted household consent and budgets. Corrected stale
+completion-audit rows that still described the now-passed full-page OAuth and
+older CI as pending.
+
+Fresh Simulator screenshot still shows Home; attempting its Search control fails
+with noWindowsAvailable. Native launch acceptance remains unverified pending
+manual opening of Worthlane with local Metro8084 or restored CUA touch control.
+No production changes, signing credentials, paid builds or submissions.
