@@ -2138,3 +2138,29 @@ as an acceptance requirement.
 
 Sources: https://plaid.com/docs/link/oauth/ and
 https://plaid.com/docs/link/android/troubleshooting/ .
+
+## September 14 — Android standard Sandbox Link and repeat sync pass
+
+Verified previous OAuth diagnostic commit cff736c is pushed and linked Plaid task
+contains the diagnostic milestone. Restarted only the stuck emulator app (no phone
+access or data clearing). Fresh Link initially appeared blank in native inspection
+but subsequently rendered normally. Forwarded the debug app WebView CDP and used
+its actual rendered controls for Continue without phone, First Platypus Bank
+(non-OAuth), public Sandbox user_good/pass_good, 14 checked accounts, Continue,
+and Finish without saving a Plaid account. No real bank credentials used.
+
+Native Worthlane displayed Bank connected / linked and synced successfully.
+Independent PostgreSQL readback for synthetic Jamie: one HEALTHY First Platypus
+Bank Item, needsRelink false, lastSyncAt present; 14 PLAID accounts plus original
+MANUAL account; 394 imported transactions with 394 distinct provider IDs and both
+original manual entries preserved. Tapped native Sync every institution; observed
+Syncing then completion, Healthy status and available history loaded. Repeat SQL
+readback remains 394 distinct imported transactions and 2 manual entries.
+
+Evidence: android-standard-link-success.png/.xml and
+android-standard-link-resync.xml in evidence/2026-09-14. This proves Android
+standard Link callback, exchange, initial import and repeat sync on local Sandbox.
+It does not close Android OAuth return, repair/unlink, full two-user native
+acceptance, or production/store gates. No application code changed this milestone.
+Next retry OAuth with debug WebView inspection after browser handoff; the prior
+blank capture alone did not establish a persistent renderer failure.
