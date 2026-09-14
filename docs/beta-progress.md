@@ -2286,3 +2286,14 @@ Requested user-designated contact for these private Apple fields or direct entry
 New notes/keywords persistence remains unproven; no reviewer credentials invented
 and no submission. Updated preparation docs to remove expired-session blockers
 and record exact rates/contact dependency.
+
+### September 14 — Apple review draft save resolved
+
+Tyler supplied private review contact details and explicitly authorized entering
+them in App Store Connect. Filled required contact fields, saved and reloaded.
+Corrected PREPARATION DRAFT notes and couples keywords persisted. Save disabled;
+Prepare for Submission/manual release retained. Phone/email values were omitted
+by text snapshots/read-only DOM probes, so inspected the actual screenshot after
+reload, which displayed the authorized values. No further mutation was needed.
+No contact values copied to repo/Notion, no reviewer credentials fabricated, and
+no Add for Review or submission. Store contact/save blocker resolved.

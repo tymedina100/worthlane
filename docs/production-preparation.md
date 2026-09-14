@@ -27,9 +27,11 @@ Dashboard access and provider permissions still need verification.
   month-to-month commitment. Billing lists active Transactions at $0.30 per
   Item/month and Balance at $0.10 per call. Do not infer live usage is free or that
   any additional product is included. No plan/payment changes or paid calls made.
-- Apple review-note save now reveals required first name, last name, email and
-  phone fields. Corrected notes/keywords are prepared on screen, not claimed saved.
-  User has been asked which private App Review contact to enter, or to fill it.
+- Apple corrected private review notes and candidate keywords now saved after
+  Tyler supplied the required private review contact. Reload plus visual inspection
+  verified persistence; manual release and Prepare for Submission remain. No
+  contact values are stored in repo evidence. Reviewer login/build/screenshots and
+  final release/privacy configuration remain pending.
 
 ## Plaid setup work remaining
 

@@ -31,11 +31,11 @@ A partner joins by accepting an invitation and keeps a separate login. Choose pe
 
 A calm place to plan what matters, together.
 
-## Candidate keywords (save not verified)
+## Keywords (saved September 14)
 
 couples,budget,household,bills,debt,payoff,expenses,spending,shared,finance,savings,money
 
-## Private review notes draft (not persisted in Apple record)
+## Private review notes (saved preparation draft September 14)
 
 PREPARATION DRAFT — DO NOT SUBMIT YET.
 
@@ -74,3 +74,13 @@ first name, last name, email, phone. This explains the failed private-note save;
 it is not a browser sign-in blocker now. Awaiting the user-designated private
 review contact or direct entry. Do not invent contact details, reviewer credentials
 or claim the new notes/keywords persisted. No Add for Review or submission.
+
+## September 14 successful save
+
+Tyler supplied and authorized the private review contact. Entered first/last name,
+phone and email, saved, then reloaded. Corrected preparation notes and keywords
+persisted; Save disabled, Prepare for Submission and manual release retained.
+Text snapshots/DOM value checks omitted phone/email values despite their presence;
+visual inspection after reload confirmed the authorized contact fields. No contact
+values copied into this repository. No Add for Review or submission. Dedicated
+reviewer sign-in, screenshots, build and final privacy/signing remain pending.
