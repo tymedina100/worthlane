@@ -2,10 +2,11 @@
 
 Goal remains active. This audit checks the current Notion brief against persisted
 and interactive evidence; it does not authorize a production release or submission.
-Latest code change: 6219a18 (debt payoff result visibility). Draft PR15 remains
-the candidate. CI149/34897135407 on that commit completed ci,
-postgres-integration and native-windows successfully, including the actual Gradle
-signing gate fixture and persisted household consent/budget checks.
+The recovery baseline is 52edde6 (packaged native connection recovery); CI154 /
+34901844323 completed successfully on that commit. Draft PR15 remains the
+candidate. Subsequent Mac menu polish has local syntax/package/UI evidence,
+with its own CI still to run after push. Earlier CI149 included the Gradle
+signing fixture and persisted household consent/budget checks.
 This refresh reconciles later progress records; it is not a fresh replay of every
 previously recorded journey or approval to ship.
 
@@ -19,9 +20,10 @@ previously recorded journey or approval to ship.
 | Transaction reconciliation and duplicate prevention | Inspected PostgreSQL tests cover added/modified/removed/pending-to-posted, transfers/card repayments, private manual/import review, bilateral joint matching/revocation and solo duplicate feeds. Repeat native sync retained unique IDs. | Covered by persisted tests plus relevant interactive flows. |
 | Card fields, Liabilities and manual fallback | Real run-plaid-integration provider test recorded statement/minimum/due fields and nonowner isolation; route uses owned account allowlist. Desktop/native manual card fields and saved due dates recorded; predictions are labeled estimates. | Sandbox/manual evidence present. Production Liabilities is not enabled; manual fallback remains required there. |
 | Reliable reminders and saved debt estimates | Actual iOS/Android background test notifications; DATE diagnostic aligns with obligation trigger type. Adapter tests cover local9am/date/session reconciliation. Shared debt tests explicitly cover promo-day proration, zero APR, minimum shortfall, non-amortization and cents. Saved two-login debt readbacks recorded. | Core evidence present; actual9am/physical-phone delivery is not claimed. Phone use excluded by user. |
-| Aesthetic app/site and beta list | Native forest/cream screens and improved recovery controls; approved live website and persisted consent-based waitlist proof recorded. | Website request delivered. Android notification resources regenerated; rebuilt notification verification and final store imagery remain. |
-| Regression assurance / commits / project updates | CI149 all three jobs succeeded on 6219a18; commits pushed on codex/beta-acceptance; Notion project/linked task updates recorded. | Latest code CI verified complete; no merge or signed-store artifact claimed. |
+| Aesthetic app/site and beta list | Native forest/cream screens and improved recovery controls; approved live website and persisted consent-based waitlist proof recorded. | Website request delivered. Android notification icon rebuilt and inspected in the installed APK; actual delivered banner remains unverified. Five native screenshot drafts exist; final store imagery/artifact parity remains. |
+| Regression assurance / commits / project updates | CI154 completed successfully on 52edde6; commits pushed on codex/beta-acceptance; Notion project/linked task updates recorded. | Recovery baseline CI complete; later local menu polish is separately recorded. No merge or signed-store artifact claimed. |
 | Truthful diagnostics and privacy disclosures | API error allowlist strips request/user/context and raw exception details. Mobile uses filtered JavaScript errors with native diagnostics and automatic sessions disabled; enabled/disabled configuration tests and three-platform exports pass. Store collection matrix is source-backed. | Fresh native launch on isolated Metro8084 passed after Simulator relaunch; persisted dashboard data rendered. Final store privacy answers must match the signed artifact and enabled services. |
+| Added native Mac app | Installed standalone Electron app; persisted Morgan/Avery household, native menus, quit/relaunch and isolated offline/retry UI verified. 19 tests, 8 asset and 8 fuse checks, strict local ad-hoc signature. User completed macOS Keychain prompt, after which saved-session cold launch reached household directly. | Local beta works with running localhost services. Public signing/notarization and final normal-build Keychain authorization remain separate from the diagnostic cold-start proof. |
 | Added production Plaid/store preparation request | App record and partial copy saved earlier; Android registration saved. Plaid/Apple/Railway sessions restored. Transactions/Balance enabled and billing verified; Liabilities not enabled. Apple review notes/contact/keywords saved. Existing Railway API/Postgres located. Signing/privacy/screenshots/reviewer access and hosted release verification remain. | Incomplete. Do not submit. |
 
 ## Remaining work

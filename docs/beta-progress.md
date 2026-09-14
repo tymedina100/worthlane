@@ -3000,3 +3000,24 @@ session are observed, while consistently immediate cold-start loading is not
 claimed. Previous installed bundle preserved locally for rollback. Removed only
 regenerable diagnostic build directories after testing; original projects,
 credentials, database, user screenshots and Trash were not changed this pass.
+
+
+## September 14 — Mac startup traced to pending Keychain interaction
+
+CI154/34901844323 on52edde6 completed successfully. A fresh saved-session launch
+reproduced the timeout. Temporary local diagnostics showed localhost resolving
+immediately while the initial request stalled before reaching the server; an
+isolated signed-out app reached login normally. Computer Use explicitly refused
+to inspect SecurityAgent; no alternate access or credentials were used. Tyler
+confirmed handling the Keychain prompt. Retry then loaded the same Morgan/Avery
+household. A verified process exit followed by cold launch of that authorized
+diagnostic package directly rendered the dashboard, then600.01/56.33 and60/40
+allocations without another sign-in.
+
+Corrected the native About/Hide/Quit labels from the npm package name to
+Worthlane, preserving the existing application identity and user-data directory.
+CUA verified the new labels. Temporary request tracing was removed from source
+and the installed app replaced with the normal package. Strict signature/package
+verification passed. Ad-hoc rebuilds may require renewed macOS Keychain consent;
+public Developer ID signing/notarization remains pending. Diagnostic success is
+not a claim that another package has already received OS authorization.

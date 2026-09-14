@@ -139,7 +139,17 @@ function buildApplicationMenu() {
   }));
 
   return Menu.buildFromTemplate([
-    ...(process.platform === "darwin" ? [{ role: "appMenu" }] : []),
+    ...(process.platform === "darwin" ? [{ role: "appMenu", submenu: [
+      { role: "about", label: "About Worthlane" },
+      { type: "separator" },
+      { role: "services" },
+      { type: "separator" },
+      { role: "hide", label: "Hide Worthlane" },
+      { role: "hideOthers" },
+      { role: "unhide" },
+      { type: "separator" },
+      { role: "quit", label: "Quit Worthlane" },
+    ] }] : []),
     {
       label: "File",
       submenu: [
