@@ -2733,3 +2733,21 @@ raising the window. Need the user to open Worthlane in this simulator and select
 http://localhost:8084 as its development server before rendered launch acceptance.
 Keep this setup live; no app/test data reset, phone interaction, production
 configuration change or store submission occurred.
+
+### September 14 — Android release signing fails closed
+
+Simulator remains on Home; CUA touch action still fails. Independent store
+preparation found the tracked release build used signingConfigs.debug. Removed
+that fallback and added a task-graph guard evaluated after EAS credential
+injection. Release packaging rejects absent/incomplete signing, debug signing
+configuration/default alias/file and missing keystore files. Debug tests remain
+available. No real signing key, credential upload, store build or submission.
+
+Executed the actual Groovy guard through a minimal isolated Gradle project:
+debug/no-key passes; release/no-key, debug configuration, default debug alias and
+missing-file cases fail with the expected safe error; complete synthetic release
+configuration passes. All6 regression cases pass without exposing fixture
+passwords. Three existing mobile release-config tests also pass. Added the
+reproducible runner to CI with Java21. This tests configuration gating, not a
+signed artifact or the Android Gradle plugin build; final upload-certificate and
+AAB/APK signature verification remain required. See store-listing-draft.md.

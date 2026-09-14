@@ -124,3 +124,23 @@ private payloads. Final native artifact and enabled production services still
 need verification; this matrix is not a published privacy declaration or a
 claim about historical vendor retention. Support mailbox operation, dedicated
 review credentials and final deletion verification remain open.
+
+## Android release-signing gate — September 14
+
+The tracked Android release build no longer falls back to the development key.
+Release packaging tasks now fail before execution when signing is missing, uses
+the debug configuration/default debug alias or filename, lacks passwords, or
+points to a missing keystore. Debug builds remain available for laptop tests.
+
+EAS injects private signing configuration before Gradle runs, as described in
+[Expo's build process](https://docs.expo.dev/build-reference/android-builds/).
+Configure the authorized upload key through EAS credentials or a private local
+signing configuration before release packaging. Do not commit keys/passwords or
+reuse another app's credentials. Native directories are tracked; if regenerating
+them with prebuild, preserve the release-signing-check.gradle application.
+
+Run `node scripts/test-android-release-signing.mjs` on macOS/Linux with Java to
+exercise the actual Groovy gate against isolated Gradle fixtures. It does not
+compile Android or sign an artifact. Final AAB/APK signature and registered upload
+certificate still require verification; filename/alias checks do not prove the
+identity of an arbitrary keystore. No private key was generated or uploaded here.

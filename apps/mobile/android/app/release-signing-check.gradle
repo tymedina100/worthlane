@@ -1,0 +1,17 @@
+// Evaluate after EAS has injected credentials, before any release build runs.
+// Never print key paths, aliases, passwords, or credential file contents.
+gradle.taskGraph.whenReady { graph ->
+    def buildsRelease = graph.allTasks.any { task ->
+        task.project == project && task.name ==~ /(?i)(assemble|bundle|package|sign|validateSigning).*Release.*/
+    }
+    if (buildsRelease) {
+        def signing = android.buildTypes.release.signingConfig
+        if (signing == null || signing.name == 'debug' ||
+            signing.storeFile == null || !signing.storeFile.isFile() ||
+            signing.storeFile.name == 'debug.keystore' ||
+            signing.keyAlias == 'androiddebugkey' ||
+            !signing.storePassword || !signing.keyPassword || !signing.keyAlias) {
+            throw new GradleException('Worthlane release signing is missing or uses a debug key. Configure the authorized upload keystore through EAS credentials or a private local signing configuration. Use assembleDebug for laptop tests.')
+        }
+    }
+}

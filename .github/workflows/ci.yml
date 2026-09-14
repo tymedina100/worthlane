@@ -101,6 +101,14 @@ jobs:
       - name: Test mobile release configuration
         run: node --test scripts/test-mobile-release-config.mjs
 
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Test Android release signing gate without native compilation
+        run: node scripts/test-android-release-signing.mjs
+
       - name: Bundle mobile client
         run: pnpm --filter @worthlane/mobile exec expo export --platform ios --output-dir "$RUNNER_TEMP/worthlane-mobile-export"
 
