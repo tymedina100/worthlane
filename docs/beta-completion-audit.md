@@ -21,14 +21,14 @@ previously recorded journey or approval to ship.
 | Reliable reminders and saved debt estimates | Actual iOS/Android background test notifications; DATE diagnostic aligns with obligation trigger type. Adapter tests cover local9am/date/session reconciliation. Shared debt tests explicitly cover promo-day proration, zero APR, minimum shortfall, non-amortization and cents. Saved two-login debt readbacks recorded. | Core evidence present; actual9am/physical-phone delivery is not claimed. Phone use excluded by user. |
 | Aesthetic app/site and beta list | Native forest/cream screens and improved recovery controls; approved live website and persisted consent-based waitlist proof recorded. | Website request delivered. Android notification resources regenerated; rebuilt notification verification and final store imagery remain. |
 | Regression assurance / commits / project updates | CI139 all three jobs succeeded on 4f9eb9e; commits pushed on codex/beta-acceptance; Notion project/linked task updates recorded. | Latest code CI verified complete; no merge or signed-store artifact claimed. |
-| Truthful diagnostics and privacy disclosures | API error allowlist strips request/user/context and raw exception details. Mobile uses filtered JavaScript errors with native diagnostics and automatic sessions disabled; enabled/disabled configuration tests and three-platform exports pass. Store collection matrix is source-backed. | Fresh native launch for the changed diagnostic mode remains unverified. Final store privacy answers must match the signed artifact and enabled services. |
+| Truthful diagnostics and privacy disclosures | API error allowlist strips request/user/context and raw exception details. Mobile uses filtered JavaScript errors with native diagnostics and automatic sessions disabled; enabled/disabled configuration tests and three-platform exports pass. Store collection matrix is source-backed. | Fresh native launch on isolated Metro8084 passed after Simulator relaunch; persisted dashboard data rendered. Final store privacy answers must match the signed artifact and enabled services. |
 | Added production Plaid/store preparation request | App record and partial copy saved earlier; Android registration saved. Plaid/Apple/Railway sessions restored. Transactions/Balance enabled and billing verified; Liabilities not enabled. Apple review notes/contact/keywords saved. Existing Railway API/Postgres located. Signing/privacy/screenshots/reviewer access and hosted release verification remain. | Incomplete. Do not submit. |
 
 ## Remaining work
 
 0. Full-page web OAuth create/return, expired-session recovery and persisted
-   repeat sync now pass (see latest progress entry). Verify fresh native launch
-   after the diagnostics changes; restore simulator control without touching the phone.
+   repeat sync now pass (see latest progress entry). Fresh native diagnostics-mode
+   startup and recovered reminder scheduling also pass; no phone interaction.
 1. Capital One is now In review after the authorized legal-name save; provider approval remains external.
 2. Inspect existing Railway service configuration and prepare the reviewed release
    against its current database/schema. Existing service is online on the PR13

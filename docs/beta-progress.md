@@ -2797,3 +2797,19 @@ A visible reminder refresh warning remains; investigate/retry separately before
 claiming reminder reconciliation on this recovered session. No phone use,
 production change, data reset or store submission. CI141 Windows and PostgreSQL
 jobs passed; primary CI job was still running at this observation.
+
+### September 14 — native reminder persistence and OS scheduling verified
+
+CI141/34891276651 on81a4fc3 passed all three jobs. Foreground reconciliation
+cleared the earlier reminder warning following a slow local API response.
+Restarted Simulator once after editor-control failure without resetting data.
+After the modal settled, a full AX refresh provided valid controls; selected
+One day before for Jamie internet and saved. Native Saved confirmation appeared.
+PostgreSQL readback:45.67, due2026-09-21,MONTHLY,ONE_DAY_BEFORE.
+
+Read-only inspection of this simulator's Worthlane pending-notification archive
+found one Upcoming payment notification with generic body, scoped obligation/user
+metadata and no amount/name in displayed text. RequestDate plus trigger interval
+is2026-09-20T16:00:00.252375Z, or09:00 Phoenix one day before due date; nonrepeating.
+This establishes native OS scheduling, not actual future delivery. Dismissed
+save confirmation and left Upcoming visible. No production change or phone use.
