@@ -2523,3 +2523,27 @@ OAuth return on the new route, production build/CI and release configuration
 remain pending. Current provider guidance:
 https://plaid.com/docs/link/oauth/#reinitializing-link . Prior desktop Sandbox
 popup/OAuth evidence does not prove this newly implemented redirect path.
+
+### September 14 — API diagnostics privacy boundary
+
+Review for store privacy found sendDefaultPii=true in both API Sentry runtimes.
+Changed both to false and added an allowlisted beforeSend reconstruction that
+removes request data/cookies/URLs, user context, breadcrumbs, tags/extras, raw
+exception messages and stack locals/source excerpts. Only generic error text,
+release/environment and recognized application source positions remain. Request
+tracing is disabled and transaction events are dropped. This intentionally
+reduces diagnostic detail; it is not an assertion about provider-side retention
+or previously collected data. Mobile diagnostics require a separate review.
+
+All166 API tests and typecheck pass, including synthetic credential/financial
+payload removal and tests of both actual Sentry initialization configurations.
+Evidence .tmp/diagnostic-privacy-{tests,typecheck}.log. No hosted settings or
+production deployment changed. CI128/34875005130 on prior0cfe53e completed all
+three jobs successfully (Linux builds/tests, PostgreSQL, Windows packaging).
+
+User approved the exact localhost Plaid return addition and completed password
+verification. Dashboard explicitly confirmed "The redirect URIs have been saved".
+Configured only the new local Sandbox API3401 to request
+http://localhost:3402/dashboard/plaid-return. Existing production URLs preserved;
+no live bank call, paid service or store submission. Actual browser return check
+is in progress from Jamie's local Sandbox account.
