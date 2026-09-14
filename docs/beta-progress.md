@@ -2364,3 +2364,15 @@ login and record concrete signing/account prerequisites.
 CI120/34871435179 on deaea70: PostgreSQL integration completed successfully; Linux
 typecheck/API/shared/contract/reminder/auth/release-config tests passed, mobile
 bundle/builds and Windows job still running at inspection. No all-green claim yet.
+
+### September 14 — hosted Plaid mode and missing platform settings
+
+Railway service has13 variables. Revealed only non-secret PLAID_ENV and legacy
+PLAID_REDIRECT_URI: environment already production; redirect uses old Railway
+OAuth-return path. IOS_REDIRECT_URI, ANDROID_PACKAGE_NAME, WEB_REDIRECT_URI and
+WEBHOOK_URL absent. Current code requires platform-specific names, so existing
+credentials alone do not establish working native Link. Prepared exact public
+settings/validation table in production-preparation.md. No secret values, provider
+calls, environment mutations or redeployment. Compared candidate migration files
+to active PR13 commit: one additive HouseholdAccountMatch migration; hosted
+migration/backup status remains unverified.

@@ -116,3 +116,33 @@ Live Wait for CI is currently off; enable it as part of the reviewed release
 settings. Existing Nixpacks/config-as-code deprecation needs a planned migration.
 Healthchecks establish startup/database connectivity only, not complete schema,
 provider or user-journey acceptance. Source: [Railway configuration reference](https://docs.railway.com/config-as-code/reference).
+
+## Hosted Plaid configuration gap — September 14
+
+Read-only Railway inspection shows PLAID_ENV is already production. Credentials
+are present by variable name, but their values/validity were not inspected and no
+provider request was made. This is existing configuration, not activation by this
+work. The legacy PLAID_REDIRECT_URI points to the Railway /api/plaid/oauth-return
+path, but current code reads the platform-specific names below. All four names
+are absent from the13 visible service variables.
+
+Prepare these non-secret settings for a separately approved deployment:
+
+| Name | Proposed value | Verification needed |
+| --- | --- | --- |
+| PLAID_IOS_REDIRECT_URI | https://worthlane.app/plaid-oauth | Existing approved Plaid allowlist and native association; final signed build return |
+| PLAID_ANDROID_PACKAGE_NAME | com.worthlane.mobile | Registered package; final release Link return |
+| PLAID_WEB_REDIRECT_URI | https://worthlane-desktop.vercel.app/accounts | Add exact production web allowlist and validate OAuth return |
+| PLAID_WEBHOOK_URL | https://financeapi-production-1853.up.railway.app/api/plaid/webhook | Signed webhook delivery and retry behavior on selected release |
+
+Do not point Sandbox acceptance clients at this service. Desktop preview has
+Production/Preview API variables; preview isolation must be verified before any
+interactive account creation there. The local persistent Sandbox remains the
+authorized integration environment.
+
+Compared candidate to the deployed PR13 SHA45e67d14ccf055c284d132d119f35a2e901a3778:
+only new database migration is20260910000100_household_account_matches, creating
+an additive table, two indexes and account/household foreign keys. This source
+comparison does not prove current hosted migration state, backups, or safe
+rollback. Verify those before approving deployment; the start command applies
+migrations automatically. Keep existing production encryption/auth secrets.
