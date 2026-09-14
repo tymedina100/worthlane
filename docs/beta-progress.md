@@ -2640,3 +2640,24 @@ Reconciled the acceptance index's stale Apple/Plaid preparation paragraph with
 recorded dashboard evidence and corrected AGENTS.md's obsolete Next14 reference.
 Full-page web OAuth and fresh native diagnostics launch remain open. No provider
 settings, production deployment, paid call, store submission or phone use.
+
+### September 14 — redirect test configuration clarified
+
+Plaid's current OAuth guide explicitly says desktop and ordinary mobile web use
+popups; its supported redirect test uses a Chrome custom device with a WebView
+user agent: https://plaid.com/docs/link/oauth/#testing-oauth. Created temporary
+Worthlane Sandbox WebView profile using that documented user agent,400x700.
+The attempted flow still displayed the provider CDN popup return address. This
+does not prove the override was applied to the loaded page: native keyboard and
+clipboard operations subsequently timed out or failed to navigate. No synthetic
+bank credentials were entered on this attempt, and no exchange was completed.
+Next test must verify the effective browser user agent and reload through a
+confirmed UI action before opening Link; do not repeat ordinary iPhone emulation.
+
+Recovered the local Accounts page through the visible address suggestion.
+Fresh screenshot confirms ordinary desktop layout with DevTools closed and
+emulation off; Jamie retains1554.56 and3 accounts. PostgreSQL still has identical
+3 account IDs and201 transaction IDs. All12 OAuth lifecycle tests pass, which
+remains component/proxy evidence rather than provider redirect acceptance.
+Simulator control again timed out; no simulator is booted. Native launch remains
+open. No production or store action performed.
