@@ -2415,3 +2415,28 @@ assumption (32 existing synthetic users); retained data was not reset. Fresh
 cluster .tmp/postgres-dqIhAPO7 retained stopped. Generated build path edits to
 tsconfig/next-env reverted; actual builds validated new generated route types.
 Interactive post-upgrade checks and CI remain next. No production deployment.
+
+### September 14 — patched production-build interactive acceptance
+
+Started actual Next15.5.25 production builds on API3399/desktop3398 against
+persistent local Sandbox DB55439 with retained local auth/encryption secrets.
+Fresh Morgan login: visible net worth-75729.59;600.01 budget at60/40. Changed
+Groceries to600.03 via UI:360.02/240.01,56.33 applied,543.70 remaining. Reload
+retained it. Restored600.01 via UI:360.01/240,543.68 remaining; agreement history
+shows both versions. Dynamic parameter mutation/readback routes work over HTTP.
+Morgan private saved100 balance/10 minimum/50 budget/0APR Snowball plan loads
+with October payoff and zero interest; Internet bill45.67 dueOctober20 retained.
+
+Fresh Avery login retains1544.56 permitted net worth and only4 permitted account
+rows; restored shared600.01 allocation visible. Debt workspace shows only Avery
+native payoff, own10 minimum dueSeptember25 and87.65 internet dueOctober20,
+without Morgan's private plan/bill.
+
+Fresh Jamie solo login retains1344.56 visible net worth, owned600.01 budget and
+36.33 applied/563.68 remaining. Saved private debt loads100current/90statement/
+10minimum/50budget/0APR, September26 due date, October payoff and0interest.
+Internet45.67 dueSeptember21 retained. Browser error log contains0 errors.
+These are post-upgrade interactive checks against existing synthetic data, not
+production-bank use or fresh onboarding. Existing fresh PostgreSQL suite covers
+registration/consent and financial invariants. CI124/34872702609 on ea0aea7 has
+PostgreSQL and Windows jobs successful; Linux job still running at last check.
