@@ -2592,3 +2592,30 @@ email/user IDs, household/invitation data, financial/purchase information, push
 tokens, optional linked analytics and filtered diagnostics. Final answers depend
 on the selected artifact and enabled services; no privacy form was published.
 No production deploy, spending, live-bank call or store submission.
+
+### September 14 — native Chrome Sandbox OAuth and replay verified
+
+Simulator app control timed out through name, bundle and explicit installed path;
+no physical phone was used. Although the Chrome browser-tab provider is unavailable,
+CUA native app control for com.google.Chrome works. Used that supported surface
+without changing browser security settings. Fresh Jamie synthetic login on3402
+loaded persisted1344.56 net worth and two accounts.
+
+Chrome opened actual Plaid Link successfully. Chose First Platypus Bank - OAuth,
+completed its synthetic credentials/verification and selected only Plaid Saving.
+Skipped phone/consumer-Plaid-account creation and declined Chrome password saving.
+OAuth used Plaid's desktop popup return to cdn.plaid.com, then account confirmation
+and Finish without saving. Worthlane displayed Connection saved; new account is
+Personal, balance210.00, visible net worth1554.56 and3 accounts/2 institutions.
+
+Repeat sync completed in the UI. Database readback before/after shows identical
+account and transaction ID hashes,3 accounts and201 transactions. Reload retains
+1554.56, the savings account and Personal visibility. Existing manual/checking
+accounts remain. Snapshot evidence .tmp/chrome-oauth-{before,after}-sync.json;
+only aggregate counts/hashes retained there. This verifies the updated BFF nonce
+exchange on a real provider popup flow, not /dashboard/plaid-return reinitialization.
+Full-page/mobile-web redirect remains a distinct open check. No live bank or paid
+operation occurred. Synthetic connected Item retained for continued acceptance.
+
+CI131/34876625261 on58fa386 completed all three jobs successfully. Native launch
+for the revised mobile diagnostic mode remains unverified due Simulator control.
