@@ -146,3 +146,26 @@ an additive table, two indexes and account/household foreign keys. This source
 comparison does not prove current hosted migration state, backups, or safe
 rollback. Verify those before approving deployment; the start command applies
 migrations automatically. Keep existing production encryption/auth secrets.
+
+## Plaid app profile resolved; security attestations outstanding
+
+Fresh App profile tab shows Worthlane, https://worthlane.app, updated data-use
+description and an icon, with Save disabled and no action-count badge. These
+fields persisted. Overall Action required remains on Compliance Center. Data
+security screenshot shows questionnaire last completed March8,2026 and17 required
+attestations dated September9,2026:
+
+- Zero trust access architecture; vulnerability scanning; role-based access control.
+- Information Security Policy; periodic access reviews/audits; secure tokens/certificates.
+- Automated employee access deprovisioning/modification.
+- Consumer-facing MFA; internal-system MFA.
+- Published privacy policy; consent tracking; deletion/retention policy.
+- Centralized identity/access management; end-of-life software management.
+- Documented access-control policy; encryption at rest; vulnerability patch SLAs.
+
+No attestation was submitted. Existing application consent/deletion/encryption
+code and published privacy text are partial evidence, not organization-wide
+control verification. Consumer MFA is not evidenced by the inspected auth/schema
+sources. Assess actual implementation, service settings and owner procedures
+before making any certification. Solo ownership does not automatically satisfy
+or exempt the listed controls. Do not copy sensitive profile contact fields here.

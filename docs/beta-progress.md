@@ -2376,3 +2376,13 @@ settings/validation table in production-preparation.md. No secret values, provid
 calls, environment mutations or redeployment. Compared candidate migration files
 to active PR13 commit: one additive HouseholdAccountMatch migration; hosted
 migration/backup status remains unverified.
+
+### September 14 — app profile persisted and remaining security warning located
+
+Fresh Plaid App profile confirms saved name/website/data purpose/icon; disabled
+Save and no tab action count. User's logo/profile action resolved prior picker
+blocker. Overall warning originates from Data security with17 required
+attestations dueSeptember9; exact categories recorded in production-preparation.
+Questionnaire March8 completion is historical, not proof remediation is complete.
+No security attestation submitted; controls need evidence review, including
+consumer/internal MFA and policies.
