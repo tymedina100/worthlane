@@ -65,13 +65,13 @@ test("navigation is pinned to the exact configured origin", () => {
 });
 
 test("the local recovery exception is pinned to one packaged file", () => {
-  const recoveryUrl = "file:///C:/Worthlane/resources/app.asar/src/offline.html";
+  const recoveryUrl = "worthlane-recovery://app/offline.html";
   assert.equal(
     isAllowedConnectionPageNavigation(`${recoveryUrl}?reason=offline`, recoveryUrl),
     true
   );
   assert.equal(
-    isAllowedConnectionPageNavigation("file:///C:/Worthlane/other.html", recoveryUrl),
+    isAllowedConnectionPageNavigation("worthlane-recovery://app/other.html", recoveryUrl),
     false
   );
   assert.equal(

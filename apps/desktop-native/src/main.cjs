@@ -2,11 +2,11 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const { pathToFileURL } = require("node:url");
 const {
   app,
   BrowserWindow,
   Menu,
+  protocol,
   dialog,
   screen,
   session,
@@ -28,8 +28,8 @@ const WINDOW_MIN_WIDTH = 900;
 const WINDOW_MIN_HEIGHT = 640;
 const DEFAULT_BOUNDS = Object.freeze({ width: 1440, height: 920 });
 const APP_PARTITION = "persist:worthlane";
-const CONNECTION_PAGE_PATH = path.join(__dirname, "offline.html");
-const CONNECTION_PAGE_URL = pathToFileURL(CONNECTION_PAGE_PATH).toString();
+const { RECOVERY_SCHEME, RECOVERY_URL: CONNECTION_PAGE_URL, recoveryResponse } = require("./recovery-protocol.cjs");
+protocol.registerSchemesAsPrivileged([{ scheme: RECOVERY_SCHEME, privileges: { standard: true, secure: true } }]);
 
 let mainWindow = null;
 let configuredApp = null;
@@ -188,13 +188,14 @@ async function showConnectionPage(errorDescription) {
       return;
     }
 
-    await window.loadFile(CONNECTION_PAGE_PATH, {
-      query: {
-        retry: configuredApp.href,
-        target: new URL(configuredApp.href).host,
-        reason: errorDescription || "The Worthlane service could not be reached.",
-      },
-    });
+    const recoveryUrl = new URL(CONNECTION_PAGE_URL);
+    recoveryUrl.search = new URLSearchParams({
+      retry: configuredApp.href,
+      target: new URL(configuredApp.href).host,
+      reason: errorDescription || "The Worthlane service could not be reached.",
+    }).toString();
+    await window.loadURL(recoveryUrl.toString());
+    if (!window.isDestroyed()) window.show();
   } catch (error) {
     showingConnectionPage = false;
     console.error("Could not show Worthlane connection page:", error);
@@ -220,7 +221,8 @@ async function loadApplicationUrl(targetUrl) {
   showingConnectionPage = false;
   return loadWithRecovery(
     () => window.loadURL(targetUrl),
-    (description) => showConnectionPage(description)
+    (description) => showConnectionPage(description),
+    { stop: () => { if (!window.isDestroyed()) window.webContents.stop(); } }
   );
 }
 
@@ -228,7 +230,10 @@ function attachSecurityPolicy(window) {
   const { webContents } = window;
   webContents.on("will-navigate", (event, targetUrl) => {
     if (isAllowedNavigation(targetUrl, configuredApp.origin)) {
-      showingConnectionPage = false;
+      if (showingConnectionPage) {
+        event.preventDefault();
+        void loadApplicationUrl(targetUrl);
+      }
       return;
     }
     if (
@@ -249,15 +254,16 @@ function attachSecurityPolicy(window) {
     if (app.isPackaged && developerShortcut) event.preventDefault();
   });
   const handleLoadFailure = (_event, code, description, url, isMainFrame) => {
-    if (isMainFrame && code !== -3 && !url.startsWith("file:")) {
+    if (isMainFrame && code !== -3 && !url.startsWith(`${RECOVERY_SCHEME}:`)) {
       void showConnectionPage(description);
     }
   };
   webContents.on("did-fail-load", handleLoadFailure);
   webContents.on("did-fail-provisional-load", handleLoadFailure);
-  webContents.on("did-finish-load", () => {
-    if (isAllowedNavigation(webContents.getURL(), configuredApp.origin)) showingConnectionPage = false;
-  });
+  // Chromium also finishes its error document at the failed application URL.
+  // Do not clear recovery state there: the load promise can reject afterward,
+  // otherwise starting a second fallback and aborting the first one.
+
 }
 
 function createMainWindow() {
@@ -266,6 +272,9 @@ function createMainWindow() {
     ? path.join(process.resourcesPath, "branding", "worthlane.png")
     : path.join(__dirname, "..", "..", "web", "app", "icon.png");
   const appSession = session.fromPartition(APP_PARTITION);
+  if (!appSession.protocol.isProtocolHandled(RECOVERY_SCHEME)) {
+    appSession.protocol.handle(RECOVERY_SCHEME, recoveryResponse);
+  }
   appSession.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
   appSession.setPermissionCheckHandler(() => false);
   appSession.setDevicePermissionHandler(() => false);

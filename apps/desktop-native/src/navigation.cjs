@@ -13,15 +13,27 @@ function isExpectedNavigationAbort(error) {
   );
 }
 
-async function loadWithRecovery(load, recover) {
+async function loadWithRecovery(load, recover, { timeoutMs = 15000, stop = () => {} } = {}) {
+  let timer;
   try {
-    await load();
+    await Promise.race([
+      Promise.resolve().then(load),
+      new Promise((_, reject) => {
+        timer = setTimeout(() => {
+          reject(new Error("Worthlane took too long to connect. Please try again."));
+          stop();
+        }, timeoutMs);
+      }),
+    ]);
     return true;
   } catch (error) {
+    clearTimeout(timer);
     if (!isExpectedNavigationAbort(error)) {
       await recover(describeLoadError(error));
     }
     return false;
+  } finally {
+    clearTimeout(timer);
   }
 }
 

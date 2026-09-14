@@ -371,3 +371,7 @@ notarization, Intel execution and hosted service acceptance remain release gates
 Do not use another organization's certificate. No Mac App Store submission is
 configured. Local app verification: `pnpm --filter @worthlane/desktop-native
 verify:packaged release/mac-arm64/Worthlane.app`.
+
+Native connection recovery is packaged locally behind a restricted custom protocol.
+A stalled application navigation offers retry after 15 seconds; recovery cannot
+load arbitrary local files or navigate outside the configured workspace.

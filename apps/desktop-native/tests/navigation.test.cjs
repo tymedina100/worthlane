@@ -59,3 +59,17 @@ test("destroying a window also releases a pending recovery wait", async () => {
   webContents.emit("destroyed");
   await pending;
 });
+
+
+test("a stalled connection is stopped and offers recovery", async () => {
+  let stopped = false;
+  let message;
+  const loaded = await loadWithRecovery(
+    () => new Promise(() => {}),
+    async (description) => { message = description; },
+    { timeoutMs: 10, stop: () => { stopped = true; } }
+  );
+  assert.equal(loaded, false);
+  assert.equal(stopped, true);
+  assert.match(message, /too long to connect/);
+});

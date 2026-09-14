@@ -28,6 +28,7 @@ test("the packaged archive includes every native runtime asset", () => {
     "src/main.cjs",
     "src/navigation.cjs",
     "src/security.cjs",
+    "src/recovery-protocol.cjs",
     "src/offline.html",
     "src/offline.js",
     "generated/app-config.json",

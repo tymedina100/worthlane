@@ -2971,3 +2971,32 @@ The attempted Retry click lost active-control state; no successful automated
 Retry-click claim is made. Local data/session remained intact. No production
 change. Restored only automatic Next-generated config changes from this restart.
 Current sandbox runtime log: .tmp/mac-recovery-runtime-2.log.
+
+
+## September 14 — Packaged Mac recovery repaired
+
+Replaced the failing file-protocol recovery load with a restricted secure
+worthlane-recovery protocol serving only the packaged HTML and script. No file
+privileges or Electron security fuses were relaxed. Chromium's failed-document
+finish event had cleared the recovery guard before the original load promise
+rejected, allowing duplicate fallback loads and ERR_ABORTED; the guard now stays
+active until a real retry. Application loads have a 15-second deadline, including
+retries from the recovery button.
+
+An isolated ad-hoc Mac package pinned to absent localhost:3409 visibly rendered
+the styled timeout recovery screen. A failed Retry returned to that screen.
+After a test-only loopback proxy to the real sandbox desktop was started, Retry
+visibly reached the real login page. The proxy and diagnostic app were stopped.
+All 19 desktop-native tests and syntax checks pass. The normal local package,
+pinned to localhost:3402, passed 8 archived asset checks, 8 fuse checks and strict
+ad-hoc codesign verification. Public Mac signing/notarization remains pending;
+no production deployment, store submission or financial data change occurred.
+
+The updated app is installed at /Users/tylermedina/Applications/Worthlane.app.
+Its first cold connection reached the timeout screen; the native Overview menu
+then loaded the saved Morgan/Avery household without signing in again:600.01
+monthly plan,56.33 applied,60/40 shares360.01/240.00. Thus recovery and persisted
+session are observed, while consistently immediate cold-start loading is not
+claimed. Previous installed bundle preserved locally for rollback. Removed only
+regenerable diagnostic build directories after testing; original projects,
+credentials, database, user screenshots and Trash were not changed this pass.
