@@ -2765,3 +2765,18 @@ Fresh Simulator screenshot still shows Home; attempting its Search control fails
 with noWindowsAvailable. Native launch acceptance remains unverified pending
 manual opening of Worthlane with local Metro8084 or restored CUA touch control.
 No production changes, signing credentials, paid builds or submissions.
+
+### September 14 — browser entry no longer calls native secure storage
+
+User screenshot of localhost8084 exposed an actual Expo web startup failure:
+SecureStore.getItemAsync called a native method unavailable in the browser.
+Added a platform-specific web root layout that does not mount native auth,
+reminders, billing or diagnostic initialization. Native root remains unchanged;
+web users are directed to the existing cookie-backed desktop app instead of
+introducing browser token storage. Local development links to the isolated
+localhost3402 client; nonlocal builds link to the public Worthlane site.
+
+Mobile typecheck passed. CUA browser reload on8084 rendered the forest/cream
+entry without the error overlay; actual link click reached3402/login with the
+separate-login guidance and email/password fields. This fixes the user's browser
+error but does not claim fresh native launch acceptance. No production change.
