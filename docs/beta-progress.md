@@ -2938,3 +2938,22 @@ networth-75729.59 and monthly600.01 without another login. Public Mac distributi
 and Intel runtime checks remain unverified; local app requires the Sandbox
 desktop/API services running. The Mac shell is Electron with native platform
 integration, reusing the shared planning client.
+
+## September 14 — rebuilt Android icon packaged and installed
+
+Updated only emulator-5554 with the rebuilt debug APK using install-r; installation
+succeeded and retained application data. Restarted the same WorthlaneLaptop AVD
+with a visible window, without wiping data. Computer Use could not attach to the
+standalone qemu executable (Invalid app); therefore delivered-banner inspection
+is still unverified. No physical phone or alternate UI-control mechanism used.
+
+Inspected the notification_icon.png files extracted from the actual APK, not just
+source artwork. Five RGBA sizes24/36/48/72/96 all contain white visible artwork
+and transparent background pixels. Transparent/total pixels by size:
+464/576,1068/1296,1968/2304,4429/5184,8102/9216. This proves the corrected
+artwork is packaged; it does not prove OS banner rendering. APK SHA remains
+97bf4b1e1743e1457bbbd8aaa82af19eefefe93bc71cb20a95c2f0b1dc9002ee.
+
+Next: actual banner through an available supported emulator UI. Mac candidate
+0f348c9 CI151 was running at this checkpoint; final public signing/hosted gates
+remain unchanged.
