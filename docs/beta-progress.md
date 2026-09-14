@@ -2836,3 +2836,13 @@ No mockup, scaling or real data. Overview and privacy explanation visible; full
 allocation section is below fold. CUA scroll still fails noWindowsAvailable;
 remaining allocation/debt captures and final-build parity are not accepted yet.
 No upload, production change or submission.
+
+### September 14 — actionable reminder refresh recovery
+
+Added an accessible Retry device reminder refresh button to transient-error
+banners. It reruns the existing session-scoped reconciliation; denied permission
+continues to direct users to notification settings. Mobile typecheck and all24
+mobile adapter tests pass. Native fault check paused only sandbox API3401 for
+35seconds with automatic SIGCONT in finally; hot refresh reproduced15-second
+reminder timeout and visible Retry button. After confirmed automatic resume,
+clicked Retry; upcoming returned200 and warning cleared. No persisted data reset.
