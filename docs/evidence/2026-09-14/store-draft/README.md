@@ -38,3 +38,12 @@ agreement with Morgan60% and Avery40%, alongside the responsibility/payer/privac
 explanation. A modal-local SafeAreaProvider corrects the observed title/status-bar
 overlap. Closing and reopening the editor also preserves the corrected layout.
 No financial values were changed for this capture. Draft only; not uploaded.
+
+## Debt payoff addition
+
+05-debt-payoff-iphone16promax.png is an unmodified native capture of the saved
+synthetic Morgan card payoff plan. It shows the estimate before the editing form,
+Snowball/$50 monthly context, zero interest, and the September/October $50 schedule.
+Captured from the actual persisted plan; no financial inputs changed or saved.
+Final code also scrolls to the summary after preview/save. This behavior was
+checked after a full development reload; the capture shows the same layout.

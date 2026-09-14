@@ -2878,3 +2878,22 @@ docs/evidence/2026-09-14/store-draft/04-custom-budget-iphone16promax.png.
 Coordinate drag still fails in the computer-control layer, while semantic button
 controls work. No phone interaction, production mutation, store upload or submission.
 Expo CLI login and the previously documented release gates remain open.
+
+## September 14 — debt estimate visible before editing inputs
+
+Moved the existing native debt estimate/status above the long editing form so
+opening a saved plan immediately exposes its result. Added the selected method,
+monthly budget and month-end/lender-calculation caveat alongside the summary.
+Warnings, shortfall, first-payment breakdown, expandable monthly schedule and
+full detailed assumptions remain. Preview/save returns the scroll position to
+the result/status, including validation failures. Finance calculations and API
+mutations are unchanged.
+
+Mobile typecheck passed. Actual iPhone16ProMax loaded Morgan's persisted100
+balance/zeroAPR/Snowball plan:50monthly, October2026 payoff,0interest,100total.
+Expanded schedule displayed September50/remaining50 and October50/remaining0.
+Captured unmodified1320x2868 native draft05-debt-payoff-iphone16promax.png.
+Adding the scroll ref caused a development Fast Refresh hook-order error; a full
+app reload cleared it, then reopening the saved plan and previewing succeeded
+with the explicit unsaved-preview status. No plan save, bank call or phone action.
+Expo authentication and existing signing/hosted release gates remain open.

@@ -1,5 +1,5 @@
 import { BankDebtDetails } from "@/components/BankDebtDetails";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ScrollView, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect, router } from "expo-router";
@@ -22,6 +22,7 @@ function DebtPlanEditor({ userId }: { userId: string }) {
   const { colors } = useTheme();
   const queryClient = useQueryClient();
   const plans = useQuery({ queryKey: ["debt-plans", userId], queryFn: () => api.get<Plan[]>("/debt-plans"), enabled: Boolean(userId) });
+  const scroll = useRef<ScrollView>(null);
   const [selected, setSelected] = useState<Plan | null>(null);
   const [name, setName] = useState("My payoff plan");
   const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
@@ -50,7 +51,7 @@ function DebtPlanEditor({ userId }: { userId: string }) {
       const saved = selected ? await api.patch<Plan>(`/debt-plans/${encodeURIComponent(selected.id)}`, { revision: selected.revision, input }) : await api.post<Plan>("/debt-plans", input);
       load(saved); setMessage("Saved. Reopen this plan after signing in again."); await plans.refetch();
     } catch (error) { setMessage(error instanceof Error && error.name !== "ZodError" ? error.message : "Check names, amounts and dates (YYYY-MM-DD)."); }
-    finally { setBusy(false); }
+    finally { setBusy(false); scroll.current?.scrollTo({ y: 0, animated: true }); }
   }
   async function addDueDate(entryId: string) {
     if (!selected) return;
@@ -69,10 +70,16 @@ function DebtPlanEditor({ userId }: { userId: string }) {
   }
   const button = (label: string, action: () => void, disabled = false) => <TouchableOpacity accessibilityRole="button" accessibilityLabel={label} disabled={busy || disabled} onPress={action} style={[styles.button, { borderColor: colors.border, opacity: busy || disabled ? 0.5 : 1 }]}><Text style={{ color: colors.primary, fontWeight: "700" }}>{label}</Text></TouchableOpacity>;
   const field = (label: string, value: string, update: (v: string) => void, numeric = false) => <View style={styles.field}><Text style={{ color: colors.text }}>{label}</Text><TextInput accessibilityLabel={label} value={value} onChangeText={v => { update(v); changed(); }} editable={!busy} keyboardType={numeric ? "decimal-pad" : "default"} autoCapitalize="none" style={[styles.input, { color: colors.text, borderColor: colors.border, backgroundColor: colors.surface }]} /></View>;
-  return <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}><KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}><ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+  return <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}><KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}><ScrollView ref={scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
     {button("Back to Goals", () => router.back())}<Text style={[styles.title, { color: colors.text }]}>Debt payoff plans</Text><Text style={{ color: colors.textMuted }}>Private to you. Manual estimates in USD; no payments are made.</Text>
     {plans.isLoading && <Text style={{ color: colors.textMuted }}>Loading saved plans…</Text>}{plans.isError && button("Retry saved plans", () => void plans.refetch())}
     {button("New plan", () => load(null))}{plans.data?.map(plan => <View key={plan.id}>{button(`Open ${plan.input.name}`, () => void open(plan.id))}</View>)}
+    <Text accessibilityLiveRegion="polite" style={{ color: colors.text }}>{message}</Text>
+    {estimate && <View style={[styles.card, { borderColor: colors.border, backgroundColor: colors.surface }]}><Text style={[styles.heading, { color: colors.text }]}>{estimate.status === "PAID_OFF" ? `Estimated payoff: ${estimate.payoffMonth}` : "This plan needs adjustment"}</Text><Text style={{ color: colors.text }}>Interest: {money(estimate.totalInterestMinor)} · Payments: {money(estimate.totalPaidMinor)}</Text>{estimate.shortfallMinor > 0 && <Text style={{ color: colors.text }}>Monthly minimum shortfall: {money(estimate.shortfallMinor)}</Text>}{estimate.warnings.map(warning => <Text key={warning} style={{ color: colors.text }}>{warning}</Text>)}
+      <Text style={{ color: colors.textMuted }}>{strategy === "AVALANCHE" ? "Avalanche · highest APR first" : "Snowball · smallest balance first"}. Monthly payment budget: {money(Math.round(Number(payment) * 100))}. Month-end payment estimates; actual lender calculations may differ.</Text>
+      <Text style={[styles.heading, { color: colors.text }]}>First month's payments</Text>{estimate.schedule[0]?.debts.map(row => <Text key={row.id} style={{ color: colors.text }}>{debts.find(debt => debt.id === row.id)?.name}: {money(row.paymentMinor)}</Text>)}
+      {button(showSchedule ? "Hide monthly schedule" : "Show monthly schedule", () => setShowSchedule(v => !v))}{showSchedule && estimate.schedule.map(row => <Text key={row.month} style={{ color: colors.text }}>{row.month}: pay {money(row.paymentMinor)}, interest {money(row.interestMinor)}, remaining {money(row.remainingMinor)}</Text>)}
+    </View>}
     {field("Plan name", name, setName)}{field("First payment month (YYYY-MM)", month, setMonth)}{field("Monthly payment budget (USD)", payment, setPayment, true)}
     <Text style={{ color: colors.text }}>Method: {strategy === "AVALANCHE" ? "Avalanche — highest APR first" : "Snowball — smallest balance first"}</Text>
     {button("Use avalanche", () => { setStrategy("AVALANCHE"); changed(); })}{button("Use snowball", () => { setStrategy("SNOWBALL"); changed(); })}
@@ -86,11 +93,6 @@ function DebtPlanEditor({ userId }: { userId: string }) {
     {button("Add debt", () => { setDebts(rows => [...rows, blank()]); changed(); }, debts.length >= 100)}
     <Text style={{ color: colors.textMuted }}>Statement balances and due dates are reference details. Estimates use current balances and month-end payments; reminders are not scheduled here.</Text>
     {button("Preview estimate", () => void calculate(false))}{button("Save plan", () => void calculate(true))}
-    <Text accessibilityLiveRegion="polite" style={{ color: colors.text }}>{message}</Text>
-    {estimate && <View style={styles.card}><Text style={[styles.heading, { color: colors.text }]}>{estimate.status === "PAID_OFF" ? `Estimated payoff: ${estimate.payoffMonth}` : "This plan needs adjustment"}</Text><Text style={{ color: colors.text }}>Interest: {money(estimate.totalInterestMinor)} · Payments: {money(estimate.totalPaidMinor)}</Text>{estimate.shortfallMinor > 0 && <Text style={{ color: colors.text }}>Monthly minimum shortfall: {money(estimate.shortfallMinor)}</Text>}{estimate.warnings.map(warning => <Text key={warning} style={{ color: colors.text }}>{warning}</Text>)}
-      <Text style={[styles.heading, { color: colors.text }]}>First month's payments</Text>{estimate.schedule[0]?.debts.map(row => <Text key={row.id} style={{ color: colors.text }}>{debts.find(debt => debt.id === row.id)?.name}: {money(row.paymentMinor)}</Text>)}
-      {button(showSchedule ? "Hide monthly schedule" : "Show monthly schedule", () => setShowSchedule(v => !v))}{showSchedule && estimate.schedule.map(row => <Text key={row.month} style={{ color: colors.text }}>{row.month}: pay {money(row.paymentMinor)}, interest {money(row.interestMinor)}, remaining {money(row.remainingMinor)}</Text>)}
-    </View>}
     {selected && <View><Text style={[styles.heading, { color: colors.text }]}>Due dates from the saved plan</Text><Text style={{ color: colors.textMuted }}>Add each confirmed minimum once, with reminders off. Unsaved changes are not used.</Text>{selected.input.debts.filter(debt => debt.dueDate && debt.minimumPaymentMinor > 0).map(debt => <View key={debt.id}>{button(`Add ${debt.name}: ${money(debt.minimumPaymentMinor)} due ${debt.dueDate} to Upcoming`, () => void addDueDate(debt.id))}</View>)}{button("Manage Upcoming", () => router.push("/(tabs)/upcoming" as any))}</View>}
     <Text style={[styles.heading, { color: colors.text }]}>Estimate assumptions</Text>{DEBT_ESTIMATE_ASSUMPTIONS.map(text => <Text key={text} style={{ color: colors.textMuted }}>{text}</Text>)}
     <BankDebtDetails userId={userId} copyDisabled={busy || debts.length >= 100} onCopy={debt => { if (useAuthStore.getState().userId !== userId) return; setDebts(rows => [...rows, fromDebt(debt)]); changed(); }} />
