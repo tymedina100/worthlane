@@ -89,6 +89,9 @@ jobs:
       - name: Test auth privacy during analytics failures
         run: pnpm test:auth-privacy
 
+      - name: Test mobile diagnostic privacy
+        run: node --test scripts/test-mobile-diagnostics.mjs
+
       - name: Test web Plaid startup recovery and cancellation
         run: node --test scripts/test-plaid-web-lifecycle.mjs
 

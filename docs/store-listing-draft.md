@@ -99,3 +99,28 @@ currently references the debug signing configuration, so it is not an upload-rea
 build. Before building for store delivery, configure legitimate personal-team
 distribution signing and Android upload signing, then verify artifact signatures.
 No private signing material or account identifiers stored here.
+
+## Privacy evidence for the candidate — September 14
+
+Preparation only; final App Store Connect answers must match the selected build
+and its enabled backend/SDK services. Do not select "Data Not Collected".
+
+| Data / purpose | Current source evidence | Release disclosure decision |
+| --- | --- | --- |
+| Email and user identifier / authentication | User.email, User.id, passwordHash and refresh-session records in Prisma | Collected and linked to the account for app functionality. Password hashes are retained; no plaintext password-storage claim. |
+| Household display names and invited email / collaboration | HouseholdMember and invitation/acceptance flows | Account-linked collaboration data; partner disclosure follows explicit invitation and visibility choices. |
+| Financial data / planning | Account, Transaction, DebtPlanEntry, Budget, UpcomingObligation and household responsibility models | Account-linked financial data for app functionality, including manually entered data. Transactions contain purchase history; map the exact Apple categories during final questionnaire review. |
+| Push destination / reminders | Optional User.pushToken and push service | App functionality when registered; distinguish remote push tokens from local-only scheduled notifications. |
+| Product interaction / analytics | Optional PostHog keys; captureV1Event enums and auth events; opaque user identification | If enabled, analytics remain linked to a user identifier. Do not claim anonymous analytics. Confirm release environment before selecting final answers. |
+| JavaScript crash diagnostics | Candidate mobile beforeSend reconstructs an allowlist; no request/user/breadcrumb/extra data, raw messages or arbitrary frame paths | Generic error reports and app release/bundle positions only when a DSN is enabled. Diagnostic data still counts as collection. |
+| Native crash reports / traces / screenshots | Candidate disables native SDK, automatic sessions, traces, screenshots and view hierarchy | Candidate deliberately omits native crash reporting until native privacy filtering is reviewed. This reduces debugging detail; JavaScript initialization remains valid without a DSN. |
+| Device biometric authentication | Local authentication adapter; biometricEnabled preference in User | No evidence that biometric templates are uploaded. A preference flag is distinct from collecting biometric measurements. |
+
+Evidence: packages/db/prisma/schema.prisma, apps/mobile/src/lib/posthog.ts,
+apps/mobile/src/lib/v1-analytics.ts, apps/mobile/src/store/auth.ts,
+apps/mobile/src/lib/sentry.ts and diagnostic-privacy.ts. SDK configuration tests
+cover enabled/disabled/malformed optional settings and removal of synthetic
+private payloads. Final native artifact and enabled production services still
+need verification; this matrix is not a published privacy declaration or a
+claim about historical vendor retention. Support mailbox operation, dedicated
+review credentials and final deletion verification remain open.

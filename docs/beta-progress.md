@@ -2567,3 +2567,28 @@ Plaid frame URL points to the documented cdn.plaid.com origin. Browser error log
 contained no CSP error; this does not prove child-frame networking succeeded.
 Network errors captured during the server restart are not provider failures.
 Actual browser redirect acceptance remains open pending the instrumented check.
+
+### September 14 — mobile diagnostic privacy and store disclosure evidence
+
+Added a strict JavaScript error-event reconstruction for mobile: removes raw
+messages, user/request/navigation/network context, breadcrumbs, extras and frame
+locals; retains generic errors and recognized bundle source positions. Disabled
+traces/transaction events, screenshots and view hierarchy. Native crash events
+bypass the JS beforeSend filter, so the candidate disables the native SDK and
+automatic session tracking pending native-filter review. Explicit app release
+label replaces automatic native release detection. This sacrifices native crash
+detail; it does not claim source-map/native symbolication acceptance.
+
+Three new tests execute the actual sanitizer/configuration with enabled/disabled
+and malformed optional configuration; added them to CI. All16 existing auth/session
+privacy tests, mobile typecheck, and Expo exports for iOS/Android/web pass. Logs:
+.tmp/mobile-diagnostic-{tests,auth,typecheck,export}.log. New exports use
+.tmp/mobile-diagnostic-export. No native device installation or Sentry transmission
+was used for these checks. Native launch acceptance for this SDK-mode change
+remains required before release.
+
+Expanded docs/store-listing-draft.md with source-backed collection/purpose rows:
+email/user IDs, household/invitation data, financial/purchase information, push
+tokens, optional linked analytics and filtered diagnostics. Final answers depend
+on the selected artifact and enabled services; no privacy form was published.
+No production deploy, spending, live-bank call or store submission.

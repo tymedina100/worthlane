@@ -1,5 +1,6 @@
 import Constants from "expo-constants";
 import * as Sentry from "@sentry/react-native";
+import { privateMobileDiagnosticEvent } from "./diagnostic-privacy";
 
 type SentryExtra = {
   dsn?: unknown;
@@ -29,8 +30,17 @@ if (!sentryGlobal.__WORTHLANE_SENTRY_INITIALIZED__) {
     dsn,
     enabled: Boolean(dsn),
     environment,
+    release: `worthlane-mobile@${configString(Constants.expoConfig?.version) ?? "unknown"}`,
+    // Native crash reports bypass the JavaScript beforeSend privacy filter.
+    // Keep this beta on the filtered JS transport until native filtering is reviewed.
+    enableNative: false,
+    enableAutoSessionTracking: false,
     sendDefaultPii: false,
-    tracesSampleRate: isDevelopment ? 1.0 : 0.2,
+    beforeSend: privateMobileDiagnosticEvent,
+    tracesSampleRate: 0,
+    beforeSendTransaction: () => null,
+    attachScreenshot: false,
+    attachViewHierarchy: false,
   });
 
   sentryGlobal.__WORTHLANE_SENTRY_INITIALIZED__ = true;
