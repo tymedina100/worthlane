@@ -2547,3 +2547,23 @@ Configured only the new local Sandbox API3401 to request
 http://localhost:3402/dashboard/plaid-return. Existing production URLs preserved;
 no live bank call, paid service or store submission. Actual browser return check
 is in progress from Jamie's local Sandbox account.
+
+### September 14 — isolate the local OAuth verification runtime
+
+Found the ad-hoc .next-oauth-3402 setting did not match next.config's supported
+.next-http-N format, so it silently used the default build directory. Updated
+scripts/dev-sandbox.mjs to accept validated, distinct unprivileged API/desktop
+ports and assign supported separate .next-http-PORT build directories. Port
+preflight now checks each service's actual loopback hostname (including localhost
+IPv6). Default ports remain3301/3303; retained Sandbox DB and secrets are unchanged.
+
+Stopped only this task's3401/3402 servers, then launched the script with3401/3402,
+the approved web redirect and existing local DB55439. Verified both listeners,
+both separate build directories and Jamie's persisted manual/bank account UI.
+Syntax check passes. Generated Next tsconfig/next-env edits were restored.
+Runtime session5630; local log .tmp/oauth-isolated-runtime.log. Production unchanged.
+
+Plaid frame URL points to the documented cdn.plaid.com origin. Browser error log
+contained no CSP error; this does not prove child-frame networking succeeded.
+Network errors captured during the server restart are not provider failures.
+Actual browser redirect acceptance remains open pending the instrumented check.
