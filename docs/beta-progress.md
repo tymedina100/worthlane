@@ -2957,3 +2957,17 @@ artwork is packaged; it does not prove OS banner rendering. APK SHA remains
 Next: actual banner through an available supported emulator UI. Mac candidate
 0f348c9 CI151 was running at this checkpoint; final public signing/hosted gates
 remain unchanged.
+
+## September 14 — Mac unavailable-service observation
+
+Temporarily stopped only the local sandbox runner, with automatic restoration
+using the same persisted secrets/database and ports3401/3402. A cold launch of
+installed Worthlane.app while port3402 was absent showed the native fallback
+alert with Try again/Exit and a clear connection failure message. The custom
+offline HTML page was not observed, so that path remains to investigate.
+After services restored, fresh CUA state showed the authenticated Morgan/Avery
+household with visible networth-75729.59, monthly600.01 and60/40 allocations.
+The attempted Retry click lost active-control state; no successful automated
+Retry-click claim is made. Local data/session remained intact. No production
+change. Restored only automatic Next-generated config changes from this restart.
+Current sandbox runtime log: .tmp/mac-recovery-runtime-2.log.
