@@ -2780,3 +2780,20 @@ Mobile typecheck passed. CUA browser reload on8084 rendered the forest/cream
 entry without the error overlay; actual link click reached3402/login with the
 separate-login guidance and email/password fields. This fixes the user's browser
 error but does not claim fresh native launch acceptance. No production change.
+
+### September 14 — Simulator relaunched; current native startup verified
+
+At the user's request, quit and relaunched the installed Xcode Simulator app
+without erasing its existing iPhone16Pro data. Native accessibility controls
+recovered. Used Spotlight to open Worthlane. Dev menu showed the app initially
+selected older Metro8082; returned to development home and explicitly selected
+localhost8084. Current iOS bundle completed and the native dashboard rendered.
+After a slow local API response (dashboard200 in26.7s), persisted Jamie data
+appeared: net worth2554.56, spending131.13, received500, internet bill45.67 in7days,
+and groceries600.01. This closes fresh native startup for the changed diagnostic
+mode with external telemetry disabled in the8084 configuration.
+
+A visible reminder refresh warning remains; investigate/retry separately before
+claiming reminder reconciliation on this recovered session. No phone use,
+production change, data reset or store submission. CI141 Windows and PostgreSQL
+jobs passed; primary CI job was still running at this observation.
