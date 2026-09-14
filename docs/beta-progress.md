@@ -2813,3 +2813,13 @@ metadata and no amount/name in displayed text. RequestDate plus trigger interval
 is2026-09-20T16:00:00.252375Z, or09:00 Phoenix one day before due date; nonrepeating.
 This establishes native OS scheduling, not actual future delivery. Dismissed
 save confirmation and left Upcoming visible. No production change or phone use.
+
+### September 14 — actual-app screenshot drafts captured
+
+Saved native-resolution Upcoming and dashboard PNGs through Simulator Save Screen,
+using persisted synthetic Jamie data. Both are1206x2622 with no simulator chrome.
+Inspected dashboard capture; no loading/error overlay or real financial data.
+Files and capture provenance are in docs/evidence/2026-09-14/store-draft.
+Apple's current specification accepts these in6.3-inch slots, but the required
+6.9-inch or6.5-inch set remains; couples responsibility/privacy/debt screens and
+release-build parity also remain. No stretching, mocked content, upload or submission.
