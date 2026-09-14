@@ -2897,3 +2897,16 @@ Adding the scroll ref caused a development Fast Refresh hook-order error; a full
 app reload cleared it, then reopening the saved plan and previewing succeeded
 with the explicit unsaved-preview status. No plan save, bank call or phone action.
 Expo authentication and existing signing/hosted release gates remain open.
+
+## September 14 — CI149 completes for native UI candidate
+
+Verified GitHub run34897135407 for6219a18 and all three job conclusions:
+ci, postgres-integration and native-windows succeeded. This includes the modal
+safe-area fix and debt-result layout, plus previous persistence/privacy coverage.
+The laptop Android debug rebuild remains a separate live process, installing
+NDK27.1.12297006 then proceeding through Expo module configuration. No new APK
+or notification banner verification is claimed at this checkpoint.
+
+Support verification remains limited: published address is support@worthlane.app
+and DNS MX routes to Google. A narrow existing-mail check found a sent message
+only, which does not establish delivery or monitored support. No test email sent.

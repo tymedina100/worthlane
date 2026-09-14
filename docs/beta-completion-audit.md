@@ -2,8 +2,8 @@
 
 Goal remains active. This audit checks the current Notion brief against persisted
 and interactive evidence; it does not authorize a production release or submission.
-Latest code change: a96d74b (native reminder refresh retry). Draft PR15 remains
-the candidate. CI146/34895627772 on that commit completed ci,
+Latest code change: 6219a18 (debt payoff result visibility). Draft PR15 remains
+the candidate. CI149/34897135407 on that commit completed ci,
 postgres-integration and native-windows successfully, including the actual Gradle
 signing gate fixture and persisted household consent/budget checks.
 This refresh reconciles later progress records; it is not a fresh replay of every
@@ -20,7 +20,7 @@ previously recorded journey or approval to ship.
 | Card fields, Liabilities and manual fallback | Real run-plaid-integration provider test recorded statement/minimum/due fields and nonowner isolation; route uses owned account allowlist. Desktop/native manual card fields and saved due dates recorded; predictions are labeled estimates. | Sandbox/manual evidence present. Production Liabilities is not enabled; manual fallback remains required there. |
 | Reliable reminders and saved debt estimates | Actual iOS/Android background test notifications; DATE diagnostic aligns with obligation trigger type. Adapter tests cover local9am/date/session reconciliation. Shared debt tests explicitly cover promo-day proration, zero APR, minimum shortfall, non-amortization and cents. Saved two-login debt readbacks recorded. | Core evidence present; actual9am/physical-phone delivery is not claimed. Phone use excluded by user. |
 | Aesthetic app/site and beta list | Native forest/cream screens and improved recovery controls; approved live website and persisted consent-based waitlist proof recorded. | Website request delivered. Android notification resources regenerated; rebuilt notification verification and final store imagery remain. |
-| Regression assurance / commits / project updates | CI146 all three jobs succeeded on a96d74b; commits pushed on codex/beta-acceptance; Notion project/linked task updates recorded. | Latest code CI verified complete; no merge or signed-store artifact claimed. |
+| Regression assurance / commits / project updates | CI149 all three jobs succeeded on 6219a18; commits pushed on codex/beta-acceptance; Notion project/linked task updates recorded. | Latest code CI verified complete; no merge or signed-store artifact claimed. |
 | Truthful diagnostics and privacy disclosures | API error allowlist strips request/user/context and raw exception details. Mobile uses filtered JavaScript errors with native diagnostics and automatic sessions disabled; enabled/disabled configuration tests and three-platform exports pass. Store collection matrix is source-backed. | Fresh native launch on isolated Metro8084 passed after Simulator relaunch; persisted dashboard data rendered. Final store privacy answers must match the signed artifact and enabled services. |
 | Added production Plaid/store preparation request | App record and partial copy saved earlier; Android registration saved. Plaid/Apple/Railway sessions restored. Transactions/Balance enabled and billing verified; Liabilities not enabled. Apple review notes/contact/keywords saved. Existing Railway API/Postgres located. Signing/privacy/screenshots/reviewer access and hosted release verification remain. | Incomplete. Do not submit. |
 
