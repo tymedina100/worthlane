@@ -3021,3 +3021,20 @@ and the installed app replaced with the normal package. Strict signature/package
 verification passed. Ad-hoc rebuilds may require renewed macOS Keychain consent;
 public Developer ID signing/notarization remains pending. Diagnostic success is
 not a claim that another package has already received OS authorization.
+
+
+## September 14 — Final installed Mac authorization and cold start verified
+
+After Tyler confirmed completing the handoff, the final normal package's Retry
+reached the dashboard title but initially left a blank renderer. A normal Quit
+through the native menu was followed by a verified process exit and cold launch
+from /Users/tylermedina/Applications/Worthlane.app. The real dashboard then loaded
+the saved Morgan/Avery household without login: monthly600.01,56.33 applied,
+Morgan60%=360.01 andAvery40%=240.00. This is the normal package, with diagnostic
+logging removed, not the earlier isolated/diagnostic build. No data was cleared
+and no security settings were weakened. Initial post-authorization Retry's blank
+window remains recorded; clean cold-start acceptance now passes.
+
+Fresh `pnpm exec eas whoami` still returns Not logged in. Public signing,
+production release controls, remaining provider attestations and store gates are
+unchanged. CI155 on66e48a5 had passed all three jobs; this entry adds evidence only.
