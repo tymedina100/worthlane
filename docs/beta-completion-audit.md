@@ -21,7 +21,7 @@ CI115/34868489175 completed ci, postgres-integration and native-windows successf
 
 ## Remaining work
 
-1. Complete Plaid password verification for the user-authorized legal-name save; then recheck Capital One eligibility.
+1. Capital One is now In review after the authorized legal-name save; provider approval remains external.
 2. Inspect existing Railway service configuration and prepare the reviewed release
    against its current database/schema. Existing service is online on the PR13
    foundation; latest candidate is not deployed. Keep local Sandbox data separate

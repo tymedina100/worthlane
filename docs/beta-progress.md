@@ -2318,3 +2318,7 @@ User confirmed personal operation and exact legal name. Entered authorized name
 in existing company profile; Save triggered password verification, so persistence
 is pending the user's authentication. No LLC claimed and no institution-access
 request submitted. Continue API configuration/signing/assets preparation.
+
+User completed Plaid password verification. Legal entity name persisted after
+reload with Save disabled. Capital One changed from missing legal entity name
+to In review. This is provider review pending, not enabled institution access.
