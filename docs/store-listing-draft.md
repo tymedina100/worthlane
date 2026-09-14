@@ -144,3 +144,11 @@ exercise the actual Groovy gate against isolated Gradle fixtures. It does not
 compile Android or sign an artifact. Final AAB/APK signature and registered upload
 certificate still require verification; filename/alias checks do not prove the
 identity of an arbitrary keystore. No private key was generated or uploaded here.
+
+## Expo account access check — September 14
+
+The installed EAS CLI returned `Not logged in` from `eas whoami` in
+apps/mobile. The tracked project is configured for the tymedina100 account;
+hosted distribution credentials remain unverified until Expo CLI authentication
+is restored. This is independent of Apple or Plaid browser sign-in. No login
+secret was requested or inspected, build queued, key generated, or submission made.

@@ -2846,3 +2846,17 @@ mobile adapter tests pass. Native fault check paused only sandbox API3401 for
 35seconds with automatic SIGCONT in finally; hot refresh reproduced15-second
 reminder timeout and visible Retry button. After confirmed automatic resume,
 clicked Retry; upcoming returned200 and warning cleared. No persisted data reset.
+
+## September 14 — latest candidate CI and release access
+
+GitHub CI146 (34895627772) on a96d74b completed all three jobs successfully:
+ci, postgres-integration, and native-windows. Inspected individual steps include
+mobile reminder/privacy adapters, financial rules, persisted household consent
+and budgets, mobile bundling, all web/API builds, and Windows packaging.
+This complements the prior actual native timeout/retry recovery check; it does
+not prove a signed store artifact.
+
+Release preparation read-only check: installed EAS CLI returned `Not logged in`
+from apps/mobile. Expo CLI authentication is needed before hosted signing
+credentials can be inspected; Apple/Plaid browser sessions do not supply it.
+No build, upload, submission, paid operation, or production mutation occurred.
