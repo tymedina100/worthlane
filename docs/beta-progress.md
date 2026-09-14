@@ -2661,3 +2661,21 @@ emulation off; Jamie retains1554.56 and3 accounts. PostgreSQL still has identica
 remains component/proxy evidence rather than provider redirect acceptance.
 Simulator control again timed out; no simulator is booted. Native launch remains
 open. No production or store action performed.
+
+### September 14 — verified WebView OAuth paused by laptop lock
+
+Reloaded via Chrome's actual Reload button with Worthlane Sandbox WebView active.
+Read navigator.userAgent in DevTools: it exactly matches Plaid's documented
+Android WebView user agent. Actual OAuth replaces the originating page in the
+same Chrome tab. The intermediate sandbox-oauth-login.html URL still contains
+Plaid's CDN oauth.html redirect; that URL alone was insufficient to classify
+earlier attempts as popup flows. The completed earlier desktop popup evidence
+remains separate.
+
+Completed synthetic user_good authentication and1234 simulated verification;
+selected only the distinct Plaid CD account and continued to the simulated bank's
+final consent screen. Before final consent/return, Computer Use reported that the
+Mac is locked and automatic unlock failed. No final consent, exchange, return-page
+success, or new persisted account is claimed. Leave this browser flow in place
+until Tyler unlocks the laptop; do not restart it solely because observation failed.
+No physical phone, production data, paid request or store submission was used.
