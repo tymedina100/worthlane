@@ -2297,3 +2297,24 @@ by text snapshots/read-only DOM probes, so inspected the actual screenshot after
 reload, which displayed the authorized values. No further mutation was needed.
 No contact values copied to repo/Notion, no reviewer credentials fabricated, and
 no Add for Review or submission. Store contact/save blocker resolved.
+
+### September 14 — existing hosting located and institution gates inspected
+
+Vercel worthlane is rooted at apps/web. worthlane-desktop production is Ready on
+main10cd6fa (PR14); beta-acceptance preview is Ready. Desktop has WORTHLANE_API_URL
+and WORTHLANE_DESKTOP_PROXY_SECRET configured for Production and Preview; secret
+values were not revealed. Railway existing GitHub sign-in succeeded. Worthlane
+project a2386fda-ce79-4de5-b8c5-aef7ec8e8e3e contains online API and PostgreSQL.
+API service f0d862bc-2bce-4ac1-b507-2639d3eb0cb4 exposes
+https://financeapi-production-1853.up.railway.app and active deployment
+dbd7cf1f-7794-4ddd-88c1-3ae5c76451f2 is the PR13 foundation; PR14 was skipped
+for unchanged watched files. Dashboard status is hosting evidence, not a current
+candidate deployment or end-to-end production acceptance. No deployment, database
+read/write, migration, environment edit or plan purchase was performed.
+
+Plaid institution view: Capital One requires legal entity name; PNC and Navy
+Federal disabled for inactivity; Schwab/Fidelity access available on request.
+User confirmed personal operation and exact legal name. Entered authorized name
+in existing company profile; Save triggered password verification, so persistence
+is pending the user's authentication. No LLC claimed and no institution-access
+request submitted. Continue API configuration/signing/assets preparation.

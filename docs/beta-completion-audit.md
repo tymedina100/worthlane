@@ -2,8 +2,8 @@
 
 Goal remains active. This audit checks the current Notion brief against persisted
 and interactive evidence; it does not authorize a production release or submission.
-Latest code change: b85d3da. Evidence checkpoint:1ae0b4f. Draft PR15 remains open.
-CI112/34867048364 completed ci, postgres-integration and native-windows successfully.
+Latest code/artwork change:37184a4. Apple metadata checkpoint:1f5016b. Draft PR15 remains open.
+CI115/34868489175 completed ci, postgres-integration and native-windows successfully.
 
 | Requirement | Audited evidence | Result / limit |
 | --- | --- | --- |
@@ -13,19 +13,20 @@ CI112/34867048364 completed ci, postgres-integration and native-windows successf
 | Responsibility independent of payer and account visibility | Household tests and shared financial rules; native split editor explains month recalculation/history. Fresh Avery view exposes4 permitted accounts versus Morgan17. Bilateral match/revoke interactions and exact totals recorded in beta-progress. | Verified privacy-filtered totals. Personal and household-viewer totals intentionally differ. |
 | Plaid connect/reconnect/sync/error/unlink | Real Sandbox provider integration plus desktop/iOS/Android interactive evidence. Android repair kept16 account/545 transaction IDs; selected unlink returned provider ITEM_NOT_FOUND and retained OAuth/manual2 accounts/151 transactions. | Sandbox verified; no live-production claim. |
 | Transaction reconciliation and duplicate prevention | Inspected PostgreSQL tests cover added/modified/removed/pending-to-posted, transfers/card repayments, private manual/import review, bilateral joint matching/revocation and solo duplicate feeds. Repeat native sync retained unique IDs. | Covered by persisted tests plus relevant interactive flows. |
-| Card fields, Liabilities and manual fallback | Real run-plaid-integration provider test recorded statement/minimum/due fields and nonowner isolation; route uses owned account allowlist. Desktop/native manual card fields and saved due dates recorded; predictions are labeled estimates. | Sandbox/manual evidence present. Production Liabilities entitlement remains unverified. |
+| Card fields, Liabilities and manual fallback | Real run-plaid-integration provider test recorded statement/minimum/due fields and nonowner isolation; route uses owned account allowlist. Desktop/native manual card fields and saved due dates recorded; predictions are labeled estimates. | Sandbox/manual evidence present. Production Liabilities is not enabled; manual fallback remains required there. |
 | Reliable reminders and saved debt estimates | Actual iOS/Android background test notifications; DATE diagnostic aligns with obligation trigger type. Adapter tests cover local9am/date/session reconciliation. Shared debt tests explicitly cover promo-day proration, zero APR, minimum shortfall, non-amortization and cents. Saved two-login debt readbacks recorded. | Core evidence present; actual9am/physical-phone delivery is not claimed. Phone use excluded by user. |
-| Aesthetic app/site and beta list | Native forest/cream screens and improved recovery controls; approved live website and persisted consent-based waitlist proof recorded. | Website request delivered. Android notification artwork and final store imagery still need release polish. |
+| Aesthetic app/site and beta list | Native forest/cream screens and improved recovery controls; approved live website and persisted consent-based waitlist proof recorded. | Website request delivered. Android notification resources regenerated; rebuilt notification verification and final store imagery remain. |
 | Regression assurance / commits / project updates | CI112 all jobs success; all milestone commits pushed on codex/beta-acceptance; Notion project/linked task updates recorded. | Verified candidate evidence; no merge or signed-store artifact claimed. |
-| Added production Plaid/store preparation request | App record and partial copy saved earlier; Android registration saved. Fresh Plaid and Apple sessions now require sign-in. Production entitlements/billing/hosted service, signing/privacy/screenshots/review fields remain. | Incomplete. Do not submit. |
+| Added production Plaid/store preparation request | App record and partial copy saved earlier; Android registration saved. Plaid/Apple/Railway sessions restored. Transactions/Balance enabled and billing verified; Liabilities not enabled. Apple review notes/contact/keywords saved. Existing Railway API/Postgres located. Signing/privacy/screenshots/reviewer access and hosted release verification remain. | Incomplete. Do not submit. |
 
 ## Remaining work
 
-1. Restore provider sessions: Mac unlock and Plaid/App Store Connect sign-in.
-2. Verify exact Production Transactions/Liabilities entitlements and billing without
-   accepting a paid plan; inspect existing hosting and prepare a separate release
-   environment. Do not reuse or migrate the local Sandbox database.
-3. Finish Apple review-note persistence, release signing/configuration, actual-app
+1. Complete Plaid password verification for the user-authorized legal-name save; then recheck Capital One eligibility.
+2. Inspect existing Railway service configuration and prepare the reviewed release
+   against its current database/schema. Existing service is online on the PR13
+   foundation; latest candidate is not deployed. Keep local Sandbox data separate
+   and obtain scoped approval before migrations, deployment or paid/live usage.
+3. Finish release signing/configuration, actual-app
    screenshots and truthful privacy/reviewer metadata. Verify Google Play access
    and upload signing. No submission, purchase or automatic release.
 4. Finish release artwork/support/service checks and reconcile the final candidate
