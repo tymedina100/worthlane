@@ -2711,3 +2711,25 @@ CI135/34879714828 on99b0e79 completed all3 jobs successfully. Full-page create
 return and expired-session recovery now have actual provider/UI/persistence proof;
 update-mode resume retains separate automated coverage. Latest native diagnostic
 launch remains open. No production configuration, real bank, paid call or submission.
+
+### September 14 — native launch environment recovered
+
+After authorized storage cleanup, existing iPhone16Pro simulator was still shut
+down. Booted existing device D7C7C0D2-5966-476B-8234-80B80FCAF7B8 through Apple's
+simctl device-management CLI without erasing data. Bootstatus completed and CUA
+screenshots show its home screen. Installed com.worthlane.mobile remains present.
+
+Started fresh Metro8084 with EXPO_NO_DOTENV/EXPO_NO_TELEMETRY, local API3401,
+Plaid enabled, Sentry/PostHog keys empty, AI/paywall disabled. Manifest returns200
+and no Sentry DSN. Fetched current iOS JavaScript bundle contains the diagnostic
+privacy filter, enableNative:false, and127.0.0.1:3401/api. This proves current
+served code/configuration, not native launch. Existing8082/8083 services were left
+intact; their manifests contain Sentry configuration, so they are not the isolated
+target for this check.
+
+CUA can inspect/raise the Simulator window and send its Home keyboard command,
+but screen clicks consistently fail with noWindowsAvailable, including after
+raising the window. Need the user to open Worthlane in this simulator and select
+http://localhost:8084 as its development server before rendered launch acceptance.
+Keep this setup live; no app/test data reset, phone interaction, production
+configuration change or store submission occurred.
