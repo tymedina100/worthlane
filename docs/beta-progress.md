@@ -2164,3 +2164,28 @@ It does not close Android OAuth return, repair/unlink, full two-user native
 acceptance, or production/store gates. No application code changed this milestone.
 Next retry OAuth with debug WebView inspection after browser handoff; the prior
 blank capture alone did not establish a persistent renderer failure.
+
+## September 14 — Android OAuth connect and persisted import pass
+
+Repeated actual Android OAuth Link from Connect bank with First Platypus Bank -
+OAuth. Used public synthetic user_good/pass_good and1234 only. Inspected the
+rendered Sandbox consent checkbox label: direct checkbox targeting previously
+left its checked property false despite selected class. Clicking the actual
+visible selection-text child of the Plaid Checking label produced checked=true.
+Clicked the visible terms label, verified checked=true and enabled consent.
+The bank confirmation's Cash accounts text still omitted names, so it alone was
+not used as proof. Native Link then returned to Your accounts with exactly Plaid
+Checking selected and disabled (confirmed by its rendered WebView accessibility
+tree). Continued and chose Finish without saving a separate Plaid account.
+
+Actual Worthlane Bank connected alert captured in android-oauth-success.png/xml.
+Independent PostgreSQL readback: HEALTHY OAuth Item, needsRelink false, lastSyncAt
+present, one account and149 imported transactions with149 unique provider IDs.
+Standard Item remains HEALTHY with14 accounts/394 unique imports. Original manual
+account and2 manual entries remain. No app code fix was necessary; fresh WebView
+inspection after handoff resolved the earlier ambiguous blank captures. This is
+Sandbox OAuth connection/import proof, not live banking, repair or unlink proof.
+
+Updated acceptance index to remove resolved password/Android connection gates.
+Next complete Android forced-error repair and unlink with identity-preservation
+readbacks, then finish the remaining two-user native coverage audit.
