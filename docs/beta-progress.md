@@ -2106,3 +2106,35 @@ No Android OAuth connection success/imports claimed. Account selection did not
 appear in the bank confirmation summary; this interaction needs investigation.
 No app changes made for this attempt. evidence/2026-09-14/android-oauth-return-pending.xml
 records the returned native state. Continue this remaining lifecycle check.
+
+
+## September 14 — OAuth return diagnostic narrowed
+
+Compared official Plaid Android/OAuth requirements with the built debug manifest
+and API: exact package registration/request is present; merged manifest includes
+com.plaid.internal.redirect.LinkRedirectActivity for plaid://redirect and
+plaid://resume. No configuration mismatch found by this inspection.
+
+Connected agent-browser to the emulator Chrome through an adb localhost9224
+forward. Initially CDP timed out while Chrome was backgrounded; foregrounding the
+existing OAuth page made it available. Repeated synthetic OAuth login/MFA and
+inspected the rendered form. Browser checkbox snapshots/DOM property values were
+inconsistent with selected classes/checked attributes and button enablement; the
+bank confirmation still omitted selected account text. Do not infer correct account
+selection from a successful check command. Native Chrome's breached-password
+advisory for the public Sandbox test password also obscured the page and was
+dismissed. No real credentials were used or saved.
+
+Targeted the actual visible terms control by its observed id terms (a generic
+first-checkbox query had instead found hidden controls from previous steps).
+Clicked the enabled Connect account information button. Chrome displayed Continue
+to Worthlane?; accepted that actual native prompt. The app opened to a blank
+white native surface, not account confirmation. Screenshot saved as
+android-oauth-after-browser-confirmation.png. Bounded error-only AndroidRuntime,
+chromium and ReactNativeJS log read returned no errors. No successful connection
+or imports claimed, and no app code changed. Next isolate a fresh non-OAuth
+Sandbox flow and inspect current native Link events/return handling; retain OAuth
+as an acceptance requirement.
+
+Sources: https://plaid.com/docs/link/oauth/ and
+https://plaid.com/docs/link/android/troubleshooting/ .
