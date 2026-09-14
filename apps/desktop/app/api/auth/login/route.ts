@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { PLAID_OAUTH_COOKIE } from "@/src/lib/session-cookies";
 import {
   desktopProxyHeaders,
   errorResponse,
@@ -60,6 +61,7 @@ export async function POST(request: Request) {
     }
 
     setSessionCookies(await cookies(), tokens.accessToken, tokens.refreshToken);
+    (await cookies()).set(PLAID_OAUTH_COOKIE, "", { httpOnly: true, secure: true, sameSite: "lax", path: "/", maxAge: 0 });
 
     // Tokens are intentionally removed from the browser-visible response.
     return jsonResponse({ data: { user: { id: user.id, email: user.email } } });

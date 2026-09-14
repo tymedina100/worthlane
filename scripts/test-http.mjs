@@ -217,7 +217,8 @@ try {
   console.log('PASS: real HTTP registration, HttpOnly session, BFF validation/origin/auth checks, refund save, logout denial, login persistence.');
   if (process.argv.includes('--interactive')) {
     if (sandbox) {
-      await browser('/api/plaid/exchange', { method: 'POST', status: 201, body: { publicToken: await sandbox.publicToken(), institutionName: 'Synthetic Sandbox Bank' } });
+      const linkSession = await browser('/api/plaid/link-token', { method: 'POST', body: { platform: 'web', mode: 'create' } });
+      await browser('/api/plaid/exchange', { method: 'POST', status: 201, body: { oauthSession: linkSession.data.oauthSession, publicToken: await sandbox.publicToken(), institutionName: 'Synthetic Sandbox Bank' } });
       console.log(`Synthetic browser fixture login: ${email} / ${password}`);
     }
     const stopFile = resolve('.tmp', `stop-http-${process.pid}`);

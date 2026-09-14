@@ -922,3 +922,11 @@ body small { font-size: 12px !important; line-height: 1.45; }
 .bank-coverage-notices summary { cursor: pointer; font-weight: 650; min-height: 24px; }
 .bank-coverage-notices summary:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
 .bank-coverage-notices ul { padding-left: 20px; display: grid; gap: 10px; }
+/* OAuth returns remain a focused, readable step outside the financial workspace. */
+.oauth-return { display: grid; min-height: 100svh; place-items: center; padding: 24px; }
+.oauth-return__card { width: min(100%, 520px); padding: clamp(24px, 5vw, 48px); border: 1px solid #dce5df; border-radius: 24px; background: #fffdf8; box-shadow: 0 16px 48px #16392a12; }
+.oauth-return__card h1 { font-size: clamp(26px, 5vw, 36px); line-height: 1.15; margin: 24px 0 16px; }
+.oauth-return__card p { line-height: 1.6; margin: 16px 0; }
+.oauth-return__card a { text-decoration: underline; text-underline-offset: 4px; }
+.oauth-return__mark { width: 48px; height: 48px; color: #214e3b; }
+.oauth-return__mark svg { width: 100%; height: 100%; }

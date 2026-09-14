@@ -2488,3 +2488,38 @@ no organization-wide security attestation follows from this result. Evidence:
 .tmp/http-client-security-{install,tests,typecheck,plaid}.log and
 .tmp/production-dependency-audit-after-http.json. CI126 on prior62298b7 was still
 running (PostgreSQL successful) at inspection; this new patch needs its own CI.
+
+### September 14 — web OAuth return gap repaired locally
+
+Audit found the prepared /accounts redirect did not exist and web Link had no
+receivedRedirectUri resume path. Added /dashboard/plaid-return with a focused
+Worthlane recovery screen. It resumes the original short-lived Link token from
+versioned, tab-scoped sessionStorage, preserving create/update and debt-consent
+intent; it never creates a replacement token for an OAuth return. Pending state
+expires after30 minutes and clears on completion, cancellation or failure.
+
+The BFF issues an HttpOnly, Secure, SameSite=Lax nonce cookie after authenticated
+Link-token creation. The nonce is bound to a stable account-subject fingerprint;
+this is an additional login-boundary check, not JWT authentication. Upstream
+JWT verification remains mandatory for actual banking operations. Successful
+login/registration and logout clear the cookie. Resume and final exchange/update
+reject previous-login boundaries, including overlapping response/account-switch
+cases. Normal token refresh keeps the account binding. No bank credentials or
+Plaid access token are stored in browser storage.
+
+Validation:12 web lifecycle/server guard tests pass; desktop typecheck passes.
+Actual local HTTP on3402 against Sandbox API3399 verifies same-session resume,
+cross-origin rejection, Morgan-to-Avery login switch denial for resume/exchange/
+sync, and logout denial. It requested only a Sandbox Link token; no Item was
+created or exchanged. Laptop browser rendered the expired-session explanation,
+retry and Return to Accounts link; styled screen visually inspected. Logs:
+.tmp/web-oauth-{tests,typecheck,http}.log. Updated the existing HTTP fixture to
+send the BFF-issued session identifier during its optional Sandbox exchange.
+
+Production plan now uses
+https://worthlane-desktop.vercel.app/dashboard/plaid-return. No hosted variable,
+allowlist, API deployment or store submission changed. Real provider browser
+OAuth return on the new route, production build/CI and release configuration
+remain pending. Current provider guidance:
+https://plaid.com/docs/link/oauth/#reinitializing-link . Prior desktop Sandbox
+popup/OAuth evidence does not prove this newly implemented redirect path.

@@ -132,7 +132,7 @@ Prepare these non-secret settings for a separately approved deployment:
 | --- | --- | --- |
 | PLAID_IOS_REDIRECT_URI | https://worthlane.app/plaid-oauth | Existing approved Plaid allowlist and native association; final signed build return |
 | PLAID_ANDROID_PACKAGE_NAME | com.worthlane.mobile | Registered package; final release Link return |
-| PLAID_WEB_REDIRECT_URI | https://worthlane-desktop.vercel.app/accounts | Add exact production web allowlist and validate OAuth return |
+| PLAID_WEB_REDIRECT_URI | https://worthlane-desktop.vercel.app/dashboard/plaid-return | Add exact production web allowlist and validate OAuth return |
 | PLAID_WEBHOOK_URL | https://financeapi-production-1853.up.railway.app/api/plaid/webhook | Signed webhook delivery and retry behavior on selected release |
 
 Do not point Sandbox acceptance clients at this service. Desktop preview has
