@@ -26,10 +26,9 @@ previously recorded journey or approval to ship.
 
 ## Remaining work
 
-0. Finish the already-open full-page web OAuth consent/return and persisted replay
-   check after the laptop is unlocked. Do not infer popup behavior solely from
-   the bank's intermediate CDN return URL. Verify fresh native launch after the
-   diagnostics changes; restore simulator control without touching the phone.
+0. Full-page web OAuth create/return, expired-session recovery and persisted
+   repeat sync now pass (see latest progress entry). Verify fresh native launch
+   after the diagnostics changes; restore simulator control without touching the phone.
 1. Capital One is now In review after the authorized legal-name save; provider approval remains external.
 2. Inspect existing Railway service configuration and prepare the reviewed release
    against its current database/schema. Existing service is online on the PR13

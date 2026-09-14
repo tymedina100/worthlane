@@ -2679,3 +2679,35 @@ Mac is locked and automatic unlock failed. No final consent, exchange, return-pa
 success, or new persisted account is claimed. Leave this browser flow in place
 until Tyler unlocks the laptop; do not restart it solely because observation failed.
 No physical phone, production data, paid request or store submission was used.
+
+### September 14 — full-page web OAuth and persisted repeat sync passed
+
+Laptop became accessible; resumed the existing synthetic consent. Bank flow
+returned to localhost3402/dashboard/plaid-return with oauth_state_id. The local
+30-minute session had expired during the lock; the return page correctly showed
+expired/missing-session recovery and did not import an account. Return to Accounts
+retained Jamie's1554.56 and3 accounts.
+
+Started a fresh session with the verified WebView profile. Synthetic bank login,
+verification and selection of only Plaid CD completed. Same-tab bank navigation
+returned through Plaid CDN to the actual Worthlane return route, which reopened
+Link at selected-account confirmation. Continue and Finish without saving produced
+Connection saved on the return page. Accounts shows Plaid CD1000.00, Personal,
+net worth2554.56,4 accounts and3 healthy institutions. No consumer Plaid signup.
+
+Independent PostgreSQL snapshots after exchange and after repeat sync of the new
+Item match exactly:4 account IDs,226 transaction IDs; hashes
+4ebc02831013d55a3f2efceea531e8f537501923ccbb9e857ec6a7747d15bb37 and
+1e68fbb597b6c27ac5c55f33e75d7a2b80a7541418ad29ba9e7b5e69b7273834.
+API accounts route orders Items by creation time; selected the last/new Item's
+Sync and observed completion. An earlier click also synced the first existing
+Item harmlessly. New CD contributes25 transactions; prior accounts remain.
+Disabled device emulation via toolbar (Value0), closed DevTools, and reloaded via
+actual Reload button.2554.56/CD1000.00/Personal persist. Browser test configuration
+now restored to desktop. Temporary custom device profile remains available for
+future local tests but is inactive.
+
+CI135/34879714828 on99b0e79 completed all3 jobs successfully. Full-page create
+return and expired-session recovery now have actual provider/UI/persistence proof;
+update-mode resume retains separate automated coverage. Latest native diagnostic
+launch remains open. No production configuration, real bank, paid call or submission.
