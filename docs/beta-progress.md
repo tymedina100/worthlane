@@ -2439,4 +2439,26 @@ Internet45.67 dueSeptember21 retained. Browser error log contains0 errors.
 These are post-upgrade interactive checks against existing synthetic data, not
 production-bank use or fresh onboarding. Existing fresh PostgreSQL suite covers
 registration/consent and financial invariants. CI124/34872702609 on ea0aea7 has
-PostgreSQL and Windows jobs successful; Linux job still running at last check.
+PostgreSQL, Windows and Linux jobs successful (all three verified complete).
+
+### September 14 — critical transitive dependency patches
+
+Pinned vulnerable shell-quote versions to1.8.4 and tar7 versions to7.5.19 through
+scoped pnpm overrides. These patch React Native/Expo tooling and shared desktop
+packaging dependencies without changing the native framework version. Install
+succeeded and Expo export --platform all completed for iOS, Android and web.
+
+Fresh production-dependency audit reports0 critical,80 high,57 moderate and8 low
+findings, versus2 critical before this change. These are registry dependency
+findings, not confirmed runtime exploits. High/moderate findings still require
+triage; zero critical does not certify production security. Local raw evidence:
+.tmp/production-dependency-audit-after-tooling.json and
+.tmp/security-tooling-export.log. CI for this patch remains pending at commit.
+
+Plaid still shows15 outstanding controls, privacy Attested, and zero trust
+previously Attested by another action. Its scanning drawer explicitly covers
+employee/contractor machines and production assets. Repository dependency scans
+alone do not establish that coverage; no further attestation was submitted.
+Next: verify organizational controls and remediate unsupported claims, triage
+remaining dependency findings, and finish reviewed hosting/signing preparation.
+No production deploy, live banking request, paid service or store submission.

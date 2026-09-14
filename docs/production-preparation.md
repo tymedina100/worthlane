@@ -163,9 +163,18 @@ attestations dated September9,2026:
 - Centralized identity/access management; end-of-life software management.
 - Documented access-control policy; encryption at rest; vulnerability patch SLAs.
 
-No attestation was submitted. Existing application consent/deletion/encryption
-code and published privacy text are partial evidence, not organization-wide
-control verification. Consumer MFA is not evidenced by the inspected auth/schema
-sources. Assess actual implementation, service settings and owner procedures
-before making any certification. Solo ownership does not automatically satisfy
-or exempt the listed controls. Do not copy sensitive profile contact fields here.
+Under the owner's explicit authorization to attest only when true, the published
+privacy-policy attestation was submitted after inspecting the live policy and
+the exact statement. Plaid shows it as Attested. Zero trust was already shown as
+Attested before that action; this work did not submit or verify that control.
+The other 15 attestations remain outstanding. Existing application consent,
+deletion and encryption code are partial evidence, not organization-wide control
+verification. Consumer MFA is not evidenced by the inspected auth/schema sources.
+Assess actual implementation, service settings and owner procedures before making
+any certification. Solo ownership does not automatically satisfy or exempt the
+listed controls. Do not copy sensitive profile contact fields here.
+
+The vulnerability-scanning drawer explicitly discusses employee/contractor
+machines and production assets, with regular automated scans recommended. The
+repository dependency audit does not establish that broader coverage. Do not
+attest on the strength of a pnpm audit alone.
