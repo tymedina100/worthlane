@@ -2250,3 +2250,21 @@ left at60/40 for further checks. Evidence android-custom-saved, android-avery-sp
 android-avery-privacy PNG/XML plus fresh-login and invalid-split XML. No new code
 this milestone. Re-read current Notion acceptance criteria. Final integrated
 evidence audit and production/store preparation remain; no submission.
+
+## September 14 — fix opaque Android notification resources
+
+Fresh Plaid in-app inspection remains Welcome back; provider session work is
+still awaiting user sign-in. Continued independent local release artwork work.
+Found exact cause of the square notification mark: source notification-icon.png
+has white artwork and transparency, but all five checked-in Android density
+resources were opaque. Regenerated them using Expo notifications plugin's
+setNotificationIconAsync from the existing source (no new logo design). Updated
+scripts/generate-mobile-brand.mjs to regenerate checked-in native notification
+resources whenever Android is present, preventing source/native drift.
+
+Verified24/36/48/72/96px sizes, RGBA, white visible pixels and majority-transparent
+backgrounds for all five densities. Inspected generated mark visually. Generator
+syntax, Expo import and git diff check pass. This fixes source resources; a new
+APK and delivered OS banner still require verification, and are not claimed.
+Existing installed debug APK still contains the old artwork. No production change,
+store submission, phone access or spending.

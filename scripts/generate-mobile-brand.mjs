@@ -1,6 +1,6 @@
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
-import { writeFileSync } from 'node:fs';
+import { existsSync, writeFileSync } from 'node:fs';
 const require = createRequire(resolve('apps/web/package.json'));
 const sharp = createRequire(require.resolve('next/package.json'))('sharp');
 const path = 'M6 13l9 23 9-17 9 17 9-23M18 9h12';
@@ -17,4 +17,11 @@ for (const [name, source] of Object.entries(sources)) {
   await sharp(Buffer.from(source)).resize(size, size).png().toFile(`apps/mobile/assets/${name}.png`);
 }
 writeFileSync('apps/mobile/assets/brand-mark.svg', svg(mark('#193b32')));
-console.log('Generated original vector-based mobile brand assets.');
+// This repository checks in Android resources, so source PNG changes alone do
+// not update the icon used by native notifications. Use Expo's own density generator.
+if (existsSync('apps/mobile/android/app/src/main/res')) {
+  const mobileRequire = createRequire(resolve('apps/mobile/package.json'));
+  const { setNotificationIconAsync } = mobileRequire('expo-notifications/plugin/build/withNotificationsAndroid');
+  await setNotificationIconAsync(resolve('apps/mobile'), resolve('apps/mobile/assets/notification-icon.png'));
+}
+console.log('Generated original vector-based mobile brand assets and native notification resources.');

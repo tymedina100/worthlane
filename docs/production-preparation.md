@@ -68,5 +68,6 @@ Store preparation is tracked in store-listing-draft.md; no store submission.
 No production bank Item, live-data migration, paid plan or store submission has
 been made. Production requires verified entitlements, separate hosted API/data
 and secrets, release-service deletion/webhook checks, truthful disclosures and
-store signing/assets. Check the square Android notification artwork before release.
+store signing/assets. Opaque Android notification resources have been regenerated from the transparent
+brand mark; rebuilt APK and actual delivered-banner verification remain pending.
 See [completion audit](beta-completion-audit.md) for the current evidence boundary.
