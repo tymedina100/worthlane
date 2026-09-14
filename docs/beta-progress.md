@@ -2860,3 +2860,21 @@ Release preparation read-only check: installed EAS CLI returned `Not logged in`
 from apps/mobile. Expo CLI authentication is needed before hosted signing
 credentials can be inspected; Apple/Plaid browser sessions do not supply it.
 No build, upload, submission, paid operation, or production mutation occurred.
+
+## September 14 — budget editor native safe-area correction
+
+Actual iPhone16ProMax inspection found the category editor title drawn beneath
+the status bar/Dynamic Island. Added a SafeAreaProvider at the native Modal root
+in HouseholdBudgetEditor so its existing SafeAreaView measures that presentation.
+This follows the library's modal-root guidance:
+https://appandflow.github.io/react-native-safe-area-context/api/safe-area-provider/
+
+Mobile typecheck passes. Actual before/after screen inspection and closing/reopening
+the editor confirm the heading and form clear the status bar. The persisted
+Groceries600.01 and Morgan60%/Avery40% values remained intact; no save or deletion
+was performed. Captured the corrected actual native screen as
+docs/evidence/2026-09-14/store-draft/04-custom-budget-iphone16promax.png.
+
+Coordinate drag still fails in the computer-control layer, while semantic button
+controls work. No phone interaction, production mutation, store upload or submission.
+Expo CLI login and the previously documented release gates remain open.

@@ -29,3 +29,12 @@ It supplies a native6.9-inch draft with household/privacy context. The allocatio
 section extends below the fold; scrolling failed in computer control, so this
 image is not evidence that both percentages fit in the captured viewport.
 The complete editorial set and final-build parity still remain.
+
+## Custom budget editor addition
+
+04-custom-budget-iphone16promax.png is an unmodified native Save Screen capture
+from the same iPhone16ProMax. It shows the existing synthetic Groceries600.01
+agreement with Morgan60% and Avery40%, alongside the responsibility/payer/privacy
+explanation. A modal-local SafeAreaProvider corrects the observed title/status-bar
+overlap. Closing and reopening the editor also preserves the corrected layout.
+No financial values were changed for this capture. Draft only; not uploaded.
