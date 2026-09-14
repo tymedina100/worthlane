@@ -2910,3 +2910,31 @@ or notification banner verification is claimed at this checkpoint.
 Support verification remains limited: published address is support@worthlane.app
 and DNS MX routes to Google. A narrow existing-mail check found a sent message
 only, which does not establish delivery or monitored support. No test email sent.
+
+## September 14 — native Mac app requested and delivered locally
+
+Added macOS support to the existing Electron architecture: native app/Edit menus,
+Command-R, keep-running-on-window-close and reopen behavior. Mac packaging uses
+the same seven archived runtime assets and eight hardened fuses as Windows.
+Added explicit local arm64 and guarded distribution commands; public distribution
+requires a selected Developer ID identity and notarization. No unrelated signing
+identity, paid service or store submission used.
+
+Validation:16 desktop tests and syntax checks pass. Actual arm64.app packaging
+completed; archive/fuse verifier passed, and codesign --verify --deep --strict
+passed. Actual CUA launch at pinnedlocalhost3402, synthetic Morgan sign-in,
+loaded Morgan/Avery household600.01 and60/40 allocations, then window close/reopen
+retained authenticated state. This is actual persisted API data, not the public
+demo. Local application copied to ~/Applications/Worthlane.app and signature
+verified. Final installed-location launch checked separately below.
+
+Android debug rebuild also completed in13m1s,447tasks(58executed). Artifact SHA256:
+97bf4b1e1743e1457bbbd8aaa82af19eefefe93bc71cb20a95c2f0b1dc9002ee.
+Notification rendering still needs emulator verification. No release APK claim.
+
+Installed-location launch succeeded after fully quitting the build-location app.
+The saved session returned to Morgan's actual household dashboard, rendering
+networth-75729.59 and monthly600.01 without another login. Public Mac distribution
+and Intel runtime checks remain unverified; local app requires the Sandbox
+desktop/API services running. The Mac shell is Electron with native platform
+integration, reusing the shared planning client.

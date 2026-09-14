@@ -343,3 +343,31 @@ on macOS or a device; Windows CI/local validation uses an Expo production iOS
 bundle export. A distributable native desktop installer additionally depends on
 a deployed HTTPS desktop BFF origin and release code signing; the local package
 command does not replace either requirement.
+
+### Native macOS app
+
+Worthlane's existing Electron shell also packages as a standalone Mac app.
+It uses the desktop workspace and shared API, with a native app/Edit menu,
+Command-R refresh, normal window controls and Dock reopening. Closing the last
+window keeps the Mac app running; Quit exits. A network connection to its pinned
+Worthlane service is required. It is not a SwiftUI rewrite or an offline database.
+
+For an Apple Silicon local Sandbox bundle with the local services running:
+
+```bash
+WORTHLANE_DESKTOP_URL=http://localhost:3402 pnpm desktop:native:pack:mac
+```
+
+Output: `apps/desktop-native/release/mac-arm64/Worthlane.app`. This explicitly
+uses local ad-hoc signing and skips notarization, while retaining renderer
+isolation, hardened runtime and eight verified Electron fuses. It is a local
+beta artifact, not a publicly distributable notarized release.
+
+`desktop:native:dist:mac` prepares arm64 and Intel DMGs only with an explicitly
+selected `CSC_NAME` Developer ID Application identity, a verified HTTPS
+`WORTHLANE_DESKTOP_URL`, and Apple notarization credentials. The command forces
+code signing and never publishes automatically. Certificate ownership,
+notarization, Intel execution and hosted service acceptance remain release gates.
+Do not use another organization's certificate. No Mac App Store submission is
+configured. Local app verification: `pnpm --filter @worthlane/desktop-native
+verify:packaged release/mac-arm64/Worthlane.app`.

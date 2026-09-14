@@ -139,19 +139,21 @@ function buildApplicationMenu() {
   }));
 
   return Menu.buildFromTemplate([
+    ...(process.platform === "darwin" ? [{ role: "appMenu" }] : []),
     {
       label: "File",
       submenu: [
         { label: "Open overview", click: () => navigate("/dashboard") },
         { type: "separator" },
-        { role: "quit", label: "Exit Worthlane" },
+        ...(process.platform === "darwin" ? [{ role: "close" }] : [{ role: "quit", label: "Exit Worthlane" }]),
       ],
     },
+    { role: "editMenu" },
     { label: "Navigate", submenu: navigationItems },
     {
       label: "View",
       submenu: [
-        { role: "reload", label: "Refresh", accelerator: "Ctrl+R" },
+        { role: "reload", label: "Refresh", accelerator: "CmdOrCtrl+R" },
         { type: "separator" },
         { role: "resetZoom", label: "Actual size" },
         { role: "zoomIn", label: "Zoom in" },
@@ -325,7 +327,7 @@ if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
   app.on("second-instance", () => {
-    if (!mainWindow) return;
+    if (!mainWindow) { if (app.isReady() && configuredApp) createMainWindow(); return; }
     if (mainWindow.isMinimized()) mainWindow.restore();
     mainWindow.focus();
   });
@@ -343,5 +345,5 @@ if (!app.requestSingleInstanceLock()) {
     );
     app.quit();
   });
-  app.on("window-all-closed", () => app.quit());
+  app.on("window-all-closed", () => { if (process.platform !== "darwin") app.quit(); });
 }

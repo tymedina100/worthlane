@@ -33,3 +33,15 @@ nsis:
   shortcutName: Worthlane
   uninstallDisplayName: Worthlane
   deleteAppDataOnUninstall: false
+
+mac:
+  category: public.app-category.finance
+  icon: ../mobile/assets/icon.png
+  hardenedRuntime: true
+  notarize: true
+  artifactName: Worthlane-${version}-${arch}.${ext}
+  target:
+    - target: dmg
+      arch:
+        - arm64
+        - x64

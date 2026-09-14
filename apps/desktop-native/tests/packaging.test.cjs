@@ -60,3 +60,11 @@ test("root native commands work when pnpm is provided only by Corepack", () => {
     );
   }
 });
+
+const { checkMacSigning } = require("../scripts/check-mac-signing.cjs");
+test("Mac distribution requires an explicit Developer ID identity", () => {
+  for (const CSC_NAME of [undefined, "", "-", "Apple Development: Sample (TEAM)"]) {
+    assert.throws(() => checkMacSigning({ CSC_NAME }), /explicitly selected/);
+  }
+  assert.doesNotThrow(() => checkMacSigning({ CSC_NAME: "Developer ID Application: Sample (TEAM)" }));
+});
