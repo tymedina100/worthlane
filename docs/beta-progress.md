@@ -2322,3 +2322,31 @@ request submitted. Continue API configuration/signing/assets preparation.
 User completed Plaid password verification. Legal entity name persisted after
 reload with Save disabled. Capital One changed from missing legal entity name
 to In review. This is provider review pending, not enabled institution access.
+
+### September 14 — deployment readiness preparation
+
+Railway loaded settings confirm main autodeploy, Wait for CI off, only /apps/api/**
+watched, and no healthcheck. The initial loading state briefly displayed an
+invalid-region warning; it disappeared after region data loaded, so no region
+blocker or change is claimed. Existing Nixpacks/config-as-code setup is marked
+deprecated by Railway and needs a separate migration review before its cutoff.
+
+Prepared /api/health: dynamic, uncached SELECT 1 readiness, generic503 on database
+failure, no user data or Plaid calls. railway.json adds shared packages and root
+build inputs to watchPatterns plus /api/health with120-second deploy timeout.
+Existing deployment/migration commands retained; no production setting changed.
+Two focused failure/recovery tests and API typecheck pass. Actual local API3301
+returned200 and Cache-Control:no-store against persistent Sandbox PostgreSQL.
+Isolated API production build passed with synthetic build environment values;
+initial attempt compiled but failed page collection because required DB/JWT env
+was absent. Removed generated local build-directory entry from tsconfig.
+Commands: corepack pnpm --filter @worthlane/api exec vitest run
+src/app/api/health/__tests__/route.test.ts; corepack pnpm --filter @worthlane/api
+typecheck; curl --include http://127.0.0.1:3301/api/health; build with
+WORTHLANE_HTTP_DIST_DIR=.next-http-3399 and local synthetic DATABASE_URL/JWT values.
+
+User-authorized Plaid company name/address update persisted in a fresh tab.
+App profile website/description correction prepared; Save requires a logo.
+Existing1024px app icon inspected, file chooser automation timed out twice;
+native Codex control is blocked, so user logo selection requested. Do not claim
+app-profile save or clearance yet. No private contact/address copied into docs.

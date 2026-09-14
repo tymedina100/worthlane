@@ -106,3 +106,13 @@ request submitted. Continue API configuration/signing/assets preparation.
 User completed Plaid password verification. Legal entity name persisted after
 reload with Save disabled. Capital One changed from missing legal entity name
 to In review. This is provider review pending, not enabled institution access.
+
+## Prepared deployment gate
+
+Candidate adds uncached database readiness at /api/health and configures Railway
+to wait up to120 seconds before promoting it. Shared packages/root build inputs
+are now included in candidate watchPatterns. This is tested locally, not deployed.
+Live Wait for CI is currently off; enable it as part of the reviewed release
+settings. Existing Nixpacks/config-as-code deprecation needs a planned migration.
+Healthchecks establish startup/database connectivity only, not complete schema,
+provider or user-journey acceptance. Source: [Railway configuration reference](https://docs.railway.com/config-as-code/reference).
