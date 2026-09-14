@@ -56,7 +56,7 @@ Account deletion is available under Settings > Delete account. Before submission
 - Privacy/Data Safety answers must match final enabled services, including account
   identifiers, financial data and optional analytics/diagnostics. Do not claim
   no collection. Verify support mailbox and account deletion behavior.
-- Final reviewer contact and dedicated review credentials remain required. Do not
+- Private reviewer contact is saved; dedicated review credentials remain required. Do not
   put local synthetic credentials or real financial information in store fields.
 - Confirm age rating, territories, pricing and accessibility from actual evidence.
 - No Add for Review, Submit for Review, publication or automatic release.
@@ -84,3 +84,18 @@ Text snapshots/DOM value checks omitted phone/email values despite their presenc
 visual inspection after reload confirmed the authorized contact fields. No contact
 values copied into this repository. No Add for Review or submission. Dedicated
 reviewer sign-in, screenshots, build and final privacy/signing remain pending.
+
+## September 14 signing and Play access inspection
+
+Personal Google account reaches Play Console developer signup; the Workspace
+account has Play Console disabled. No developer account created, terms accepted
+or registration fee paid. Do not treat the signup page as an app record.
+
+Local keychain contains Apple Development identities for Tyler, but no personal
+Apple Distribution identity; an unrelated organization identity is outside this
+project and must not be used. This is local evidence only: EAS-hosted credentials
+and Apple portal distribution profiles remain unverified. Android Gradle release
+currently references the debug signing configuration, so it is not an upload-ready
+build. Before building for store delivery, configure legitimate personal-team
+distribution signing and Android upload signing, then verify artifact signatures.
+No private signing material or account identifiers stored here.

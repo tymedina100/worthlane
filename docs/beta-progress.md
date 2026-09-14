@@ -2350,3 +2350,17 @@ App profile website/description correction prepared; Save requires a logo.
 Existing1024px app icon inspected, file chooser automation timed out twice;
 native Codex control is blocked, so user logo selection requested. Do not claim
 app-profile save or clearance yet. No private contact/address copied into docs.
+
+### September 14 — signing and Play account gates
+
+Read local signing identity metadata and Android Gradle signing configuration.
+Only personal Apple Development identities are installed; no personal distribution
+identity verified. Android release still points to debug signing. No unrelated
+organization certificate used. Play Console personal account reaches signup;
+Workspace account access disabled. No account creation, payment or terms accepted.
+Updated store draft to distinguish saved Apple review contact from missing reviewer
+login and record concrete signing/account prerequisites.
+
+CI120/34871435179 on deaea70: PostgreSQL integration completed successfully; Linux
+typecheck/API/shared/contract/reminder/auth/release-config tests passed, mobile
+bundle/builds and Windows job still running at inspection. No all-green claim yet.
