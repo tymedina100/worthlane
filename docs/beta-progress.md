@@ -2823,3 +2823,16 @@ Files and capture provenance are in docs/evidence/2026-09-14/store-draft.
 Apple's current specification accepts these in6.3-inch slots, but the required
 6.9-inch or6.5-inch set remains; couples responsibility/privacy/debt screens and
 release-build parity also remain. No stretching, mocked content, upload or submission.
+
+### September 14 — larger-device couple session and first6.9-inch capture
+
+After user-requested restart, ProMax reopened Worthlane with Morgan's session
+preserved. Password prompt gone and dashboard loaded. Household native AX shows
+Shared with Avery,600.01 Groceries,60/40 responsibilities360.01/240, and spending
+33.80/22.53. Current privacy-scoped totals and shared context rendered.
+
+Simulator Save Screen produced03-household-iphone16promax.png at1320x2868.
+No mockup, scaling or real data. Overview and privacy explanation visible; full
+allocation section is below fold. CUA scroll still fails noWindowsAvailable;
+remaining allocation/debt captures and final-build parity are not accepted yet.
+No upload, production change or submission.

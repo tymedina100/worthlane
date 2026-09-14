@@ -20,3 +20,12 @@ Source checked September14:
 https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications
 
 No store upload or submission has occurred.
+
+## Pro Max addition
+
+03-household-iphone16promax.png is an unmodified1320x2868 capture from the
+existing iPhone16ProMax/iOS18.3, signed into synthetic Morgan with Avery sharing.
+It supplies a native6.9-inch draft with household/privacy context. The allocation
+section extends below the fold; scrolling failed in computer control, so this
+image is not evidence that both percentages fit in the captured viewport.
+The complete editorial set and final-build parity still remain.
