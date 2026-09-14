@@ -53,7 +53,19 @@ Fresh Android Morgan edit/Avery login verifies persisted60/40 custom shares,
 PostgreSQL confirms6000/4000 basis points and2 history versions. CI112 onb85d3da
 passes all3jobs. Final requirement-by-requirement evidence audit remains open.
 
-Apple draft promotional text/description were saved and reloaded; review notes
-remain stale after failed persistence. Store status remains Prepare for Submission
-with manual release. Plaid team reports Production approval; exact products and
-billing remain unverified. No submission or live banking has occurred.
+Apple draft copy, review contact and corrected review notes are saved. Store
+status remains Prepare for Submission with manual release; final screenshots,
+artifact, reviewer access and privacy answers remain open. Plaid Transactions
+and Balance are enabled; Liabilities is not. Observed Pay As You Go prices are
+$0.30 per Item/month for Transactions and $0.10 per Balance call. Capital One is
+in review. No store submission or live banking has occurred.
+
+September14 follow-up: CI131/34876625261 on58fa386 passed all three jobs after
+API/mobile diagnostic privacy changes. Mobile JavaScript diagnostic filtering is
+tested and native diagnostics are disabled; a fresh native launch remains open.
+Actual Chrome Sandbox OAuth popup exchange and repeat sync passed with identical
+three account IDs and201 transaction IDs. This does not prove the separate
+full-page /dashboard/plaid-return path. iPhone12Pro Chrome emulation still chose
+a popup; that attempt was cancelled before exchange and retained the exact IDs.
+The narrow bank-connection layout found during that check is corrected and
+visually verified at390px. See the progress log for evidence and limitations.

@@ -18,7 +18,7 @@ local synthetic tests are authorized; spending and production changes need appro
 - **Mobile**: Expo (React Native) — `apps/mobile`
 - **Desktop**: Next.js planning client/BFF — `apps/desktop`; Electron shell — `apps/desktop-native`
 - **Public site**: `apps/web`
-- **API**: Next.js 14 (API routes only, no pages) — `apps/api`
+- **API**: Next.js 15 (API routes only, no pages) — `apps/api`
 - **Database**: PostgreSQL via Prisma — `packages/db`
 - **Shared types**: TypeScript — `packages/types`
 - **Shared rules/contracts**: deterministic finance — `packages/core`; runtime validation — `packages/contracts`

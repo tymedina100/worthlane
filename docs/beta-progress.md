@@ -2619,3 +2619,24 @@ operation occurred. Synthetic connected Item retained for continued acceptance.
 
 CI131/34876625261 on58fa386 completed all three jobs successfully. Native launch
 for the revised mobile diagnostic mode remains unverified due Simulator control.
+
+### September 14 — mobile-web cancellation and bank-layout correction
+
+Chrome iPhone12Pro emulation at390px still opened a separate OAuth popup, so it
+cannot stand in for full-page redirect acceptance. Closed that popup before
+entering credentials and used Plaid Exit/Yes exit. Worthlane returned to Connect
+bank with calm cancellation feedback. Independent PostgreSQL readback retained
+the same3 account IDs and201 transaction IDs as chrome-oauth-after-sync.json.
+
+The emulated view exposed squeezed institution/status text beside fixed bank
+actions. Connection rows now wrap, reserve readable text width, and wrap actions
+within the card. A fresh screenshot confirms readable institution, Healthy status,
+freshness notice, last retrieval and all three actions at390px. This is CSS only;
+no financial or banking behavior changed. Desktop restoration was attempted via
+Chrome shortcuts; native app control then returned a profile-menu/empty-window
+state, so desktop visual verification and restoration are not claimed.
+
+Reconciled the acceptance index's stale Apple/Plaid preparation paragraph with
+recorded dashboard evidence and corrected AGENTS.md's obsolete Next14 reference.
+Full-page web OAuth and fresh native diagnostics launch remain open. No provider
+settings, production deployment, paid call, store submission or phone use.

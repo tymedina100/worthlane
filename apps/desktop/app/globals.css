@@ -454,11 +454,11 @@ svg { display: block; }
 .connected-account-row small { color: var(--muted); font-size: 8px; }
 .connected-account-row > strong:last-child { text-align: right; }
 .plaid-connection-controls { display: grid; gap: 8px; margin: 0 20px 14px; border: 1px solid var(--line-soft); border-radius: 10px; padding: 12px; background: #f7faf7; }
-.plaid-connection-controls article { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.plaid-connection-controls article > span { display: grid; gap: 3px; }
-.plaid-connection-controls strong { font-size: 9px; }
+.plaid-connection-controls article { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.plaid-connection-controls article > span { display: grid; flex: 1 1 220px; min-width: 0; gap: 3px; overflow-wrap: anywhere; }
+.plaid-connection-controls strong { font-size: 13px; }
 .plaid-connection-controls small, .plaid-connection-controls p { margin: 0; color: var(--muted); font-size: 8px; }
-.plaid-connection-controls article > div { display: flex; gap: 7px; }
+.plaid-connection-controls article > div { display: flex; flex-wrap: wrap; gap: 7px; }
 .plaid-connection-controls .button { min-height: 32px; padding: 0 10px; font-size: 8px; }
 .connection-status { display: flex; align-items: center; gap: 6px; color: var(--green-dark); font-size: 8px; font-weight: 750; }
 .connection-status i { width: 7px; height: 7px; border-radius: 50%; background: #49aa82; }
