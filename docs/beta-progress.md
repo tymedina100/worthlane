@@ -2462,3 +2462,29 @@ alone do not establish that coverage; no further attestation was submitted.
 Next: verify organizational controls and remediate unsupported claims, triage
 remaining dependency findings, and finish reviewed hosting/signing preparation.
 No production deploy, live banking request, paid service or store submission.
+
+### September 14 — banking and notification HTTP client security patches
+
+Scoped same-major overrides now resolve Axios1.20.0, form-data4.0.6,
+Undici6.28.0 and7.29.1. Plaid uses Axios; Expo push uses Undici7, while mobile
+tooling retains Undici6. Node engine requirements remain unchanged by these
+Undici updates. Reviewed upstream release/advisory evidence:
+[Axios release](https://github.com/axios/axios/releases/tag/v1.20.0),
+[Undici release](https://github.com/nodejs/undici/releases/tag/v7.29.1), and
+[form-data advisory](https://github.com/advisories/GHSA-hmw2-7cc7-3qxx).
+
+Install, API typecheck and all163 API tests pass. Real provider Sandbox test
+passes against local PostgreSQL55439: encrypted Item persistence, owner isolation,
+Liabilities statement/minimum/due fields, repeated sync without duplicates,
+ITEM_LOGIN_REQUIRED and update tokens, and unlink cleanup. The test created its
+own synthetic users and revoked its own Sandbox Item; existing acceptance users
+were preserved. No production or live-bank request was made. This checks API
+integration after the dependency update, not another native Link UI session or
+actual push delivery.
+
+Fresh production audit:0 critical,60 high,24 moderate,3 low. No findings remain
+for Axios, Undici or form-data. Remaining dependencies still require triage;
+no organization-wide security attestation follows from this result. Evidence:
+.tmp/http-client-security-{install,tests,typecheck,plaid}.log and
+.tmp/production-dependency-audit-after-http.json. CI126 on prior62298b7 was still
+running (PostgreSQL successful) at inspection; this new patch needs its own CI.
