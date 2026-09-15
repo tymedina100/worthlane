@@ -3355,3 +3355,25 @@ made by this validation. This change is isolated from the pending PR17 approval.
 Fresh Mac signing inventory reports three valid code-signing identities but no
 Developer ID Application identity. Public Mac distribution remains unproven;
 the existing local ad-hoc build must not be described as notarized distribution.
+
+## September 15 — approved web recovery publication verified
+
+Tyler approved PR17 at 5a53d61. All four CI172 jobs passed; PR17 merged as
+847a0fbb0c8c790b4df69d0ef064e4630c9c3a16. Vercel production desktop deployment
+6465252902 succeeded. The hosted /login page exposes Forgot password? and opens
+/forgot-password. The actual browser request for the previously approved
+synthetic account progressed to Choose a new password with the generic message.
+Resend message 8d77ba7a-a918-4821-bfb3-c70371615348 was delivered for that request.
+
+Using the email's code, an HTTP test through the deployed desktop BFF verified:
+cross-origin rejection403; reset200; old password401; new password200; replay400;
+no-store response, cleared session cookies and no browser-visible JWTs. This
+complements actual browser request/navigation evidence; password field entry
+and submission were not performed through Computer Use. Only the dedicated
+approved synthetic account was affected. Private code transfer was encrypted,
+with ephemeral transport keys removed after use and no code printed.
+
+Main CI35005122474 and the corresponding Railway rollout were still pending
+at this checkpoint; existing API health remained ready. PR18 local email/AI
+isolation remains a separate draft, rebased by merge onto the approved PR17
+baseline with both progress histories preserved. No PR18 merge is authorized.
