@@ -3287,6 +3287,54 @@ the API-key list shows Sending access and No activity. No production environment
 change or email was sent. CI168 at 45acc12 is running; fresh production health
 returns ready. The credential-storage blocker is resolved.
 
+## September 15 — Approved email rollout and web recovery gap
+
+CI168 and CI169 passed all four jobs. Under explicit approval, PR16 f8440b3
+merged as 21f14e7dc4ec106eefc4735392e8bc30168ac9ef. Main CI35001849078 passed.
+Resend Enforced TLS was saved and verified. Railway sender/reply-to rollout
+4ba2a90f-dce7-4c02-a093-a80a449c2bbd became Active. The existing Railway key
+fingerprint did not match the approved Keychain credential. Replaced only
+RESEND_API_KEY with the tested key using an encrypted in-memory transfer and
+dispatched the approved correction; final correction deployment remains pending.
+
+The approved direct Resend test returned 200 and arrived in tyler@worthlane.app's
+Inbox at 10:41 AM. Gmail details show sender no-reply@mail.worthlane.app,
+reply-to support@worthlane.app, mailed-by send.mail.worthlane.app, signed-by
+mail.worthlane.app and TLS. The first request returned 403; retrying with an
+explicit client User-Agent and the same idempotency key produced the single
+accepted message. Approved synthetic account tyler+worthlane-beta@worthlane.app
+was created (201), with no financial data. Its first reset request returned 200
+but no email was found before the credential correction. This is not reset
+acceptance yet; retry only after the corrected deployment is Active.
+
+Found and implemented the missing web login recovery entry point on
+codex/web-password-recovery. New same-origin BFF routes use existing API auth
+logic and trusted proxy IP headers; reset success clears browser session cookies.
+The two-step page supports code requests, existing codes, password confirmation,
+busy/error states and return to sign-in without exposing tokens in URLs/storage.
+Local persisted HTTP test passes invalid/cross-origin/short-password/replay
+rejection, password mutation across Prisma reconnect, old/new password login,
+no browser-visible JWTs and non-enumerating absent-email behavior. The fixture
+is isolated to localhost worthlane_beta_test and removes only its synthetic user.
+Command: WORTHLANE_TEST_DATABASE_URL=<local-test-url> node scripts/test-web-password-recovery.mjs.
+
+Desktop typecheck and isolated production build (.next-http-3405) pass. Browser
+checks cover desktop rendering, request-to-code progression, existing-code/back
+navigation and heading focus. At 390px, inputs are 49px high with 16px text and
+there is no horizontal overflow. Browser password submission is not claimed;
+the persisted mutation is verified through the local HTTP test. These new web
+changes are separate from the approved PR16 deployment and are not published.
+
+Follow-up: verified-key correction a5627e4b-52fa-4e45-9d2b-4a69eff37d86 is Active;
+health returns ready. The post-correction hosted reset email was delivered at
+10:55 AM and found in the owned Workspace Inbox. Synthetic reset succeeded
+(200), old password and old refresh token were rejected (401), new password
+logged in (200), and code replay was rejected (400). No financial data or other
+account was changed. See transactional-email-setup.md for provider/deployment IDs.
+Both Vercel production deployments succeeded on 21f14e7. PR17 CI171 at e8ffdff
+passed all four jobs, including PostgreSQL17/18 and native Windows. The new
+web recovery UI remains unpublished pending separate approval.
+
 ## September 15 — isolate local acceptance from email and paid AI
 
 Found both dev-sandbox.mjs and test-http.mjs spread inherited environment values

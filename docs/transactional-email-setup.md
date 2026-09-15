@@ -54,5 +54,40 @@ access and No activity. The one-time key dialog was closed after saving.
 The credential value was not printed, committed, or written to a plaintext file.
 This does not configure the Railway application or prove provider delivery.
 
+## September 15 — approved production sending and reset verified
+
+Tyler explicitly approved PR16 deployment, the Railway Resend key/sender/reply-to
+configuration, Enforced TLS, one direct email test to tyler@worthlane.app and a
+reset test for a dedicated synthetic account at tyler+worthlane-beta@worthlane.app.
+PR16 merged as 21f14e7 after CI169 passed; main CI35001849078 also passed.
+Both Vercel production deployments succeeded for that source revision.
+
+Enforced TLS is saved. Railway EMAIL_FROM is
+`Worthlane <no-reply@mail.worthlane.app>` and EMAIL_REPLY_TO is
+`support@worthlane.app`. Initial sender rollout became Active as 4ba2a90f.
+The Railway credential differed from the tested Keychain credential; a private
+fingerprint comparison established the mismatch without exposing either value.
+Replaced only RESEND_API_KEY with the approved sending key, transferred via an
+ephemeral encrypted envelope rather than plaintext tool output. The correction
+deployment a5627e4b-52fa-4e45-9d2b-4a69eff37d86 became Active; API health is ready.
+
+Direct Resend message 5e321557-7877-4ce3-b8bf-4d0d242f6b27 was delivered to the
+owned Workspace Inbox at 10:41 AM. Gmail details confirmed the sender, support
+reply-to, send.mail.worthlane.app mailed-by, mail.worthlane.app signed-by and TLS.
+The deployed API subsequently sent reset message
+e6e90a90-7e31-4038-9b03-8d044dc9bf56, reported delivered by Resend at 10:55 AM
+and found in the recipient Inbox. The first reset before the key correction had
+not arrived; the post-correction request is the successful delivery evidence.
+
+Hosted synthetic acceptance: reset 200, old-password login 401, new-password
+login 200, old refresh session 401, reused reset code 400. Reset code and
+credentials were kept out of tool output; only the dedicated approved account
+was affected, with no financial data added. Existing access JWTs still retain
+their normal 15-minute expiry. No store submission or production Plaid action.
+
+The web client recovery page/BFF was missing and is supplied separately in
+draft PR17. Production API recovery and provider delivery pass; publication of
+that additional web UI requires its own approval.
+
 Undo: remove only the three added subdomain records. Preserve root Google mail
 records, the support alias, and all website records.
