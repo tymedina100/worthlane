@@ -94,3 +94,27 @@ The personal budget remains as a synthetic acceptance fixture. Native release
 artifact checks, hosted interactive Link/relink, reminder delivery and final
 reviewer packaging remain separate work; prior local evidence is not replaced by
 this narrower hosted-data verification.
+
+## Hosted Link recovery and manual fallback
+
+The in-app browser created Plaid's iframe, but no visible provider dialog opened.
+The existing 30-second guard removed the frame and restored Connect bank with a
+clear retry/manual-account message. Browser error logs were empty. This is a
+failed interactive Link attempt, not evidence of successful linking. A requested
+Chrome test surface was unavailable; no process was restarted to mask the issue.
+
+After recovery, Avery created `Avery manual fallback` with a $125.50 balance through
+the rendered form. Success appeared, and full reload retained the account, balance
+and Personal visibility. `--verify-manual-ui` then used fresh logins to assert:
+
+- Exactly that one partner manual account persisted at $125.50, without a Plaid Item.
+- The owner still had exactly the original 15 account IDs, excluding Avery's account.
+- No owner transactions leaked into the partner's transaction endpoint.
+- Both logins retained the exact $2,450 responsibility plan.
+- A real owner Sandbox sync still decrypted the saved token without duplicating accounts.
+
+The test records the verified UI-created account ID in the ignored fixture so
+subsequent `--verify` runs continue to check this exact privacy boundary. Next:
+diagnose the provider frame load and complete actual interactive Link/OAuth,
+then verify native release parity. Production access approval alone does not close
+these gates. No production configuration changed in this check.

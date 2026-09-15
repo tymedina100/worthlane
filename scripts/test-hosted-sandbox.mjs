@@ -9,7 +9,7 @@ import { parseEnv } from 'node:util';
 // host or reuse production credentials. Saved logins contain synthetic data only.
 const origin = 'https://worthlane-beta-sandbox.up.railway.app';
 const phase = process.argv[2];
-assert(['--create', '--couple', '--verify'].includes(phase), 'Use --create, --couple or --verify');
+assert(['--create', '--couple', '--verify', '--verify-manual-ui'].includes(phase), 'Use --create, --couple, --verify or --verify-manual-ui');
 assert.equal(process.env.WORTHLANE_HOSTED_SANDBOX_APPROVED, 'true');
 const path = resolve('.tmp/hosted-sandbox-fixture.json');
 mkdirSync(resolve('.tmp'), { recursive: true });
@@ -128,7 +128,23 @@ try {
       assert.deepEqual(amounts('Utilities'), [15000]);
       assert.deepEqual(amounts('Rent'), [68000, 102000]);
       assert.equal(first.responsibilities.reduce((n,r) => n + r.monthlyAmountMinor, 0), 245000);
-      assert.equal((await request('/accounts', undefined, partner.accessToken)).accounts.length, 0);
+      const partnerAccounts = await request('/accounts', undefined, partner.accessToken);
+      if (phase === '--verify-manual-ui') {
+        assert.equal(partnerAccounts.accounts.length, 1, 'Exactly one UI-created fallback account expected');
+        const account = partnerAccounts.accounts[0];
+        assert.equal(account.name, 'Avery manual fallback');
+        assert.equal(Number(account.currentBalance), 125.50);
+        assert.equal(account.plaidItemId, null);
+        assert.equal(partnerAccounts.plaidItems.length, 0, 'Unopened Link must not create an Item');
+        fixture.partner.manualId = account.id; save();
+      }
+      assert.deepEqual(partnerAccounts.accounts.map(a => a.id), fixture.partner.manualId ? [fixture.partner.manualId] : []);
+      if (fixture.partner.manualId) {
+        assert.equal(Number(partnerAccounts.accounts[0].currentBalance), 125.50);
+        assert(!fixture.accountIds.includes(fixture.partner.manualId));
+        assert.equal(partnerAccounts.plaidItems.length, 0);
+        console.log('PASS: UI-created partner manual fallback persisted at $125.50; owner account list excludes it; failed Link saved no Item.');
+      }
       assert.equal((await request('/transactions', undefined, partner.accessToken)).transactions.length, 0);
       console.log('PASS: both fresh logins recover matching saved responsibilities, exact $2,450 total and partner isolation from owner bank accounts/transactions.');
     }
