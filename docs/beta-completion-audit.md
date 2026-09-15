@@ -2,13 +2,14 @@
 
 Goal remains active. This audit checks the current Notion brief against persisted
 and interactive evidence; it does not authorize a production release or submission.
-The deployed baseline is PR15 merge 890aa8a, with all four CI164 jobs passed.
-Railway API and Vercel website/desktop rollout evidence is recorded in
-production-preparation.md; fresh API health on September 15 returns ready.
-Draft PR16 adds password-reset concurrency and delivery hardening. Its CI165
-passed at cf07b07; the later support reply-to follow-up 45acc12 has seven focused
-email tests and API typecheck passed, with CI168 still running. Earlier CI149
-included the Gradle signing fixture and persisted household consent/budget checks.
+The deployed API is PR16 merge21f14e7; the website and planning client are
+PR17 merge847a0fb. All four main CI jobs passed for each rollout. Railway
+correctly skipped PR17 because no watched API files changed. Vercel desktop and
+site deployments succeeded. Approved Resend delivery and hosted password-reset
+checks passed, including rejection of old passwords, reused codes and revoked
+refresh sessions. Browser request progression was checked interactively; reset
+mutation and login checks used the deployed HTTP endpoints with only the
+approved synthetic account. See production-preparation.md and beta-progress.md.
 This refresh reconciles later progress records; it is not a fresh replay of every
 previously recorded journey or approval to ship.
 
@@ -23,7 +24,7 @@ previously recorded journey or approval to ship.
 | Card fields, Liabilities and manual fallback | Real run-plaid-integration provider test recorded statement/minimum/due fields and nonowner isolation; route uses owned account allowlist. Desktop/native manual card fields and saved due dates recorded; predictions are labeled estimates. | Sandbox/manual evidence present. Production Liabilities is not enabled; manual fallback remains required there. |
 | Reliable reminders and saved debt estimates | Actual iOS/Android background test notifications; DATE diagnostic aligns with obligation trigger type. Adapter tests cover local9am/date/session reconciliation. Shared debt tests explicitly cover promo-day proration, zero APR, minimum shortfall, non-amortization and cents. Saved two-login debt readbacks recorded. | Core evidence present; actual9am/physical-phone delivery is not claimed. Phone use excluded by user. |
 | Aesthetic app/site and beta list | Native forest/cream screens and improved recovery controls; approved live website and persisted consent-based waitlist proof recorded. | Website request delivered. Android notification icon rebuilt and inspected in the installed APK; actual delivered banner remains unverified. Five native screenshot drafts exist; final store imagery/artifact parity remains. |
-| Regression assurance / commits / project updates | PR15 merged as 890aa8a and deployed after scoped approval; CI164 passed. PR16 has atomic reset-code persisted tests and bounded, privacy-safe email delivery. Work is pushed on codex/release-verification and tracked in Notion. | Current production rollout is recorded. PR16 remains a draft; signed-store artifact parity and real Resend delivery remain open. |
+| Regression assurance / commits / project updates | PR16 and PR17 merged and deployed under explicit approval; both main CI runs passed all four jobs. Atomic reset concurrency, bounded email delivery and web recovery have persisted/local and hosted acceptance evidence. Commits are pushed and milestones tracked in Notion. | Email delivery and hosted recovery are complete. Signed native artifact parity remains open. PR18 local service isolation is a separate draft. |
 | Truthful diagnostics and privacy disclosures | API error allowlist strips request/user/context and raw exception details. Mobile uses filtered JavaScript errors with native diagnostics and automatic sessions disabled; enabled/disabled configuration tests and three-platform exports pass. Store collection matrix is source-backed. | Fresh native launch on isolated Metro8084 passed after Simulator relaunch; persisted dashboard data rendered. Final store privacy answers must match the signed artifact and enabled services. |
 | Added native Mac app | Installed standalone Electron app; persisted Morgan/Avery household, native menus, quit/relaunch and isolated offline/retry UI verified. 19 tests, 8 asset and 8 fuse checks, strict local ad-hoc signature. User completed macOS Keychain prompt, after which saved-session cold launch reached household directly. | Local beta works with running localhost services. Final normal-build cold start now also restored the saved household after user authorization and normal Quit. Initial post-authorization Retry left a blank window, recovered by that restart. Public signing/notarization remains pending. |
 | Added production Plaid/store preparation request | App record and partial copy saved earlier; Android registration saved. Plaid/Apple/Railway sessions restored. Transactions/Balance enabled and billing verified; Liabilities not enabled. Apple review notes/contact/keywords saved. Existing Railway API/Postgres located. Signing/privacy/screenshots/reviewer access and hosted release verification remain. | Incomplete. Do not submit. |
@@ -38,8 +39,10 @@ previously recorded journey or approval to ship.
    the reviewed SQL and managed backups are configured under explicit approvals.
    Google Workspace support delivery, authentication, and user MFA are verified.
    Resend sending-domain DNS is Verified and its key is saved in the approved Mac
-   login Keychain. Finish PR16 CI, prepare scoped email environment/TLS deployment
-   approval, then prove actual delivery and hosted password-reset behavior.
+   login Keychain and the approved Railway service. Enforced TLS and sender/reply-to
+   settings are verified; direct delivery, API reset and hosted web recovery passed.
+   PR18 clears inherited email and paid-AI settings in local test launchers and
+   remains a separate draft awaiting review/publication approval.
    Keep local Sandbox data separate; no new production Plaid Items are authorized.
 3. Finish release signing/configuration, actual-app
    screenshots and truthful privacy/reviewer metadata. Verify Google Play access

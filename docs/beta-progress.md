@@ -3334,3 +3334,74 @@ account was changed. See transactional-email-setup.md for provider/deployment ID
 Both Vercel production deployments succeeded on 21f14e7. PR17 CI171 at e8ffdff
 passed all four jobs, including PostgreSQL17/18 and native Windows. The new
 web recovery UI remains unpublished pending separate approval.
+
+## September 15 — isolate local acceptance from email and paid AI
+
+Found both dev-sandbox.mjs and test-http.mjs spread inherited environment values
+without disabling Resend or Anthropic credentials. A production credential in
+the shell or local env file could therefore enable external delivery/spending
+while running a nominally local acceptance journey. Both launchers now set
+ANTHROPIC_API_KEY, RESEND_API_KEY, EMAIL_FROM and EMAIL_REPLY_TO to empty values
+after inherited and Sandbox overrides. Plaid remains Sandbox; parent environment
+and production settings are unchanged. Existing running servers are not restarted
+by this source change; it takes effect on their next normal launch.
+
+Validation: both scripts pass node --check and git diff --check. Evaluated each
+actual child-environment expression with synthetic inherited email/AI credentials
+and a synthetic Sandbox override: all four disabled fields are empty, Plaid is
+Sandbox, and the parent environment is unchanged. No external email/AI call was
+made by this validation. This change is isolated from the pending PR17 approval.
+
+Fresh Mac signing inventory reports three valid code-signing identities but no
+Developer ID Application identity. Public Mac distribution remains unproven;
+the existing local ad-hoc build must not be described as notarized distribution.
+
+## September 15 — approved web recovery publication verified
+
+Tyler approved PR17 at 5a53d61. All four CI172 jobs passed; PR17 merged as
+847a0fbb0c8c790b4df69d0ef064e4630c9c3a16. Vercel production desktop deployment
+6465252902 succeeded. The hosted /login page exposes Forgot password? and opens
+/forgot-password. The actual browser request for the previously approved
+synthetic account progressed to Choose a new password with the generic message.
+Resend message 8d77ba7a-a918-4821-bfb3-c70371615348 was delivered for that request.
+
+Using the email's code, an HTTP test through the deployed desktop BFF verified:
+cross-origin rejection403; reset200; old password401; new password200; replay400;
+no-store response, cleared session cookies and no browser-visible JWTs. This
+complements actual browser request/navigation evidence; password field entry
+and submission were not performed through Computer Use. Only the dedicated
+approved synthetic account was affected. Private code transfer was encrypted,
+with ephemeral transport keys removed after use and no code printed.
+
+Main CI35005122474 and the corresponding Railway rollout were still pending
+at this checkpoint; existing API health remained ready. PR18 local email/AI
+isolation remains a separate draft, rebased by merge onto the approved PR17
+baseline with both progress histories preserved. No PR18 merge is authorized.
+
+Final rollout readback: main CI35005122474 passed all four jobs. Vercel website
+deployment6465272846 and desktop6465252902 both succeeded for847a0fb. Railway
+explicitly marks PR17 Skipped / No changes to watched files; the already-verified
+PR16 API remains Active with the corrected email credential. No redundant API
+redeploy was needed. This closes PR17 publication verification.
+
+
+## September 15 — Hosted Mac candidate built and installed locally
+
+- Built the existing Electron shell against `https://worthlane-desktop.vercel.app`
+  with production URL validation and `developmentOnly:false`. Native sources at
+  build HEAD5a53d61 match deployed main847a0fb (`git diff` for native/mobile empty).
+- Installed separately at `/Users/tylermedina/Applications/Worthlane Hosted Beta.app`;
+  the previous localhost app is preserved. No production deployment, upload,
+  paid build, bank connection or store submission occurred.
+- Passed19 native tests, hosted-origin header verification, all8 archive assets,
+  all8 hardened fuses and `codesign --verify --deep --strict`.
+- Actual packaged UI showed hosted sign-in, opened Forgot password with heading
+  focus, returned to sign-in and passed normal Quit/cold relaunch. Installed-path
+  launch also reached hosted sign-in. No credential/reset mutation was repeated.
+- Archive SHA256: `de649050b3971a62deb3e8ad44d72158467ca4d5e0fecc3891f3b7e77e03b271`.
+- This candidate removes localhost dependence for the Mac entry point. It is
+  ad-hoc signed for local use, not Developer ID signed or notarized for public
+  distribution. Hosted authenticated household/banking acceptance is not claimed
+  by this launch check; the separate persisted Sandbox journey evidence remains
+  the basis for functional acceptance. Current iOS/Android distribution artifacts,
+  store screenshots/privacy/reviewer preparation and Plaid evidence gates remain.
