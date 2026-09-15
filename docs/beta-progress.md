@@ -3183,3 +3183,24 @@ Sandbox data, platform-specific production Plaid return/webhook configuration,
 truthful provider/security controls including build-secret handling, final signed
 artifacts/privacy/reviewer metadata, and public Mac notarization. No store
 submission or further paid service authorization is implied.
+
+## September 15 — Workspace support mail verified
+
+Completed the requested Google Workspace mail setup using the existing Tyler
+mailbox and support alias. Published missing Google SPF and monitoring-only
+DMARC TXT records; both authoritative nameservers returned them. Existing DKIM
+signing and MX routing were already active. Added a support label/filter and
+reply-from-recipient-address preference. Tyler completed Gmail's separate
+send-as popup; support-address sending is now available.
+
+The explicitly approved test reached the support inbox and received the label;
+its reply from support@worthlane.app reached the personal Gmail inbox with
+SPF/DKIM/DMARC all passing. Live support/privacy/terms pages already use the
+correct support address, so no website deployment was needed. See
+[Workspace setup evidence](google-workspace-setup.md) for records, workflow,
+limits and undo steps. No extra paid seat or service was created.
+
+Internal Workspace MFA remains open: Admin showed two-step verification off,
+and Tyler was asked to complete credential enrollment. App transactional email
+through Resend remains a separate acceptance item; this Gmail proof does not
+close it or the other beta/provider/store gates.
