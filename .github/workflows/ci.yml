@@ -8,9 +8,13 @@ on:
 jobs:
   postgres-integration:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: [17, 18]
     services:
       postgres:
-        image: postgres:17
+        image: postgres:${{ matrix.postgres }}
         env:
           POSTGRES_USER: worthlane_test
           POSTGRES_PASSWORD: integration-only

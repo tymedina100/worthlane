@@ -3100,3 +3100,14 @@ submission occurred. Backup storage is metered under the approved scope. The
 backup-approval blocker is resolved; next prepare the exact candidate deployment
 and additive migration proposal for scoped approval, retaining other release and
 provider gates.
+
+
+## September 15 — Production-major database CI added
+
+Release audit found local/CI PostgreSQL17 coverage did not match the production
+Postgres18 image. The existing isolated persisted-household integration job now
+runs a non-fail-fast matrix on both17 and18, applying every migration and checking
+consent, privacy and exact budget fixtures. No production database connection is
+used. This adds required coverage; the new run is pending and is not yet evidence
+of a pass. PR15 description was reconciled with current Mac, signing and backup
+evidence. Merge/deploy/migration remain unauthorized.
