@@ -3054,3 +3054,14 @@ establish an isolated hosted Sandbox suitable for a new acceptance build. Do not
 reuse the production API as a Sandbox workaround. Store preparation notes now
 correct stale missing-hosted-credentials/debug-signing claims. No paid build,
 production mutation or store submission occurred.
+
+
+## September 15 — Backup rehearsal and deployment safeguards inspected
+
+Added and ran scripts/rehearse-sandbox-backup.py: all29 local synthetic tables and
+1,613 rows restored with exact fingerprints and validated constraints. No real
+financial data accessed; generated restore DB cleaned up and private evidence
+retained. Railway managed backup/PITR is gated by the current Hobby plan; Pro
+shows $20 minimum/month plus excess usage. Scoped spending approval is pending.
+Production remains on PR13, with Wait for CI off, no configured healthcheck, and
+migration-on-start. No plan, deployment, database or service settings changed.

@@ -178,3 +178,32 @@ The vulnerability-scanning drawer explicitly discusses employee/contractor
 machines and production assets, with regular automated scans recommended. The
 repository dependency audit does not establish that broader coverage. Do not
 attest on the strength of a pnpm audit alone.
+
+
+## September 15 — Production backup gate and local restore rehearsal
+
+Read-only Railway UI confirms the existing Hobby workspace gates managed backups
+and PITR behind Pro. Plan UI lists a $20 monthly minimum with $20 usage credits,
+plus metered usage beyond credits. Owner approval requested; no upgrade or backup
+mutation was performed. The production Postgres service uses the postgres-ssl:18
+image. No independent production backup or recovery point has been verified.
+
+Current API remains on the PR13 deployment; main auto-deploy is enabled, Wait for
+CI is off, and no healthcheck path is configured. Startup applies migrations
+before starting the API. A future approved rollout must account for those facts,
+not assume the candidate's healthcheck/watch settings already apply.
+
+`python3 scripts/rehearse-sandbox-backup.py` exercised the existing local synthetic
+PostgreSQL17 database on port55439. It took a custom-format dump, restored to a
+new randomly named test database with a single transaction and exit-on-error,
+compared all29 table counts/content fingerprints (1,613 rows), and verified no
+unvalidated public constraints. Source fingerprints before/after the dump agreed.
+The temporary restore database was removed; the private0600 dump/report remains
+in .tmp/worthlane_restore_test_b39d7e2798bb4bc0. Dump SHA256:
+84961e2d79a3dfd13d53ec1d5f146c2bb732afff9541a286685dc5618fb8474b.
+
+This script intentionally hardcodes loopback and the synthetic database name,
+never reads DATABASE_URL, and cannot be used for production backup. The rehearsal
+proves the local procedure and data comparison, not PostgreSQL18 production
+backup, encryption, retention, restore timing, or off-site availability. Those
+must be verified separately before a production migration.
