@@ -3111,3 +3111,13 @@ consent, privacy and exact budget fixtures. No production database connection is
 used. This adds required coverage; the new run is pending and is not yet evidence
 of a pass. PR15 description was reconciled with current Mac, signing and backup
 evidence. Merge/deploy/migration remain unauthorized.
+
+
+## September 15 — PostgreSQL18 candidate verification passes
+
+CI162 /34994653500 on569421f passed all four jobs: ci, native-windows,
+postgres-integration(17), postgres-integration(18). Both database versions applied
+migrations and passed persisted household checks. API, desktop and website builds
+also passed. The production deployment proposal is recorded in
+docs/production-release-proposal.md; merge and deploy remain pending explicit
+approval. This follow-up contains documentation only.
