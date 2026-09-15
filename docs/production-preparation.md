@@ -255,3 +255,26 @@ submission occurred. Backup storage is metered under the approved scope. The
 backup-approval blocker is resolved; next prepare the exact candidate deployment
 and additive migration proposal for scoped approval, retaining other release and
 provider gates.
+
+
+## September 15 — Approved production rollout verified
+
+Railway retry212e2203-3683-4b65-8d27-19568dde70bc is Active and Deployment
+successful on source890aa8a96ae432a1f33c3434432d53729f071041. The merged runtime
+configuration includes the candidate @worthlane build/start commands, expanded
+watch paths and /api/health with120-second timeout. PORT=3001 corrected the
+first deployment health-check mismatch. Public health returns200, no-store and
+{data:{status:ready}}. Vercel website and desktop are also Ready on890aa8a.
+
+Read-only production _prisma_migrations verification confirms
+20260910000100_household_account_matches finished2026-09-15 09:42:48 with one
+applied step. Checksum f406d9b0bb4f28ad84c27251d873f0689748ce48de3fe09bd10534c5b294833b
+exactly matches reviewed migration.sql. No production financial rows were read
+or synthesized, no restore was performed and no new bank Item was created.
+
+This closes approved merge/deployment/migration execution, not the entire beta
+goal. Remaining work includes hosted authenticated acceptance with isolated
+Sandbox data, platform-specific production Plaid return/webhook configuration,
+truthful provider/security controls including build-secret handling, final signed
+artifacts/privacy/reviewer metadata, and public Mac notarization. No store
+submission or further paid service authorization is implied.
