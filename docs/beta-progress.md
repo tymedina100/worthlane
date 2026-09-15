@@ -3139,3 +3139,24 @@ domains. Read-only HTTP checks: desktop login200, protected dashboard redirects
 to login, website homepage200, Plaid return200, Apple association200 JSON. These
 are deployment/route checks, not authenticated production financial acceptance.
 No store submission or additional Plaid settings/Items were created.
+
+
+## September 15 — Migration applied; health-check port corrected
+
+Railway cde39ce8 built the approved890aa8a candidate and loaded its actual
+Nixpacks @worthlane commands after initial stale configuration display. Startup
+logs at09:42:48 show20260910000100_household_account_matches applied and all
+migrations successful; Next.js then started on3001 and reported Ready. Promotion
+failed at the network health-check stage; prior PR13 remained active.
+
+Service-variable inventory had no PORT. Railway health checks use PORT even
+when public networking targets another fixed port. Added only PORT=3001 to match
+the existing API start command and domain target, reviewed the one-variable diff,
+and applied as a routine correction within the approved deployment. Retry
+212e2203-3683-4b65-8d27-19568dde70bc is building PR15. Do not infer readiness yet.
+No database restore, rollback migration or Plaid changes occurred.
+Reference: https://docs.railway.com/deployments/healthchecks
+
+Build logs also emitted generic ARG/ENV secret-handling warnings from Nixpacks.
+No secret values were inspected or recorded. Image/build-secret isolation remains
+a release-security follow-up; do not treat dependency tests as proof of it.
