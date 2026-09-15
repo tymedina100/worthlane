@@ -220,3 +220,21 @@ retention is staged without saving; scoped backup creation/schedule approval is
 pending. Enabling PITR would redeploy Postgres and has not been attempted.
 Incremental volume backup storage is billed like volume storage; see
 [Railway backup documentation](https://docs.railway.com/volumes/backups).
+
+
+## September 15 — Production migration history verified read-only
+
+Railway Pro is active following Tyler's scoped approval. The production
+_prisma_migrations table shows 24 records across three pages, each with a
+finished timestamp and one applied step. The latest named migration is
+20260909142000_bank_identity. The candidate contains those 24 migrations plus
+20260910000100_household_account_matches. Its SQL adds HouseholdAccountMatch,
+a sorted-pair check, foreign keys, and two indexes; it does not rewrite existing
+financial rows. Historical checksums were not independently compared.
+
+Only migration metadata and table names were inspected. No production data,
+schema, deployment, backup schedule, or PITR setting was changed during this
+check. Daily/weekly backup scheduling and a fresh snapshot remain prepared but
+unsaved pending separate metered-storage approval. After backup verification,
+prepare the exact release and migration approval; do not infer deployment
+permission from the Pro upgrade.
