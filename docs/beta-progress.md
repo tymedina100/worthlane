@@ -3225,3 +3225,26 @@ This change is on the review branch only, with no production deployment. Next:
 verify the configured Resend sender/domain and prepare a scoped deployment plus
 approved owned-account reset test. Keep hosted Sandbox, Plaid and store release
 gates open until independently verified.
+
+## September 15 — Persisted password-reset single-use protection
+
+Fixed a race in reset-password: the initial unused-code lookup was outside the
+transaction, so concurrent requests could both change the password. The
+transaction now conditionally claims an unused, unexpired code before changing
+the password or revoking refresh sessions. A losing request returns the same
+invalid/expired response. Expiry is rechecked after password hashing.
+
+Ran scripts/test-postgres.sh in a fresh isolated local cluster on port 55448.
+All 25 migrations applied and all 12 persisted integration tests passed, including
+two new password-reset cases. Concurrent attempts produced exactly one success
+and one rejection; only the winning password worked, old refresh/old password
+were rejected, replay was denied, and the winning password remained valid after
+Prisma disconnect/reconnect. Expired codes left the password unchanged. API
+typechecking passes. This does not claim immediate revocation of already-issued
+15-minute access JWTs or actual provider email delivery.
+
+Tyler signed into Resend. Prepared unverified mail.worthlane.app sending-domain
+registration and inspected its exact DKIM plus send.mail MX/SPF requirements.
+Resend receiving remains disabled. Production DNS authorization is requested;
+no DNS record, API credential, email send or application deployment was performed
+as part of this Resend preparation.
