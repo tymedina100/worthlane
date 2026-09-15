@@ -3248,3 +3248,17 @@ registration and inspected its exact DKIM plus send.mail MX/SPF requirements.
 Resend receiving remains disabled. Production DNS authorization is requested;
 no DNS record, API credential, email send or application deployment was performed
 as part of this Resend preparation.
+
+## September 15 — Approved Resend DNS records published
+
+Published the three expressly approved Resend records for mail.worthlane.app:
+resend._domainkey.mail TXT, send.mail MX (priority 10), and send.mail SPF TXT.
+Both authoritative Vercel nameservers and a recursive lookup return the exact
+records; root Google MX remains smtp.google.com. Resend verification was started
+and is Pending on refreshed provider readback. Receiving is off, and no API key,
+paid plan, email send, application setting or deployment was included.
+See [transactional email setup](transactional-email-setup.md) for the remaining
+provider/credential/transport and real-delivery gates.
+
+PR16 CI165 has passed PostgreSQL17 and18 persisted checks plus Windows packaging;
+the main CI job is still running. Do not report the entire run passed yet.
