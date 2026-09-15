@@ -3353,3 +3353,20 @@ submission occurred. This supplements the existing mocked provider-failure/retry
 tests; it does not claim real provider revocation or release-service deletion.
 App Store Connect currently requires a fresh user sign-in before draft work can
 continue; the sign-in tab is open and user input has been requested.
+
+### September15 — Real Sandbox account-deletion revocation verified
+
+Extended PR19 with account-deletion.sandbox.ts. It creates only a random local
+synthetic user and a new Plaid Sandbox Item, exchanges through the application,
+invokes the account-deletion route, and independently verifies provider
+itemGet returns ITEM_NOT_FOUND. After Prisma disconnect/reconnect, user, Item,
+account and transaction rows are absent. Cleanup is scoped to the created user
+and Item; SDK errors are replaced by bounded stage labels to avoid credential
+output. No production bank Item, email or production user was involved.
+
+Both real Sandbox tests passed (existing sync/owner isolation/liabilities/relink/
+unlink lifecycle plus new account deletion) in18.76seconds. API typecheck passed.
+PR19 initial CI180 has passed PostgreSQL17/18 and native Windows jobs; general CI
+was still running when checked. The new Sandbox test is run explicitly with
+Sandbox credentials, not by ordinary CI. This closes provider revocation evidence
+for local Sandbox account deletion; release-service deletion remains unverified.
