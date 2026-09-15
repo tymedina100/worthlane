@@ -3377,3 +3377,9 @@ Main CI35005122474 and the corresponding Railway rollout were still pending
 at this checkpoint; existing API health remained ready. PR18 local email/AI
 isolation remains a separate draft, rebased by merge onto the approved PR17
 baseline with both progress histories preserved. No PR18 merge is authorized.
+
+Final rollout readback: main CI35005122474 passed all four jobs. Vercel website
+deployment6465272846 and desktop6465252902 both succeeded for847a0fb. Railway
+explicitly marks PR17 Skipped / No changes to watched files; the already-verified
+PR16 API remains Active with the corrected email credential. No redundant API
+redeploy was needed. This closes PR17 publication verification.
