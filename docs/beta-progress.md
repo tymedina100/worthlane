@@ -3324,3 +3324,13 @@ navigation and heading focus. At 390px, inputs are 49px high with 16px text and
 there is no horizontal overflow. Browser password submission is not claimed;
 the persisted mutation is verified through the local HTTP test. These new web
 changes are separate from the approved PR16 deployment and are not published.
+
+Follow-up: verified-key correction a5627e4b-52fa-4e45-9d2b-4a69eff37d86 is Active;
+health returns ready. The post-correction hosted reset email was delivered at
+10:55 AM and found in the owned Workspace Inbox. Synthetic reset succeeded
+(200), old password and old refresh token were rejected (401), new password
+logged in (200), and code replay was rejected (400). No financial data or other
+account was changed. See transactional-email-setup.md for provider/deployment IDs.
+Both Vercel production deployments succeeded on 21f14e7. PR17 CI171 at e8ffdff
+passed all four jobs, including PostgreSQL17/18 and native Windows. The new
+web recovery UI remains unpublished pending separate approval.
