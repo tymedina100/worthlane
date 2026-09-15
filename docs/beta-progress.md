@@ -3286,3 +3286,24 @@ name/account/kind/keychain metadata. Closed the provider one-time key dialog;
 the API-key list shows Sending access and No activity. No production environment
 change or email was sent. CI168 at 45acc12 is running; fresh production health
 returns ready. The credential-storage blocker is resolved.
+
+## September 15 — isolate local acceptance from email and paid AI
+
+Found both dev-sandbox.mjs and test-http.mjs spread inherited environment values
+without disabling Resend or Anthropic credentials. A production credential in
+the shell or local env file could therefore enable external delivery/spending
+while running a nominally local acceptance journey. Both launchers now set
+ANTHROPIC_API_KEY, RESEND_API_KEY, EMAIL_FROM and EMAIL_REPLY_TO to empty values
+after inherited and Sandbox overrides. Plaid remains Sandbox; parent environment
+and production settings are unchanged. Existing running servers are not restarted
+by this source change; it takes effect on their next normal launch.
+
+Validation: both scripts pass node --check and git diff --check. Evaluated each
+actual child-environment expression with synthetic inherited email/AI credentials
+and a synthetic Sandbox override: all four disabled fields are empty, Plaid is
+Sandbox, and the parent environment is unchanged. No external email/AI call was
+made by this validation. This change is isolated from the pending PR17 approval.
+
+Fresh Mac signing inventory reports three valid code-signing identities but no
+Developer ID Application identity. Public Mac distribution remains unproven;
+the existing local ad-hoc build must not be described as notarized distribution.

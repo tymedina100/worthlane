@@ -34,6 +34,8 @@ const env = { ...process.env, ...secrets, DATABASE_URL: db.href, NODE_ENV: 'deve
   POSTHOG_PROJECT_KEY: '', SENTRY_DSN: '', SENTRY_AUTH_TOKEN: '', VERCEL: '',
   // Never inherit production webhook delivery from another environment.
   PLAID_WEBHOOK_URL: process.env.WORTHLANE_SANDBOX_WEBHOOK_URL ?? '',
+  // Local acceptance must never inherit paid AI or production email delivery.
+  ANTHROPIC_API_KEY: '', RESEND_API_KEY: '', EMAIL_FROM: '', EMAIL_REPLY_TO: '',
 };
 for (const [host, port] of [["127.0.0.1", apiPort], ["localhost", desktopPort]]) {
   try { await fetch(`http://${host}:${port}`, { signal: AbortSignal.timeout(1000) }); throw new Error(`Port ${port} is occupied. Stop that server first.`); }
