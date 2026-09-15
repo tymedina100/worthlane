@@ -207,3 +207,16 @@ never reads DATABASE_URL, and cannot be used for production backup. The rehearsa
 proves the local procedure and data comparison, not PostgreSQL18 production
 backup, encryption, retention, restore timing, or off-site availability. Those
 must be verified separately before a production migration.
+
+
+### Approved Pro upgrade completed
+
+Tyler explicitly approved upgrading the existing workspace. The confirmation
+showed an immediate$20 charge; after applying it, Plans shows Pro active. This
+approval covered the plan change, not production deployment or database migration.
+The now-visible Backups page exposes one existing Pre-Security-Patch Backup,
+24 days old and117MB, with no schedule and PITR off. Daily6-day/weekly27-day
+retention is staged without saving; scoped backup creation/schedule approval is
+pending. Enabling PITR would redeploy Postgres and has not been attempted.
+Incremental volume backup storage is billed like volume storage; see
+[Railway backup documentation](https://docs.railway.com/volumes/backups).
