@@ -134,3 +134,29 @@ rebuild or paid EAS build was started. Native UI control encountered missing/sta
 window errors; no hosted native sign-in or Link completion has been verified.
 Available disk space was about2.3GiB after boot. Avoid a large rebuild until there
 is adequate headroom; reuse the installed development client where compatible.
+
+## Native login and persisted debt handoff
+
+With user assistance opening the installed client and dismissing iOS's optional
+password-save sheet, the development client loaded the current Metro bundle and
+signed in as Avery against the hosted Sandbox. The native dashboard visibly showed
+$125.50 net worth, $0 spent/$0 received, and the saved household with Morgan. This
+proves hosted native login/data loading, not native Link or release-artifact parity.
+
+`--debt` now saves an explicit manual zero-APR $300 card plan, with $100 monthly
+payments and a $25 minimum due 2027-01-31. Hosted API checks passed for exact saved
+input, explanation assumptions, three-month payoff through March, zero interest,
+$300 total paid in the estimate, and remaining balances $200/$100/$0. Calling the
+Upcoming handoff twice returned the same single unpaid $25 item, reminders off.
+Transaction IDs were unchanged: planning a due date does not record a payment.
+The partner receives404 for the private plan and its due-date handoff and cannot
+see the owner's Upcoming item. These fixtures remain for interactive verification.
+Actual notification delivery is not established by this API check.
+
+During native work disk space fell to roughly400MiB. Metro and the Simulator were
+stopped; no Gradle/Xcode build was running. Under the user's cleanup authorization,
+only `.tmp/gradle/caches` (4.0GiB, rebuildable) was removed. SDKs, emulator data,
+credentials/signing material, source, installed apps and database fixtures were
+preserved. Disk then reported7.1GiB available. Local cleanup log:
+`.tmp/storage-cleanup-2026-09-15.jsonl`. Next native check must restart Metro with
+the same explicitly disabled analytics and hosted Sandbox configuration.

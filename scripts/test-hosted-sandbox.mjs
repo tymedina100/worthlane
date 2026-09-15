@@ -9,7 +9,7 @@ import { parseEnv } from 'node:util';
 // host or reuse production credentials. Saved logins contain synthetic data only.
 const origin = 'https://worthlane-beta-sandbox.up.railway.app';
 const phase = process.argv[2];
-assert(['--create', '--couple', '--verify', '--verify-manual-ui'].includes(phase), 'Use --create, --couple, --verify or --verify-manual-ui');
+assert(['--create', '--couple', '--verify', '--verify-manual-ui', '--debt'].includes(phase), 'Use --create, --couple, --verify --verify-manual-ui or --debt');
 assert.equal(process.env.WORTHLANE_HOSTED_SANDBOX_APPROVED, 'true');
 const path = resolve('.tmp/hosted-sandbox-fixture.json');
 mkdirSync(resolve('.tmp'), { recursive: true });
@@ -115,8 +115,47 @@ try {
     for (const key of ['added', 'modified', 'removed']) assert(Number.isInteger(result[key]) && result[key] >= 0);
     assert.deepEqual((await request('/accounts', undefined, accessToken)).accounts.map(a => a.id).sort(), fixture.accountIds);
     console.log('PASS: separate-process fresh login recovered exact saved accounts and manual amount; real Sandbox sync decrypted persisted token without duplicate accounts.');
+    if (phase === '--debt' || fixture.debtPlanId) {
+      const input = { name: 'Hosted zero-interest payoff', startMonth: '2027-01', strategy: 'AVALANCHE', monthlyPaymentMinor: 10000,
+        debts: [{ id: 'hosted-card', name: 'Hosted synthetic card', balanceMinor: 30000, minimumPaymentMinor: 2500, aprBasisPoints: 0, statementBalanceMinor: 30000, dueDate: '2027-01-31' }] };
+      if (!fixture.debtPlanId) {
+        const existing = (await request('/debt-plans', undefined, accessToken)).filter(p => p.input.name === input.name);
+        assert(existing.length <= 1, 'Unexpected duplicate fixture plan');
+        const saved = existing[0] ?? await request('/debt-plans', input, accessToken, 201);
+        fixture.debtPlanId = saved.id; save();
+      }
+      const plan = await request(`/debt-plans/${fixture.debtPlanId}`, undefined, accessToken);
+      assert.deepEqual(plan.input, input);
+      assert.equal(plan.estimate.status, 'PAID_OFF');
+      assert.equal(plan.estimate.totalInterestMinor, 0);
+      assert.equal(plan.estimate.totalPaidMinor, 30000);
+      assert.deepEqual(plan.estimate.schedule.map(m => m.remainingMinor), [20000, 10000, 0]);
+      assert.equal(plan.estimate.payoffMonth, '2027-03');
+      assert(Array.isArray(plan.assumptions) && plan.assumptions.length > 0, 'Explainable assumptions required');
+      const beforeTransactions = (await request('/transactions', undefined, accessToken)).transactions.map(t => t.id).sort();
+      const duePath = `/debt-plans/${fixture.debtPlanId}/upcoming`;
+      const dueBody = { entryId: 'hosted-card', revision: plan.revision };
+      const firstDue = await request(duePath, dueBody, accessToken);
+      const repeatDue = await request(duePath, dueBody, accessToken);
+      assert.equal(firstDue.id, repeatDue.id);
+      assert.equal(repeatDue.alreadyExists, true);
+      const matches = (await request('/upcoming', undefined, accessToken)).items.filter(i => i.id === firstDue.id);
+      assert.equal(matches.length, 1);
+      assert.equal(matches[0].dueDate, '2027-01-31');
+      assert.equal(matches[0].amount, 25);
+      assert.equal(matches[0].reminderTiming, 'NONE');
+      assert.equal(matches[0].isPaid, false);
+      assert.deepEqual((await request('/transactions', undefined, accessToken)).transactions.map(t => t.id).sort(), beforeTransactions);
+      fixture.debtDueId = firstDue.id; save();
+      console.log('PASS: persisted zero-APR plan explains three $100 payments; repeated due-date handoff keeps one unpaid $25 January31 item, reminders off, with no synthetic payment transaction.');
+    }
     if (fixture.coupleComplete) {
       const partner = await request('/auth/login', { email: fixture.partner.email, password: fixture.partner.password });
+      if (fixture.debtPlanId) {
+        await request(`/debt-plans/${fixture.debtPlanId}`, undefined, partner.accessToken, 404);
+        await request(`/debt-plans/${fixture.debtPlanId}/upcoming`, { entryId: 'hosted-card', revision: 1 }, partner.accessToken, 404);
+        assert(!(await request('/upcoming', undefined, partner.accessToken)).items.some(i => i.id === fixture.debtDueId));
+      }
       const first = await request('/households/current/summary', undefined, accessToken);
       const second = await request('/households/current/summary', undefined, partner.accessToken);
       assert.equal(first.household.id, fixture.householdId);
