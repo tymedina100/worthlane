@@ -93,11 +93,11 @@ or registration fee paid. Do not treat the signup page as an app record.
 
 Local keychain contains Apple Development identities for Tyler, but no personal
 Apple Distribution identity; an unrelated organization identity is outside this
-project and must not be used. This is local evidence only: EAS-hosted credentials
-and Apple portal distribution profiles remain unverified. Android Gradle release
-currently references the debug signing configuration, so it is not an upload-ready
-build. Before building for store delivery, configure legitimate personal-team
-distribution signing and Android upload signing, then verify artifact signatures.
+project and must not be used. This is local evidence only: EAS-hosted credentials were unverified at this earlier checkpoint; see the
+September15 refresh below. Current Android release signing is null until injected
+by EAS/private local configuration, and the Gradle gate rejects missing/debug
+signing. Before store delivery, validate authorized credentials and inspect the
+actual candidate artifact signature.
 No private signing material or account identifiers stored here.
 
 ## Privacy evidence for the candidate — September 14
@@ -152,3 +152,25 @@ apps/mobile. The tracked project is configured for the tymedina100 account;
 hosted distribution credentials remain unverified until Expo CLI authentication
 is restored. This is independent of Apple or Plaid browser sign-in. No login
 secret was requested or inspected, build queued, key generated, or submission made.
+
+
+## September 15 — Expo account and hosted signing inspection
+
+Expo CLI authenticated as the owner and resolves the expected
+@tymedina100/worthlane project (4628c392-701f-498a-a861-31e21806edc3).
+Read-only credential inspection (Apple portal login declined) shows personal-team
+iOS distribution certificate and App Store profile expiring March16,2027; EAS
+reports the profile active. Existing push and App Store Connect keys are also
+present. This is hosted metadata, not fresh Apple portal validation. No keys were
+created, exported, downloaded, rotated or revoked.
+
+Android has an existing default JKS keystore for com.worthlane.mobile. No FCM key
+or Play submission service-account key is assigned. Local scheduled reminders do
+not depend on FCM. Play registration/access and final artifact/upload-key matching
+remain separate gates. Current Gradle release signing requires real credentials
+and explicitly rejects the debug keystore; the old debug-binding note is stale.
+
+Recent EAS history includes completed production/store Android build4 from
+10cd6fa and iOS build27 fromd759913 onSeptember10. Those precede the current
+candidate and are not evidence that current code is packaged or ready to upload.
+No new build, submission or paid service was started during this inspection.

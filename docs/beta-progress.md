@@ -3038,3 +3038,19 @@ window remains recorded; clean cold-start acceptance now passes.
 Fresh `pnpm exec eas whoami` still returns Not logged in. Public signing,
 production release controls, remaining provider attestations and store gates are
 unchanged. CI155 on66e48a5 had passed all three jobs; this entry adds evidence only.
+
+
+## September 15 — Expo authentication resolved; hosted signing exists
+
+CLI owner authentication and linked Worthlane project verified. Read-only hosted
+credentials show personal-team iOS distribution certificate/profile metadata
+throughMarch16,2027 and existing Android JKS signing. Apple portal validation was
+not requested and no credential material was downloaded or changed. Prior store
+builds exist, but all inspected finished artifacts predate this candidate.
+
+Production EAS API URL points to the existing Railway /api. Development points to
+https://your-railway-url/api (placeholder); preview has no variables. These do not
+establish an isolated hosted Sandbox suitable for a new acceptance build. Do not
+reuse the production API as a Sandbox workaround. Store preparation notes now
+correct stale missing-hosted-credentials/debug-signing claims. No paid build,
+production mutation or store submission occurred.
