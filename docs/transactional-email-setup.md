@@ -43,5 +43,16 @@ sent, and no application configuration/deployment performed in this step.
    delivery to an approved owned mailbox. A Gmail support-alias test is separate
    evidence and does not prove Resend delivery.
 
+## September 15 — credential storage completed
+
+Tyler created `Worthlane API transactional sending` in Resend and explicitly
+approved saving the existing key in the Mac login Keychain. After the initial
+Keychain UI timeouts resolved, saved and verified the item metadata at 10:25 AM:
+`Worthlane Resend — transactional sending`, account `tyler@worthlane.app`,
+kind application password, keychain login. The provider list shows Sending
+access and No activity. The one-time key dialog was closed after saving.
+The credential value was not printed, committed, or written to a plaintext file.
+This does not configure the Railway application or prove provider delivery.
+
 Undo: remove only the three added subdomain records. Preserve root Google mail
 records, the support alias, and all website records.

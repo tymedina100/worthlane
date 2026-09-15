@@ -3279,3 +3279,10 @@ Tyler created the sending key in Resend and authorized storage in the Mac login
 Keychain. The key-value dialog is visible; no value was printed or saved in the
 repository. Keychain Access observations time out, so secure storage is not yet
 confirmed. This is distinct from configuring the production API.
+
+Follow-up at 10:25 AM: Keychain Access became responsive. Saved the existing
+Resend key under the expressly approved login Keychain item and verified its
+name/account/kind/keychain metadata. Closed the provider one-time key dialog;
+the API-key list shows Sending access and No activity. No production environment
+change or email was sent. CI168 at 45acc12 is running; fresh production health
+returns ready. The credential-storage blocker is resolved.
