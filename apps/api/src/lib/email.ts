@@ -34,6 +34,7 @@ export async function sendEmail({ to, subject, text, html }: SendEmailOptions): 
       signal: AbortSignal.timeout(10_000),
       body: JSON.stringify({
         from: env.EMAIL_FROM ?? "Worthlane <onboarding@resend.dev>",
+        ...(env.EMAIL_REPLY_TO ? { reply_to: env.EMAIL_REPLY_TO } : {}),
         to: [to],
         subject,
         text,

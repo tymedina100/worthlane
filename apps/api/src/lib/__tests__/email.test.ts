@@ -4,6 +4,7 @@ const config = vi.hoisted(() => ({
   NODE_ENV: "production",
   RESEND_API_KEY: "synthetic-provider-key",
   EMAIL_FROM: "Worthlane <support@worthlane.app>",
+  EMAIL_REPLY_TO: "support@worthlane.app",
 }));
 vi.mock("../env", () => ({ env: config }));
 import { sendPasswordResetEmail } from "../email";
@@ -17,6 +18,7 @@ beforeEach(() => {
   Object.assign(config, {
     NODE_ENV: "production", RESEND_API_KEY: "synthetic-provider-key",
     EMAIL_FROM: "Worthlane <support@worthlane.app>",
+    EMAIL_REPLY_TO: "support@worthlane.app",
   });
   vi.stubGlobal("fetch", fetchMock);
 });
@@ -31,9 +33,17 @@ describe("transactional email privacy and delivery", () => {
     const body = JSON.parse(options.body);
     expect(body.to).toEqual([recipient]);
     expect(body.from).toBe(config.EMAIL_FROM);
+    expect(body.reply_to).toBe("support@worthlane.app");
     expect(body.text).toContain(code);
     expect(body.html).toContain(code);
     expect(options.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it("omits reply-to when no address is configured", async () => {
+    config.EMAIL_REPLY_TO = "";
+    fetchMock.mockResolvedValue(new Response(null, { status: 200 }));
+    await sendPasswordResetEmail(recipient, code);
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).not.toHaveProperty("reply_to");
   });
 
   it("rejects missing production credentials and sender before any request", async () => {

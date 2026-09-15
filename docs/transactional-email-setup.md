@@ -32,11 +32,14 @@ sent, and no application configuration/deployment performed in this step.
 2. Configure a domain-scoped sending-only API credential through a user credential
    handoff and obtain scoped authorization for production environment changes.
    Do not display or commit the credential.
-3. Prepare explicit sender `Worthlane <no-reply@mail.worthlane.app>` and a support
-   reply-to address. Review the domain's transport protection: the existing default
+3. Prepare explicit sender `Worthlane <no-reply@mail.worthlane.app>` and
+   `EMAIL_REPLY_TO=support@worthlane.app`. The optional reply-to implementation
+   passes seven focused email tests and API typecheck; it is not deployed.
+   Review the domain's transport protection: the existing default
    is Opportunistic TLS, which can fall back to plaintext; Enforced TLS is not yet
    configured. Tracking has not been configured.
-4. Finish PR16 CI, obtain production deployment approval, and verify actual reset
+4. PR16 CI165 passed all four jobs (including PostgreSQL 17/18 and Windows).
+   Obtain production deployment approval and verify actual reset
    delivery to an approved owned mailbox. A Gmail support-alias test is separate
    evidence and does not prove Resend delivery.
 

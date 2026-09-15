@@ -3267,3 +3267,15 @@ Follow-up readback: Resend now reports mail.worthlane.app Verified, with its
 verification event at 10:14 AM Arizona time. DKIM/MX/SPF records all show Verified;
 sending is on and receiving remains off. Credential/configuration, TLS policy,
 approved real delivery and PR16 production deployment remain separate next steps.
+
+## September 15 — Support replies prepared for transactional mail
+
+PR16 CI165 completed successfully in all four jobs at cf07b07. Added optional
+EMAIL_REPLY_TO so automated-message replies can reach support@worthlane.app.
+Seven focused email tests and API typecheck pass for this follow-up change.
+Production sender/reply-to settings and deployment are still pending approval.
+
+Tyler created the sending key in Resend and authorized storage in the Mac login
+Keychain. The key-value dialog is visible; no value was printed or saved in the
+repository. Keychain Access observations time out, so secure storage is not yet
+confirmed. This is distinct from configuring the production API.

@@ -20,6 +20,7 @@ const schema = z
     ANTHROPIC_API_KEY: z.string().optional(),
     RESEND_API_KEY: z.string().optional(),
     EMAIL_FROM: z.string().optional(),
+    EMAIL_REPLY_TO: z.string().optional(),
   });
 
 function loadEnv() {
