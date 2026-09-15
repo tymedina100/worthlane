@@ -126,7 +126,7 @@ export default function LoginPage() {
             </label>
             <div className="login-form__meta">
               <span>Private, encrypted session</span>
-              <span>Secure household access</span>
+              <Link href="/forgot-password">Forgot password?</Link>
             </div>
             <div className="login-error" role="alert" aria-live="polite">
               {error ? <><Icon name="lock" />{error}</> : null}
