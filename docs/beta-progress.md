@@ -3121,3 +3121,21 @@ migrations and passed persisted household checks. API, desktop and website build
 also passed. The production deployment proposal is recorded in
 docs/production-release-proposal.md; merge and deploy remain pending explicit
 approval. This follow-up contains documentation only.
+
+
+## September 15 — Approved merge and frontend production deployment
+
+Tyler approved PR15 merge, connected production builds, additive migration and
+Railway Wait for CI. Applied the single Check Suites false-to-true setting and
+verified staged changes cleared. CI163 on78f6bd0 passed all4 jobs, then PR15
+merged with expected-head guard as890aa8a96ae432a1f33c3434432d53729f071041.
+Post-merge CI164 /34995742197 also passed all4 jobs. Railway deployment
+cde39ce8-4ecc-4dcd-99f8-e7f9024a8778 advanced from Waiting for CI to Building;
+prior PR13 remains active until promotion. Migration is not yet verified.
+
+Vercel production desktop A2zRj1JVsbDzgmW6tPXz1kJk2zCF and website
+9Q7YWHuwjyvXWAKSc9dcJS8ma7ZJ both show Ready at890aa8a with their production
+domains. Read-only HTTP checks: desktop login200, protected dashboard redirects
+to login, website homepage200, Plaid return200, Apple association200 JSON. These
+are deployment/route checks, not authenticated production financial acceptance.
+No store submission or additional Plaid settings/Items were created.
