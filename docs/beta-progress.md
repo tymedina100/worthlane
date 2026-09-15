@@ -3083,3 +3083,20 @@ check. Daily/weekly backup scheduling and a fresh snapshot remain prepared but
 unsaved pending separate metered-storage approval. After backup verification,
 prepare the exact release and migration approval; do not infer deployment
 permission from the Pro upgrade.
+
+
+## September 15 — Approved production backups enabled and snapshot verified
+
+Tyler approved the pending daily/weekly schedule and fresh snapshot. Saved the
+production Postgres volume schedule; reopening Edit Schedule confirmed Daily
+checked (6-day retention), Weekly checked (27-day retention), Monthly unchecked.
+Railway reports the next backup in 7 hours. Created one on-demand backup and
+observed Creating backup transition to a 117 MB entry named 2026-09-15 09:20
+with Restore available. The older Pre-Security-Patch Backup remains present.
+
+This verifies provider snapshot availability, not a restored production database.
+No restore, PITR enablement, deployment, migration, live Plaid call or store
+submission occurred. Backup storage is metered under the approved scope. The
+backup-approval blocker is resolved; next prepare the exact candidate deployment
+and additive migration proposal for scoped approval, retaining other release and
+provider gates.
