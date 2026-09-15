@@ -3334,3 +3334,22 @@ account was changed. See transactional-email-setup.md for provider/deployment ID
 Both Vercel production deployments succeeded on 21f14e7. PR17 CI171 at e8ffdff
 passed all four jobs, including PostgreSQL17/18 and native Windows. The new
 web recovery UI remains unpublished pending separate approval.
+
+## September15 — Persistent account-deletion acceptance
+
+Added a real PostgreSQL integration test invoking the account-deletion and
+refresh route handlers without mocking Prisma. An unauthenticated delete is
+rejected; after owner deletion and Prisma reconnect, owned account/category/
+budget and refresh-session rows are absent, the departing member is REMOVED
+with no user link, and the surviving partner retains exact account/budget rows,
+ACTIVE ownership and a usable refresh session. The custom responsibility becomes
+100% assigned to the remaining member. Deleting that last member then removes
+the empty household and responsibility, again verified after reconnect.
+
+The focused test and API TypeScript check pass against the isolated local
+worthlane_beta_test database at127.0.0.1:55439. Cleanup targets only randomly
+created fixture IDs. No email, real Plaid Item, production deletion or store
+submission occurred. This supplements the existing mocked provider-failure/retry
+tests; it does not claim real provider revocation or release-service deletion.
+App Store Connect currently requires a fresh user sign-in before draft work can
+continue; the sign-in tab is open and user input has been requested.
