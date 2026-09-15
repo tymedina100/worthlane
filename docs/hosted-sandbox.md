@@ -67,3 +67,30 @@ environment. These API assertions do not prove native Link/OAuth return, reminde
 release signing, or final screenshot parity. Those retain their existing local
 evidence and separate release gates. Monitor actual incremental usage, and obtain
 approval before exceeding the agreed budget or starting a paid EAS build.
+
+## Interactive hosted-data check
+
+Started a separate local desktop client on port3403 with an isolated Next output
+directory and `WORTHLANE_API_URL` pointing to the hosted Sandbox above. The existing
+port3402 client was not restarted. This verifies the real browser/BFF against the
+hosted database; it does not claim that the desktop frontend itself is deployed.
+
+- Signed in as the synthetic Morgan account through the rendered login form.
+  Dashboard showed the15 saved personal accounts and $2450 household plan.
+- Created a $100 monthly Food & Drink personal budget through the UI. Success
+  message appeared, and full page reload retained it: $39.80 spent, $60.20 remaining
+  from combined permitted manual/imported synthetic activity. Household plan stayed
+  $2450 and assigned totals were Morgan1320/Avery1130.
+- Signed out, confirmed the login form, then signed in separately as Avery.
+  Dashboard showed no detailed accounts and visible net worth0, while keeping the
+  same equal/assigned/custom household responsibilities.
+- Avery's monthly-plan page showed no personal budgets, private budget total0 and
+  the same2450 household plan. Morgan's private100 budget and account balances were
+  absent.
+- Browser error log was empty on both checked planning views; the owner screenshot
+  rendered the forest/cream layout without a framework error overlay.
+
+The personal budget remains as a synthetic acceptance fixture. Native release
+artifact checks, hosted interactive Link/relink, reminder delivery and final
+reviewer packaging remain separate work; prior local evidence is not replaced by
+this narrower hosted-data verification.
