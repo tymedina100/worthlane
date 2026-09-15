@@ -187,3 +187,23 @@ startup. This is an ad-hoc local package, not a notarized public installer; no
 store upload or submission occurred. Full evidence and archive hash are in
 beta-progress.md. Production banking and authenticated household acceptance were
 not exercised through this candidate.
+
+## App Store draft refresh — September15
+
+User restored App Store Connect sign-in. Saved the review notes with verified
+local PostgreSQL deletion, real Sandbox revocation, hosted email/recovery evidence
+and explicit final-build/reviewer-environment gates. Contact fields use Tyler's
+previously authorized review details. Save returned disabled; manual release
+remains selected and no build was attached.
+
+Uploaded the three unmodified1320x2868 Simulator screenshots already captured in
+`docs/evidence/2026-09-14/store-draft` (custom-budget, household, debt-payoff).
+Reloaded Media Manager: all three persist in6.9-inch, and6.5-inch inherits them.
+These are draft preparation assets, not final artifact-parity approval. Upload
+processing/order changed during the interaction; final editorial order still
+needs review. No Add for Review, submission, publication or paid build occurred.
+
+PR18 merged2e34881 under explicit approval. Both Vercel production deployments
+succeeded (desktop6465691175, site6465684233). Railway skipped unchanged API files;
+PR16 remains Active. Main CI35007532665 has passed PostgreSQL17/18 and Windows;
+the general CI job was still running at this checkpoint.
