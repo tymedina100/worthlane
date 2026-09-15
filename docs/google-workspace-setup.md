@@ -55,11 +55,11 @@ Live `/support`, `/privacy`, and `/terms` each return HTTP 200 and already link 
 
 ## Remaining user action and limits
 
-Google Admin showed two-step verification **off**, not enforced, and no registered
-passkeys/security keys. Tyler has been asked to enroll through their own Google
-Account Security settings; credential enrollment must be completed by the user.
+After Tyler completed enrollment, a refreshed Google Admin security panel showed
+two-step verification **ON** and **one passkey registered**. Organization-wide
+enforcement remains off; this proves the current account's enrollment, not an
+organization-wide enforcement policy or MFA coverage for other service providers.
 Recovery contact information is already configured and was left unchanged.
-Do not mark the internal MFA control verified until enrollment is read back.
 
 No Workspace plan upgrade, new paid service, store submission, bank connection,
 or production application configuration change was performed in this milestone.

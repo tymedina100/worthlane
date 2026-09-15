@@ -1,7 +1,7 @@
 import { env } from "./env";
 
-// Sends transactional email via the Resend HTTP API. In development without
-// RESEND_API_KEY, emails are logged to the console instead.
+// Sends transactional email via the Resend HTTP API. Never log message bodies,
+// recipient addresses, reset codes, or raw provider errors.
 
 interface SendEmailOptions {
   to: string;
@@ -15,28 +15,38 @@ export async function sendEmail({ to, subject, text, html }: SendEmailOptions): 
     if (env.NODE_ENV === "production") {
       throw new Error("RESEND_API_KEY is not configured; cannot send email.");
     }
-    console.log(`[DEV email] To: ${to} | Subject: ${subject}\n${text}`);
+    console.info("[DEV email] Delivery skipped: email provider is not configured.");
     return;
   }
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${env.RESEND_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: env.EMAIL_FROM ?? "Worthlane <onboarding@resend.dev>",
-      to: [to],
-      subject,
-      text,
-      html,
-    }),
-  });
+  if (env.NODE_ENV === "production" && !env.EMAIL_FROM?.trim()) {
+    throw new Error("EMAIL_FROM is not configured; cannot send email.");
+  }
+
+  let res: Response;
+  try {
+    res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      signal: AbortSignal.timeout(10_000),
+      body: JSON.stringify({
+        from: env.EMAIL_FROM ?? "Worthlane <onboarding@resend.dev>",
+        to: [to],
+        subject,
+        text,
+        html,
+      }),
+    });
+  } catch {
+    // Transport exceptions can carry request details. Keep diagnostics generic.
+    throw new Error("Email delivery failed or timed out.");
+  }
 
   if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    throw new Error(`Resend request failed (${res.status}): ${detail.slice(0, 300)}`);
+    throw new Error(`Email provider rejected delivery (${res.status}).`);
   }
 }
 

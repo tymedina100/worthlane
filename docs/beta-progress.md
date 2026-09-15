@@ -3204,3 +3204,24 @@ Internal Workspace MFA remains open: Admin showed two-step verification off,
 and Tyler was asked to complete credential enrollment. App transactional email
 through Resend remains a separate acceptance item; this Gmail proof does not
 close it or the other beta/provider/store gates.
+
+## September 15 — Workspace MFA readback and transactional-email hardening
+
+After Tyler's enrollment, refreshed Google Admin confirms two-step verification
+ON and one registered passkey. Organization-wide enforcement remains off; this
+evidence is limited to the current Workspace account. No credentials were created
+or handled by the agent.
+
+The API email transport no longer logs recipient/reset-code content in development
+or includes raw provider/transport error details in exceptions. Production delivery
+requires an explicit EMAIL_FROM as well as RESEND_API_KEY, and requests now have
+a 10-second abort timeout. Six new tests cover successful payload delivery,
+configuration failure before sending, private provider rejection bodies,
+transport exceptions, abort handling and development log privacy. All 172 API
+tests (25 files) and API typechecking pass. These tests use a stub provider;
+they do not claim actual Resend delivery or hosted password-reset acceptance.
+
+This change is on the review branch only, with no production deployment. Next:
+verify the configured Resend sender/domain and prepare a scoped deployment plus
+approved owned-account reset test. Keep hosted Sandbox, Plaid and store release
+gates open until independently verified.
