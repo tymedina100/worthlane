@@ -118,3 +118,19 @@ subsequent `--verify` runs continue to check this exact privacy boundary. Next:
 diagnose the provider frame load and complete actual interactive Link/OAuth,
 then verify native release parity. Production access approval alone does not close
 these gates. No production configuration changed in this check.
+
+### Provider-frame diagnosis
+
+A fresh retry with browser network diagnostics showed HTTP200 for the hosted-backed
+`/api/plaid/link-token` request and Plaid's `link-initialize.js`. Two Document loads
+failed with `net::ERR_BLOCKED_BY_CLIENT` (`blockedReason: other`). Request URLs,
+tokens and response bodies were not logged. This identifies a browser-level block;
+it does not prove successful provider consent or authorize bypassing protections.
+
+The existing iPhone 16 Pro / iOS18.3 Simulator was booted, and its installed
+Worthlane bundle was found. A local Metro process on8081 was started against the
+hosted Sandbox, with dotenv disabled and AI/paywall/analytics disabled. No native
+rebuild or paid EAS build was started. Native UI control encountered missing/stale
+window errors; no hosted native sign-in or Link completion has been verified.
+Available disk space was about2.3GiB after boot. Avoid a large rebuild until there
+is adequate headroom; reuse the installed development client where compatible.
