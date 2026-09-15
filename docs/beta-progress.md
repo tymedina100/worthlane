@@ -3262,3 +3262,8 @@ provider/credential/transport and real-delivery gates.
 
 PR16 CI165 has passed PostgreSQL17 and18 persisted checks plus Windows packaging;
 the main CI job is still running. Do not report the entire run passed yet.
+
+Follow-up readback: Resend now reports mail.worthlane.app Verified, with its
+verification event at 10:14 AM Arizona time. DKIM/MX/SPF records all show Verified;
+sending is on and receiving remains off. Credential/configuration, TLS policy,
+approved real delivery and PR16 production deployment remain separate next steps.

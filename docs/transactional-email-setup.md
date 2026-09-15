@@ -16,9 +16,10 @@ Both Vercel authoritative nameservers and the local recursive resolver returned
 all three records. The root domain MX still returns `1 smtp.google.com.`;
 Google Workspace DKIM/SPF/DMARC records were not changed by this step.
 
-Clicked Resend's verification action after publication. Domain status remains
-**Pending**, with DNS checking in progress at the last refreshed readback.
-Do not equate public DNS resolution with completed provider verification.
+Clicked Resend's verification action after publication. Refreshed provider
+readback at approximately 10:15 AM Arizona time confirms **Verified**, with
+domain verification event at 10:14 AM. DKIM, MX and SPF each show **Verified**.
+This closes DNS/provider domain verification, not actual API email delivery.
 
 Resend domain: `mail.worthlane.app`, region North Virginia (`us-east-1`). Sending
 is enabled for verification; receiving is **off**. No automatic Vercel integration
@@ -27,7 +28,7 @@ sent, and no application configuration/deployment performed in this step.
 
 ## Next steps
 
-1. Read back the provider's final domain status and each DNS record status.
+1. Completed: provider domain and all three records read back as Verified.
 2. Configure a domain-scoped sending-only API credential through a user credential
    handoff and obtain scoped authorization for production environment changes.
    Do not display or commit the credential.
