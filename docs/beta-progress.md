@@ -3121,3 +3121,168 @@ migrations and passed persisted household checks. API, desktop and website build
 also passed. The production deployment proposal is recorded in
 docs/production-release-proposal.md; merge and deploy remain pending explicit
 approval. This follow-up contains documentation only.
+
+
+## September 15 — Approved merge and frontend production deployment
+
+Tyler approved PR15 merge, connected production builds, additive migration and
+Railway Wait for CI. Applied the single Check Suites false-to-true setting and
+verified staged changes cleared. CI163 on78f6bd0 passed all4 jobs, then PR15
+merged with expected-head guard as890aa8a96ae432a1f33c3434432d53729f071041.
+Post-merge CI164 /34995742197 also passed all4 jobs. Railway deployment
+cde39ce8-4ecc-4dcd-99f8-e7f9024a8778 advanced from Waiting for CI to Building;
+prior PR13 remains active until promotion. Migration is not yet verified.
+
+Vercel production desktop A2zRj1JVsbDzgmW6tPXz1kJk2zCF and website
+9Q7YWHuwjyvXWAKSc9dcJS8ma7ZJ both show Ready at890aa8a with their production
+domains. Read-only HTTP checks: desktop login200, protected dashboard redirects
+to login, website homepage200, Plaid return200, Apple association200 JSON. These
+are deployment/route checks, not authenticated production financial acceptance.
+No store submission or additional Plaid settings/Items were created.
+
+
+## September 15 — Migration applied; health-check port corrected
+
+Railway cde39ce8 built the approved890aa8a candidate and loaded its actual
+Nixpacks @worthlane commands after initial stale configuration display. Startup
+logs at09:42:48 show20260910000100_household_account_matches applied and all
+migrations successful; Next.js then started on3001 and reported Ready. Promotion
+failed at the network health-check stage; prior PR13 remained active.
+
+Service-variable inventory had no PORT. Railway health checks use PORT even
+when public networking targets another fixed port. Added only PORT=3001 to match
+the existing API start command and domain target, reviewed the one-variable diff,
+and applied as a routine correction within the approved deployment. Retry
+212e2203-3683-4b65-8d27-19568dde70bc is building PR15. Do not infer readiness yet.
+No database restore, rollback migration or Plaid changes occurred.
+Reference: https://docs.railway.com/deployments/healthchecks
+
+Build logs also emitted generic ARG/ENV secret-handling warnings from Nixpacks.
+No secret values were inspected or recorded. Image/build-secret isolation remains
+a release-security follow-up; do not treat dependency tests as proof of it.
+
+
+## September 15 — Approved production rollout verified
+
+Railway retry212e2203-3683-4b65-8d27-19568dde70bc is Active and Deployment
+successful on source890aa8a96ae432a1f33c3434432d53729f071041. The merged runtime
+configuration includes the candidate @worthlane build/start commands, expanded
+watch paths and /api/health with120-second timeout. PORT=3001 corrected the
+first deployment health-check mismatch. Public health returns200, no-store and
+{data:{status:ready}}. Vercel website and desktop are also Ready on890aa8a.
+
+Read-only production _prisma_migrations verification confirms
+20260910000100_household_account_matches finished2026-09-15 09:42:48 with one
+applied step. Checksum f406d9b0bb4f28ad84c27251d873f0689748ce48de3fe09bd10534c5b294833b
+exactly matches reviewed migration.sql. No production financial rows were read
+or synthesized, no restore was performed and no new bank Item was created.
+
+This closes approved merge/deployment/migration execution, not the entire beta
+goal. Remaining work includes hosted authenticated acceptance with isolated
+Sandbox data, platform-specific production Plaid return/webhook configuration,
+truthful provider/security controls including build-secret handling, final signed
+artifacts/privacy/reviewer metadata, and public Mac notarization. No store
+submission or further paid service authorization is implied.
+
+## September 15 — Workspace support mail verified
+
+Completed the requested Google Workspace mail setup using the existing Tyler
+mailbox and support alias. Published missing Google SPF and monitoring-only
+DMARC TXT records; both authoritative nameservers returned them. Existing DKIM
+signing and MX routing were already active. Added a support label/filter and
+reply-from-recipient-address preference. Tyler completed Gmail's separate
+send-as popup; support-address sending is now available.
+
+The explicitly approved test reached the support inbox and received the label;
+its reply from support@worthlane.app reached the personal Gmail inbox with
+SPF/DKIM/DMARC all passing. Live support/privacy/terms pages already use the
+correct support address, so no website deployment was needed. See
+[Workspace setup evidence](google-workspace-setup.md) for records, workflow,
+limits and undo steps. No extra paid seat or service was created.
+
+Internal Workspace MFA remains open: Admin showed two-step verification off,
+and Tyler was asked to complete credential enrollment. App transactional email
+through Resend remains a separate acceptance item; this Gmail proof does not
+close it or the other beta/provider/store gates.
+
+## September 15 — Workspace MFA readback and transactional-email hardening
+
+After Tyler's enrollment, refreshed Google Admin confirms two-step verification
+ON and one registered passkey. Organization-wide enforcement remains off; this
+evidence is limited to the current Workspace account. No credentials were created
+or handled by the agent.
+
+The API email transport no longer logs recipient/reset-code content in development
+or includes raw provider/transport error details in exceptions. Production delivery
+requires an explicit EMAIL_FROM as well as RESEND_API_KEY, and requests now have
+a 10-second abort timeout. Six new tests cover successful payload delivery,
+configuration failure before sending, private provider rejection bodies,
+transport exceptions, abort handling and development log privacy. All 172 API
+tests (25 files) and API typechecking pass. These tests use a stub provider;
+they do not claim actual Resend delivery or hosted password-reset acceptance.
+
+This change is on the review branch only, with no production deployment. Next:
+verify the configured Resend sender/domain and prepare a scoped deployment plus
+approved owned-account reset test. Keep hosted Sandbox, Plaid and store release
+gates open until independently verified.
+
+## September 15 — Persisted password-reset single-use protection
+
+Fixed a race in reset-password: the initial unused-code lookup was outside the
+transaction, so concurrent requests could both change the password. The
+transaction now conditionally claims an unused, unexpired code before changing
+the password or revoking refresh sessions. A losing request returns the same
+invalid/expired response. Expiry is rechecked after password hashing.
+
+Ran scripts/test-postgres.sh in a fresh isolated local cluster on port 55448.
+All 25 migrations applied and all 12 persisted integration tests passed, including
+two new password-reset cases. Concurrent attempts produced exactly one success
+and one rejection; only the winning password worked, old refresh/old password
+were rejected, replay was denied, and the winning password remained valid after
+Prisma disconnect/reconnect. Expired codes left the password unchanged. API
+typechecking passes. This does not claim immediate revocation of already-issued
+15-minute access JWTs or actual provider email delivery.
+
+Tyler signed into Resend. Prepared unverified mail.worthlane.app sending-domain
+registration and inspected its exact DKIM plus send.mail MX/SPF requirements.
+Resend receiving remains disabled. Production DNS authorization is requested;
+no DNS record, API credential, email send or application deployment was performed
+as part of this Resend preparation.
+
+## September 15 — Approved Resend DNS records published
+
+Published the three expressly approved Resend records for mail.worthlane.app:
+resend._domainkey.mail TXT, send.mail MX (priority 10), and send.mail SPF TXT.
+Both authoritative Vercel nameservers and a recursive lookup return the exact
+records; root Google MX remains smtp.google.com. Resend verification was started
+and is Pending on refreshed provider readback. Receiving is off, and no API key,
+paid plan, email send, application setting or deployment was included.
+See [transactional email setup](transactional-email-setup.md) for the remaining
+provider/credential/transport and real-delivery gates.
+
+PR16 CI165 has passed PostgreSQL17 and18 persisted checks plus Windows packaging;
+the main CI job is still running. Do not report the entire run passed yet.
+
+Follow-up readback: Resend now reports mail.worthlane.app Verified, with its
+verification event at 10:14 AM Arizona time. DKIM/MX/SPF records all show Verified;
+sending is on and receiving remains off. Credential/configuration, TLS policy,
+approved real delivery and PR16 production deployment remain separate next steps.
+
+## September 15 — Support replies prepared for transactional mail
+
+PR16 CI165 completed successfully in all four jobs at cf07b07. Added optional
+EMAIL_REPLY_TO so automated-message replies can reach support@worthlane.app.
+Seven focused email tests and API typecheck pass for this follow-up change.
+Production sender/reply-to settings and deployment are still pending approval.
+
+Tyler created the sending key in Resend and authorized storage in the Mac login
+Keychain. The key-value dialog is visible; no value was printed or saved in the
+repository. Keychain Access observations time out, so secure storage is not yet
+confirmed. This is distinct from configuring the production API.
+
+Follow-up at 10:25 AM: Keychain Access became responsive. Saved the existing
+Resend key under the expressly approved login Keychain item and verified its
+name/account/kind/keychain metadata. Closed the provider one-time key dialog;
+the API-key list shows Sending access and No activity. No production environment
+change or email was sent. CI168 at 45acc12 is running; fresh production health
+returns ready. The credential-storage blocker is resolved.

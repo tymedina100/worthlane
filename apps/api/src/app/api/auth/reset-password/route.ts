@@ -26,24 +26,29 @@ export async function POST(req: NextRequest) {
     where: { token },
   });
 
-  if (!resetToken || resetToken.usedAt || resetToken.expiresAt < new Date()) {
+  if (!resetToken || resetToken.usedAt || resetToken.expiresAt <= new Date()) {
     return err("Invalid or expired reset code", 400);
   }
 
   const passwordHash = await hashPassword(newPassword);
-  const now = new Date();
-
-  await prisma.$transaction(async (tx) => {
+  const consumed = await prisma.$transaction(async (tx) => {
+    // Recheck while claiming the row: concurrent requests must not both use a
+    // code that was unused when they read it before password hashing.
+    const now = new Date();
+    const claimed = await tx.passwordResetToken.updateMany({
+      where: { id: resetToken.id, usedAt: null, expiresAt: { gt: now } },
+      data: { usedAt: now },
+    });
+    if (claimed.count !== 1) return false;
     await tx.user.update({
       where: { id: resetToken.userId },
       data: { passwordHash },
     });
-    await tx.passwordResetToken.update({
-      where: { id: resetToken.id },
-      data: { usedAt: now },
-    });
     await revokeAllUserSessions(resetToken.userId, tx);
+    return true;
   });
+
+  if (!consumed) return err("Invalid or expired reset code", 400);
 
   return ok({ message: "Password updated. Please sign in." });
 }
