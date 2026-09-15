@@ -122,6 +122,8 @@ model Account {
   user              User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions      Transaction[]
   householdAccesses HouseholdAccountAccess[]
+  matchesAsFirst HouseholdAccountMatch[] @relation("MatchFirst")
+  matchesAsSecond HouseholdAccountMatch[] @relation("MatchSecond")
 
   @@unique([userId, bankIdentity])
 }
@@ -456,6 +458,7 @@ model Household {
 
   members          HouseholdMember[]
   accountAccesses  HouseholdAccountAccess[]
+  accountMatches HouseholdAccountMatch[]
   responsibilities HouseholdResponsibility[]
   goals            HouseholdGoal[]
 }
@@ -602,4 +605,21 @@ model HouseholdGoalContribution {
 
   @@index([goalId, createdAt])
   @@index([memberId, createdAt])
+}
+
+// Explicit household-scoped identity confirmation when a bank supplies no identity.
+model HouseholdAccountMatch {
+  id String @id @default(cuid())
+  householdId String
+  firstAccountId String
+  secondAccountId String
+  firstConfirmedAt DateTime?
+  secondConfirmedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  firstAccount Account @relation("MatchFirst", fields: [firstAccountId], references: [id], onDelete: Cascade)
+  secondAccount Account @relation("MatchSecond", fields: [secondAccountId], references: [id], onDelete: Cascade)
+  @@unique([householdId, firstAccountId, secondAccountId])
+  @@index([householdId])
 }

@@ -8,7 +8,7 @@ const expo = new Expo();
  * Sends a push notification to a user if they have a registered push token.
  * Silently no-ops if the user has no token or if the token is invalid.
  */
-export async function sendPushToUser(userId: string, message: string): Promise<void> {
+export async function sendPushToUser(userId: string): Promise<void> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { pushToken: true },
@@ -20,7 +20,8 @@ export async function sendPushToUser(userId: string, message: string): Promise<v
   const msg: ExpoPushMessage = {
     to: user.pushToken,
     sound: "default",
-    body: message,
+    title: "Worthlane",
+    body: "A planning update is ready. Open Worthlane to review it.",
     data: {},
   };
 

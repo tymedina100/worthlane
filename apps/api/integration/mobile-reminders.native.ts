@@ -4,6 +4,7 @@ const mocks = vi.hoisted(() => ({
   storage: new Map<string, string>(),
   cancel: vi.fn(), dismiss: vi.fn(), scheduled: vi.fn(), presented: vi.fn(),
   permission: vi.fn(), requestPermission: vi.fn(), schedule: vi.fn(),
+  handler: vi.fn(),
 }));
 vi.mock('@react-native-async-storage/async-storage', () => ({ default: {
   getItem: async (key: string) => mocks.storage.get(key) ?? null,
@@ -12,10 +13,11 @@ vi.mock('@react-native-async-storage/async-storage', () => ({ default: {
 } }));
 vi.mock('react-native', () => ({ Platform: { OS: 'ios' } }));
 vi.mock('expo-notifications', () => ({
+  setNotificationHandler: mocks.handler,
   cancelScheduledNotificationAsync: mocks.cancel, dismissNotificationAsync: mocks.dismiss,
   getAllScheduledNotificationsAsync: mocks.scheduled, getPresentedNotificationsAsync: mocks.presented,
   getPermissionsAsync: mocks.permission, requestPermissionsAsync: mocks.requestPermission,
-  scheduleNotificationAsync: mocks.schedule, SchedulableTriggerInputTypes: { DATE: 'date' },
+  scheduleNotificationAsync: mocks.schedule, SchedulableTriggerInputTypes: { DATE: 'date', TIME_INTERVAL: 'timeInterval' },
 }));
 const item = { id: 'bill', name: 'Private medical bill', dueDate: '2099-09-20', reminderTiming: 'ONE_DAY_BEFORE', isPaid: false, isActive: true } as UpcomingObligation;
 beforeEach(() => {
@@ -24,6 +26,39 @@ beforeEach(() => {
   mocks.permission.mockResolvedValue({ status: 'granted' }); mocks.schedule.mockResolvedValue('notification');
 });
 describe('mobile reminder session isolation (mock native adapters)', () => {
+  it('reports only the current login test history and distinguishes pending from missing', async () => {
+    const r = await import('../../mobile/src/lib/obligation-reminders');
+    await r.setReminderSession('alex');
+    const data = { reminderTest: true, reminderUserId: 'alex' };
+    mocks.presented.mockResolvedValue([{ request: { content: { data } } }]);
+    expect(await r.getTestReminderStatus('alex')).toBe('presented');
+    mocks.scheduled.mockResolvedValue([{ content: { data } }]);
+    expect(await r.getTestReminderStatus('alex')).toBe('pending');
+    mocks.scheduled.mockResolvedValue([]);
+    mocks.presented.mockResolvedValue([{ request: { content: { data: { ...data, reminderUserId: 'sam' } } } }]);
+    expect(await r.getTestReminderStatus('alex')).toBe('unknown');
+    expect(await r.getTestReminderStatus('sam')).toBe('stale');
+  });
+  it('clears the old test history before scheduling a new test', async () => {
+    const r = await import('../../mobile/src/lib/obligation-reminders');
+    await r.setReminderSession('alex');
+    mocks.presented.mockResolvedValue([{ request: { identifier: 'old-test', content: { data: { reminderTest: true, reminderUserId: 'alex' } } } }]);
+    await r.sendTestReminder('alex');
+    expect(mocks.dismiss).toHaveBeenCalledWith('old-test');
+    expect(mocks.schedule).toHaveBeenCalledOnce();
+  });
+  it('presents current-login foreground reminders but suppresses old-login and signed-out deliveries', async () => {
+    const r = await import('../../mobile/src/lib/obligation-reminders');
+    const handle = mocks.handler.mock.calls[0][0].handleNotification;
+    const notification = { request: { content: { data: { reminderUserId: 'alex', reminderTest: true } } } };
+    expect((await handle(notification)).shouldShowBanner).toBe(false);
+    await r.setReminderSession('alex');
+    expect(await handle(notification)).toEqual({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false });
+    await r.setReminderSession('sam');
+    expect((await handle(notification)).shouldShowList).toBe(false);
+    await r.setReminderSession(null);
+    expect((await handle(notification)).shouldPlaySound).toBe(false);
+  });
   it('removes legacy/other-user schedules and delivered private reminders, preserves unrelated notifications', async () => {
     mocks.scheduled.mockResolvedValue([
       { identifier: 'legacy', content: { data: { obligationId: 'old' } } },
@@ -132,4 +167,42 @@ describe('mobile reminder session isolation (mock native adapters)', () => {
     } finally { vi.useRealTimers(); }
   });
 
+});
+
+
+it('schedules a generic test, replaces pending tests and cancels it on logout', async () => {
+  const r = await import('../../mobile/src/lib/obligation-reminders');
+  await r.setReminderSession('alex');
+  mocks.scheduled.mockResolvedValue([{ identifier: 'old-test', content: { data: { reminderTest: true, reminderUserId: 'alex' } } }]);
+  const beforeSchedule = Date.now();
+  expect(await r.sendTestReminder('alex')).toBe('scheduled');
+  expect(mocks.cancel).toHaveBeenCalledWith('old-test');
+  const payload = mocks.schedule.mock.calls[0][0];
+  expect(payload.trigger.type).toBe('date');
+  expect(payload.trigger.date).toBeInstanceOf(Date);
+  expect(payload.trigger.date.getTime()).toBeGreaterThanOrEqual(beforeSchedule + 10_000);
+  expect(payload.trigger.date.getTime()).toBeLessThanOrEqual(Date.now() + 10_000);
+  expect(payload.content.body).not.toContain(item.name);
+  expect(payload.content.data).toEqual({ reminderTest: true, reminderUserId: 'alex' });
+  mocks.scheduled.mockResolvedValue([{ identifier: 'test', content: payload.content }]);
+  mocks.presented.mockResolvedValue([{ request: { identifier: 'delivered-test', content: payload.content } }]);
+  await r.setReminderSession(null);
+  expect(mocks.cancel).toHaveBeenCalledWith('test');
+  expect(mocks.dismiss).toHaveBeenCalledWith('delivered-test');
+});
+it('does not schedule a test after permission denial or a session switch', async () => {
+  const r = await import('../../mobile/src/lib/obligation-reminders');
+  await r.setReminderSession('alex');
+  mocks.permission.mockResolvedValue({ status: 'denied' });
+  mocks.requestPermission.mockResolvedValue({ status: 'denied' });
+  expect(await r.sendTestReminder('alex')).toBe('denied');
+  let finish!: (result: { status: string }) => void;
+  mocks.requestPermission.mockImplementation(() => new Promise(resolve => { finish = resolve; }));
+  const test = r.sendTestReminder('alex');
+  await vi.waitFor(() => expect(finish).toBeDefined());
+  const logout = r.setReminderSession(null);
+  finish({ status: 'granted' });
+  expect(await test).toBe('not-scheduled');
+  await logout;
+  expect(mocks.schedule).not.toHaveBeenCalled();
 });

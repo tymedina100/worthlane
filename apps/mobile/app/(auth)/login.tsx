@@ -1,3 +1,4 @@
+import { BrandIdentity } from "@/components/BrandIdentity";
 import { useState, useEffect, useCallback } from "react";
 import {
   View,
@@ -122,8 +123,8 @@ export default function LoginScreen() {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.header}>
-        <Text style={styles.logo}>Worthlane</Text>
-        <Text style={styles.tagline}>Your money, finally making sense.</Text>
+        <BrandIdentity />
+        <Text style={styles.tagline}>A shared plan. Space for what’s yours.</Text>
       </View>
 
       <View style={styles.form}>

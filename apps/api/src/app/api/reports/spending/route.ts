@@ -1,3 +1,4 @@
+import { personalLedger } from "@/lib/personal-ledger";
 import { spendingWhere, incomeWhere } from "@/lib/spending-treatment";
 import { NextRequest } from "next/server";
 import { prisma } from "@worthlane/db";
@@ -15,6 +16,7 @@ export async function GET(req: NextRequest) {
     return unauthorized();
   }
 
+  const ledger = await personalLedger(userId);
   const now = new Date();
   const timeZone = await financialTimeZone(userId);
   const localMonth = monthRangeInTimeZone(now, timeZone);
@@ -35,16 +37,16 @@ export async function GET(req: NextRequest) {
   const [currentGroups, previousGroups, incomeAgg] = await Promise.all([
     prisma.transaction.groupBy({
       by: ["categoryId"],
-      where: { userId, date: { gte: current.start, lt: current.end, lte: now }, ...spendingWhere },
+      where: { date: { gte: current.start, lt: current.end, lte: now }, ...spendingWhere, ...ledger.transactionWhere },
       _sum: { amount: true },
     }),
     prisma.transaction.groupBy({
       by: ["categoryId"],
-      where: { userId, date: { gte: previous.start, lt: previous.end, lte: now }, ...spendingWhere },
+      where: { date: { gte: previous.start, lt: previous.end, lte: now }, ...spendingWhere, ...ledger.transactionWhere },
       _sum: { amount: true },
     }),
     prisma.transaction.aggregate({
-      where: { userId, date: { gte: current.start, lt: current.end, lte: now }, ...incomeWhere },
+      where: { date: { gte: current.start, lt: current.end, lte: now }, ...incomeWhere, ...ledger.transactionWhere },
       _sum: { amount: true },
     }),
   ]);

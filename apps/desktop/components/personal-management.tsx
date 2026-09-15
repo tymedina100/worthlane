@@ -25,6 +25,56 @@ function Feedback({ error, success }: { error: string | null; success: string | 
   );
 }
 
+export function ManualTransactionManager({ personal, onManage }: { personal: PersonalWorkspaceData; onManage: ManagePersonal }) {
+  const [accountId, setAccountId] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState("");
+  const [flow, setFlow] = useState("expense");
+  const [date, setDate] = useState("");
+  useEffect(() => {
+    const now = new Date();
+    setDate(new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 16));
+  }, []);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const accounts = personal.accounts.filter(account => account.source === "MANUAL");
+  return <section className="personal-management-block" aria-label="Add manual activity">
+    <h3>Add manual activity</h3>
+    <p>Choose the account that paid and the matching category. This does not change the category's agreed responsibility. Transfers and card repayments are excluded from spending.</p>
+    <form className="management-form" onSubmit={async event => {
+      event.preventDefault();
+      if (pending) return;
+      setError(null); setSuccess(null);
+      const value = parseAmount(amount);
+      const timestamp = new Date(date);
+      if (value === null || !accounts.some(account => account.id === accountId) || !personal.categories.some(category => category.id === categoryId) || !description.trim() || !Number.isFinite(timestamp.getTime())) {
+        setError("Choose an account, category, date and positive amount with at most two decimal places."); return;
+      }
+      setPending(true);
+      try {
+        await onManage({ path: "/transactions", method: "POST", body: {
+          accountId, categoryId, merchantName: description.trim(), date: timestamp.toISOString(),
+          amount: flow === "income" || flow === "refund" ? -value : value,
+          spendingTreatment: flow === "refund" ? "REFUND" : flow === "transfer" ? "EXCLUDED" : "AUTO",
+        } });
+        setAmount(""); setDescription(""); setSuccess("Activity saved. Totals reflect the category and budget treatment.");
+      } catch (caught) { setError(caught instanceof Error ? caught.message : "Activity could not be saved."); }
+      finally { setPending(false); }
+    }}>
+      <label><span>Paid from</span><select required value={accountId} onChange={event => setAccountId(event.target.value)}><option value="">Choose a manual account</option>{accounts.map(account => <option key={account.id} value={account.id}>{account.name}</option>)}</select></label>
+      <label><span>Activity category</span><select required value={categoryId} onChange={event => setCategoryId(event.target.value)}><option value="">Choose a category</option>{personal.categories.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
+      <label><span>Description</span><input required maxLength={200} value={description} onChange={event => setDescription(event.target.value)} /></label>
+      <label><span>Activity amount $</span><input required inputMode="decimal" value={amount} onChange={event => setAmount(event.target.value)} /></label>
+      <label><span>Activity type</span><select value={flow} onChange={event => setFlow(event.target.value)}><option value="expense">Expense</option><option value="refund">Refund</option><option value="income">Income</option><option value="transfer">Transfer or card repayment</option></select></label>
+      <label><span>Date and time (your local time)</span><input required type="datetime-local" value={date} onChange={event => setDate(event.target.value)} /></label>
+      <button type="submit" className="button button--primary" disabled={pending || !accounts.length}>{pending ? "Saving…" : "Save activity"}</button>
+      {!accounts.length && <p>Add a manual account in Accounts &amp; privacy first.</p>}
+    </form><Feedback error={error} success={success} />
+  </section>;
+}
+
 export function PersonalBudgetManager({
   personal,
   onManage,

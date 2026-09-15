@@ -17,6 +17,7 @@ const { mockPrisma, MockPrismaClientKnownRequestError } = vi.hoisted(() => {
       findUniqueOrThrow: vi.fn(),
     },
     account: { findMany: vi.fn() },
+    householdAccountMatch: { findMany: vi.fn().mockResolvedValue([]) },
     householdResponsibility: { findMany: vi.fn() },
     householdGoal: { findMany: vi.fn(), findFirst: vi.fn(), update: vi.fn() },
     householdGoalContribution: { create: vi.fn() },

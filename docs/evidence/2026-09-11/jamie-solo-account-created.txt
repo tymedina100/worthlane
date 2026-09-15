@@ -1,0 +1,131 @@
+Skip to planning workspace
+worthlane
+HOUSEHOLD
+My plan
+Jamie
+WORKSPACE
+Overview
+Alt+1
+Monthly plan
+Alt+2
+Accounts & privacy
+Alt+3
+Goals & bills
+Alt+4
+Reports
+Alt+5
+Privacy stays personal
+You decide what your partner sees.
+J
+Jamie
+Household member
+
+ACCOUNTS & PRIVACY
+
+Your accounts. Your choice.
+
+Connect a bank or add an account, then choose what to share.
+
+Updated 2:01 PM
+VISIBLE NET WORTH
+$1,234.56
+
+Personal accounts plus partner detail or summaries shared with you
+
+YOUR ACCOUNTS
+1
+
+0 connected institutions; 0 need attention
+
+HOUSEHOLD DETAIL ACCESS
+0
+
+Accounts currently shared with full household detail
+
+Find an account
+Your account source
+All sources
+Plaid connected
+Manual
+Household visibility
+All access levels
+Personal
+Shared detail
+Clear filters
+
+PERSONAL OWNERSHIP
+
+Your connected accounts
+
+Connection health and balances from your existing Worthlane account.
+
+Live connection status
+Connect bank
+
+Imported spending uses posted transactions. Pending bank authorizations are excluded until they post.
+
+Bank-labeled transfers and credit card payments are excluded from spending and income. You can change this in Transactions.
+
+No bank is connected yet. Connect one above or add a manual account below. Accounts stay personal until you choose to share.
+
+Jamie wallet
+Checking
+Manual account
+Manual
+$1,234.56
+Connected the same joint account twice?
+
+PERSONAL ACCOUNT CONTROLS
+
+Manage manual accounts
+
+Add or edit accounts that are not connected through Plaid.
+
+Working on
++ New manual account
+Jamie wallet
+Name
+Institution optional
+Type
+Checking
+Savings
+Credit
+Investment
+Loan
+Other
+Current balance
+$
+Add manual account
+Jamie wallet was added as a manual account.
+
+HOUSEHOLD PRIVACY MAP
+
+What Jamie can see
+
+Account owners can change partner access here; every view follows the saved permission.
+
+Full detail
+Summary only
+Jamie wallet
+Jamie · You
+Personal
+Summary only
+Shared detail
+View activity
+$1,234.56
+
+SEPARATE LOGINS, ONE HOUSEHOLD
+
+Household members
+
+Invite your partner even before they register. Share the private code directly; they must sign in with the invited email and accept.
+
+J
+J
+Jamie · You
+Owner · Separate Worthlane login
+Partner email
+Display name optional
+Create invitation code
+Personal detail stays private by default; shared data follows household permissions.
+Keyboard: Alt+1–5 switches workspace views · America/Phoenix

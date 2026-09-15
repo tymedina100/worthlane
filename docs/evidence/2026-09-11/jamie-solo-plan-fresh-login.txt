@@ -1,0 +1,104 @@
+- button "Open Next.js Dev Tools" [expanded=false, ref=e36]
+- link "Skip to planning workspace" [ref=e1]
+- link "Worthlane worthlane" [ref=e2]
+- link "Overview Alt+1" [ref=e7]
+- link "Monthly plan Alt+2" [ref=e8]
+- link "Accounts & privacy Alt+3" [ref=e9]
+- link "Goals & bills Alt+4" [ref=e10]
+- link "Reports Alt+5" [ref=e11]
+- button "Sign out" [ref=e3]
+- heading "Make room for what matters." [level=1, ref=e12]
+- button "Refresh planning data" [ref=e13]
+- region "Goals summary" [ref=e4]
+- region "Design a shared goal" [ref=e5]
+  - heading "Design a shared goal" [level=2, ref=e14]
+  - combobox "Working on" [expanded=false, ref=e27]: + New shared goal
+    - option "+ New shared goal" [selected, ref=e43]
+  - textbox "Name" [required, ref=e37]
+  - textbox "Target amount $" [required, ref=e38]
+  - spinbutton "Month Month" [ref=e72]: 0
+  - spinbutton "Day Day" [ref=e73]: 0
+  - spinbutton "Year Year" [ref=e74]: 0
+  - button "Show date picker" [ref=e44]
+  - combobox "Contribution plan" [expanded=false, ref=e39]: Equal
+    - option "Equal" [selected, ref=e64]
+    - option "Custom dollars" [ref=e65]
+    - option "Income proportional" [ref=e66]
+  - button "Create shared goal" [ref=e28]
+- heading "Bank debt details" [level=2, ref=e15]
+- heading "Debt payoff plan" [level=2, ref=e16]
+- button "New plan" [ref=e17]
+- button "Open Jamie solo payoff" [ref=e18]
+- textbox "Plan name" [required, ref=e45]: Jamie solo payoff
+- spinbutton "Month Month" [ref=e91]: 9
+- spinbutton "Year Year" [ref=e92]: 2026
+- button "Show month picker" [ref=e67]
+- spinbutton "Monthly payment budget (USD)" [required, ref=e46]: 50
+- combobox "Method" [expanded=false, ref=e47]: Avalanche — highest APR first
+  - option "Avalanche — highest APR first" [selected, ref=e75]
+  - option "Snowball — smallest balance first" [ref=e76]
+- textbox "Name" [required, ref=e48]: Jamie test card
+- spinbutton "Current balance (USD)" [required, ref=e49]: 100
+- spinbutton "Minimum monthly payment" [required, ref=e50]: 10
+- spinbutton "Ordinary APR (%)" [required, ref=e51]: 0
+- spinbutton "Statement balance (optional)" [ref=e52]: 90
+- spinbutton "Month Month" [ref=e93]: 9
+- spinbutton "Day Day" [ref=e94]: 25
+- spinbutton "Year Year" [ref=e95]: 2026
+- button "Show date picker" [ref=e68]
+- spinbutton "Promo APR (%)" [ref=e53]: 0
+- spinbutton "Month Month" [ref=e96]: 0
+- spinbutton "Day Day" [ref=e97]: 0
+- spinbutton "Year Year" [ref=e98]: 0
+- button "Show date picker" [ref=e69]
+- button "Remove debt 1" [disabled, ref=e40]
+- button "Add debt" [ref=e29]
+- button "Preview estimate" [ref=e30]
+- button "Save plan" [ref=e31]
+- heading "Estimated payoff: 2026-10" [level=3, ref=e19]
+- heading "First month's payments" [level=3, ref=e20]
+- heading "Due dates from the saved plan" [level=3, ref=e21]
+- button "Add Jamie test card: $10.00 due 2026-09-25 to Upcoming" [ref=e22]
+- heading "Upcoming bills and payments" [level=2, ref=e23]
+- button "New upcoming item" [ref=e24]
+- button "Refresh upcoming items" [ref=e25]
+- button "Edit Jamie internet" [ref=e32]
+- button "Record paid and advance date" [ref=e33]
+- textbox "Name" [required, ref=e54]
+- spinbutton "Amount (USD)" [required, ref=e55]
+- spinbutton "Month Month" [ref=e99]: 0
+- spinbutton "Day Day" [ref=e100]: 0
+- spinbutton "Year Year" [ref=e101]: 0
+- button "Show date picker" [ref=e70]
+- combobox "Type" [expanded=false, ref=e56]: Bill
+  - option "Bill" [selected, ref=e77]
+  - option "Credit card" [ref=e78]
+  - option "Subscription" [ref=e79]
+  - option "Other" [ref=e80]
+- combobox "Repeat" [expanded=false, ref=e57]: One date only
+  - option "One date only" [selected, ref=e81]
+  - option "Weekly" [ref=e82]
+  - option "Every two weeks" [ref=e83]
+  - option "Monthly" [ref=e84]
+  - option "Quarterly" [ref=e85]
+  - option "Yearly" [ref=e86]
+- textbox "Account reference (optional)" [ref=e58]
+- checkbox "Active" [checked=true, ref=e41]
+- button "Save upcoming item" [ref=e34]
+- region "Your personal goals" [ref=e6]
+  - heading "Your personal goals" [level=2, ref=e26]
+  - combobox [expanded=false, ref=e35]: + New personal goal
+    - option "+ New personal goal" [selected, ref=e59]
+  - textbox "Name" [required, ref=e60]
+  - textbox "Target $" [required, ref=e61]
+  - textbox "Current $" [required, ref=e62]: 0.00
+  - spinbutton "Month Month" [ref=e102]: 0
+  - spinbutton "Day Day" [ref=e103]: 0
+  - spinbutton "Year Year" [ref=e104]: 0
+  - button "Show date picker" [ref=e71]
+  - combobox "Goal type" [expanded=false, ref=e63]: Savings
+    - option "Savings" [selected, ref=e87]
+    - option "Debt payoff" [ref=e88]
+    - option "Purchase" [ref=e89]
+    - option "Emergency fund" [ref=e90]
+  - button "Create personal goal" [ref=e42]

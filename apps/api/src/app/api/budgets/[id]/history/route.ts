@@ -3,7 +3,8 @@ import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
 import { ok, unauthorized, notFound } from "@/lib/response";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   let userId: string;
   try {
     ({ sub: userId } = getAuthUser(req));

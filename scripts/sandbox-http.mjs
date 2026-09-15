@@ -26,18 +26,28 @@ export async function sandboxHttp(databaseUrl) {
     async cleanup() {
       let failed = 0;
       try {
-        for (const item of await prisma.plaidItem.findMany({ select: { id: true, accessTokenEncrypted: true } })) {
+        for (const item of await prisma.plaidItem.findMany({ select: { id: true, userId: true, itemId: true, accessTokenEncrypted: true } })) {
           if (baseline.has(item.id)) continue;
           try {
             const [iv, tag, encrypted] = item.accessTokenEncrypted.split('.').map(value => Buffer.from(value, 'base64'));
             const cipher = createDecipheriv('aes-256-gcm', key, iv); cipher.setAuthTag(tag);
             const token = Buffer.concat([cipher.update(encrypted), cipher.final()]).toString('utf8');
-            await plaid.itemRemove({ access_token: token });
+            try { await plaid.itemRemove({ access_token: token }); }
+            catch (error) {
+              if (error?.response?.data?.error_code !== 'ITEM_NOT_FOUND') throw error;
+            }
+            // The encryption key belongs to this run. Retaining these rows
+            // would advertise dead connections that no later run can decrypt.
+            // Account deletion cascades only this fixture's imported activity.
+            await prisma.$transaction([
+              prisma.account.deleteMany({ where: { userId: item.userId, plaidItemId: item.itemId } }),
+              prisma.plaidItem.delete({ where: { id: item.id } }),
+            ]);
           } catch { failed++; }
         }
       } finally { await prisma.$disconnect(); }
       assert.equal(failed, 0, 'Some temporary Sandbox Items could not be removed; investigate before rerunning.');
-      console.log('Temporary HTTP Sandbox Items removed.');
+      console.log('Temporary HTTP Sandbox Items and their local account data removed.');
     },
   };
 }

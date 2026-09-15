@@ -3,12 +3,14 @@ export function formatCurrencyMinor(
   currency = "USD",
   options: { compact?: boolean; hideCents?: boolean } = {}
 ) {
+  // Compact charts may abbreviate amounts; financial totals must retain cents.
+  const omitCents = options.compact || (options.hideCents && valueMinor % 100 === 0);
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
     notation: options.compact ? "compact" : "standard",
-    maximumFractionDigits: options.hideCents || options.compact ? 0 : 2,
-    minimumFractionDigits: options.hideCents || options.compact ? 0 : 2,
+    maximumFractionDigits: omitCents ? 0 : 2,
+    minimumFractionDigits: omitCents ? 0 : 2,
   }).format(valueMinor / 100);
 }
 

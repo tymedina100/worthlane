@@ -112,9 +112,9 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            // EAS injects the private release signing configuration before building.
+            // Local release builds must configure their own upload key as well.
+            signingConfig null
             def enableShrinkResources = findProperty('android.enableShrinkResourcesInReleaseBuilds') ?: 'false'
             shrinkResources enableShrinkResources.toBoolean()
             minifyEnabled enableMinifyInReleaseBuilds
@@ -182,3 +182,5 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+apply from: './release-signing-check.gradle'

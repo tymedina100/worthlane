@@ -28,7 +28,8 @@ async function updateVersion(id: string, userId: string, expected: string, data:
 }
 const conflict = () => err("This item changed. Refresh Upcoming and reopen it before retrying; your changes were not applied.", 409, "CONFLICT");
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const owned = await ownItem(req, params.id);
   if ("response" in owned) return owned.response;
   const parsed = upcomingEditSchema.safeParse(await req.json().catch(() => null));
@@ -40,7 +41,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   return ok(serialize(row, await financialTimeZone(owned.userId)));
 }
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const owned = await ownItem(req, params.id);
   if ("response" in owned) return owned.response;
   const parsed = upcomingActionSchema.safeParse(await req.json().catch(() => null));
@@ -58,7 +60,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   return ok(serialize(row, await financialTimeZone(owned.userId)));
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const owned = await ownItem(req, params.id);
   if ("response" in owned) return owned.response;
   await prisma.upcomingObligation.delete({ where: { id: params.id } });

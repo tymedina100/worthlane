@@ -24,7 +24,8 @@ const importedUpdateSchema = z.object({
   isImpulse: z.boolean().optional(),
 });
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   let userId: string;
   try {
     ({ sub: userId } = getAuthUser(req));
@@ -63,6 +64,14 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       }
     : parsedImported!.data;
 
+  if (updateData?.categoryId) {
+    const category = await prisma.category.findFirst({
+      where: { id: updateData.categoryId, OR: [{ isSystem: true }, { userId }] },
+      select: { id: true },
+    });
+    if (!category) return err("Category not found", 404);
+  }
+
   const treatment = updateData?.spendingTreatment ?? tx.spendingTreatment;
   const amount = parsedManual?.data.amount ?? tx.amount.toNumber();
   if (!validSpendingTreatment(amount, treatment)) {
@@ -99,7 +108,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   });
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   let userId: string;
   try {
     ({ sub: userId } = getAuthUser(req));

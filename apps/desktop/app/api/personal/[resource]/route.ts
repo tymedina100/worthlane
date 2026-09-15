@@ -42,6 +42,18 @@ function validMoney(value: unknown, { allowZero = false }: { allowZero?: boolean
 
 function validateCollectionMutation(resource: string, body: unknown): Record<string, unknown> | null {
   if (!isRecord(body)) return null;
+  if (resource === "transactions") {
+    if (!hasOnlyKeys(body, ["accountId", "categoryId", "amount", "date", "merchantName", "spendingTreatment"])) return null;
+    if (typeof body.accountId !== "string" || !body.accountId.trim() ||
+        typeof body.categoryId !== "string" || !body.categoryId.trim() ||
+        typeof body.amount !== "number" || !validMoney(Math.abs(body.amount)) ||
+        Math.abs(body.amount * 100 - Math.round(body.amount * 100)) > 0.00001 ||
+        typeof body.date !== "string" || !/^\d{4}-\d{2}-\d{2}T/.test(body.date) || Number.isNaN(Date.parse(body.date)) ||
+        typeof body.merchantName !== "string" || !body.merchantName.trim() || body.merchantName.length > 200 ||
+        !["AUTO", "REFUND", "EXCLUDED"].includes(String(body.spendingTreatment)) ||
+        (body.spendingTreatment === "REFUND" && body.amount >= 0)) return null;
+    return body;
+  }
   if (resource === "budgets") {
     if (!hasOnlyKeys(body, ["categoryId", "amount", "period", "rollover"])) return null;
     if (
@@ -106,7 +118,7 @@ export async function POST(
   if (originError) return originError;
 
   const { resource } = await params;
-  if (!(["accounts", "budgets", "goals"] as string[]).includes(resource)) {
+  if (!(["accounts", "budgets", "goals", "transactions"] as string[]).includes(resource)) {
     return errorResponse("Personal finance mutation not found", 404, "NOT_FOUND");
   }
   const body = validateCollectionMutation(resource, await request.json().catch(() => null));

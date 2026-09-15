@@ -1,3 +1,4 @@
+import { personalLedger } from "@/lib/personal-ledger";
 import { NextRequest } from "next/server";
 import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
@@ -24,7 +25,7 @@ export async function GET(req: NextRequest) {
   since.setDate(since.getDate() - range);
 
   const [accounts, snapshots] = await Promise.all([
-    prisma.account.findMany({ where: { userId } }),
+    personalLedger(userId).then(ledger => ledger.accounts),
     prisma.netWorthSnapshot.findMany({
       where: { userId, date: { gte: since } },
       orderBy: { date: "asc" },

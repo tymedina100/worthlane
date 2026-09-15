@@ -1,0 +1,8 @@
+{
+  "applicationIdentifier": "5FBXR5M5PJ.com.worthlane.mobile",
+  "associatedDomains": [
+    "applinks:worthlane.app"
+  ],
+  "liveAssociationMatches": true,
+  "evidence": "Built simulator executable __TEXT.__entitlements matches live HTTPS AASA; this is configuration evidence, not successful OAuth."
+}

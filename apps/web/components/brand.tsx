@@ -1,12 +1,6 @@
-﻿import Image from "next/image";
 import Link from "next/link";
 
-type BrandMarkProps = { className?: string; label?: string };
-
-export function BrandMark({ className, label }: BrandMarkProps) {
-  return <Image src="/brand/worthlane-symbol.png" alt={label ?? ""} aria-hidden={label ? undefined : true} className={className} width={500} height={500} />;
+export function BrandMark({ className = "", label }: { className?: string; label?: string }) {
+  return <svg className={`brand-mark ${className}`} viewBox="0 0 48 48" fill="none" role={label ? "img" : undefined} aria-label={label} aria-hidden={label ? undefined : true}><path d="M6 13l9 23 9-17 9 17 9-23" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M18 9h12" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>;
 }
-
-export function BrandLockup() {
-  return <Link href="/" className="brand-lockup" aria-label="Worthlane home"><Image src="/brand/worthlane-horizontal-lockup.png" alt="Worthlane" className="brand-lockup__image" width={866} height={288} priority /></Link>;
-}
+export function BrandLockup() { return <Link href="/" className="brand-lockup" aria-label="Worthlane home"><BrandMark /><span>worthlane</span></Link>; }

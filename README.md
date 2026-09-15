@@ -31,8 +31,8 @@ analytics. Those integrations remain isolated and disabled by default.
 
 ## Multi-platform household milestone
 
-- New users can create an owner household and invite one existing Worthlane
-  login; the target must explicitly accept from desktop or mobile.
+- New users can create an owner household and invite one partner, including someone who
+  still needs to register; the target must explicitly accept from desktop or mobile.
 - Account owners choose personal, summary-only, or fully shared partner access.
 - Personal budgets remain private. Household category budgets are modeled as
   monthly responsibilities assigned to one partner, split equally, or split by
@@ -40,8 +40,8 @@ analytics. Those integrations remain isolated and disabled by default.
 - Shared goals support equal, custom-dollar, and income-proportional plans plus
   synchronized contribution history. The demo starts with Universal Orlando.
 - Desktop provides planning, personal and household management, reports,
-  filtering, account privacy, and safe sync/unlink controls for existing Plaid
-  connections. Native bank link/relink initiation remains in mobile.
+  filtering, account privacy, and Plaid Link Web connect/relink, sync and unlink.
+  Mobile uses the native Plaid SDK. See the beta acceptance index for proof by client.
 - Refresh tokens are hash-only persisted, rotate once, revoke their family on
   replay/logout, and are invalidated across all sessions after password reset.
 
@@ -220,9 +220,9 @@ Optional integrations:
 
 | Variable | Default | Notes |
 |---|---|---|
-| EXPO_PUBLIC_PLAID_ENABLED | false | Enables existing Plaid flows for later testing. |
+| EXPO_PUBLIC_PLAID_ENABLED | false | Enables native Plaid Link; use the configured Sandbox API for beta checks. |
 | PLAID_CLIENT_ID, PLAID_SECRET, PLAID_ENV | unset | Server-only Plaid credentials; required only for bank linking/sync. |
-| PLAID_WEB_REDIRECT_URI | unset | Optional API redirect for a future desktop Plaid Link Web flow. |
+| PLAID_WEB_REDIRECT_URI | unset | Optional API redirect for desktop Plaid Link Web; configure only an approved return URL. |
 | EXPO_PUBLIC_ENABLE_AI | false | Keeps the existing assistant outside V1. |
 | EXPO_PUBLIC_ENABLE_PAYWALL | false | Keeps RevenueCat/paywalls outside V1. |
 | EXPO_PUBLIC_REVENUECAT_IOS_KEY | unset | Used only when the paywall flag is enabled. |
@@ -307,18 +307,23 @@ persistent journey verification are now beta requirements in the milestones abov
 - Reminders
 - Feature suggestions
 
-### V1.1
+### Active couples beta
 
-- Desktop Plaid Link Web and relink initiation
-- PostgreSQL-backed CI integration and client-level end-to-end tests
-- Imported transaction reconciliation
-- Recurring-charge detection connected to real transactions
+- Guided solo and two-login household setup with explicit invitation consent
+- Owned, equal and custom-percentage category responsibilities and saved history
+- Desktop Plaid Link Web and native Link, repair, sync and unlink
+- PostgreSQL-backed CI integration and recorded persistent client journeys
+- Imported transaction reconciliation and explicit duplicate-account consent
+- Recurring-charge predictions labeled separately from confirmed obligations
+- Saved, deterministic avalanche and snowball debt estimates
+
+Implementation and verification are separate: consult
+[beta acceptance status](docs/beta-acceptance-status.md) for remaining checks.
 
 ### V1.2
 
 - AI insights
 - Personalized recommendations
-- Debt payoff guidance
 - Spending-change suggestions
 - Explainable, nonjudgmental financial coaching
 
@@ -330,11 +335,43 @@ date-only field until a native date picker is introduced. Local notifications
 depend on the OS and cannot be guaranteed after an app is uninstalled or
 system-level notifications are disabled.
 
-Desktop can sync or unlink existing Plaid connections but intentionally sends
-new link/relink initiation to mobile until Plaid Link Web is implemented. The
+Desktop supports bank connect, repair, sync and unlink through its authenticated
+BFF. Native mobile uses the Plaid SDK. The
 initial household sync model uses refetch-on-focus plus 60-second desktop
 polling rather than realtime sockets. Physical iOS interaction must be verified
 on macOS or a device; Windows CI/local validation uses an Expo production iOS
 bundle export. A distributable native desktop installer additionally depends on
 a deployed HTTPS desktop BFF origin and release code signing; the local package
 command does not replace either requirement.
+
+### Native macOS app
+
+Worthlane's existing Electron shell also packages as a standalone Mac app.
+It uses the desktop workspace and shared API, with a native app/Edit menu,
+Command-R refresh, normal window controls and Dock reopening. Closing the last
+window keeps the Mac app running; Quit exits. A network connection to its pinned
+Worthlane service is required. It is not a SwiftUI rewrite or an offline database.
+
+For an Apple Silicon local Sandbox bundle with the local services running:
+
+```bash
+WORTHLANE_DESKTOP_URL=http://localhost:3402 pnpm desktop:native:pack:mac
+```
+
+Output: `apps/desktop-native/release/mac-arm64/Worthlane.app`. This explicitly
+uses local ad-hoc signing and skips notarization, while retaining renderer
+isolation, hardened runtime and eight verified Electron fuses. It is a local
+beta artifact, not a publicly distributable notarized release.
+
+`desktop:native:dist:mac` prepares arm64 and Intel DMGs only with an explicitly
+selected `CSC_NAME` Developer ID Application identity, a verified HTTPS
+`WORTHLANE_DESKTOP_URL`, and Apple notarization credentials. The command forces
+code signing and never publishes automatically. Certificate ownership,
+notarization, Intel execution and hosted service acceptance remain release gates.
+Do not use another organization's certificate. No Mac App Store submission is
+configured. Local app verification: `pnpm --filter @worthlane/desktop-native
+verify:packaged release/mac-arm64/Worthlane.app`.
+
+Native connection recovery is packaged locally behind a restricted custom protocol.
+A stalled application navigation offers retry after 15 seconds; recovery cannot
+load arbitrary local files or navigate outside the configured workspace.

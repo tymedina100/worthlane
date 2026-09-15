@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Alert, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, Platform } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createHouseholdResponsibilitySchema, type HouseholdSummary } from "@worthlane/contracts";
 import { api } from "@/lib/api";
@@ -28,7 +28,9 @@ export function HouseholdBudgetEditor({ summary }: { summary: HouseholdSummary }
     <TouchableOpacity accessibilityRole="button" style={styles.primary} onPress={() => setEditing("new")}><Text style={styles.primaryText}>Add category budget</Text></TouchableOpacity>
     {summary.responsibilities.map(budget => <TouchableOpacity key={budget.id} accessibilityRole="button" style={styles.option} onPress={() => setEditing(budget)}><Text style={styles.text}>Edit {budget.name}</Text></TouchableOpacity>)}
     <Modal visible={editing !== null} animationType="slide" onRequestClose={() => setEditing(null)}>
-      {editing ? <BudgetForm key={editing === "new" ? "new" : editing.id} summary={summary} budget={editing === "new" ? undefined : editing} close={() => setEditing(null)} /> : null}
+      <SafeAreaProvider>
+        {editing ? <BudgetForm key={editing === "new" ? "new" : editing.id} summary={summary} budget={editing === "new" ? undefined : editing} close={() => setEditing(null)} /> : null}
+      </SafeAreaProvider>
     </Modal>
   </View>;
 }

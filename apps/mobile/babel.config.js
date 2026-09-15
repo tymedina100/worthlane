@@ -1,7 +1,8 @@
 module.exports = function (api) {
   api.cache(true);
   return {
-    presets: ["babel-preset-expo"],
+    // Zustand ESM uses import.meta; Metro serves web bundles as classic scripts.
+    presets: [["babel-preset-expo", { web: { unstable_transformImportMeta: true } }]],
     plugins: [
       [
         "module-resolver",

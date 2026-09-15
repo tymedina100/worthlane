@@ -28,8 +28,10 @@ async function verifyPackage() {
     return;
   }
 
-  const executablePath = path.join(appDirectory, "Worthlane.exe");
-  const asarPath = path.join(appDirectory, "resources", "app.asar");
+  const isMac = appDirectory.endsWith(".app");
+  const executablePath = isMac ? appDirectory : path.join(appDirectory, "Worthlane.exe");
+  const asarPath = isMac ? path.join(appDirectory, "Contents", "Resources", "app.asar") : path.join(appDirectory, "resources", "app.asar");
+  if (isMac && !fs.existsSync(path.join(appDirectory, "Contents", "MacOS", "Worthlane"))) fail("missing macOS executable");
   if (!fs.existsSync(executablePath)) fail(`missing executable at ${executablePath}`);
   if (!fs.existsSync(asarPath)) fail(`missing app.asar at ${asarPath}`);
 
@@ -41,6 +43,7 @@ async function verifyPackage() {
     "src/offline.html",
     "src/offline.js",
     "src/security.cjs",
+    "src/recovery-protocol.cjs",
   ];
   for (const asset of requiredAssets) {
     if (!fs.existsSync(path.join(asarPath, asset))) fail(`app.asar is missing ${asset}`);
@@ -82,7 +85,7 @@ async function verifyPackage() {
   }
 
   console.log(
-    `Verified Worthlane.exe, ${requiredAssets.length} archived assets, and ${expectedFuses.size} hardened fuses.`
+    `Verified ${isMac ? "Worthlane.app" : "Worthlane.exe"}, ${requiredAssets.length} archived assets, and ${expectedFuses.size} hardened fuses.`
   );
 }
 

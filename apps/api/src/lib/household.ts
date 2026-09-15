@@ -248,7 +248,11 @@ export async function getHouseholdSummary(userId: string): Promise<HouseholdSumm
   // must not affect totals, notices, or which transaction feed is selected.
   const permittedAccounts = accounts.filter(account => account.userId === userId ||
     account.householdAccesses.some(access => access.memberId === context.memberId && access.visibility !== "PERSONAL"));
-  const countedIds = countedBankAccountIds(permittedAccounts, userId);
+  const confirmedPairs = await prisma.householdAccountMatch.findMany({
+    where: { householdId: context.householdId, firstConfirmedAt: { not: null }, secondConfirmedAt: { not: null } },
+    select: { firstAccountId: true, secondAccountId: true },
+  });
+  const countedIds = countedBankAccountIds(permittedAccounts, userId, confirmedPairs);
 
   for (const account of accounts) {
     const owner = memberByUserId.get(account.userId);
@@ -1331,6 +1335,7 @@ export async function setHouseholdAccountVisibility(
     userId,
     false,
     async (tx, context) => {
+      await tx.$queryRaw`SELECT id FROM "Household" WHERE id = ${context.householdId} FOR UPDATE`;
       const account = await tx.account.findFirst({
         where: { id: accountId, userId },
         select: { id: true },
@@ -1365,6 +1370,10 @@ export async function setHouseholdAccountVisibility(
           },
           update: { visibility: input.visibility },
         });
+      }
+      if (input.visibility !== "SHARED") {
+        // Withdrawing detail access also withdraws manual identity consent.
+        await tx.householdAccountMatch.deleteMany({ where: { householdId: context.householdId, OR: [{ firstAccountId: accountId }, { secondAccountId: accountId }] } });
       }
       return { accountId: account.id, recipientIds: recipients.map((item) => item.id) };
     }

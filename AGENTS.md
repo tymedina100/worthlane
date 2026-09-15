@@ -18,7 +18,7 @@ local synthetic tests are authorized; spending and production changes need appro
 - **Mobile**: Expo (React Native) — `apps/mobile`
 - **Desktop**: Next.js planning client/BFF — `apps/desktop`; Electron shell — `apps/desktop-native`
 - **Public site**: `apps/web`
-- **API**: Next.js 14 (API routes only, no pages) — `apps/api`
+- **API**: Next.js 15 (API routes only, no pages) — `apps/api`
 - **Database**: PostgreSQL via Prisma — `packages/db`
 - **Shared types**: TypeScript — `packages/types`
 - **Shared rules/contracts**: deterministic finance — `packages/core`; runtime validation — `packages/contracts`
@@ -64,7 +64,7 @@ Mobile API URL: set `EXPO_PUBLIC_API_URL` in `apps/mobile/.env.local` (defaults 
 - `lib/response.ts` — `ok()`, `err()`, `unauthorized()`, `notFound()` helpers; all routes use these
 - `lib/plaid.ts` — Plaid client + helper functions
 - `lib/categories.ts` — Maps Plaid categories to internal categories with caching
-- `lib/nudge-engine.ts` — Generates loss-aversion nudges; called on `GET /nudges`
+- `lib/nudge-engine.ts` — Generates calm planning updates; called on `GET /nudges`
 - `lib/dates.ts` — `startOfMonth`, `endOfMonth`, etc.
 
 ### Mobile (`apps/mobile/`)

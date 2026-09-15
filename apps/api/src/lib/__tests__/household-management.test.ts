@@ -16,6 +16,7 @@ const { mockPrisma, MockPrismaClientKnownRequestError } = vi.hoisted(() => {
   }
   const mockPrisma = {
     $executeRaw: vi.fn().mockResolvedValue(0),
+    $queryRaw: vi.fn().mockResolvedValue([]),
     household: { create: vi.fn(), update: vi.fn() },
     householdMember: {
       count: vi.fn().mockResolvedValue(1),
@@ -28,6 +29,7 @@ const { mockPrisma, MockPrismaClientKnownRequestError } = vi.hoisted(() => {
     },
     account: { findFirst: vi.fn() },
     householdAccountAccess: { upsert: vi.fn(), deleteMany: vi.fn() },
+    householdAccountMatch: { deleteMany: vi.fn() },
     householdResponsibility: {
       findFirst: vi.fn(),
       create: vi.fn(),

@@ -16,7 +16,7 @@ const navItems = [
   { label: "Overview", path: "", demoAnchor: "#overview", icon: "dashboard" as const, shortcut: "1" },
   { label: "Monthly plan", path: "/plan", demoAnchor: "#responsibilities", icon: "plan" as const, shortcut: "2" },
   { label: "Accounts & privacy", path: "/accounts", demoAnchor: "#accounts", icon: "accounts" as const, shortcut: "3" },
-  { label: "Shared goals", path: "/goals", demoAnchor: "#goals", icon: "goal" as const, shortcut: "4" },
+  { label: "Goals & bills", path: "/goals", demoAnchor: "#goals", icon: "goal" as const, shortcut: "4" },
   { label: "Reports", path: "/reports", demoAnchor: null, icon: "report" as const, shortcut: "5" },
 ];
 

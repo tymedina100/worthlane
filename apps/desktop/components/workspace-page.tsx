@@ -1,5 +1,7 @@
 "use client";
 
+import { BankCoverageNotices } from "./bank-coverage-notices";
+
 import type {
   HouseholdGoalContributionResult,
   HouseholdSummary,
@@ -32,18 +34,18 @@ const viewCopy: Record<WorkspaceView, { kicker: string; title: string; descripti
   },
   accounts: {
     kicker: "Accounts & privacy",
-    title: "One account map. Exact boundaries.",
-    description: "See your connection health and the household access your partner has intentionally granted.",
+    title: "Your accounts. Your choice.",
+    description: "Connect a bank or add an account, then choose what to share.",
   },
   goals: {
-    kicker: "Shared & personal goals",
-    title: "Build goals without blurring ownership.",
-    description: "Contribute to shared plans together while keeping your existing personal goals in their own lane.",
+    kicker: "Goals & bills",
+    title: "Make room for what matters.",
+    description: "Track upcoming bills, explore your debt payoff plan, and save toward your next goal.",
   },
   reports: {
     kicker: "Reports & analysis",
-    title: "See the plan and the detail clearly.",
-    description: "Filter shared responsibility progress and your own transaction activity without exposing private partner data.",
+    title: "Know where your money goes.",
+    description: "Review your activity, add a manual expense, and see how spending fits your plan.",
   },
 };
 
@@ -321,10 +323,12 @@ export function WorkspacePage({ view }: { view: WorkspaceView }) {
     }
     const payload = await response.json().catch(() => null);
     const result = envelopeData<T>(payload);
+    // A failed bank operation can still persist a new connection status
+    // (for example ITEM_LOGIN_REQUIRED). Reconcile before showing its error.
+    await loadWorkspace({ background: true });
     if (!response.ok || result === null) {
       throw new Error(errorMessage(payload, "That bank connection change could not be completed."));
     }
-    await loadWorkspace({ background: true });
     return result;
   }, [loadWorkspace, router, view]);
 
@@ -373,7 +377,7 @@ export function WorkspacePage({ view }: { view: WorkspaceView }) {
           </div>
         </header>
 
-        {summary.finances.bankDataNotices.map(notice => <p className="status-banner" key={notice.accountId} role="status">{notice.message}</p>)}
+        <BankCoverageNotices notices={summary.finances.bankDataNotices} />
         <WorkspaceSurface
           view={view}
           summary={summary}

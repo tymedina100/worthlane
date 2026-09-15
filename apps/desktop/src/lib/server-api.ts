@@ -7,6 +7,7 @@ import { NextResponse } from "next/server";
 import {
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
+  PLAID_OAUTH_COOKIE,
 } from "./session-cookies";
 
 export { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "./session-cookies";
@@ -217,6 +218,7 @@ export function setSessionCookies(
 }
 
 export function clearSessionCookies(cookieStore: CookieStore): void {
+  cookieStore.set(PLAID_OAUTH_COOKIE, "", { ...cookieOptions, maxAge: 0 });
   cookieStore.set(ACCESS_TOKEN_COOKIE, "", {
     ...cookieOptions,
     expires: new Date(0),

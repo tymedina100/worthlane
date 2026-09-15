@@ -5,7 +5,8 @@ import { updateHouseholdGoal } from "@/lib/household";
 import { householdErrorResponse } from "@/lib/household-http";
 import { err, ok, unauthorized } from "@/lib/response";
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   let userId: string;
   try { ({ sub: userId } = getAuthUser(req)); } catch { return unauthorized(); }
   const parsed = updateHouseholdGoalSchema.safeParse(await req.json().catch(() => null));

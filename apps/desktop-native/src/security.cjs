@@ -63,7 +63,7 @@ function isAllowedConnectionPageNavigation(candidate, connectionPageUrl) {
     const parsed = new URL(candidate);
     parsed.search = "";
     parsed.hash = "";
-    return parsed.protocol === "file:" && parsed.toString() === connectionPageUrl;
+    return parsed.protocol === "worthlane-recovery:" && parsed.toString() === connectionPageUrl;
   } catch {
     return false;
   }

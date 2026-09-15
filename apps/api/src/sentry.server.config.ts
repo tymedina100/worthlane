@@ -1,11 +1,13 @@
 import * as Sentry from "@sentry/nextjs";
-
-const isDevelopment = process.env.NODE_ENV === "development";
+import { privateDiagnosticEvent } from "./lib/diagnostic-privacy";
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   enabled: Boolean(process.env.SENTRY_DSN),
   environment: process.env.SENTRY_ENVIRONMENT ?? process.env.NODE_ENV,
-  sendDefaultPii: true,
-  tracesSampleRate: isDevelopment ? 1.0 : 0.2,
+  sendDefaultPii: false,
+  beforeSend: privateDiagnosticEvent,
+  // Request traces may contain URLs, database statements and financial context.
+  tracesSampleRate: 0,
+  beforeSendTransaction: () => null,
 });

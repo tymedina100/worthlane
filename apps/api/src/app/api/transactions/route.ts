@@ -113,6 +113,14 @@ export async function POST(req: NextRequest) {
     return err("Manual transactions can only be created on manual accounts.", 400, "ACCOUNT_NOT_MANUAL");
   }
 
+  if (parsed.data.categoryId) {
+    const category = await prisma.category.findFirst({
+      where: { id: parsed.data.categoryId, OR: [{ isSystem: true }, { userId }] },
+      select: { id: true },
+    });
+    if (!category) return err("Category not found", 404);
+  }
+
   const tx = await prisma.transaction.create({
     data: {
       userId,

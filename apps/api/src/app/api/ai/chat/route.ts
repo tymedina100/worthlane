@@ -1,3 +1,4 @@
+import { personalLedger } from "@/lib/personal-ledger";
 import { spendingWhere, incomeWhere } from "@/lib/spending-treatment";
 import { NextRequest } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
@@ -34,28 +35,29 @@ export async function POST(req: NextRequest) {
   }
 
   // Fetch financial context
+  const ledger = await personalLedger(userId);
   const now = new Date();
   const periodStart = startOfMonth(now);
 
   const [accounts, budgets, goals, streaks, topCategories, incomeAgg, spendingAgg] =
     await Promise.all([
-      prisma.account.findMany({ where: { userId } }),
+      Promise.resolve(ledger.accounts),
       prisma.budget.findMany({ where: { userId }, include: { category: true } }),
       prisma.goal.findMany({ where: { userId } }),
       prisma.streak.findMany({ where: { userId } }),
       prisma.transaction.groupBy({
         by: ["categoryId"],
-        where: { userId, date: { gte: periodStart, lte: now }, ...spendingWhere },
+        where: { date: { gte: periodStart, lte: now }, ...spendingWhere, ...ledger.transactionWhere },
         _sum: { amount: true },
         orderBy: { _sum: { amount: "desc" } },
         take: 5,
       }),
       prisma.transaction.aggregate({
-        where: { userId, date: { gte: periodStart, lte: now }, ...incomeWhere },
+        where: { date: { gte: periodStart, lte: now }, ...incomeWhere, ...ledger.transactionWhere },
         _sum: { amount: true },
       }),
       prisma.transaction.aggregate({
-        where: { userId, date: { gte: periodStart, lte: now }, ...spendingWhere },
+        where: { date: { gte: periodStart, lte: now }, ...spendingWhere, ...ledger.transactionWhere },
         _sum: { amount: true },
       }),
     ]);
@@ -103,7 +105,7 @@ export async function POST(req: NextRequest) {
     })
     .join(", ");
 
-  const systemPrompt = `You are Worthlane AI, a personal financial assistant built into the Worthlane finance app. Be concise (2-4 sentences max), motivating, and use loss-aversion framing — frame things in terms of what the user could lose or miss out on, not just what they've gained. Never give investment advice or specific stock/fund recommendations. Never use markdown formatting, asterisks, bullet points, or any special symbols — respond in plain conversational text only.
+  const systemPrompt = `You are Worthlane AI, a personal financial assistant built into the Worthlane finance app. Be concise (2-4 sentences max), calm, and concrete. Explain the current plan and offer a practical next step without guilt, urgency, streak pressure, or assumptions about savings. Keep responsibility separate from who paid, and never infer partner activity that is not included in the provided context. Treat recurring predictions as estimates, not confirmed due dates. Never give investment advice or specific stock/fund recommendations. Never use markdown formatting, asterisks, bullet points, or any special symbols — respond in plain conversational text only.
 
 The user's current financial snapshot:
 - Net worth: $${netWorth.toFixed(0)}

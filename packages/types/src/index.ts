@@ -186,7 +186,6 @@ export interface UpcomingObligationsResponse {
 }
 
 export interface TodaySnapshot {
-  availableBalance: number | null;
   spentThisMonth: number;
   receivedThisMonth: number;
   dueNextSevenDays: number;

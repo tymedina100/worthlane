@@ -1,17 +1,20 @@
 import Constants from "expo-constants";
 import * as Sentry from "@sentry/react-native";
+import { privateMobileDiagnosticEvent } from "./diagnostic-privacy";
 
 type SentryExtra = {
-  dsn?: string | null;
-  environment?: string | null;
+  dsn?: unknown;
+  environment?: unknown;
 };
 
 const isDevelopment = typeof __DEV__ !== "undefined" ? __DEV__ : process.env.NODE_ENV !== "production";
 const sentryExtra = (Constants.expoConfig?.extra?.sentry ?? null) as SentryExtra | null;
-const dsn = sentryExtra?.dsn?.trim() || process.env.EXPO_PUBLIC_SENTRY_DSN?.trim();
+// Expo manifests are runtime data; telemetry configuration must never block launch.
+const configString = (value: unknown) => typeof value === "string" ? value.trim() || undefined : undefined;
+const dsn = configString(sentryExtra?.dsn) || configString(process.env.EXPO_PUBLIC_SENTRY_DSN);
 const environment =
-  sentryExtra?.environment?.trim() ||
-  process.env.EXPO_PUBLIC_SENTRY_ENVIRONMENT?.trim() ||
+  configString(sentryExtra?.environment) ||
+  configString(process.env.EXPO_PUBLIC_SENTRY_ENVIRONMENT) ||
   (isDevelopment ? "development" : "production");
 
 const sentryGlobal = globalThis as typeof globalThis & {
@@ -27,8 +30,17 @@ if (!sentryGlobal.__WORTHLANE_SENTRY_INITIALIZED__) {
     dsn,
     enabled: Boolean(dsn),
     environment,
-    sendDefaultPii: true,
-    tracesSampleRate: isDevelopment ? 1.0 : 0.2,
+    release: `worthlane-mobile@${configString(Constants.expoConfig?.version) ?? "unknown"}`,
+    // Native crash reports bypass the JavaScript beforeSend privacy filter.
+    // Keep this beta on the filtered JS transport until native filtering is reviewed.
+    enableNative: false,
+    enableAutoSessionTracking: false,
+    sendDefaultPii: false,
+    beforeSend: privateMobileDiagnosticEvent,
+    tracesSampleRate: 0,
+    beforeSendTransaction: () => null,
+    attachScreenshot: false,
+    attachViewHierarchy: false,
   });
 
   sentryGlobal.__WORTHLANE_SENTRY_INITIALIZED__ = true;

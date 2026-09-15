@@ -4,7 +4,8 @@ import { getAuthUser } from "@/lib/auth";
 import { captureServerEvent } from "@/lib/posthog";
 import { ok, unauthorized, notFound } from "@/lib/response";
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   let userId: string;
   try {
     ({ sub: userId } = getAuthUser(req));

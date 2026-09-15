@@ -1,3 +1,4 @@
+import { z } from "zod";
 import {
   acceptHouseholdPartnerInviteSchema,
   createHouseholdGoalSchema,
@@ -20,6 +21,8 @@ import {
 } from "@/src/lib/server-api";
 
 type MutationKind =
+  | "confirm-account-match"
+  | "revoke-account-match"
   | "account-visibility"
   | "create-responsibility"
   | "update-responsibility"
@@ -35,6 +38,12 @@ type ProxyTarget = {
 };
 
 function targetFor(method: string, segments: string[]): ProxyTarget | null {
+  if (segments.length === 1 && segments[0] === "account-matches") {
+    if (method === "GET") return { path: "/households/current/account-matches" };
+    if (method === "POST") return { path: "/households/current/account-matches", mutationKind: "confirm-account-match" };
+    if (method === "DELETE") return { path: "/households/current/account-matches", mutationKind: "revoke-account-match" };
+  }
+
   if (segments.length === 1 && segments[0] === "responsibility-history" && method === "GET") {
     return { path: "/households/current/responsibility-history" };
   }
@@ -118,6 +127,8 @@ function targetFor(method: string, segments: string[]): ProxyTarget | null {
 
 function validateMutation(kind: MutationKind, body: unknown) {
   if (kind === "account-visibility") return setHouseholdAccountVisibilitySchema.safeParse(body);
+  if (kind === "confirm-account-match") return z.object({ accountId: z.string().min(1), otherAccountId: z.string().min(1), confirmedSameAccount: z.literal(true) }).strict().safeParse(body);
+  if (kind === "revoke-account-match") return z.object({ id: z.string().min(1) }).strict().safeParse(body);
   if (kind === "create-responsibility") return createHouseholdResponsibilitySchema.safeParse(body);
   if (kind === "update-responsibility") return updateHouseholdResponsibilitySchema.safeParse(body);
   if (kind === "create-goal") return createHouseholdGoalSchema.safeParse(body);

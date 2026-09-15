@@ -1,0 +1,93 @@
+- button "Open Next.js Dev Tools" [expanded=false, ref=e36]
+- link "Skip to planning workspace" [ref=e1]
+- link "Worthlane worthlane" [ref=e2]
+- link "Overview Alt+1" [ref=e6]
+- link "Monthly plan Alt+2" [ref=e7]
+- link "Accounts & privacy Alt+3" [ref=e8]
+- link "Goals & bills Alt+4" [ref=e9]
+- link "Reports Alt+5" [ref=e10]
+- button "Sign out" [ref=e3]
+- heading "Make room for what matters." [level=1, ref=e11]
+- button "Refresh planning data" [ref=e12]
+- region "Goals summary" [ref=e4]
+- heading "Bank debt details" [level=2, ref=e13]
+- button "Check First Platypus Bank - OAuth App2App debt details" [ref=e14]
+- button "Review debt-data consent" [ref=e26]
+- heading "Debt payoff plan" [level=2, ref=e15]
+- button "New plan" [ref=e16]
+- button "Open Avery native payoff" [ref=e17]
+- textbox "Plan name" [required, ref=e40]: Avery native payoff
+- spinbutton "Month Month" [ref=e80]: 9
+- spinbutton "Year Year" [ref=e81]: 2026
+- button "Show month picker" [ref=e59]
+- spinbutton "Monthly payment budget (USD)" [required, ref=e41]: 50
+- combobox "Method" [expanded=false, ref=e42]: Avalanche — highest APR first
+  - option "Avalanche — highest APR first" [selected, ref=e64]
+  - option "Snowball — smallest balance first" [ref=e65]
+- textbox "Name" [required, ref=e43]: Avery test card
+- spinbutton "Current balance (USD)" [required, ref=e44]: 100
+- spinbutton "Minimum monthly payment" [required, ref=e45]: 10
+- spinbutton "Ordinary APR (%)" [required, ref=e46]: 0
+- spinbutton "Statement balance (optional)" [ref=e47]: 90
+- spinbutton "Month Month" [ref=e82]: 9
+- spinbutton "Day Day" [ref=e83]: 25
+- spinbutton "Year Year" [ref=e84]: 2026
+- button "Show date picker" [ref=e60]
+- spinbutton "Promo APR (%)" [ref=e48]: 0
+- spinbutton "Month Month" [ref=e85]: 0
+- spinbutton "Day Day" [ref=e86]: 0
+- spinbutton "Year Year" [ref=e87]: 0
+- button "Show date picker" [ref=e61]
+- button "Remove debt 1" [disabled, ref=e37]
+- button "Add debt" [ref=e27]
+- button "Preview estimate" [ref=e28]
+- button "Save plan" [ref=e29]
+- heading "Estimated payoff: 2026-10" [level=3, ref=e18]
+- heading "First month's payments" [level=3, ref=e19]
+- heading "Due dates from the saved plan" [level=3, ref=e20]
+- button "Add Avery test card: $10.00 due 2026-09-25 to Upcoming" [ref=e21]
+- heading "Upcoming bills and payments" [level=2, ref=e22]
+- button "New upcoming item" [ref=e23]
+- button "Refresh upcoming items" [ref=e24]
+- button "Edit Avery test card minimum payment" [ref=e30]
+- button "Mark paid" [ref=e31]
+- button "Edit Avery internet test" [ref=e32]
+- button "Record paid and advance date" [ref=e33]
+- textbox "Name" [required, ref=e49]
+- spinbutton "Amount (USD)" [required, ref=e50]
+- spinbutton "Month Month" [ref=e88]: 0
+- spinbutton "Day Day" [ref=e89]: 0
+- spinbutton "Year Year" [ref=e90]: 0
+- button "Show date picker" [ref=e62]
+- combobox "Type" [expanded=false, ref=e51]: Bill
+  - option "Bill" [selected, ref=e66]
+  - option "Credit card" [ref=e67]
+  - option "Subscription" [ref=e68]
+  - option "Other" [ref=e69]
+- combobox "Repeat" [expanded=false, ref=e52]: One date only
+  - option "One date only" [selected, ref=e70]
+  - option "Weekly" [ref=e71]
+  - option "Every two weeks" [ref=e72]
+  - option "Monthly" [ref=e73]
+  - option "Quarterly" [ref=e74]
+  - option "Yearly" [ref=e75]
+- textbox "Account reference (optional)" [ref=e53]
+- checkbox "Active" [checked=true, ref=e38]
+- button "Save upcoming item" [ref=e34]
+- region "Your personal goals" [ref=e5]
+  - heading "Your personal goals" [level=2, ref=e25]
+  - combobox [expanded=false, ref=e35]: + New personal goal
+    - option "+ New personal goal" [selected, ref=e54]
+  - textbox "Name" [required, ref=e55]
+  - textbox "Target $" [required, ref=e56]
+  - textbox "Current $" [required, ref=e57]: 0.00
+  - spinbutton "Month Month" [ref=e91]: 0
+  - spinbutton "Day Day" [ref=e92]: 0
+  - spinbutton "Year Year" [ref=e93]: 0
+  - button "Show date picker" [ref=e63]
+  - combobox "Goal type" [expanded=false, ref=e58]: Savings
+    - option "Savings" [selected, ref=e76]
+    - option "Debt payoff" [ref=e77]
+    - option "Purchase" [ref=e78]
+    - option "Emergency fund" [ref=e79]
+  - button "Create personal goal" [ref=e39]
