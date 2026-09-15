@@ -3383,3 +3383,25 @@ deployment6465272846 and desktop6465252902 both succeeded for847a0fb. Railway
 explicitly marks PR17 Skipped / No changes to watched files; the already-verified
 PR16 API remains Active with the corrected email credential. No redundant API
 redeploy was needed. This closes PR17 publication verification.
+
+
+## September 15 — Hosted Mac candidate built and installed locally
+
+- Built the existing Electron shell against `https://worthlane-desktop.vercel.app`
+  with production URL validation and `developmentOnly:false`. Native sources at
+  build HEAD5a53d61 match deployed main847a0fb (`git diff` for native/mobile empty).
+- Installed separately at `/Users/tylermedina/Applications/Worthlane Hosted Beta.app`;
+  the previous localhost app is preserved. No production deployment, upload,
+  paid build, bank connection or store submission occurred.
+- Passed19 native tests, hosted-origin header verification, all8 archive assets,
+  all8 hardened fuses and `codesign --verify --deep --strict`.
+- Actual packaged UI showed hosted sign-in, opened Forgot password with heading
+  focus, returned to sign-in and passed normal Quit/cold relaunch. Installed-path
+  launch also reached hosted sign-in. No credential/reset mutation was repeated.
+- Archive SHA256: `de649050b3971a62deb3e8ad44d72158467ca4d5e0fecc3891f3b7e77e03b271`.
+- This candidate removes localhost dependence for the Mac entry point. It is
+  ad-hoc signed for local use, not Developer ID signed or notarized for public
+  distribution. Hosted authenticated household/banking acceptance is not claimed
+  by this launch check; the separate persisted Sandbox journey evidence remains
+  the basis for functional acceptance. Current iOS/Android distribution artifacts,
+  store screenshots/privacy/reviewer preparation and Plaid evidence gates remain.
