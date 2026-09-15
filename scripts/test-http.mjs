@@ -48,6 +48,8 @@ const env = { ...process.env, DATABASE_URL: db.href, NODE_ENV: 'development',
   POSTHOG_PROJECT_KEY: '', SENTRY_DSN: '', SENTRY_AUTH_TOKEN: '', VERCEL: '',
   PLAID_ENV: 'sandbox', PLAID_CLIENT_ID: '', PLAID_SECRET: '',
   ...(sandbox?.env ?? {}),
+  // Local acceptance must never inherit paid AI or production email delivery.
+  ANTHROPIC_API_KEY: '', RESEND_API_KEY: '', EMAIL_FROM: '', EMAIL_REPLY_TO: '',
 };
 async function start(app, port, health) {
   try { await fetch(health, { signal: AbortSignal.timeout(1000) }); throw new Error(`Test port ${port} already occupied`); }

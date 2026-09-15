@@ -174,3 +174,16 @@ Recent EAS history includes completed production/store Android build4 from
 10cd6fa and iOS build27 fromd759913 onSeptember10. Those precede the current
 candidate and are not evidence that current code is packaged or ready to upload.
 No new build, submission or paid service was started during this inspection.
+
+
+## Hosted Mac candidate — September15
+
+A separate local candidate is installed at
+`/Users/tylermedina/Applications/Worthlane Hosted Beta.app`, pinned to the deployed
+HTTPS planning client. Packaged sign-in/recovery navigation and normal cold
+relaunch passed, with19 native tests,8 asset checks,8 hardened-fuse checks and
+strict local signature verification. It no longer needs localhost servers for
+startup. This is an ad-hoc local package, not a notarized public installer; no
+store upload or submission occurred. Full evidence and archive hash are in
+beta-progress.md. Production banking and authenticated household acceptance were
+not exercised through this candidate.
