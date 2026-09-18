@@ -25,6 +25,15 @@ async function request(route, body, token, status = 200) {
   assert.equal(response.status, status, `${route}: unexpected HTTP status`);
   return status >= 400 ? null : (await response.json()).data;
 }
+// This deliberately bounded fixture must fit in one complete response. Fail
+// rather than silently comparing only a default first page of financial data.
+async function ledgerSnapshot(token) {
+  const data = await request('/transactions?limit=1000', undefined, token);
+  assert(data.total <= 1000, 'Fixture exceeded complete-ledger verification bound');
+  assert.equal(data.transactions.length, data.total, 'Incomplete transaction readback');
+  assert.equal(new Set(data.transactions.map(t => t.id)).size, data.total, 'Duplicate transaction IDs');
+  return data.transactions.sort((a, b) => a.id.localeCompare(b.id));
+}
 try {
   assert.equal((await request('/health')).status, 'ready');
   await request('/accounts', undefined, undefined, 401);
@@ -109,12 +118,19 @@ try {
     assert(fixture?.complete && fixture.origin === origin, 'Complete hosted fixture required');
     const { accessToken } = await request('/auth/login', { email: fixture.email, password: fixture.password });
     assert.deepEqual((await request('/accounts', undefined, accessToken)).accounts.map(a => a.id).sort(), fixture.accountIds);
-    const transaction = (await request('/transactions', undefined, accessToken)).transactions.find(t => t.id === fixture.transactionId);
+    const transaction = (await ledgerSnapshot(accessToken)).find(t => t.id === fixture.transactionId);
     assert.equal(transaction?.amount, 23.47);
     const result = await request('/plaid/sync', { plaidItemId: fixture.itemId, refresh: false }, accessToken);
     for (const key of ['added', 'modified', 'removed']) assert(Number.isInteger(result[key]) && result[key] >= 0);
     assert.deepEqual((await request('/accounts', undefined, accessToken)).accounts.map(a => a.id).sort(), fixture.accountIds);
     console.log('PASS: separate-process fresh login recovered exact saved accounts and manual amount; real Sandbox sync decrypted persisted token without duplicate accounts.');
+    const settledLedger = await ledgerSnapshot(accessToken);
+    assert(settledLedger.some(t => !t.isManual), 'Imported Sandbox spending must be present');
+    assert.equal(settledLedger.filter(t => t.id === fixture.transactionId).length, 1);
+    const repeatSync = await request('/plaid/sync', { plaidItemId: fixture.itemId, refresh: false }, accessToken);
+    for (const key of ['added', 'modified', 'removed']) assert.equal(repeatSync[key], 0, `Unexpected repeat Sandbox ${key}`);
+    assert.deepEqual(await ledgerSnapshot(accessToken), settledLedger, 'Repeat sync changed saved ledger IDs or financial fields');
+    console.log(`PASS: complete ${settledLedger.length}-transaction ledger retained exact IDs and financial fields after repeat Sandbox sync; no sampled first-page comparison.`);
     if (phase === '--debt' || fixture.debtPlanId) {
       const input = { name: 'Hosted zero-interest payoff', startMonth: '2027-01', strategy: 'AVALANCHE', monthlyPaymentMinor: 10000,
         debts: [{ id: 'hosted-card', name: 'Hosted synthetic card', balanceMinor: 30000, minimumPaymentMinor: 2500, aprBasisPoints: 0, statementBalanceMinor: 30000, dueDate: '2027-01-31' }] };
@@ -132,7 +148,7 @@ try {
       assert.deepEqual(plan.estimate.schedule.map(m => m.remainingMinor), [20000, 10000, 0]);
       assert.equal(plan.estimate.payoffMonth, '2027-03');
       assert(Array.isArray(plan.assumptions) && plan.assumptions.length > 0, 'Explainable assumptions required');
-      const beforeTransactions = (await request('/transactions', undefined, accessToken)).transactions.map(t => t.id).sort();
+      const beforeTransactions = (await ledgerSnapshot(accessToken)).map(t => t.id);
       const duePath = `/debt-plans/${fixture.debtPlanId}/upcoming`;
       const dueBody = { entryId: 'hosted-card', revision: plan.revision };
       const firstDue = await request(duePath, dueBody, accessToken);
@@ -145,7 +161,7 @@ try {
       assert.equal(matches[0].amount, 25);
       assert.equal(matches[0].reminderTiming, 'NONE');
       assert.equal(matches[0].isPaid, false);
-      assert.deepEqual((await request('/transactions', undefined, accessToken)).transactions.map(t => t.id).sort(), beforeTransactions);
+      assert.deepEqual((await ledgerSnapshot(accessToken)).map(t => t.id), beforeTransactions);
       fixture.debtDueId = firstDue.id; save();
       console.log('PASS: persisted zero-APR plan explains three $100 payments; repeated due-date handoff keeps one unpaid $25 January31 item, reminders off, with no synthetic payment transaction.');
     }

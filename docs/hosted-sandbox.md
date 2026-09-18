@@ -398,3 +398,25 @@ including Morgan's item due 135 days later. Source copy now explicitly labels
 that all-date count **unpaid payments**, retaining the separate seven-day total.
 Mobile typecheck passed. This copy adjustment is not yet in the installed
 `79d8ae9` artifact and requires the next candidate's visual check.
+
+
+### September 18 — complete-ledger sync verification
+
+The hosted verifier now requests up to 1,000 transactions and asserts that the
+response length equals the authoritative total. It fails if the fixture exceeds
+that bound, instead of silently comparing only the API's default first page.
+After an initial settling sync, a second real Sandbox sync returned zero added,
+modified and removed rows. All **49** saved transactions retained identical IDs
+and financial fields; imported activity and exactly one known manual transaction
+were required. The saved debt handoff also compares the complete ledger.
+Command: `WORTHLANE_HOSTED_SANDBOX_APPROVED=true node
+scripts/test-hosted-sandbox.mjs --verify` — passed, including $2,450 category
+allocations and separate-login privacy assertions.
+
+Standalone iOS Repair opened Plaid's update screen. Its embedded controls again
+provided no accessibility elements, and a screenshot-grounded coordinate click
+failed with Computer Use `noWindowsAvailable`; keyboard focus did not reveal a
+usable control. No consent, repair success, or new connection is claimed.
+Android EAS build remains queued; no duplicate build was started.
+The iOS artifact's build 7 matches app.json and the native Info.plist; EAS UI
+metadata's 27 is not authoritative artifact evidence.
