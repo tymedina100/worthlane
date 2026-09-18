@@ -420,3 +420,33 @@ usable control. No consent, repair success, or new connection is claimed.
 Android EAS build remains queued; no duplicate build was started.
 The iOS artifact's build 7 matches app.json and the native Info.plist; EAS UI
 metadata's 27 is not authoritative artifact evidence.
+
+
+### September 18 — Android cloud artifact complete
+
+EAS internal APK build `c9853f0d-37bc-49d9-aa11-2c58d0b82397` finished at
+16:08:40 UTC from `79d8ae9`, after the free queue and release compilation.
+Downloaded APK is 100,427,076 bytes, SHA-256
+`dadeeedd8aa2fc903f4ab3b1a628aa308b7a0317bca13cbeb0bddf8dacbae357`.
+`apksigner verify --verbose --print-certs` passes APK v2 signing, one RSA2048
+signer; certificate SHA-256
+`bb3fd1e47164421d9d40a4e6594e1ab69c2be8d4056f587dfb0af29b50992432`.
+Package `com.worthlane.mobile`, version1.0.0/code4, minSDK26/targetSDK36;
+arm64-v8a, armeabi-v7a, x86 and x86_64 libraries present.
+Bundled JavaScript SHA-256
+`17bb215601e1bfc1c39014b93632271302ccad1e3a8fddfa27e6a081bb9a2494`;
+it contains the exact hosted Sandbox API and no production API origin.
+Manifest disables Expo updates and Sentry auto-init and includes Plaid return
+schemes. These static checks are not interactive banking acceptance.
+
+The existing WorthlaneLaptop Android36 emulator booted successfully after a
+prior crash-report consent prompt blocked startup; crash reporting was set to
+never for this process. The iOS Simulator was shut down to reduce memory use.
+An in-place `adb install -r` safely rejected the APK with
+INSTALL_FAILED_UPDATE_INCOMPATIBLE: the prior installed app has a different
+signature. Its data was not removed. Use a separate test environment rather than
+uninstalling the old fixture. Computer Use then reported the Mac locked; user
+unlock is pending before interactive testing. No store submission occurred.
+
+CI run35365722717 on `886a313` passed all four jobs, including PostgreSQL17/18,
+Windows packaging and the full regression/typecheck/build job.
