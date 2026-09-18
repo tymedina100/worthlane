@@ -29,6 +29,12 @@
         "EXPO_PUBLIC_ENABLE_PAYWALL": "false",
         "SENTRY_DISABLE_AUTO_UPLOAD": "true"
       }
+    },
+    "sandbox-simulator": {
+      "extends": "sandbox-preview",
+      "ios": {
+        "simulator": true
+      }
     }
   },
   "submit": {

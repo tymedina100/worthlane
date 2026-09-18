@@ -62,6 +62,19 @@ test('Sandbox candidate fails closed on inherited production settings', () => {
     EXPO_PUBLIC_POSTHOG_KEY: 'synthetic', EXPO_PUBLIC_SENTRY_DSN: 'synthetic',
     SENTRY_ORG: 'synthetic', SENTRY_PROJECT: 'synthetic', SENTRY_AUTH_TOKEN: 'synthetic',
   })) {
-    assert.throws(() => config({ ...env, [name]: value }), new RegExp(name));
+    for (const profile of ['sandbox-preview', 'sandbox-simulator']) {
+      assert.throws(() => config({ ...env, EAS_BUILD_PROFILE: profile, [name]: value }), new RegExp(name));
+    }
   }
+});
+
+test('laptop Simulator candidate inherits guarded internal settings without a development client', () => {
+  const profile = eas.build['sandbox-simulator'];
+  assert.equal(profile.extends, 'sandbox-preview');
+  assert.equal(profile.ios.simulator, true);
+  assert.equal(eas.build.preview.developmentClient, undefined);
+  assert.equal(eas.submit['sandbox-simulator'], undefined);
+  const result = config({ ...eas.build['sandbox-preview'].env, EAS_BUILD_PROFILE: 'sandbox-simulator' });
+  assert.equal(result.ios.bundleIdentifier, 'com.worthlane.mobile');
+  assert.equal(result.extra.sentry.dsn, null);
 });

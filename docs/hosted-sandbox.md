@@ -334,3 +334,11 @@ After correction, authenticated EAS18.3 build inventory and
 both succeeded. Inventory still shows latest finished Android build35306d6e
 from September10/10cd6fa and iOS8a096d23 from September10/d759913; neither is the
 current candidate. No build was triggered by these read-only checks.
+
+Laptop-only build preparation: `sandbox-simulator` extends sandbox-preview with
+iOS simulator:true. Both profiles receive the same fail-closed environment
+guards. EAS CLI resolves internal distribution, simulator:true,
+developmentClient:false, existing bundle identity and diagnostics disabled.
+All6 release-config tests pass. This is intended to produce a bundled Simulator
+app without Metro; no remote build/upload was started. Expo billing browser
+requires sign-in before remaining credits/cost can be verified.
