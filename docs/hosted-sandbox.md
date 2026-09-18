@@ -213,3 +213,27 @@ Avery's subsequent read retained the original name. No payment or transaction
 was created. This verifies native mutation, server persistence and cross-user
 access denial. It does not prove this bill's future 9am notification presentation
 or cancellation on logout; those remain separate from the diagnostic proof above.
+
+## September 18: native logout and reminder-history cleanup
+
+Signed Avery out through Settings and observed the native sign-in screen. Signed
+back into the same synthetic account: Today retained the $125.50 manual balance,
+$0 spending/receipts and one $42.75 bill due in three days. iOS showed Save Password;
+its AX controls were absent and coordinate input failed. Simulator Home followed
+by reopening Worthlane through App Library dismissed the optional sheet without
+saving credentials or requiring another user handoff.
+
+Without sending a new diagnostic, Check test reminder status changed from the
+earlier “Test reached notification history” to “No test found.” This establishes
+that the previously presented diagnostic was absent after logout/relogin. It does
+not directly inspect the pending obligation queue while signed out, nor prove
+future 9am delivery.
+
+Source inspection confirms logout calls setReminderSession(null) before network
+logout and awaits cleanup; that function cancels scheduled obligation/test
+notifications and dismisses presented ones. Fresh targeted adapter verification:
+`cd apps/api && corepack pnpm exec vitest run --config vitest.mobile.config.ts integration/mobile-reminders.native.ts`
+passed15/15. These mocked native-adapter tests cover stale-user suppression,
+permission/session races, late-created notification cancellation, paid/inactive/
+opted-out cleanup, deleted-item reconciliation and diagnostic logout cancellation.
+Keep this unit evidence distinct from actual OS queue observations.
