@@ -19,7 +19,7 @@ async function main() {
   const db = new PrismaClient();
   try {
     const user = await db.user.findUniqueOrThrow({ where: { id: userId }, select: { email: true } });
-    assert(/^hosted-partner-[0-9a-f-]{36}@worthlane\.test$/.test(user.email), 'Only the synthetic hosted partner is allowed');
+    assert(/^hosted-(?:partner-)?[0-9a-f-]{36}@worthlane\.test$/.test(user.email), 'Only a synthetic hosted owner or partner is allowed');
     const item = await db.plaidItem.findFirstOrThrow({ where: { id: itemId, userId } });
     const raw = process.env.PLAID_TOKEN_ENCRYPTION_KEY;
     assert(raw, 'Encryption key required');
@@ -38,7 +38,7 @@ async function main() {
     } }));
     const result = await client.sandboxItemResetLogin({ access_token: accessToken });
     assert.equal(result.data.reset_login, true, 'Provider did not confirm reset');
-    console.log('Synthetic partner Sandbox Item reset. Verify native Sync exposes repair, then verify exact saved IDs after repair.');
+    console.log('Synthetic hosted Sandbox Item reset. Verify native Sync exposes repair, then verify exact saved IDs after repair.');
   } finally {
     await db.$disconnect();
   }
