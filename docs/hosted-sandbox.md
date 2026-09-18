@@ -237,3 +237,32 @@ passed15/15. These mocked native-adapter tests cover stale-user suppression,
 permission/session races, late-created notification cancellation, paid/inactive/
 opted-out cleanup, deleted-item reconciliation and diagnostic logout cancellation.
 Keep this unit evidence distinct from actual OS queue observations.
+
+## September 18: isolated packaged Mac candidate and rendering blocker
+
+Built a separate arm64 Electron43.1.1 app at
+`.tmp/mac-sandbox/mac-arm64/Worthlane.app`, with bundle ID
+`com.worthlane.desktop.sandbox`, display name Worthlane Sandbox and package name
+`worthlane-sandbox`. Its archived configuration pins http://localhost:3403 with
+developmentOnly true; that frontend targets the isolated hosted Sandbox API.
+The existing production-hosted app and generated production URL configuration
+were preserved. This is local frontend / hosted API evidence, not a deployed
+Sandbox frontend or public Mac distribution candidate.
+
+The initial build retained the original package name and did not produce a
+separate running process while Hosted Beta was open (consistent with a shared
+single-instance lock). Rebuilding with distinct extraMetadata.name produced its
+own process. Package verification passed all8 assets and8 hardened fuses;
+`codesign --verify --deep --strict` passed. ASAR SHA256:
+`2b807dbc4d0c086dc0ed14c7fe3c7287ea1d34f2f7a368d51d5582973ffa62d2`.
+
+The app's recovery UI correctly displayed a connection timeout. Two direct local
+route checks each timed out after15seconds while Next process83251 remained at
+about118% CPU; hosted /api/health returned200 in0.33seconds. TERM did not stop the
+stuck local process; a targeted KILL and restart restored frontend responses.
+The browser renders the login form, but this packaged Mac app renders an empty
+cream window with the correct page title after recovery, refresh and cold launch.
+No authenticated Mac acceptance is claimed. Next step is diagnose the packaged
+renderer failure with the healthy frontend; do not weaken security settings to
+make this test pass. No production deployment, credentials entered in the Mac
+app, notarization, paid build or store submission occurred.
