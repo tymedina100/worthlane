@@ -3457,3 +3457,7 @@ artifact identity, evidence and limits are in hosted-sandbox.md. Android EAS
 ### September 18 — Android Sandbox connection milestone
 
 Standalone Android release completed interactive First Platypus Bank Link and returned Healthy with 14 accounts. Fresh-login verification passed the partner's complete 392-transaction ledger, repeat-sync idempotency, preserved $125.50 manual fallback and $42.75 bill, isolation from the owner's 49-row ledger, and existing responsibility/debt persistence. See `docs/hosted-sandbox.md` for artifact and emulator-recovery limits. Next: native repair/OAuth/unlink, reminder checks and final candidate parity; no production change or store submission.
+
+### September18 — Android reminder acceptance
+
+Signed standalone Android Sandbox build delivered its DATE test reminder to the notification shade with the correct icon and generic content. OS AlarmManager confirmed the persisted one-day-before bill reminder at September20 09:00 (one-hour inexact window). Native logout reached sign-in and removed all pending Worthlane alarms and notification records. See hosted-sandbox.md for evidence and timing limits. Recovered677MiB of reproducible build output;3.8GiB disk free. Next remains hosted OAuth/error/unlink and final artifact parity; no production or store submission.
