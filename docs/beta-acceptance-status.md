@@ -2,7 +2,7 @@
 
 Source of requirements: [Worthlane brief](https://app.notion.com/p/3d57f32d407581d9a9eafcdb4d5ac152).
 Current code baseline: main `4b22bec` (PR19), confirmed September18.
-Hosted evidence branch: `codex/hosted-sandbox-acceptance` through `311f127`.
+Hosted evidence branch: `codex/hosted-sandbox-acceptance`; standalone iOS artifact verified from `79d8ae9` on September 18.
 Current gates: [completion audit](beta-completion-audit.md).
 Hosted evidence and limits: [hosted Sandbox acceptance](hosted-sandbox.md).
 The dated chronology below includes historical release/provider states; it is not

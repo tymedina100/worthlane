@@ -342,3 +342,33 @@ developmentClient:false, existing bundle identity and diagnostics disabled.
 All6 release-config tests pass. This is intended to produce a bundled Simulator
 app without Metro; no remote build/upload was started. Expo billing browser
 requires sign-in before remaining credits/cost can be verified.
+
+
+### September 18 — standalone iOS Sandbox artifact
+
+EAS Simulator build `bb102818-1876-422c-ac62-6055de147467` finished from
+`79d8ae9fc826172afc11e3aa1a2f433cc970b1fe`. It used the existing Free plan;
+billing showed 1/15 iOS and 3/15 Android builds used before these two jobs.
+No plan upgrade or store submission occurred. Android internal build
+`c9853f0d-37bc-49d9-aa11-2c58d0b82397` remained queued at this checkpoint.
+
+Downloaded iOS archive: 27,356,189 bytes. `codesign --verify --deep --strict`
+passed. Artifact Info.plist reports `com.worthlane.mobile`, version 1.0.0,
+build **7**, `iphonesimulator`; this differs from EAS UI metadata showing 27.
+Use the actual artifact value, not dashboard metadata, for release parity.
+The universal executable includes arm64 and x86_64. Simulator signature has
+empty entitlements, so this does not prove device associated-domain signing.
+Bundled JavaScript is 7,055,877 bytes, SHA-256
+`8e39ef97cdf45d5932f39f114c3736cc6affddaa9be2cb283b9209f53aba6446`.
+It contains the exact hosted Sandbox API URL and no production API origin.
+
+Installed over the development client on the laptop iPhone 16 Pro / iOS 18.3
+Simulator. Launched from the Home screen into the bundled standalone app:
+Avery's saved session restored, showing $125.50 manual assets, $0 spent and
+received, the synthetic household with Morgan, and exactly one $42.75 upcoming
+bill. Upcoming showed September 21; reopening its editor retained the exact
+amount/date and checked One day before reminder choice. Closed without edits.
+A fresh test reminder was scheduled, app backgrounded to Home, then reopened;
+Check test reminder status reported **Test reached notification history**.
+This proves OS presentation history, not an observed banner, sound, or actual
+future 9 a.m. bill delivery. No new native Plaid lifecycle proof is claimed.
