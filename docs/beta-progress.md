@@ -3496,3 +3496,13 @@ messages. Three offline regression tests (six isolated subprocess cases) pass
 for file/shell precedence, production rejection and missing credentials. Added
 this check to CI; script syntax and diff checks pass. Existing fixtures were not
 changed. Isolated hosted frontend approval and release gates remain unchanged.
+
+### September 18 — packaged privacy declarations
+
+Inspected14 privacy manifests inside the current standalone iOS Simulator
+artifact eb664bae/source1dd2196. Committed exact declarations and file hashes;
+store draft now distinguishes Plaid UserID, RevenueCat purchase-history and
+Sentry diagnostic declarations from runtime feature gates. No final store
+privacy answers, network-audit claims or provider-setting changes made. Final
+device archive/disclosure alignment remains open. CI35389472877 is live on
+af072f5; PostgreSQL17/18 persisted checks passed, final job conclusions pending.

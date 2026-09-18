@@ -212,3 +212,29 @@ PR18 merged2e34881 under explicit approval. Both Vercel production deployments
 succeeded (desktop6465691175, site6465684233). Railway skipped unchanged API files;
 PR16 remains Active. Main CI35007532665 has passed PostgreSQL17/18 and Windows;
 the general CI job was still running at this checkpoint.
+
+## September 18 packaged Simulator privacy inventory
+
+Inspected all14 PrivacyInfo.xcprivacy files in actual EAS artifact
+`eb664bae-4ce2-40c0-bed0-bcd91aabffb8`, source `1dd2196`. Paths, SHA256 hashes
+and exact declarations are preserved in
+[evidence/2026-09-18/ios-sandbox-privacy-manifests.json](evidence/2026-09-18/ios-sandbox-privacy-manifests.json).
+
+- LinkKit declares account-linked UserID for app functionality, not tracking.
+- RevenueCat declares unlinked purchase history for app functionality. Its
+  presence does not establish collection: the Sandbox profile disables paywall
+  and source configure() is guarded by that flag and a key. Final enabled store
+  configuration still needs a purchase-data disclosure review.
+- Sentry declares unlinked crash, performance and other diagnostic data for app
+  functionality. Source disables native SDK/traces and Sandbox disables its DSN;
+  these controls do not remove bundled declarations or prove vendor retention.
+- No manifest lists tracking domains or a true tracking declaration. Some omit
+  the top-level tracking key; omission is not independent proof of no tracking.
+- App-level required-reason categories include file timestamps, user defaults,
+  system boot time and disk space. Reason codes are preserved in the inventory.
+
+This closes the packaged Simulator manifest inspection gap only. Repeat against
+the final device/store archive, compare enabled services and complete Apple
+privacy answers before submission. No questionnaire or production setting was
+changed. Earlier September14 support-mailbox/deletion gaps are historical; later
+email and deletion acceptance evidence supersedes them, not this manifest audit.
