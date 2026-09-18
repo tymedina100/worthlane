@@ -180,3 +180,20 @@ existed. Browser error logs were empty. This adds interactive hosted-data eviden
 for debt persistence, duplicate prevention and privacy, not notification delivery
 or native bank-link completion. The unexecuted native partner-link verifier draft
 was preserved locally as an ignored patch rather than published as verified work.
+
+## September 18: hosted-session native reminder presentation
+
+Reopened the installed development client against hosted Sandbox through Metro8081.
+Avery's saved session and $125.50 manual account were retained. In Settings, Send
+test reminder reported scheduled; backgrounded the app using Simulator Home and
+reopened it. Check test reminder status then displayed “Test reached notification
+history,” explicitly distinguishing OS presentation from sound/banner visibility.
+
+Source inspection confirms the diagnostic clears prior scheduled/presented test
+notifications before creating a new DATE trigger ten seconds ahead. Status checks
+read native scheduled/presented notifications filtered to the active user. Thus
+this was fresh native OS-presentation evidence for the hosted session, not merely
+a successful schedule call or an old notification. A saved obligation's actual
+9am delivery, cancellation/session-switch behavior on this hosted run, and signed
+release-artifact parity remain unverified. Coordinate gestures still return
+noWindowsAvailable, so native Plaid consent/import completion is still open.
