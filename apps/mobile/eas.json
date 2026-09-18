@@ -27,11 +27,6 @@
         "APPLE_TEAM_ID": "5FBXR5M5PJ",
         "EXPO_PUBLIC_ENABLE_AI": "false",
         "EXPO_PUBLIC_ENABLE_PAYWALL": "false",
-        "EXPO_PUBLIC_POSTHOG_KEY": "",
-        "EXPO_PUBLIC_SENTRY_DSN": "",
-        "SENTRY_ORG": "",
-        "SENTRY_PROJECT": "",
-        "SENTRY_AUTH_TOKEN": "",
         "SENTRY_DISABLE_AUTO_UPLOAD": "true"
       }
     }

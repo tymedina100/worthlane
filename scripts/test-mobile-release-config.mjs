@@ -49,7 +49,8 @@ test('internal Sandbox candidate resolves banking identity without production se
   const result = config({ ...profile.env, EAS_BUILD_PROFILE: 'sandbox-preview' });
   assert.ok(result.ios.associatedDomains.includes('applinks:worthlane.app'));
   assert.equal(result.ios.appleTeamId, '5FBXR5M5PJ');
-  assert.equal(result.extra.sentry.dsn, '');
+  assert.equal(result.extra.sentry.dsn, null);
+  assert(Object.values(profile.env).every(value => typeof value === 'string' && value.length > 0), 'EAS rejects empty environment values');
   assert(!result.plugins.some(p => Array.isArray(p) && p[0] === '@sentry/react-native/expo'));
 });
 test('Sandbox candidate fails closed on inherited production settings', () => {

@@ -322,3 +322,15 @@ Build review follow-up: the tracked Android project applies Sentry's Gradle hook
 even without the optional Expo plugin. The installed hook checks
 SENTRY_DISABLE_AUTO_UPLOAD; sandbox-preview now pins it true and rejects an
 override, avoiding upload attempts with intentionally empty credentials.
+
+EAS CLI schema validation follow-up: empty env values are rejected by EAS even
+though Expo config can resolve them. Removed empty credential entries from
+eas.json; the app-config guard still rejects any inherited nonempty diagnostic
+configuration. These variables must be absent/empty in the selected EAS preview
+environment before building. Added coverage preventing empty profile env values.
+
+After correction, authenticated EAS18.3 build inventory and
+`eas config --platform ios --profile sandbox-preview --json --non-interactive`
+both succeeded. Inventory still shows latest finished Android build35306d6e
+from September10/10cd6fa and iOS8a096d23 from September10/d759913; neither is the
+current candidate. No build was triggered by these read-only checks.
