@@ -33,6 +33,7 @@ module.exports = () => {
   if (isSandboxPreview) {
     const expected = {
       EXPO_NO_DOTENV: "1",
+      SENTRY_DISABLE_AUTO_UPLOAD: "true",
       EXPO_PUBLIC_API_URL: "https://worthlane-beta-sandbox.up.railway.app/api",
       EXPO_PUBLIC_PLAID_ENABLED: "true",
       PLAID_IOS_ASSOCIATED_DOMAIN: "worthlane.app",

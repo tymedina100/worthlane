@@ -55,7 +55,7 @@ test('internal Sandbox candidate resolves banking identity without production se
 test('Sandbox candidate fails closed on inherited production settings', () => {
   const env = { ...eas.build['sandbox-preview'].env, EAS_BUILD_PROFILE: 'sandbox-preview' };
   for (const [name, value] of Object.entries({
-    EXPO_NO_DOTENV: '0', EXPO_PUBLIC_API_URL: 'https://production.example/api',
+    SENTRY_DISABLE_AUTO_UPLOAD: 'false', EXPO_NO_DOTENV: '0', EXPO_PUBLIC_API_URL: 'https://production.example/api',
     EXPO_PUBLIC_PLAID_ENABLED: 'false', PLAID_IOS_ASSOCIATED_DOMAIN: 'wrong.example',
     APPLE_TEAM_ID: 'AAAAAAAAAA', EXPO_PUBLIC_ENABLE_AI: 'true', EXPO_PUBLIC_ENABLE_PAYWALL: 'true',
     EXPO_PUBLIC_POSTHOG_KEY: 'synthetic', EXPO_PUBLIC_SENTRY_DSN: 'synthetic',

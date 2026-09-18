@@ -317,3 +317,8 @@ This prepares a reproducible internal build; no EAS build, upload, installation,
 production setting change or store submission was performed. The profile keeps
 the existing app identifiers for OAuth parity and has no submit profile. Final
 binary API/feature/signature checks and interactive journeys still must pass.
+
+Build review follow-up: the tracked Android project applies Sentry's Gradle hook
+even without the optional Expo plugin. The installed hook checks
+SENTRY_DISABLE_AUTO_UPLOAD; sandbox-preview now pins it true and rejects an
+override, avoiding upload attempts with intentionally empty credentials.
