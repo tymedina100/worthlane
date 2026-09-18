@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { parseEnv } from 'node:util';
+import { loadSandboxCredentials } from './lib/sandbox-credentials.mjs';
 
 // Explicitly authorized, isolated Railway environment. Never accept an arbitrary
 // host or reuse production credentials. Saved logins contain synthetic data only.
@@ -35,6 +35,9 @@ async function ledgerSnapshot(token) {
   return data.transactions.sort((a, b) => a.id.localeCompare(b.id));
 }
 try {
+  // Validate configuration before creating any remote fixture data.
+  const plaidCredentials = phase === '--create' && !fixture?.itemId
+    ? loadSandboxCredentials() : null;
   assert.equal((await request('/health')).status, 'ready');
   await request('/accounts', undefined, undefined, 401);
   if (phase === '--create') {
@@ -69,8 +72,7 @@ try {
       }
     }
     if (!fixture.itemId) {
-      const env = parseEnv(readFileSync(resolve('apps/api/.env.local'), 'utf8'));
-      assert.equal(env.PLAID_ENV, 'sandbox');
+      const env = plaidCredentials;
       const require = createRequire(resolve('apps/api/package.json'));
       const { PlaidApi, Configuration, PlaidEnvironments, Products } = require('plaid');
       const plaid = new PlaidApi(new Configuration({ basePath: PlaidEnvironments.sandbox, baseOptions: { timeout: 20000, headers: { 'PLAID-CLIENT-ID': env.PLAID_CLIENT_ID, 'PLAID-SECRET': env.PLAID_SECRET } } }));

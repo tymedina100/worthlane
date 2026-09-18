@@ -3485,3 +3485,14 @@ for its specific proxy-secret destination), public Mac signing/notarization,
 iOS OAuth and privacy/store gates. Existing Vercel previews target production
 and must not receive synthetic accounts. No merge, production change or store
 submission is authorized by this milestone.
+
+### September 18 — reproducible hosted acceptance setup
+
+Resolved PR20 review finding: hosted fixture creation now uses the existing Next
+environment loader, supporting documented apps/api/.env, .env.local precedence
+and shell overrides. Sandbox environment and required credentials are validated
+before any remote test-data creation; credential values are never used in error
+messages. Three offline regression tests (six isolated subprocess cases) pass
+for file/shell precedence, production rejection and missing credentials. Added
+this check to CI; script syntax and diff checks pass. Existing fixtures were not
+changed. Isolated hosted frontend approval and release gates remain unchanged.
