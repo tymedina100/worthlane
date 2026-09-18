@@ -3506,3 +3506,20 @@ Sentry diagnostic declarations from runtime feature gates. No final store
 privacy answers, network-audit claims or provider-setting changes made. Final
 device archive/disclosure alignment remains open. CI35389472877 is live on
 af072f5; PostgreSQL17/18 persisted checks passed, final job conclusions pending.
+
+### September 18 — bounded native Refresh
+
+Observed intermittent blank windows after the native Refresh menu, including a
+signed-out page. Temporary lifecycle diagnostics showed no renderer-crash or
+load-failure event, and a later attempt succeeded; exact root cause is not proven.
+The menu's Electron reload role bypassed Worthlane's existing bounded navigation
+path. Refresh now loads the current allowed-origin URL through that same
+15-second timeout/connection-recovery path, falling back to the configured URL
+when on the internal recovery page. No origin/security permissions were widened.
+
+All23 native tests and syntax checks pass, including stalled-load recovery,
+origin pinning and OAuth-window isolation. Interactive development runtime
+against local frontend/hosted Sandbox passed signed-out Refresh and authenticated
+Morgan Refresh, retaining the $2450 household plan and current snapshot. This
+mitigation has not yet been replayed in a newly packaged artifact or a fully
+hosted frontend; do not describe the intermittent root cause as resolved.

@@ -128,6 +128,16 @@ function navigate(route) {
   void loadApplicationUrl(new URL(route, configuredApp.origin).toString());
 }
 
+function refreshApplication() {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  const currentUrl = mainWindow.webContents.getURL();
+  // Use the same bounded load/recovery path as startup. The native reload role
+  // bypasses that path, including its timeout and retry screen.
+  const target = isAllowedNavigation(currentUrl, configuredApp.origin)
+    ? currentUrl : configuredApp.href;
+  void loadApplicationUrl(target);
+}
+
 function buildApplicationMenu() {
   const navigationItems = [
     ["Overview", "/dashboard"],
@@ -165,7 +175,7 @@ function buildApplicationMenu() {
     {
       label: "View",
       submenu: [
-        { role: "reload", label: "Refresh", accelerator: "CmdOrCtrl+R" },
+        { label: "Refresh", accelerator: "CmdOrCtrl+R", click: refreshApplication },
         { type: "separator" },
         { role: "resetZoom", label: "Actual size" },
         { role: "zoomIn", label: "Zoom in" },
