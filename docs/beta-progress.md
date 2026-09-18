@@ -3523,3 +3523,20 @@ against local frontend/hosted Sandbox passed signed-out Refresh and authenticate
 Morgan Refresh, retaining the $2450 household plan and current snapshot. This
 mitigation has not yet been replayed in a newly packaged artifact or a fully
 hosted frontend; do not describe the intermittent root cause as resolved.
+
+### September 18 — Mac rendering comparison
+
+Exact bfe8cb3 local package ASAR98578d64ab1be6418bfbc3dae0702fbe76bfbe34b99c96d9d83a5882bb4f7600
+passed assets/fuses/signature, but normal rendering repeatedly blanked after
+Refresh. Waiting beyond15s did not restore it; native resize restored the
+already-loaded household twice without login/reload. Reopening the same package
+with --disable-gpu retained the session and completed two dashboard refreshes
+and an accounts-page refresh without resizing; accounts route, Healthy bank
+connection and $2450 plan persisted. The first observation was briefly empty
+but subsequently rendered by itself, unlike the earlier persistent blank state.
+
+Added the supported app.disableHardwareAcceleration() before readiness on macOS
+only, retaining Windows behavior and all security settings. This is a measured
+compatibility workaround, not proof of a specific upstream GPU bug. Software
+rendering may cost CPU/battery; exact new packaged replay and bank-popup parity
+are still required. API reference: https://www.electronjs.org/docs/latest/api/app#appdisablehardwareacceleration

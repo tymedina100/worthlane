@@ -26,6 +26,12 @@ const {
 
 const { attachBankWindows } = require("./bank-window.cjs");
 
+// The tested macOS compositor can leave a loaded page blank after Refresh
+// until the window is resized. Software rendering passed the same packaged
+// dashboard/accounts refresh checks. Keep Windows on its existing renderer.
+// Electron requires this setting before app readiness.
+if (process.platform === "darwin") app.disableHardwareAcceleration();
+
 const WINDOW_MIN_WIDTH = 900;
 const WINDOW_MIN_HEIGHT = 640;
 const DEFAULT_BOUNDS = Object.freeze({ width: 1440, height: 920 });
