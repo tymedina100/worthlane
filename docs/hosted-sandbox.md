@@ -197,3 +197,19 @@ a successful schedule call or an old notification. A saved obligation's actual
 9am delivery, cancellation/session-switch behavior on this hosted run, and signed
 release-artifact parity remain unverified. Coordinate gestures still return
 noWindowsAvailable, so native Plaid consent/import completion is still open.
+
+## September 18: native saved bill and private reminder preference
+
+In Avery's hosted Simulator session, Upcoming > Quick add saved the synthetic
+“Avery native bill check” for $42.75 due 2026-09-21. Reopened its native editor,
+selected One day before, saved successfully, and reopened again. The editor
+retained the amount, confirmed date, active state and checked reminder selection.
+
+An independent process logged both synthetic users in again through the hosted
+API. Avery's list contained exactly one matching BILL, amount42.75, dueDate
+2026-09-21, reminderTiming ONE_DAY_BEFORE, isActive true and isPaid false.
+Morgan's list excluded its ID. Morgan's PATCH against that ID returned404;
+Avery's subsequent read retained the original name. No payment or transaction
+was created. This verifies native mutation, server persistence and cross-user
+access denial. It does not prove this bill's future 9am notification presentation
+or cancellation on logout; those remain separate from the diagnostic proof above.
