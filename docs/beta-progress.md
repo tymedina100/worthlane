@@ -3441,3 +3441,15 @@ PR19 initial CI180 has passed PostgreSQL17/18 and native Windows jobs; general C
 was still running when checked. The new Sandbox test is run explicitly with
 Sandbox credentials, not by ordinary CI. This closes provider revocation evidence
 for local Sandbox account deletion; release-service deletion remains unverified.
+
+
+### September 18, 2026 — standalone iOS persisted two-login checkpoint
+
+EAS iOS artifact `bb102818-1876-422c-ac62-6055de147467` restored Avery's account,
+bill and reminder, presented a fresh test notification, cleared its history on
+logout, and admitted Morgan's separate account without Avery's private data.
+Morgan's native Sandbox sync and an independent hosted verifier passed. Source
+copy now distinguishes the total unpaid payment count from the next-seven-day
+amount; mobile typecheck passed, next artifact visual check remains. Full
+artifact identity, evidence and limits are in hosted-sandbox.md. Android EAS
+`c9853f0d-37bc-49d9-aa11-2c58d0b82397` is still queued; no replacement job started.

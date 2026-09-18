@@ -372,3 +372,29 @@ A fresh test reminder was scheduled, app backgrounded to Home, then reopened;
 Check test reminder status reported **Test reached notification history**.
 This proves OS presentation history, not an observed banner, sound, or actual
 future 9 a.m. bill delivery. No new native Plaid lifecycle proof is claimed.
+
+
+### September 18 — standalone iOS second login and native sync
+
+On the same EAS artifact from `79d8ae9`, Avery signed out to a clean login screen.
+Morgan signed in separately; the iOS Save Password sheet was dismissed via Home
+and reopening Worthlane, without asking the user to operate the Simulator.
+Morgan saw 14 linked Sandbox accounts and his $100 manual account, not Avery's
+$125.50 account. Upcoming showed only the $25 January 31, 2027 minimum payment,
+not Avery's $42.75 September 21 bill. Checking test reminder status under Morgan
+returned **No test found** after Avery's prior presentation, proving that prior
+test notification history was cleared across this logout/login boundary.
+
+Native Sync now completed and refreshed the Healthy institution's timestamp.
+A separate `WORTHLANE_HOSTED_SANDBOX_APPROVED=true node
+scripts/test-hosted-sandbox.mjs --verify` passed fresh-login saved account ID,
+manual amount, persisted-token sync/no duplicate accounts, three-payment
+zero-APR plan, idempotent bill handoff, exact $2,450 allocations and partner
+account/transaction isolation assertions. This adds native sync evidence,
+not a new native Link/OAuth/reconnect/unlink completion.
+
+The dashboard labelled all unpaid items as “coming up” above a seven-day total,
+including Morgan's item due 135 days later. Source copy now explicitly labels
+that all-date count **unpaid payments**, retaining the separate seven-day total.
+Mobile typecheck passed. This copy adjustment is not yet in the installed
+`79d8ae9` artifact and requires the next candidate's visual check.
