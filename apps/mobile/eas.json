@@ -16,6 +16,23 @@
     "production": {
       "environment": "production",
       "autoIncrement": true
+    },
+    "sandbox-preview": {
+      "extends": "preview",
+      "env": {
+        "EXPO_NO_DOTENV": "1",
+        "EXPO_PUBLIC_API_URL": "https://worthlane-beta-sandbox.up.railway.app/api",
+        "EXPO_PUBLIC_PLAID_ENABLED": "true",
+        "PLAID_IOS_ASSOCIATED_DOMAIN": "worthlane.app",
+        "APPLE_TEAM_ID": "5FBXR5M5PJ",
+        "EXPO_PUBLIC_ENABLE_AI": "false",
+        "EXPO_PUBLIC_ENABLE_PAYWALL": "false",
+        "EXPO_PUBLIC_POSTHOG_KEY": "",
+        "EXPO_PUBLIC_SENTRY_DSN": "",
+        "SENTRY_ORG": "",
+        "SENTRY_PROJECT": "",
+        "SENTRY_AUTH_TOKEN": ""
+      }
     }
   },
   "submit": {

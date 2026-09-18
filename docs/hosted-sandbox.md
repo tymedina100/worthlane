@@ -294,3 +294,26 @@ isolated hosted API through a local frontend. It does not prove a deployed
 Sandbox frontend, production-hosted authentication, Developer ID/notarization,
 or native Plaid Link completion. The installed production-hosted app was not
 modified, and no financial data or secrets were sent to production.
+
+## September 18: reproducible internal mobile candidate profile
+
+Added `sandbox-preview` to mobile eas.json, extending internal `preview`. It pins
+the isolated hosted API, Plaid enabled, worthlane.app associated domain and the
+existing5FBXR5M5PJ team identity. AI/paywall are off; PostHog/Sentry configuration
+and Sentry upload credentials are empty. Expo dotenv loading is disabled. The
+app config validates these values and rejects conflicting inherited settings,
+including a production API URL, wrong OAuth identity or enabled telemetry.
+Existing preview/production/development behavior remains unchanged.
+
+The release-config and mobile-diagnostics tests pass, together with all6 real
+Gradle signing-guard fixtures (including rejection of missing/debug signing).
+Expo CLI `config --type public --json` resolves the actual profile to Worthlane,
+iOS/Android com.worthlane.mobile, applinks:worthlane.app, existing team identity
+and disabled diagnostics. CI already runs both test scripts. Configuration
+uses documented EAS profile inheritance/env behavior:
+https://docs.expo.dev/build/eas-json/
+
+This prepares a reproducible internal build; no EAS build, upload, installation,
+production setting change or store submission was performed. The profile keeps
+the existing app identifiers for OAuth parity and has no submit profile. Final
+binary API/feature/signature checks and interactive journeys still must pass.

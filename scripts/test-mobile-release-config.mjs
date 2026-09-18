@@ -39,3 +39,28 @@ test('release banking requires associated domain and explicit Apple identity', (
 test('local development still accepts emulator API routing', () => {
   assert.equal(config({ EXPO_PUBLIC_API_URL: 'http://10.0.2.2:3301/api' }).name, 'Worthlane');
 });
+
+const eas = JSON.parse(fs.readFileSync(new URL('../apps/mobile/eas.json', import.meta.url), 'utf8'));
+test('internal Sandbox candidate resolves banking identity without production services', () => {
+  const profile = eas.build['sandbox-preview'];
+  assert.equal(profile.extends, 'preview');
+  assert.equal(eas.build.preview.distribution, 'internal');
+  assert.equal(eas.submit['sandbox-preview'], undefined);
+  const result = config({ ...profile.env, EAS_BUILD_PROFILE: 'sandbox-preview' });
+  assert.ok(result.ios.associatedDomains.includes('applinks:worthlane.app'));
+  assert.equal(result.ios.appleTeamId, '5FBXR5M5PJ');
+  assert.equal(result.extra.sentry.dsn, '');
+  assert(!result.plugins.some(p => Array.isArray(p) && p[0] === '@sentry/react-native/expo'));
+});
+test('Sandbox candidate fails closed on inherited production settings', () => {
+  const env = { ...eas.build['sandbox-preview'].env, EAS_BUILD_PROFILE: 'sandbox-preview' };
+  for (const [name, value] of Object.entries({
+    EXPO_NO_DOTENV: '0', EXPO_PUBLIC_API_URL: 'https://production.example/api',
+    EXPO_PUBLIC_PLAID_ENABLED: 'false', PLAID_IOS_ASSOCIATED_DOMAIN: 'wrong.example',
+    APPLE_TEAM_ID: 'AAAAAAAAAA', EXPO_PUBLIC_ENABLE_AI: 'true', EXPO_PUBLIC_ENABLE_PAYWALL: 'true',
+    EXPO_PUBLIC_POSTHOG_KEY: 'synthetic', EXPO_PUBLIC_SENTRY_DSN: 'synthetic',
+    SENTRY_ORG: 'synthetic', SENTRY_PROJECT: 'synthetic', SENTRY_AUTH_TOKEN: 'synthetic',
+  })) {
+    assert.throws(() => config({ ...env, [name]: value }), new RegExp(name));
+  }
+});
