@@ -492,3 +492,11 @@ Syntax validation passed. Negative invocations rejected wrong environment, wrong
 ### September18 — Settings scroll inset correction
 
 Android reminder screenshots exposed Settings rows scrolling underneath the transparent status bar. Moved the existing top safe-area inset from ScrollView content padding to a fixed outer container so the viewport begins below the system bar; initial spacing and modal behavior remain unchanged. Mobile typecheck and diff whitespace checks pass. This is a source fix, not yet visual acceptance in the signed standalone artifact; include it with the existing dashboard copy fix in the next candidate build. Railway login is still pending and no hosted Item reset has run.
+
+### September18 — second OAuth institution and green candidate CI
+
+CI run35373223055 on `e9f5f45ef1e59ff308a4f3521ca9801b08841550` completed successfully in all four jobs: full regression/typecheck/build, PostgreSQL17, PostgreSQL18 and native Windows packaging. PR20 remains unmerged; these results do not validate the newer source visually in the older installed mobile artifacts.
+
+After a further Worthlane input ANR, restarted the same isolated Android AVD headlessly without wiping data. Its saved Avery session recovered. Tested Bank of America's Sandbox OAuth path, this time disabling the simulator's bank-owned account-selection step, using public synthetic credentials/MFA and accepting the simulator terms. At10:26 Phoenix, Android returned to Plaid's **Log into Bank of America** screen instead of completing. `dumpsys activity lastanr` reported no ANR since this boot. This reproduces the incomplete return with a second institution and a different account-selection variant, without establishing the cause; neither institution has passed OAuth acceptance.
+
+The subsequent full hosted verifier passed both fresh logins: exact original partner Item/accounts and392-row ledger, isolated49-row owner ledger, stable repeat-sync financial fields, private$125.50 manual fallback, exact$2,450 responsibilities and saved debt/due-date idempotency. The failed attempt added no connection to the persisted baseline. Exited the incomplete Link flow. Railway browser authentication remains pending for forced-error recovery; no production banking, paid build or store submission occurred.
