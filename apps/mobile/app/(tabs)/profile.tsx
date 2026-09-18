@@ -574,7 +574,8 @@ export default function ProfileScreen() {
 
   return (
     <>
-      <ScrollView style={styles.container} contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.md }]}>
+      <View style={[styles.container, { paddingTop: insets.top }]}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <Text style={styles.title}>Settings</Text>
         <TouchableOpacity style={styles.secondaryButton} onPress={() => router.push("/onboarding")} accessibilityRole="button"><Text style={styles.secondaryButtonText}>Continue guided setup</Text></TouchableOpacity>
 
@@ -859,6 +860,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      </View>
 
       <ManualAccountModal
         visible={manualModalVisible}
