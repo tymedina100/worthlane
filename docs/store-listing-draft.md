@@ -108,6 +108,7 @@ and its enabled backend/SDK services. Do not select "Data Not Collected".
 | Data / purpose | Current source evidence | Release disclosure decision |
 | --- | --- | --- |
 | Email and user identifier / authentication | User.email, User.id, passwordHash and refresh-session records in Prisma | Collected and linked to the account for app functionality. Password hashes are retained; no plaintext password-storage claim. |
+| Plaid Link SDK user identifier / bank linking | September18 source package13.2.0 contains LinkKit7.1.2; its device framework PrivacyInfo.xcprivacy declares UserID, linked=true, tracking=false, purpose=AppFunctionality | Include SDK collection in the final questionnaire even when Worthlane analytics are disabled. This is bundled-manifest evidence, not a network audit or a complete statement of Plaid server-side data use. Recheck the final packaged artifact. |
 | Household display names and invited email / collaboration | HouseholdMember and invitation/acceptance flows | Account-linked collaboration data; partner disclosure follows explicit invitation and visibility choices. |
 | Financial data / planning | Account, Transaction, DebtPlanEntry, Budget, UpcomingObligation and household responsibility models | Account-linked financial data for app functionality, including manually entered data. Transactions contain purchase history; map the exact Apple categories during final questionnaire review. |
 | Push destination / reminders | Optional User.pushToken and push service | App functionality when registered; distinguish remote push tokens from local-only scheduled notifications. |
@@ -175,6 +176,10 @@ Recent EAS history includes completed production/store Android build4 from
 candidate and are not evidence that current code is packaged or ready to upload.
 No new build, submission or paid service was started during this inspection.
 
+## September18 — current internal candidates
+
+Source `1dd2196986b708b4f977f5cf7f396a81cee07084` pins Plaid13.2.0 and includes the dashboard unpaid-payment wording and Settings safe-area fixes. Internal Android build `22734e79-123e-40cf-9d57-1ffd463f2f10` and laptop-only iOS Simulator build `eb664bae-4ce2-40c0-bed0-bcd91aabffb8` were uploaded to EAS using verified included Free capacity. Both builds finished; exact artifacts passed signature and Sandbox-origin checks. Android passes saved sessions, Chase OAuth/import/repeat sync/selective unlink, forced repair, reminder delivery and queued/delivered logout cleanup. iOS Simulator passes saved sessions, standard Link/import/repeat sync/selective unlink, forced repair and reminder delivery/history cleanup. iOS OAuth remains unverified after two unsuccessful Simulator attempts; physical phones are outside the authorized scope. See docs/hosted-sandbox.md for artifact IDs, hashes and provider/data readback. These internal/Simulator artifacts are not App Store attachments or current store-ready device builds. No submission was made.
+
 
 ## Hosted Mac candidate — September15
 
@@ -207,3 +212,29 @@ PR18 merged2e34881 under explicit approval. Both Vercel production deployments
 succeeded (desktop6465691175, site6465684233). Railway skipped unchanged API files;
 PR16 remains Active. Main CI35007532665 has passed PostgreSQL17/18 and Windows;
 the general CI job was still running at this checkpoint.
+
+## September 18 packaged Simulator privacy inventory
+
+Inspected all14 PrivacyInfo.xcprivacy files in actual EAS artifact
+`eb664bae-4ce2-40c0-bed0-bcd91aabffb8`, source `1dd2196`. Paths, SHA256 hashes
+and exact declarations are preserved in
+[evidence/2026-09-18/ios-sandbox-privacy-manifests.json](evidence/2026-09-18/ios-sandbox-privacy-manifests.json).
+
+- LinkKit declares account-linked UserID for app functionality, not tracking.
+- RevenueCat declares unlinked purchase history for app functionality. Its
+  presence does not establish collection: the Sandbox profile disables paywall
+  and source configure() is guarded by that flag and a key. Final enabled store
+  configuration still needs a purchase-data disclosure review.
+- Sentry declares unlinked crash, performance and other diagnostic data for app
+  functionality. Source disables native SDK/traces and Sandbox disables its DSN;
+  these controls do not remove bundled declarations or prove vendor retention.
+- No manifest lists tracking domains or a true tracking declaration. Some omit
+  the top-level tracking key; omission is not independent proof of no tracking.
+- App-level required-reason categories include file timestamps, user defaults,
+  system boot time and disk space. Reason codes are preserved in the inventory.
+
+This closes the packaged Simulator manifest inspection gap only. Repeat against
+the final device/store archive, compare enabled services and complete Apple
+privacy answers before submission. No questionnaire or production setting was
+changed. Earlier September14 support-mailbox/deletion gaps are historical; later
+email and deletion acceptance evidence supersedes them, not this manifest audit.

@@ -1,17 +1,24 @@
-# Worthlane completion audit — September 15, 2026
+# Worthlane completion audit — September 18, 2026
 
-Goal remains active. This audit checks the current Notion brief against persisted
-and interactive evidence; it does not authorize a production release or submission.
-The deployed API is PR16 merge21f14e7; the website and planning client are
-PR17 merge847a0fb. All four main CI jobs passed for each rollout. Railway
-correctly skipped PR17 because no watched API files changed. Vercel desktop and
-site deployments succeeded. Approved Resend delivery and hosted password-reset
-checks passed, including rejection of old passwords, reused codes and revoked
-refresh sessions. Browser request progression was checked interactively; reset
-mutation and login checks used the deployed HTTP endpoints with only the
-approved synthetic account. See production-preparation.md and beta-progress.md.
-This refresh reconciles later progress records; it is not a fresh replay of every
-previously recorded journey or approval to ship.
+Goal remains active. This is an evidence reconciliation, not a new claim that every
+journey has been replayed or permission to publish. The requirement matrix below
+retains the original brief and added website, Mac, production-preparation and store
+scope. No physical-phone work or store submission is authorized.
+
+On September18, `git ls-remote` confirmed main at `4b22bec` (approved PR19 merge).
+PR18 and PR19 are merged, not pending drafts. Earlier approved rollout evidence is
+recorded in production-preparation.md; this audit does not freshly verify deployment
+health. The unmerged `codex/hosted-sandbox-acceptance` branch adds isolated hosted
+Sandbox tests and evidence through the September18 Android OAuth investigation, including guarded Sandbox build profiles and a mobile copy correction, not a production deployment.
+
+The separate approved hosted Sandbox runs candidate `4b22bec` with its own database,
+Sandbox credentials and disabled email/paid AI/analytics. September18 fresh API
+checks and separate browser logins prove persisted responsibilities, private manual
+accounts, saved debt math and duplicate-free due-date handoff. See
+[hosted-sandbox.md](hosted-sandbox.md) for exact scope and failures. Standalone iOS hosted saved-session and separate-login checks, bill/reminder
+readback, logout notification-history cleanup and native sync passed on the
+`79d8ae9` EAS artifact. Android standalone provider consent/import now passes on the same source: 14 bank accounts and the full 392-row partner ledger persisted and remained isolated from the owner's 49-row ledger. Historical
+local native Link evidence must not be substituted for hosted release acceptance.
 
 | Requirement | Audited evidence | Result / limit |
 | --- | --- | --- |
@@ -23,37 +30,36 @@ previously recorded journey or approval to ship.
 | Transaction reconciliation and duplicate prevention | Inspected PostgreSQL tests cover added/modified/removed/pending-to-posted, transfers/card repayments, private manual/import review, bilateral joint matching/revocation and solo duplicate feeds. Repeat native sync retained unique IDs. | Covered by persisted tests plus relevant interactive flows. |
 | Card fields, Liabilities and manual fallback | Real run-plaid-integration provider test recorded statement/minimum/due fields and nonowner isolation; route uses owned account allowlist. Desktop/native manual card fields and saved due dates recorded; predictions are labeled estimates. | Sandbox/manual evidence present. Production Liabilities is not enabled; manual fallback remains required there. |
 | Reliable reminders and saved debt estimates | Actual iOS/Android background test notifications; DATE diagnostic aligns with obligation trigger type. Adapter tests cover local9am/date/session reconciliation. Shared debt tests explicitly cover promo-day proration, zero APR, minimum shortfall, non-amortization and cents. Saved two-login debt readbacks recorded. | Core evidence present; actual9am/physical-phone delivery is not claimed. Phone use excluded by user. |
-| Aesthetic app/site and beta list | Native forest/cream screens and improved recovery controls; approved live website and persisted consent-based waitlist proof recorded. | Website request delivered. Android notification icon rebuilt and inspected in the installed APK; actual delivered banner remains unverified. Five native screenshot drafts exist; final store imagery/artifact parity remains. |
-| Regression assurance / commits / project updates | PR16 and PR17 merged and deployed under explicit approval; both main CI runs passed all four jobs. Atomic reset concurrency, bounded email delivery and web recovery have persisted/local and hosted acceptance evidence. Commits are pushed and milestones tracked in Notion. | Email delivery and hosted recovery are complete. Signed native artifact parity remains open. PR18 local service isolation is a separate draft. |
+| Aesthetic app/site and beta list | Native forest/cream screens and improved recovery controls; approved live website and persisted consent-based waitlist proof recorded. | Website request delivered. Android notification icon rebuilt and inspected in the installed APK; actual Android standalone notification-shade icon delivery passed September18. Five native screenshot drafts exist; final store imagery/artifact parity remains. |
+| Regression assurance / commits / project updates | PR16 and PR17 merged and deployed under explicit approval; both main CI runs passed all four jobs. Atomic reset concurrency, bounded email delivery and web recovery have persisted/local and hosted acceptance evidence. Commits are pushed and milestones tracked in Notion. | Email delivery and hosted recovery are complete. Signed native artifact parity remains open. PR18 service isolation and PR19 deletion tests were approved and merged; hosted tests/evidence remain on a separate pushed branch. |
 | Truthful diagnostics and privacy disclosures | API error allowlist strips request/user/context and raw exception details. Mobile uses filtered JavaScript errors with native diagnostics and automatic sessions disabled; enabled/disabled configuration tests and three-platform exports pass. Store collection matrix is source-backed. | Fresh native launch on isolated Metro8084 passed after Simulator relaunch; persisted dashboard data rendered. Final store privacy answers must match the signed artifact and enabled services. |
-| Added native Mac app | Installed standalone Electron app; persisted Morgan/Avery household, native menus, quit/relaunch and isolated offline/retry UI verified. 19 tests, 8 asset and 8 fuse checks, strict local ad-hoc signature. User completed macOS Keychain prompt, after which saved-session cold launch reached household directly. | Local beta works with running localhost services. Final normal-build cold start now also restored the saved household after user authorization and normal Quit. Initial post-authorization Retry left a blank window, recovered by that restart. Public signing/notarization remains pending. |
+| Added native Mac app | Installed standalone Electron app; persisted Morgan/Avery household, native menus, quit/relaunch and isolated offline/retry UI verified. 19 tests, 8 asset and 8 fuse checks, strict local ad-hoc signature. User completed macOS Keychain prompt, after which saved-session cold launch reached household directly. | Earlier local saved-session evidence remains valid for that build. A later standalone Hosted Beta Mac build points at the deployed planning client; its login/recovery/cold-launch checks passed, but authenticated hosted Mac acceptance is not established. Mac development-runtime Chase OAuth now passes after a narrowly scoped native popup fix: persisted197-row owner ledger, partner isolation and selective unlink/provider revocation verified. Exact final package now passes Chase OAuth/import/repeat sync, forced login-error repair, cancellation/retry and selected unlink with provider revocation; original two-user baseline restored. Signature/assets/fuses and saved-session launch also pass. Public signing/notarization remains pending. |
 | Added production Plaid/store preparation request | App record and partial copy saved earlier; Android registration saved. Plaid/Apple/Railway sessions restored. Transactions/Balance enabled and billing verified; Liabilities not enabled. Apple review notes/contact/keywords saved. Existing Railway API/Postgres located. Signing/privacy/screenshots/reviewer access and hosted release verification remain. | Incomplete. Do not submit. |
 
-## Remaining work
+## Remaining acceptance gates
 
-0. Full-page web OAuth create/return, expired-session recovery and persisted
-   repeat sync now pass (see latest progress entry). Fresh native diagnostics-mode
-   startup and recovered reminder scheduling also pass; no phone interaction.
-1. Capital One is now In review after the authorized legal-name save; provider approval remains external.
-2. PR15 is deployed on Railway and Vercel; its additive migration checksum matches
-   the reviewed SQL and managed backups are configured under explicit approvals.
-   Google Workspace support delivery, authentication, and user MFA are verified.
-   Resend sending-domain DNS is Verified and its key is saved in the approved Mac
-   login Keychain and the approved Railway service. Enforced TLS and sender/reply-to
-   settings are verified; direct delivery, API reset and hosted web recovery passed.
-   PR18 clears inherited email and paid-AI settings in local test launchers and
-   remains a separate draft awaiting review/publication approval.
-   Keep local Sandbox data separate; no new production Plaid Items are authorized.
-3. Finish release signing/configuration, actual-app
-   screenshots and truthful privacy/reviewer metadata. Verify Google Play access
-   and upload signing. No submission, purchase or automatic release.
-4. Finish release artwork/support/service checks and reconcile the final candidate
-   against this matrix. Keep the original beta scope; do not add forecasting or
-   gamification as completion work.
-5. Resolve the remaining truthful Plaid security-control evidence. Published
-   privacy policy is attested; zero trust was already marked attested but was not
-   verified by this work. Fifteen other attestations remain outstanding. Source
-   code and dependency scans alone cannot establish organization-wide compliance.
+| Gate | Evidence required to close it | Current limitation / next action |
+| --- | --- | --- |
+| Hosted native banking | Finish actual Link/OAuth return, saved account/import readback, relink, repeat sync with stable IDs, cancellation and selected unlink; verify other login/manual rows survive. | Android non-OAuth first Link, persisted import, native Sync now and independent repeat-sync/privacy checks passed on September18. User explicitly authorized ADB/UIAutomator/Maestro for laptop emulator testing. Hosted healthy-Item Repair/update-mode return and new-Link cancellation also passed with stable IDs. Forced login-error recovery also passed September18 on the hosted standalone: Needs relink → password reauthentication → Connection repaired, with exact Item/account/ledger preservation. Chase OAuth also passed on updated Android1dd2196: one account/148 new transactions, stable540-row repeat-sync snapshot and owner account isolation. Selected Chase unlink also passed on1dd2196: provider ITEM_NOT_FOUND, exact original15-account/392-transaction partner baseline restored, owner49-row ledger/private manual/bill/plans preserved. Those updated Android results supersede the earlier13.1.0 OAuth failures. Earlier emulator ANRs remain a host reliability concern. On updated iOS eb664bae/source1dd2196, saved Morgan launch passed and authorized Maestro can operate Settings and Plaid provider screens; two Chase OAuth attempts returned Couldn’t connect without adding accounts. Website and Apple CDN association match; Plaid warns Simulator Universal Links may fail. iOS OAuth remains unverified within the laptop-only boundary; standard non-OAuth Link now passes:14 new accounts/392 imports, all441 owner records stable after sync, partner15 accounts/392 IDs private. Selected native unlink returned provider ITEM_NOT_FOUND and the full verifier restored the original owner49/partner392 ledgers plus saved plans and responsibilities. Updated iOS forced-error recovery now passes too: provider reset, Needs relink/incomplete-data warning, password update mode, Connection repaired and exact full-baseline readback. |
+| Hosted native planning and reminders | Reopen both saved logins, confirm personal/shared totals and private debt/bill views, and observe a scheduled reminder from the current client with cancellation/session isolation. | Hosted native Avery login, saved $125.50 account, $42.75 bill due September21 and persisted one-day-before preference pass with fresh API cross-user denial. A fresh native DATE diagnostic reached OS notification history. Native logout/relogin retained the bill and cleared the earlier diagnostic history;15/15 mocked adapter tests pass. Standalone 79d8ae9 also passed separate Morgan login with private bill isolation and cleared Avery diagnostic history. Test presentation and scheduling/session tests support reminder behavior; Android standalone DATE test reached the notification shade September18; AlarmManager independently showed the saved bill at September20 09:00 with a one-hour inexact window. App logout removed that queued alarm and the delivered notification. Future calendar-time delivery remains unobserved. Updated iOS eb664bae/source1dd2196 also passed actual background DATE reminder banner with generic text/icon, OS history readback, and logout clearing history before reopening an empty sign-in screen. Future calendar-time delivery remains unobserved; updated Android22734e79/source1dd2196 now also passes forced-error repair, real DATE reminder delivery, exact saved bill-alarm scheduling, and logout removal of the pending alarm and delivered notification. |
+| Current distributable artifacts | Build/sign the intended beta configuration, verify its API/feature flags, replay core journeys on it, and match screenshots/reviewer accounts to that exact build. Isolated packaged Mac authenticated cold launch now passes with a local frontend and hosted Sandbox API; fully hosted frontend acceptance and public Developer ID/notarization remain. | Existing native store builds predate the candidate. Standalone Simulator build bb102818-1876-422c-ac62-6055de147467 passed signature and Sandbox origin checks and core two-login readback on 79d8ae9. Android c9853f0d-37bc-49d9-aa11-2c58d0b82397 finished, passed signature/Sandbox-origin checks, and completed native first Link plus persisted import in an isolated AVD. Both use included Free EAS capacity. Updated source1dd2196 artifacts Android22734e79 and iOS Simulator eb664bae both finished and passed signature/Sandbox-origin checks. Android saved-session, corrected copy, Settings inset and OAuth/selective-unlink parity pass. iOS saved-session/copy and standard Link/import/sync/selective-unlink/provider-revocation pass; iOS OAuth remains unverified; current iOS forced-error repair and actual background reminder delivery/history cleanup pass. Updated Android forced-error repair and reminder delivery/queued-alarm/history cleanup now also pass. Device signing remains open; no store submission is authorized. |
+| Truthful service/privacy setup | Verify enabled diagnostics in the intended artifact, match Apple privacy answers and retention/scrubbing settings, and substantiate each required Plaid security claim. | Sentry IP storage prevention was off in both projects at last inspection; approval to enable is pending. Crash-data disclosure and content-rights confirmation remain unfinished. Fifteen Plaid attestations lack sufficient evidence; preexisting zero-trust attestation was not verified by this work. |
+| Store preparation, without submission | Complete accurate privacy/reviewer metadata, fresh screenshots and candidate attachment; verify Google Play access/signing and leave release unsubmitted. | Apple remains a preparation draft at last inspection. Some copy, review contact, screenshots, Finance category and age answers are saved; no current build/reviewer credentials or completed privacy publication. |
+| Final acceptance and authorized publication | Reconcile each brief requirement against current candidate evidence, run required CI, push reviewable commits, and obtain scoped approval for any resulting production deploy. | Core tests/local interactions are substantial; the gates above remain open. Pushed hosted evidence is not yet merged. Monitor the approved additional Railway budget (up to $10/month, not a provider hard cap). |
+
+## Resolved or historical blockers
+
+- Capital One showed **Enabled** in the September15 Plaid institution audit; the
+  earlier “In review” statement is historical. Recheck provider state before live
+  activation. Transactions/Balance were enabled; Liabilities/recurring/refresh were
+  not enabled. Do not describe an unenabled product as permanently ineligible.
+- PR18 and PR19 were approved and merged. PR15's additive migration/backups and
+  later email rollout are recorded as completed, not awaiting another approval.
+- Workspace support delivery/authentication, Resend domain/TLS and approved reset
+  tests passed. Do not repeat outbound tests without a reason and matching scope.
+- Families use up to two consenting adult logins; no child accounts are implied.
+- Forecasting and gamification are not completion work. Responsibility is not a
+  transfer or debt between partners. Manual fallbacks remain necessary.
 
 Source: current [Notion brief](https://app.notion.com/p/3d57f32d407581d9a9eafcdb4d5ac152).
 Exact chronology and test commands: [beta-progress.md](beta-progress.md).

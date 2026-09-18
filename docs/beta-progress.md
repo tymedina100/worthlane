@@ -3441,3 +3441,160 @@ PR19 initial CI180 has passed PostgreSQL17/18 and native Windows jobs; general C
 was still running when checked. The new Sandbox test is run explicitly with
 Sandbox credentials, not by ordinary CI. This closes provider revocation evidence
 for local Sandbox account deletion; release-service deletion remains unverified.
+
+
+### September 18, 2026 — standalone iOS persisted two-login checkpoint
+
+EAS iOS artifact `bb102818-1876-422c-ac62-6055de147467` restored Avery's account,
+bill and reminder, presented a fresh test notification, cleared its history on
+logout, and admitted Morgan's separate account without Avery's private data.
+Morgan's native Sandbox sync and an independent hosted verifier passed. Source
+copy now distinguishes the total unpaid payment count from the next-seven-day
+amount; mobile typecheck passed, next artifact visual check remains. Full
+artifact identity, evidence and limits are in hosted-sandbox.md. Android EAS
+`c9853f0d-37bc-49d9-aa11-2c58d0b82397` is still queued; no replacement job started.
+
+### September 18 — Android Sandbox connection milestone
+
+Standalone Android release completed interactive First Platypus Bank Link and returned Healthy with 14 accounts. Fresh-login verification passed the partner's complete 392-transaction ledger, repeat-sync idempotency, preserved $125.50 manual fallback and $42.75 bill, isolation from the owner's 49-row ledger, and existing responsibility/debt persistence. See `docs/hosted-sandbox.md` for artifact and emulator-recovery limits. Next: native repair/OAuth/unlink, reminder checks and final candidate parity; no production change or store submission.
+
+### September18 — Android reminder acceptance
+
+Signed standalone Android Sandbox build delivered its DATE test reminder to the notification shade with the correct icon and generic content. OS AlarmManager confirmed the persisted one-day-before bill reminder at September20 09:00 (one-hour inexact window). Native logout reached sign-in and removed all pending Worthlane alarms and notification records. See hosted-sandbox.md for evidence and timing limits. Recovered677MiB of reproducible build output;3.8GiB disk free. Next remains hosted OAuth/error/unlink and final artifact parity; no production or store submission.
+
+### September 18 — current native parity and honest desktop freshness
+
+Current Android artifact22734e79 (source1dd2196) passes Chase OAuth, selective
+unlink/provider revocation, forced repair and reminder/logout cleanup. Current
+iOS Simulator artifacteb664bae passes standard Link/import/sync/unlink, forced
+repair and reminder cleanup; Simulator OAuth remains unverified. Exact packaged
+Mac OAuth, cancellation/retry, forced repair and selective unlink passed; the
+full owner49/partner392 transaction baseline was restored with privacy intact.
+Native shell23 tests and package9 assets/8 fuses/signature checks passed; all four
+CI jobs passed on a0fe748. Detailed artifact evidence is in hosted-sandbox.md.
+
+Desktop headers now use the financial summary asOf rather than the household
+edit timestamp, with date and household timezone. Bank retrieval dates remain
+separate. Demo says Demo snapshot and absent timestamps say unavailable. Local
+frontend against hosted Sandbox visibly verified overview/accounts timestamps
+and separate retrieval dates, demo wording, and a 390px accounts layout with
+390px scroll width. Desktop typecheck and diff checks passed.
+
+Next: isolated fully hosted frontend (prepared Vercel project awaits approval
+for its specific proxy-secret destination), public Mac signing/notarization,
+iOS OAuth and privacy/store gates. Existing Vercel previews target production
+and must not receive synthetic accounts. No merge, production change or store
+submission is authorized by this milestone.
+
+### September 18 — reproducible hosted acceptance setup
+
+Resolved PR20 review finding: hosted fixture creation now uses the existing Next
+environment loader, supporting documented apps/api/.env, .env.local precedence
+and shell overrides. Sandbox environment and required credentials are validated
+before any remote test-data creation; credential values are never used in error
+messages. Three offline regression tests (six isolated subprocess cases) pass
+for file/shell precedence, production rejection and missing credentials. Added
+this check to CI; script syntax and diff checks pass. Existing fixtures were not
+changed. Isolated hosted frontend approval and release gates remain unchanged.
+
+### September 18 — packaged privacy declarations
+
+Inspected14 privacy manifests inside the current standalone iOS Simulator
+artifact eb664bae/source1dd2196. Committed exact declarations and file hashes;
+store draft now distinguishes Plaid UserID, RevenueCat purchase-history and
+Sentry diagnostic declarations from runtime feature gates. No final store
+privacy answers, network-audit claims or provider-setting changes made. Final
+device archive/disclosure alignment remains open. CI35389472877 is live on
+af072f5; PostgreSQL17/18 persisted checks passed, final job conclusions pending.
+
+### September 18 — bounded native Refresh
+
+Observed intermittent blank windows after the native Refresh menu, including a
+signed-out page. Temporary lifecycle diagnostics showed no renderer-crash or
+load-failure event, and a later attempt succeeded; exact root cause is not proven.
+The menu's Electron reload role bypassed Worthlane's existing bounded navigation
+path. Refresh now loads the current allowed-origin URL through that same
+15-second timeout/connection-recovery path, falling back to the configured URL
+when on the internal recovery page. No origin/security permissions were widened.
+
+All23 native tests and syntax checks pass, including stalled-load recovery,
+origin pinning and OAuth-window isolation. Interactive development runtime
+against local frontend/hosted Sandbox passed signed-out Refresh and authenticated
+Morgan Refresh, retaining the $2450 household plan and current snapshot. This
+mitigation has not yet been replayed in a newly packaged artifact or a fully
+hosted frontend; do not describe the intermittent root cause as resolved.
+
+### September 18 — Mac rendering comparison
+
+Exact bfe8cb3 local package ASAR98578d64ab1be6418bfbc3dae0702fbe76bfbe34b99c96d9d83a5882bb4f7600
+passed assets/fuses/signature, but normal rendering repeatedly blanked after
+Refresh. Waiting beyond15s did not restore it; native resize restored the
+already-loaded household twice without login/reload. Reopening the same package
+with --disable-gpu retained the session and completed two dashboard refreshes
+and an accounts-page refresh without resizing; accounts route, Healthy bank
+connection and $2450 plan persisted. The first observation was briefly empty
+but subsequently rendered by itself, unlike the earlier persistent blank state.
+
+Added the supported app.disableHardwareAcceleration() before readiness on macOS
+only, retaining Windows behavior and all security settings. This is a measured
+compatibility workaround, not proof of a specific upstream GPU bug. Software
+rendering may cost CPU/battery; exact new packaged replay and bank-popup parity
+are still required. API reference: https://www.electronjs.org/docs/latest/api/app#appdisablehardwareacceleration
+
+### September 18 — exact software-rendering Mac package replay
+
+Source2a50752 local package `.tmp/mac-software-fixed/mac-arm64/Worthlane.app`
+(ASAR `b8d3719a9b1fa89236c02040926f1d70d14c2064e4816512314d1eb6030c69bd`)
+passes9 assets/8 hardened fuses/strict signature checks. All4 source CI jobs
+passed in35391591517. After the macOS authorization process cleared, the
+existing recovery Retry restored Morgan without restarting. Native Refresh on
+overview and Accounts then rendered normally without resizing, retaining the
+saved session, route, privacy and $2450 plan.
+
+Exact package also completed Chase Sandbox OAuth popup, simulated MFA and one
+checking account selection, returned to Link and saved the connection. Separate
+API verification confirmed1 new account/148 imports and all197 owner transaction
+objects unchanged on repeat sync; partner15 accounts/392 IDs remained private.
+The first verification hit409 while initial sync was still active; retry passed.
+Selected native unlink removed only that added Chase connection. A guarded
+provider observer confirmed database removal and ITEM_NOT_FOUND. Full fresh-login
+`WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-sandbox.mjs --verify`
+then passed original owner49/partner392 ledgers, manual fallback, responsibilities
+and debt/due-date idempotency. UI returned to15 accounts/one institution.
+
+This closes the current local-package Refresh and OAuth-popup regression. It
+does not establish CPU/battery performance across Macs, final device-store
+acceptance or fully hosted frontend behavior. The package is ad-hoc signed and
+pins localhost3403 against the isolated hosted Sandbox API. Fully hosted frontend
+credential-destination approval, public signing, iOS OAuth and privacy/store
+gates remain open. No production changes or store submission.
+
+### September 18 — approved isolated Vercel frontend created
+
+Tyler approved creation/deployment of `worthlane-beta-desktop` on the existing
+Hobby team and transfer of the existing Railway beta-sandbox proxy secret into
+that exact project. Created with root `apps/desktop`, Next.js, and only two
+project environment variables: `WORTHLANE_API_URL` pointing to
+`https://worthlane-beta-sandbox.up.railway.app/api` and
+`WORTHLANE_DESKTOP_PROXY_SECRET`. Both are sensitive values for this project's
+Production/Preview environments. Source credential was validated against exact
+Sandbox project/environment/service IDs and `PLAID_ENV=sandbox`; its value was
+transferred in memory without writing it to source or evidence.
+
+Set this new project's primary branch to `codex/hosted-sandbox-acceptance` and
+created deployment `6o3N9QAGtZUsj21zEdQEscYdwDkE` from CI-green `aa3e488`.
+Canceled the superseded initial main import `opMba9sPBo9cPGhyaExKJAPTqovt`.
+Target primary origin is `https://worthlane-beta-desktop.vercel.app`.
+Existing production projects, API, database, Plaid settings and paid plans were
+not changed; PR20 remains unmerged and nothing was submitted to a store.
+
+Candidate remains QUEUED, with no successful build/runtime acceptance claimed.
+Vercel's official status page reports a Build & Deploy partial outage,
+"Elevated Errors Triggering Deployments", investigated since September18
+20:32UTC and updated20:56UTC: https://www.vercel-status.com/ . Older team builds
+also remain initializing/queued. Do not create duplicate deployments or upgrade
+plans as a workaround. After recovery, verify the candidate deployment and
+persisted synthetic browser sessions, then package/verify the Mac app pinned to
+this HTTPS origin. Local-package OAuth/Refresh evidence remains separate from
+fully hosted acceptance. Public Mac signing, iOS OAuth and privacy/store gates
+remain open.

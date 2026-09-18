@@ -363,7 +363,7 @@ export function WorkspacePage({ view }: { view: WorkspaceView }) {
             <p>{copy.description}</p>
           </div>
           <div className="dashboard-header__actions">
-            <span className="sync-status"><i /> Updated {formatUpdatedTime(summary.household.updatedAt)}</span>
+            <span className="sync-status" title="When this Worthlane snapshot was assembled. Bank retrieval dates are shown per connection."><i /> {summary.asOf ? `Snapshot ${formatUpdatedTime(summary.asOf, summary.household.timezone)}` : "Snapshot time unavailable"}</span>
             <button
               type="button"
               className="icon-button"

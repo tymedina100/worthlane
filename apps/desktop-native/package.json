@@ -6,8 +6,8 @@
   "main": "src/main.cjs",
   "scripts": {
     "native:dev": "node scripts/dev.mjs",
-    "typecheck": "node --check src/main.cjs && node --check src/navigation.cjs && node --check src/security.cjs && node --check src/offline.js && node --check scripts/write-config.cjs && node --check scripts/verify-origin.mjs && node --check scripts/verify-package.cjs && node --check scripts/after-pack.cjs && node --check scripts/dev.mjs && node --check scripts/check-mac-signing.cjs && node --check src/recovery-protocol.cjs",
-    "test": "node --test tests/navigation.test.cjs tests/packaging.test.cjs tests/security.test.cjs tests/recovery-protocol.test.cjs",
+    "typecheck": "node --check src/bank-window.cjs && node --check src/main.cjs && node --check src/navigation.cjs && node --check src/security.cjs && node --check src/offline.js && node --check scripts/write-config.cjs && node --check scripts/verify-origin.mjs && node --check scripts/verify-package.cjs && node --check scripts/after-pack.cjs && node --check scripts/dev.mjs && node --check scripts/check-mac-signing.cjs && node --check src/recovery-protocol.cjs",
+    "test": "node --test tests/bank-window.test.cjs tests/navigation.test.cjs tests/packaging.test.cjs tests/security.test.cjs tests/recovery-protocol.test.cjs",
     "verify:packaged": "node scripts/verify-package.cjs",
     "pack:win:local": "node scripts/write-config.cjs --allow-local && electron-builder --win --dir --x64 && node scripts/verify-package.cjs",
     "dist:win": "node scripts/verify-origin.mjs && node scripts/write-config.cjs && electron-builder --win nsis --x64 && node scripts/verify-package.cjs --production",
