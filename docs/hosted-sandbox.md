@@ -726,3 +726,33 @@ acceptance or fully hosted frontend behavior. The package is ad-hoc signed and
 pins localhost3403 against the isolated hosted Sandbox API. Fully hosted frontend
 credential-destination approval, public signing, iOS OAuth and privacy/store
 gates remain open. No production changes or store submission.
+
+### September 18 — approved isolated Vercel frontend created
+
+Tyler approved creation/deployment of `worthlane-beta-desktop` on the existing
+Hobby team and transfer of the existing Railway beta-sandbox proxy secret into
+that exact project. Created with root `apps/desktop`, Next.js, and only two
+project environment variables: `WORTHLANE_API_URL` pointing to
+`https://worthlane-beta-sandbox.up.railway.app/api` and
+`WORTHLANE_DESKTOP_PROXY_SECRET`. Both are sensitive values for this project's
+Production/Preview environments. Source credential was validated against exact
+Sandbox project/environment/service IDs and `PLAID_ENV=sandbox`; its value was
+transferred in memory without writing it to source or evidence.
+
+Set this new project's primary branch to `codex/hosted-sandbox-acceptance` and
+created deployment `6o3N9QAGtZUsj21zEdQEscYdwDkE` from CI-green `aa3e488`.
+Canceled the superseded initial main import `opMba9sPBo9cPGhyaExKJAPTqovt`.
+Target primary origin is `https://worthlane-beta-desktop.vercel.app`.
+Existing production projects, API, database, Plaid settings and paid plans were
+not changed; PR20 remains unmerged and nothing was submitted to a store.
+
+Candidate remains QUEUED, with no successful build/runtime acceptance claimed.
+Vercel's official status page reports a Build & Deploy partial outage,
+"Elevated Errors Triggering Deployments", investigated since September18
+20:32UTC and updated20:56UTC: https://www.vercel-status.com/ . Older team builds
+also remain initializing/queued. Do not create duplicate deployments or upgrade
+plans as a workaround. After recovery, verify the candidate deployment and
+persisted synthetic browser sessions, then package/verify the Mac app pinned to
+this HTTPS origin. Local-package OAuth/Refresh evidence remains separate from
+fully hosted acceptance. Public Mac signing, iOS OAuth and privacy/store gates
+remain open.
