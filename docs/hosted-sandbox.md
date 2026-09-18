@@ -582,3 +582,39 @@ The installed Android APK’s SHA256 matched updated22734e79/source1dd2196 exact
 AlarmManager then showed exactly one Worthlane bill alarm for September20 at09:00 local, matching Avery’s September21 bill and one-day-before preference; its window remains one hour. The DATE test reminder arrived in the OS notification shade with the correct icon and generic no-payment text (`.tmp/android-132-reminder-delivered.png`). Native logout reached the empty sign-in screen (`.tmp/android-132-signed-out.png`). Full before/after OS dumps independently changed Worthlane scheduled alarms from1 to0 and notification records from1 to0; no shade Clear all action was used. Evidence files: `.tmp/android-132-alarms-before-reminder.txt`, `.tmp/android-132-alarms-after-logout.txt`, `.tmp/android-132-notifications-before-logout.txt`, `.tmp/android-132-notifications-after-logout.txt`. This closes updated Android forced repair, reminder delivery and queued/delivered logout cleanup. Actual future calendar-time delivery remains unobserved.
 
 All four CI jobs passed on f484aa3 in run35382925334: full regression/typecheck/build, PostgreSQL17, PostgreSQL18 and Windows packaging. Both current mobile artifacts now have repair/reminder evidence; iOS Simulator OAuth, fully hosted/public Mac distribution and privacy/store preparation remain separate open gates. No production deployment or store submission occurred.
+
+## September 18: Mac OAuth and hosted frontend isolation audit
+
+The isolated packaged Mac app still recovered Morgan's authenticated session
+against localhost3403 and the hosted Sandbox API. After a normal menu-based
+quit/relaunch, Accounts showed the original Healthy14-account bank connection.
+Connect bank displayed real Plaid Sandbox Link, and Chase reached its Continue
+to login screen. The attempted handoff did not produce an observed bank-login
+window. AX Exit also did not visibly respond; a coordinate fallback returned
+Computer Use `noWindowsAvailable`. The app was quit normally through its native
+menu. This is incomplete OAuth evidence, not a successful connection or proof
+that a click reached the provider. No token exchange success was observed.
+
+Source inspection found that `attachSecurityPolicy` denies every new window and
+only permits same-origin main-window navigation. Plaid's official OAuth guide
+says desktop web normally opens a popup, so this policy needs a focused diagnosis
+and secure browser-handoff/popup design before Mac OAuth can pass. Do not loosen
+navigation broadly or treat the tool failure alone as a proven product defect.
+Reference: https://plaid.com/docs/link/oauth/
+The existing19 native policy/navigation/packaging/recovery tests all pass; they
+do not exercise an actual OAuth popup.
+
+Fresh Vercel settings show `worthlane-desktop` API URL and proxy secret scoped
+to both Production and Preview. Consequently, the existing branch preview must
+not be used for synthetic Sandbox tests. A separate frontend or explicitly
+isolated branch configuration is required. No secret values were revealed and
+no Vercel settings changed. The team remains on Hobby; no paid plan was selected.
+A future frontend must target only
+`https://worthlane-beta-sandbox.up.railway.app/api` and use this Sandbox API's
+proxy secret, never a production credential. Obtain approval for the exact new
+secret destination and any shared Plaid redirect setting before saving them.
+
+Fresh local signing inventory contains development/distribution identities but
+no Developer ID Application identity. Public Mac signing/notarization therefore
+remains open; an unrelated organization's distribution identity is not suitable.
+The app's fail-closed Developer ID distribution guard remains unchanged.
