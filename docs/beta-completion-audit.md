@@ -1,17 +1,23 @@
-# Worthlane completion audit — September 15, 2026
+# Worthlane completion audit — September 18, 2026
 
-Goal remains active. This audit checks the current Notion brief against persisted
-and interactive evidence; it does not authorize a production release or submission.
-The deployed API is PR16 merge21f14e7; the website and planning client are
-PR17 merge847a0fb. All four main CI jobs passed for each rollout. Railway
-correctly skipped PR17 because no watched API files changed. Vercel desktop and
-site deployments succeeded. Approved Resend delivery and hosted password-reset
-checks passed, including rejection of old passwords, reused codes and revoked
-refresh sessions. Browser request progression was checked interactively; reset
-mutation and login checks used the deployed HTTP endpoints with only the
-approved synthetic account. See production-preparation.md and beta-progress.md.
-This refresh reconciles later progress records; it is not a fresh replay of every
-previously recorded journey or approval to ship.
+Goal remains active. This is an evidence reconciliation, not a new claim that every
+journey has been replayed or permission to publish. The requirement matrix below
+retains the original brief and added website, Mac, production-preparation and store
+scope. No physical-phone work or store submission is authorized.
+
+On September18, `git ls-remote` confirmed main at `4b22bec` (approved PR19 merge).
+PR18 and PR19 are merged, not pending drafts. Earlier approved rollout evidence is
+recorded in production-preparation.md; this audit does not freshly verify deployment
+health. The unmerged `codex/hosted-sandbox-acceptance` branch adds isolated hosted
+Sandbox tests and evidence through `311f127`, not a production app change.
+
+The separate approved hosted Sandbox runs candidate `4b22bec` with its own database,
+Sandbox credentials and disabled email/paid AI/analytics. September18 fresh API
+checks and separate browser logins prove persisted responsibilities, private manual
+accounts, saved debt math and duplicate-free due-date handoff. See
+[hosted-sandbox.md](hosted-sandbox.md) for exact scope and failures. Native hosted
+login succeeded; native provider consent/import remains unverified. Historical
+local native Link evidence must not be substituted for hosted release acceptance.
 
 | Requirement | Audited evidence | Result / limit |
 | --- | --- | --- |
@@ -24,36 +30,35 @@ previously recorded journey or approval to ship.
 | Card fields, Liabilities and manual fallback | Real run-plaid-integration provider test recorded statement/minimum/due fields and nonowner isolation; route uses owned account allowlist. Desktop/native manual card fields and saved due dates recorded; predictions are labeled estimates. | Sandbox/manual evidence present. Production Liabilities is not enabled; manual fallback remains required there. |
 | Reliable reminders and saved debt estimates | Actual iOS/Android background test notifications; DATE diagnostic aligns with obligation trigger type. Adapter tests cover local9am/date/session reconciliation. Shared debt tests explicitly cover promo-day proration, zero APR, minimum shortfall, non-amortization and cents. Saved two-login debt readbacks recorded. | Core evidence present; actual9am/physical-phone delivery is not claimed. Phone use excluded by user. |
 | Aesthetic app/site and beta list | Native forest/cream screens and improved recovery controls; approved live website and persisted consent-based waitlist proof recorded. | Website request delivered. Android notification icon rebuilt and inspected in the installed APK; actual delivered banner remains unverified. Five native screenshot drafts exist; final store imagery/artifact parity remains. |
-| Regression assurance / commits / project updates | PR16 and PR17 merged and deployed under explicit approval; both main CI runs passed all four jobs. Atomic reset concurrency, bounded email delivery and web recovery have persisted/local and hosted acceptance evidence. Commits are pushed and milestones tracked in Notion. | Email delivery and hosted recovery are complete. Signed native artifact parity remains open. PR18 local service isolation is a separate draft. |
+| Regression assurance / commits / project updates | PR16 and PR17 merged and deployed under explicit approval; both main CI runs passed all four jobs. Atomic reset concurrency, bounded email delivery and web recovery have persisted/local and hosted acceptance evidence. Commits are pushed and milestones tracked in Notion. | Email delivery and hosted recovery are complete. Signed native artifact parity remains open. PR18 service isolation and PR19 deletion tests were approved and merged; hosted tests/evidence remain on a separate pushed branch. |
 | Truthful diagnostics and privacy disclosures | API error allowlist strips request/user/context and raw exception details. Mobile uses filtered JavaScript errors with native diagnostics and automatic sessions disabled; enabled/disabled configuration tests and three-platform exports pass. Store collection matrix is source-backed. | Fresh native launch on isolated Metro8084 passed after Simulator relaunch; persisted dashboard data rendered. Final store privacy answers must match the signed artifact and enabled services. |
-| Added native Mac app | Installed standalone Electron app; persisted Morgan/Avery household, native menus, quit/relaunch and isolated offline/retry UI verified. 19 tests, 8 asset and 8 fuse checks, strict local ad-hoc signature. User completed macOS Keychain prompt, after which saved-session cold launch reached household directly. | Local beta works with running localhost services. Final normal-build cold start now also restored the saved household after user authorization and normal Quit. Initial post-authorization Retry left a blank window, recovered by that restart. Public signing/notarization remains pending. |
+| Added native Mac app | Installed standalone Electron app; persisted Morgan/Avery household, native menus, quit/relaunch and isolated offline/retry UI verified. 19 tests, 8 asset and 8 fuse checks, strict local ad-hoc signature. User completed macOS Keychain prompt, after which saved-session cold launch reached household directly. | Earlier local saved-session evidence remains valid for that build. A later standalone Hosted Beta Mac build points at the deployed planning client; its login/recovery/cold-launch checks passed, but authenticated hosted Mac acceptance is not established. Public signing/notarization remains pending. |
 | Added production Plaid/store preparation request | App record and partial copy saved earlier; Android registration saved. Plaid/Apple/Railway sessions restored. Transactions/Balance enabled and billing verified; Liabilities not enabled. Apple review notes/contact/keywords saved. Existing Railway API/Postgres located. Signing/privacy/screenshots/reviewer access and hosted release verification remain. | Incomplete. Do not submit. |
 
-## Remaining work
+## Remaining acceptance gates
 
-0. Full-page web OAuth create/return, expired-session recovery and persisted
-   repeat sync now pass (see latest progress entry). Fresh native diagnostics-mode
-   startup and recovered reminder scheduling also pass; no phone interaction.
-1. Capital One is now In review after the authorized legal-name save; provider approval remains external.
-2. PR15 is deployed on Railway and Vercel; its additive migration checksum matches
-   the reviewed SQL and managed backups are configured under explicit approvals.
-   Google Workspace support delivery, authentication, and user MFA are verified.
-   Resend sending-domain DNS is Verified and its key is saved in the approved Mac
-   login Keychain and the approved Railway service. Enforced TLS and sender/reply-to
-   settings are verified; direct delivery, API reset and hosted web recovery passed.
-   PR18 clears inherited email and paid-AI settings in local test launchers and
-   remains a separate draft awaiting review/publication approval.
-   Keep local Sandbox data separate; no new production Plaid Items are authorized.
-3. Finish release signing/configuration, actual-app
-   screenshots and truthful privacy/reviewer metadata. Verify Google Play access
-   and upload signing. No submission, purchase or automatic release.
-4. Finish release artwork/support/service checks and reconcile the final candidate
-   against this matrix. Keep the original beta scope; do not add forecasting or
-   gamification as completion work.
-5. Resolve the remaining truthful Plaid security-control evidence. Published
-   privacy policy is attested; zero trust was already marked attested but was not
-   verified by this work. Fifteen other attestations remain outstanding. Source
-   code and dependency scans alone cannot establish organization-wide compliance.
+| Gate | Evidence required to close it | Current limitation / next action |
+| --- | --- | --- |
+| Hosted native banking | Finish actual Link/OAuth return, saved account/import readback, relink, repeat sync with stable IDs, cancellation and selected unlink; verify other login/manual rows survive. | Native Link opens but provider controls were inaccessible to Computer Use. In-app web provider Documents returned ERR_BLOCKED_BY_CLIENT while token/SDK requests succeeded. No hosted native link completion claimed; do not bypass browser protections. |
+| Hosted native planning and reminders | Reopen both saved logins, confirm personal/shared totals and private debt/bill views, and observe a scheduled reminder from the current client with cancellation/session isolation. | Hosted native Avery login and saved $125.50 account are visible; browser debt/bill privacy and duplicate prevention pass. API tests do not prove notification delivery. Earlier local notification proof is scoped to its tested build. |
+| Current distributable artifacts | Build/sign the intended beta configuration, verify its API/feature flags, replay core journeys on it, and match screenshots/reviewer accounts to that exact build. Include hosted Mac authenticated cold launch; public Mac distribution needs Developer ID/notarization. | Existing native store builds predate the candidate. A development bundle is not final artifact parity. No paid EAS build or store submission is authorized. |
+| Truthful service/privacy setup | Verify enabled diagnostics in the intended artifact, match Apple privacy answers and retention/scrubbing settings, and substantiate each required Plaid security claim. | Sentry IP storage prevention was off in both projects at last inspection; approval to enable is pending. Crash-data disclosure and content-rights confirmation remain unfinished. Fifteen Plaid attestations lack sufficient evidence; preexisting zero-trust attestation was not verified by this work. |
+| Store preparation, without submission | Complete accurate privacy/reviewer metadata, fresh screenshots and candidate attachment; verify Google Play access/signing and leave release unsubmitted. | Apple remains a preparation draft at last inspection. Some copy, review contact, screenshots, Finance category and age answers are saved; no current build/reviewer credentials or completed privacy publication. |
+| Final acceptance and authorized publication | Reconcile each brief requirement against current candidate evidence, run required CI, push reviewable commits, and obtain scoped approval for any resulting production deploy. | Core tests/local interactions are substantial; the gates above remain open. Pushed hosted evidence is not yet merged. Monitor the approved additional Railway budget (up to $10/month, not a provider hard cap). |
+
+## Resolved or historical blockers
+
+- Capital One showed **Enabled** in the September15 Plaid institution audit; the
+  earlier “In review” statement is historical. Recheck provider state before live
+  activation. Transactions/Balance were enabled; Liabilities/recurring/refresh were
+  not enabled. Do not describe an unenabled product as permanently ineligible.
+- PR18 and PR19 were approved and merged. PR15's additive migration/backups and
+  later email rollout are recorded as completed, not awaiting another approval.
+- Workspace support delivery/authentication, Resend domain/TLS and approved reset
+  tests passed. Do not repeat outbound tests without a reason and matching scope.
+- Families use up to two consenting adult logins; no child accounts are implied.
+- Forecasting and gamification are not completion work. Responsibility is not a
+  transfer or debt between partners. Manual fallbacks remain necessary.
 
 Source: current [Notion brief](https://app.notion.com/p/3d57f32d407581d9a9eafcdb4d5ac152).
 Exact chronology and test commands: [beta-progress.md](beta-progress.md).

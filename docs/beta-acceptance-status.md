@@ -1,7 +1,12 @@
 # Beta acceptance status — September 14, 2026
 
 Source of requirements: [Worthlane brief](https://app.notion.com/p/3d57f32d407581d9a9eafcdb4d5ac152).
-Candidate: [draft PR15](https://github.com/tymedina100/worthlane/pull/15).
+Current code baseline: main `4b22bec` (PR19), confirmed September18.
+Hosted evidence branch: `codex/hosted-sandbox-acceptance` through `311f127`.
+Current gates: [completion audit](beta-completion-audit.md).
+Hosted evidence and limits: [hosted Sandbox acceptance](hosted-sandbox.md).
+The dated chronology below includes historical release/provider states; it is not
+an assertion that PR15 remains open or that earlier portal states are current.
 The beta is **not complete**. This index separates evidence already recorded from
 the final platform and persisted-journey audit still open. Detailed chronology and exact commands
 are in [beta-progress.md](beta-progress.md).
