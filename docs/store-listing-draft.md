@@ -108,6 +108,7 @@ and its enabled backend/SDK services. Do not select "Data Not Collected".
 | Data / purpose | Current source evidence | Release disclosure decision |
 | --- | --- | --- |
 | Email and user identifier / authentication | User.email, User.id, passwordHash and refresh-session records in Prisma | Collected and linked to the account for app functionality. Password hashes are retained; no plaintext password-storage claim. |
+| Plaid Link SDK user identifier / bank linking | September18 source package13.2.0 contains LinkKit7.1.2; its device framework PrivacyInfo.xcprivacy declares UserID, linked=true, tracking=false, purpose=AppFunctionality | Include SDK collection in the final questionnaire even when Worthlane analytics are disabled. This is bundled-manifest evidence, not a network audit or a complete statement of Plaid server-side data use. Recheck the final packaged artifact. |
 | Household display names and invited email / collaboration | HouseholdMember and invitation/acceptance flows | Account-linked collaboration data; partner disclosure follows explicit invitation and visibility choices. |
 | Financial data / planning | Account, Transaction, DebtPlanEntry, Budget, UpcomingObligation and household responsibility models | Account-linked financial data for app functionality, including manually entered data. Transactions contain purchase history; map the exact Apple categories during final questionnaire review. |
 | Push destination / reminders | Optional User.pushToken and push service | App functionality when registered; distinguish remote push tokens from local-only scheduled notifications. |
@@ -174,6 +175,10 @@ Recent EAS history includes completed production/store Android build4 from
 10cd6fa and iOS build27 fromd759913 onSeptember10. Those precede the current
 candidate and are not evidence that current code is packaged or ready to upload.
 No new build, submission or paid service was started during this inspection.
+
+## September18 — current internal candidates
+
+Source `1dd2196986b708b4f977f5cf7f396a81cee07084` pins Plaid13.2.0 and includes the dashboard unpaid-payment wording and Settings safe-area fixes. Internal Android build `22734e79-123e-40cf-9d57-1ffd463f2f10` and laptop-only iOS Simulator build `eb664bae-4ce2-40c0-bed0-bcd91aabffb8` were uploaded to EAS using verified included Free capacity. Build completion, final artifact privacy/signature checks and interactive parity remain pending. These are Sandbox candidates, not App Store attachments or proof of production readiness. No submission was made.
 
 
 ## Hosted Mac candidate — September15
