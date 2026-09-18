@@ -266,3 +266,31 @@ No authenticated Mac acceptance is claimed. Next step is diagnose the packaged
 renderer failure with the healthy frontend; do not weaken security settings to
 make this test pass. No production deployment, credentials entered in the Mac
 app, notarization, paid build or store submission occurred.
+
+## September 18: packaged Mac two-login and cold-launch acceptance
+
+A fresh inspection of the same Sandbox Mac app showed the complete login form.
+No source edit, diagnostic instrumentation or security relaxation was made. The
+previous blank observation was transient; its exact render delay/cause is not
+established and must not be described as a fixed renderer defect.
+
+Signed in as Avery through the packaged app. Dashboard showed only Avery's
+$125.50 personal account, the shared $2,450 plan, groceries300/300, utilities150
+assigned to Avery, and rent1020/680. Goals & bills showed the native-created
+$42.75 bill due2026-09-21, with no Morgan saved plan/bill. Quit normally and
+cold-launched the app: it recovered Avery's authenticated dashboard and the same
+account/splits without entering credentials again.
+
+Signed out (login screen replaced private content), then signed in independently
+as Morgan. His15 account rows included14 Plaid Sandbox accounts and his manual
+checking; Avery's manual account was absent. The shared plan retained the same
+allocations. Goals & bills exposed Morgan's saved zero-interest plan and one
+$25 minimum due2027-01-31, excluding Avery's native bill. Opening the saved plan
+restored balance300, monthly budget100, minimum25, statement300 and January31
+date; result showed payoff2027-03, interest0 and payments300.
+
+This closes authenticated packaged-Mac/two-login/cold-launch evidence for the
+isolated hosted API through a local frontend. It does not prove a deployed
+Sandbox frontend, production-hosted authentication, Developer ID/notarization,
+or native Plaid Link completion. The installed production-hosted app was not
+modified, and no financial data or secrets were sent to production.
