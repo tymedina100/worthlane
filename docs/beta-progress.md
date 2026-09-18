@@ -3453,3 +3453,7 @@ copy now distinguishes the total unpaid payment count from the next-seven-day
 amount; mobile typecheck passed, next artifact visual check remains. Full
 artifact identity, evidence and limits are in hosted-sandbox.md. Android EAS
 `c9853f0d-37bc-49d9-aa11-2c58d0b82397` is still queued; no replacement job started.
+
+### September 18 — Android Sandbox connection milestone
+
+Standalone Android release completed interactive First Platypus Bank Link and returned Healthy with 14 accounts. Fresh-login verification passed the partner's complete 392-transaction ledger, repeat-sync idempotency, preserved $125.50 manual fallback and $42.75 bill, isolation from the owner's 49-row ledger, and existing responsibility/debt persistence. See `docs/hosted-sandbox.md` for artifact and emulator-recovery limits. Next: native repair/OAuth/unlink, reminder checks and final candidate parity; no production change or store submission.

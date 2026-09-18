@@ -193,14 +193,25 @@ try {
         assert.equal(partnerAccounts.plaidItems.length, 0, 'Unopened Link must not create an Item');
         fixture.partner.manualId = account.id; save();
       }
-      assert.deepEqual(partnerAccounts.accounts.map(a => a.id), fixture.partner.manualId ? [fixture.partner.manualId] : []);
+      const nativeLink = fixture.partner.nativeLink;
+      assert.deepEqual(partnerAccounts.accounts.map(a => a.id).sort(), nativeLink?.accountIds ?? (fixture.partner.manualId ? [fixture.partner.manualId] : []));
+      assert(partnerAccounts.accounts.every(a => !fixture.accountIds.includes(a.id)), 'Private bank accounts leaked across partners');
       if (fixture.partner.manualId) {
-        assert.equal(Number(partnerAccounts.accounts[0].currentBalance), 125.50);
+        assert.equal(Number(partnerAccounts.accounts.find(a => a.id === fixture.partner.manualId).currentBalance), 125.50);
         assert(!fixture.accountIds.includes(fixture.partner.manualId));
-        assert.equal(partnerAccounts.plaidItems.length, 0);
-        console.log('PASS: UI-created partner manual fallback persisted at $125.50; owner account list excludes it; failed Link saved no Item.');
+        assert.equal(partnerAccounts.plaidItems.length, nativeLink ? 1 : 0);
+        console.log('PASS: UI-created partner manual fallback persisted at $125.50 and remains private after bank connection changes.');
       }
-      assert.equal((await request('/transactions', undefined, partner.accessToken)).transactions.length, 0);
+      const partnerLedger = await ledgerSnapshot(partner.accessToken);
+      if (nativeLink) {
+        assert.equal(partnerAccounts.plaidItems[0].id, nativeLink.itemId);
+        assert.deepEqual(partnerLedger.map(t => t.id), nativeLink.transactionIds);
+        assert(partnerLedger.every(t => !settledLedger.some(owner => owner.id === t.id)), 'Private transactions leaked across partners');
+        const repeat = await request('/plaid/sync', { plaidItemId: nativeLink.itemId, refresh: false }, partner.accessToken);
+        for (const key of ['added', 'modified', 'removed']) assert.equal(repeat[key], 0);
+        assert.deepEqual(await ledgerSnapshot(partner.accessToken), partnerLedger);
+        console.log(`PASS: native-linked partner Item retained exact accounts and complete ${partnerLedger.length}-row ledger after repeat sync, isolated from owner.`);
+      } else assert.equal(partnerLedger.length, 0);
       console.log('PASS: both fresh logins recover matching saved responsibilities, exact $2,450 total and partner isolation from owner bank accounts/transactions.');
     }
   }

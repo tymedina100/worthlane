@@ -450,3 +450,11 @@ unlock is pending before interactive testing. No store submission occurred.
 
 CI run35365722717 on `886a313` passed all four jobs, including PostgreSQL17/18,
 Windows packaging and the full regression/typecheck/build job.
+
+### September 18 — Android interactive Link and persisted partner isolation
+
+User explicitly authorized ADB/UIAutomator/Maestro for the laptop emulator after Computer Use could not address it. Installed the signed standalone Android Sandbox build `c9853f0d-37bc-49d9-aa11-2c58d0b82397` in a separate `WorthlaneRelease` AVD; the original AVD remains intact. Logged in as the synthetic partner, opened Connect bank, chose First Platypus Bank (non-OAuth), entered public Sandbox credentials, continued account consent, and finished without saving a phone number. Worthlane returned with **Bank connected**, **Healthy**, and **14 accounts linked**.
+
+Fresh independent API login verified 14 persisted bank accounts plus the existing $125.50 manual fallback, all disjoint from the owner's account IDs. The complete partner ledger contains **392 transactions**; repeat Sandbox sync returned zero added/modified/removed and retained all IDs and financial fields. The owner's separate **49-transaction** ledger remains disjoint. The partner's unpaid $42.75 bill survives. `WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-sandbox.mjs --verify` passes both ledgers, $2,450 responsibility allocations, privacy, persisted zero-interest debt plan and idempotent due-date handoff. The ignored, mode-0600 synthetic fixture stores the observed native Item/account/transaction identifiers; no credentials are committed.
+
+Limits: this is first-link and API repeat-sync evidence, not OAuth, repair, unlink or Android reminder-delivery acceptance. The first emulator session suffered an input-dispatch ANR in Plaid Link under software graphics; restarting the isolated emulator with host graphics allowed the complete flow. This recovery does not establish the ANR's root cause or eliminate ongoing emulator responsiveness risk. The installed artifact predates the dashboard unpaid-payment wording correction. Disk free space is about 3.3 GiB; avoid additional large local builds.
