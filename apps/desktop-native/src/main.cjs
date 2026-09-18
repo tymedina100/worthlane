@@ -24,6 +24,8 @@ const {
   waitForNavigationToSettle,
 } = require("./navigation.cjs");
 
+const { attachBankWindows } = require("./bank-window.cjs");
+
 const WINDOW_MIN_WIDTH = 900;
 const WINDOW_MIN_HEIGHT = 640;
 const DEFAULT_BOUNDS = Object.freeze({ width: 1440, height: 920 });
@@ -253,10 +255,7 @@ function attachSecurityPolicy(window) {
     event.preventDefault();
     if (isSafeExternalUrl(targetUrl)) void shell.openExternal(targetUrl);
   });
-  webContents.setWindowOpenHandler(({ url }) => {
-    if (isSafeExternalUrl(url)) void shell.openExternal(url);
-    return { action: "deny" };
-  });
+  attachBankWindows(window, { isSafeExternalUrl, openExternal: url => shell.openExternal(url) });
   webContents.on("will-attach-webview", (event) => event.preventDefault());
   webContents.on("before-input-event", (event, input) => {
     const key = input.key.toLowerCase();

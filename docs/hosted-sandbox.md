@@ -618,3 +618,53 @@ Fresh local signing inventory contains development/distribution identities but
 no Developer ID Application identity. Public Mac signing/notarization therefore
 remains open; an unrelated organization's distribution identity is not suitable.
 The app's fail-closed Developer ID distribution guard remains unchanged.
+
+## September 18: Mac OAuth popup fix and real Sandbox round trip
+
+A separate local development harness copied the native runtime and logged only
+popup protocol/host/path, never the query or tokens. Clicking Chase Continue to
+login produced the denied request
+`https://cdn.plaid.com/link/v2/stable/sandbox-oauth-login.html`. This positively
+identifies the unconditional popup policy as a blocker, beyond the earlier
+inconclusive Computer Use observations.
+
+The native shell now allows only Plaid's exact Sandbox OAuth and OAuth entry
+pages to create one child window. The child has no Node integration, preload or
+webview privileges; retains sandbox/context isolation/web security; shares the
+parent's permission-denying session; rejects non-HTTPS/credential-bearing
+navigation; blocks nested windows and downloads; displays the current host in
+its native title; and closes on parent navigation/sign-out/close. Main-window
+navigation remains pinned to Worthlane.23 native tests and syntax checks pass,
+including malicious entry URLs, child navigation, download denial and cleanup.
+
+In the isolated development runtime with the new policy, actual Chase Sandbox
+OAuth opened the bank window, accepted published test credentials and simulated
+MFA, selected one checking account, completed simulated consent, closed the
+bank window, returned to Link, and showed Connection saved in Worthlane. Fresh
+API verification recovered one new account and148 imported transactions, with
+all197 owner transactions unchanged by repeat sync and original49 records
+unchanged. Avery's15 accounts and392 transaction IDs remained private and
+unchanged. Screenshot `.tmp/mac-oauth-connection-saved.png` was visually checked.
+
+Selected only the added Chase connection for unlink through the Mac UI. A guarded
+Sandbox-only observer retained its token in memory, observed database deletion,
+and received Plaid ITEM_NOT_FOUND. UI returned to15 accounts/one institution;
+the complete two-login verifier then passed original owner49/partner392 rows,
+private manual fallbacks,2450 responsibility totals and saved debt/due dates.
+
+The final source also explicitly pins the child to the parent's session (the
+successful development replay preceded that explicit pin). Built an isolated
+ad-hoc arm64 package at `.tmp/mac-oauth-fixed/mac-arm64/Worthlane.app`;9 archived
+assets,8 hardened fuses and strict/deep signature validation pass. ASAR SHA256:
+`b6f630b914cb72796e3df7830b3ccb5b3d1fc78091d300e015a2138c44792a05`.
+Its cold launch recovered Morgan's original dashboard/accounts/2450 plan. The
+initial Computer Use observation timed out while its process stayed live;
+reinspection succeeded without restarting. Full OAuth replay on this final
+packaged artifact remains next, followed by repair/cancel cleanup checks.
+
+This is actual Mac development-runtime OAuth success plus packaged launch proof,
+not final packaged OAuth parity, fully hosted frontend or production-bank proof.
+Existing production apps/services and store records were not changed. Public
+Developer ID/notarization, isolated hosted frontend and iOS Simulator OAuth
+remain open. Technical references: https://plaid.com/docs/link/oauth/ and
+https://www.electronjs.org/docs/latest/api/window-open .
