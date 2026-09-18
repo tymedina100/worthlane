@@ -668,3 +668,33 @@ Existing production apps/services and store records were not changed. Public
 Developer ID/notarization, isolated hosted frontend and iOS Simulator OAuth
 remain open. Technical references: https://plaid.com/docs/link/oauth/ and
 https://www.electronjs.org/docs/latest/api/window-open .
+
+## September 18: final packaged Mac OAuth lifecycle passes
+
+Rechecked exact ASAR SHA256 b6f630b914cb72796e3df7830b3ccb5b3d1fc78091d300e015a2138c44792a05
+before testing the isolated arm64 package. Actual packaged Chase Sandbox OAuth
+completed: child bank window, test credentials/MFA, one checking account,
+simulated consent, automatic popup closure, Link return and Connection saved.
+Fresh API readback found one new account/148 imports and197 exact owner records
+stable through repeat sync; original49 rows and partner392 IDs stayed private
+and unchanged. Screenshot: `.tmp/mac-packaged-oauth-saved.png` (visually checked).
+
+The exact Sandbox-only provider helper reset the added Chase Item's login.
+Packaged Sync exposed Needs Relink and incomplete-spending wording. Reconnect
+opened a fresh bank window. Closing it and exiting Link restored Reconnect with
+Bank linking closed; the Item remained Needs Relink. Retrying reopened the bank
+window, completed simulated authentication/consent and returned to Healthy.
+The repair verifier asserted the same Item/account/imported transaction IDs,
+all197 records stable across another sync and unchanged partner privacy.
+
+Selected only the added Chase connection for unlink. The in-memory provider
+observer confirmed database removal and Plaid ITEM_NOT_FOUND; packaged UI
+returned to15 accounts/one institution and Chase was unlinked. Full fresh-login
+verification then passed owner49/partner392 ledgers, private100/125.50 manual
+balances,2450 responsibilities and saved debt/minimum-payment records. No
+original connection was removed. No real banking or production service changed.
+
+All4 jobs in CI35386753487 passed on a0fe748: regression/builds, PostgreSQL17,
+PostgreSQL18 and native Windows packaging. This closes the final local packaged
+Mac OAuth/repair/cancellation/selective-unlink parity gap. Fully hosted frontend,
+public signing/notarization and the remaining iOS/privacy/store gates stay open.
