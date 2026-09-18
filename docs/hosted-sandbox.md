@@ -160,3 +160,23 @@ credentials/signing material, source, installed apps and database fixtures were
 preserved. Disk then reported7.1GiB available. Local cleanup log:
 `.tmp/storage-cleanup-2026-09-15.jsonl`. Next native check must restart Metro with
 the same explicitly disabled analytics and hosted Sandbox configuration.
+
+## September 18: resumed hosted debt UI acceptance
+
+After the interrupted run, no listener remained on3403; restarted the existing
+hosted-backed local client. Fresh hosted API verification passed for persisted
+accounts, Sandbox sync, two-login responsibilities, manual fallback and debt handoff.
+
+Signed in through the browser as Morgan and opened Goals & bills. The saved
+zero-interest plan loaded its exact $300 balance, $100 monthly budget, $25 minimum,
+January31 due date, March2027 payoff, zero interest and $300 estimated payments.
+The existing Upcoming item showed $25 due2027-01-31. Clicking the plan's Add to
+Upcoming button returned “This due-date item already exists” and exactly one edit
+control/item remained.
+
+Signed out and signed in separately as Avery. The same page showed no saved owner
+plan and “No upcoming items yet”; neither the owner-plan nor owner-bill control
+existed. Browser error logs were empty. This adds interactive hosted-data evidence
+for debt persistence, duplicate prevention and privacy, not notification delivery
+or native bank-link completion. The unexecuted native partner-link verifier draft
+was preserved locally as an ignored patch rather than published as verified work.
