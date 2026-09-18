@@ -3461,3 +3461,27 @@ Standalone Android release completed interactive First Platypus Bank Link and re
 ### September18 — Android reminder acceptance
 
 Signed standalone Android Sandbox build delivered its DATE test reminder to the notification shade with the correct icon and generic content. OS AlarmManager confirmed the persisted one-day-before bill reminder at September20 09:00 (one-hour inexact window). Native logout reached sign-in and removed all pending Worthlane alarms and notification records. See hosted-sandbox.md for evidence and timing limits. Recovered677MiB of reproducible build output;3.8GiB disk free. Next remains hosted OAuth/error/unlink and final artifact parity; no production or store submission.
+
+### September 18 — current native parity and honest desktop freshness
+
+Current Android artifact22734e79 (source1dd2196) passes Chase OAuth, selective
+unlink/provider revocation, forced repair and reminder/logout cleanup. Current
+iOS Simulator artifacteb664bae passes standard Link/import/sync/unlink, forced
+repair and reminder cleanup; Simulator OAuth remains unverified. Exact packaged
+Mac OAuth, cancellation/retry, forced repair and selective unlink passed; the
+full owner49/partner392 transaction baseline was restored with privacy intact.
+Native shell23 tests and package9 assets/8 fuses/signature checks passed; all four
+CI jobs passed on a0fe748. Detailed artifact evidence is in hosted-sandbox.md.
+
+Desktop headers now use the financial summary asOf rather than the household
+edit timestamp, with date and household timezone. Bank retrieval dates remain
+separate. Demo says Demo snapshot and absent timestamps say unavailable. Local
+frontend against hosted Sandbox visibly verified overview/accounts timestamps
+and separate retrieval dates, demo wording, and a 390px accounts layout with
+390px scroll width. Desktop typecheck and diff checks passed.
+
+Next: isolated fully hosted frontend (prepared Vercel project awaits approval
+for its specific proxy-secret destination), public Mac signing/notarization,
+iOS OAuth and privacy/store gates. Existing Vercel previews target production
+and must not receive synthetic accounts. No merge, production change or store
+submission is authorized by this milestone.

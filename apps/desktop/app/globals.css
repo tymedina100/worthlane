@@ -347,6 +347,8 @@ svg { display: block; }
 }
 
 @media (max-width: 900px) {
+  .dashboard-header { align-items: flex-start; flex-direction: column; gap: 16px; }
+  .dashboard-header__actions { flex-wrap: wrap; }
   :root { --sidebar-width: 0px; }
   .sidebar { position: static; width: 100%; height: auto; padding: 16px 20px; }
   .sidebar__brand { padding: 0; }

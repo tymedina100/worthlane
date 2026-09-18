@@ -718,8 +718,8 @@ export function HouseholdDashboard({ mode, initialSummary }: HouseholdDashboardP
             <p>One clear view of what’s yours, what’s shared, and what you’re building together.</p>
           </div>
           <div className="dashboard-header__actions">
-            <span className="sync-status">
-              <i /> Updated {formatUpdatedTime(summary.household.updatedAt)}
+            <span className="sync-status" title="When this Worthlane snapshot was assembled. Bank retrieval dates are shown per connection.">
+              <i /> {mode === "demo" ? "Demo snapshot" : summary.asOf ? `Snapshot ${formatUpdatedTime(summary.asOf, summary.household.timezone)}` : "Snapshot time unavailable"}
             </span>
             <button
               type="button"
