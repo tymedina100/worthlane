@@ -178,7 +178,7 @@ No new build, submission or paid service was started during this inspection.
 
 ## September18 — current internal candidates
 
-Source `1dd2196986b708b4f977f5cf7f396a81cee07084` pins Plaid13.2.0 and includes the dashboard unpaid-payment wording and Settings safe-area fixes. Internal Android build `22734e79-123e-40cf-9d57-1ffd463f2f10` and laptop-only iOS Simulator build `eb664bae-4ce2-40c0-bed0-bcd91aabffb8` were uploaded to EAS using verified included Free capacity. Build completion, final artifact privacy/signature checks and interactive parity remain pending. These are Sandbox candidates, not App Store attachments or proof of production readiness. No submission was made.
+Source `1dd2196986b708b4f977f5cf7f396a81cee07084` pins Plaid13.2.0 and includes the dashboard unpaid-payment wording and Settings safe-area fixes. Internal Android build `22734e79-123e-40cf-9d57-1ffd463f2f10` and laptop-only iOS Simulator build `eb664bae-4ce2-40c0-bed0-bcd91aabffb8` were uploaded to EAS using verified included Free capacity. Both builds finished; exact artifacts passed signature and Sandbox-origin checks. Android passes saved sessions, Chase OAuth/import/repeat sync/selective unlink, forced repair, reminder delivery and queued/delivered logout cleanup. iOS Simulator passes saved sessions, standard Link/import/repeat sync/selective unlink, forced repair and reminder delivery/history cleanup. iOS OAuth remains unverified after two unsuccessful Simulator attempts; physical phones are outside the authorized scope. See docs/hosted-sandbox.md for artifact IDs, hashes and provider/data readback. These internal/Simulator artifacts are not App Store attachments or current store-ready device builds. No submission was made.
 
 
 ## Hosted Mac candidate — September15
