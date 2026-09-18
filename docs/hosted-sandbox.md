@@ -756,3 +756,27 @@ persisted synthetic browser sessions, then package/verify the Mac app pinned to
 this HTTPS origin. Local-package OAuth/Refresh evidence remains separate from
 fully hosted acceptance. Public Mac signing, iOS OAuth and privacy/store gates
 remain open.
+
+### Hosted desktop BFF acceptance runner
+
+Run from the repository root after the isolated Vercel deployment is ready:
+
+```sh
+WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-desktop.mjs
+```
+
+This runner uses only the fixed approved `worthlane-beta-desktop.vercel.app`
+origin and existing synthetic fixture; it cannot accept an arbitrary host. It
+requires the desktop identity header before transmitting credentials. It checks
+HttpOnly/Secure/host-only session cookies, anonymous and cross-origin denial,
+saved two-login responsibilities/account IDs and complete disjoint ledgers,
+access-cookie expiry recovery with refresh rotation, and server-side logout
+revocation. Only its newly created sessions are logged out; no financial records
+or provider connections are mutated. Tokens remain in memory. Browser rendering,
+Plaid return and packaged Mac acceptance remain separate requirements.
+
+September18: syntax check passed; actual hosted attempt stopped at `/login`
+HTTP404 before credentials were sent. This is a fail-closed preflight, not a
+claim that the full runner passed. Candidate Vercel deployment remains queued
+during the provider outage. All4 CI jobs on preceding b995305 passed in
+35396342603.
