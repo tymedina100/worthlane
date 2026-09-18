@@ -698,3 +698,31 @@ All4 jobs in CI35386753487 passed on a0fe748: regression/builds, PostgreSQL17,
 PostgreSQL18 and native Windows packaging. This closes the final local packaged
 Mac OAuth/repair/cancellation/selective-unlink parity gap. Fully hosted frontend,
 public signing/notarization and the remaining iOS/privacy/store gates stay open.
+
+### September 18 — exact software-rendering Mac package replay
+
+Source2a50752 local package `.tmp/mac-software-fixed/mac-arm64/Worthlane.app`
+(ASAR `b8d3719a9b1fa89236c02040926f1d70d14c2064e4816512314d1eb6030c69bd`)
+passes9 assets/8 hardened fuses/strict signature checks. All4 source CI jobs
+passed in35391591517. After the macOS authorization process cleared, the
+existing recovery Retry restored Morgan without restarting. Native Refresh on
+overview and Accounts then rendered normally without resizing, retaining the
+saved session, route, privacy and $2450 plan.
+
+Exact package also completed Chase Sandbox OAuth popup, simulated MFA and one
+checking account selection, returned to Link and saved the connection. Separate
+API verification confirmed1 new account/148 imports and all197 owner transaction
+objects unchanged on repeat sync; partner15 accounts/392 IDs remained private.
+The first verification hit409 while initial sync was still active; retry passed.
+Selected native unlink removed only that added Chase connection. A guarded
+provider observer confirmed database removal and ITEM_NOT_FOUND. Full fresh-login
+`WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-sandbox.mjs --verify`
+then passed original owner49/partner392 ledgers, manual fallback, responsibilities
+and debt/due-date idempotency. UI returned to15 accounts/one institution.
+
+This closes the current local-package Refresh and OAuth-popup regression. It
+does not establish CPU/battery performance across Macs, final device-store
+acceptance or fully hosted frontend behavior. The package is ad-hoc signed and
+pins localhost3403 against the isolated hosted Sandbox API. Fully hosted frontend
+credential-destination approval, public signing, iOS OAuth and privacy/store
+gates remain open. No production changes or store submission.
