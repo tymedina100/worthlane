@@ -410,3 +410,15 @@ updated transparent Android notifications. `brand-mark.svg` exposes the same
 path. No asset was changed by verification. This resolves the earlier unknown
 source of these four mobile assets; it is not a trademark clearance or a
 certification of Plaid/institution content rights. See mobile-brand-provenance.json.
+
+
+## September 21 — processed build 30 attached
+
+Apple build2208b168-2933-459e-b64f-0f16400262f1 /1.0.0(30) completed processing.
+Exact build30 is attached to the saved version1.0 draft; reload confirms manual
+release and Prepare for Submission. Private reviewer notes now match this state.
+Four current screenshots and six-type unpublished privacy draft remain saved.
+Apple's existing owner-only Team (Expo) internal group automatically received
+the build. No external tester was added or App Review submitted. This closes
+processing/attachment, not physical-device execution, content rights, privacy
+publication approval or public Mac signing. Evidence: ios-store-30-upload.json.

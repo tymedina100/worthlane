@@ -4451,3 +4451,25 @@ shutdown/cleanup; not all reclaimed space is attributed to the NDK. Restore
 command and exact scope: evidence/2026-09-21/storage-cleanup.md. A future local
 native Android build must reinstall that compiler; EAS and emulator runtime
 are unaffected. Apple build30 processing remains live.
+
+
+### September 21 — build 30 processed and attached to the Apple draft
+
+Apple completed processing exact build30/2208b168-2933-459e-b64f-0f16400262f1.
+Selected it in Add Build, updated the private walkthrough to reflect completed
+upload/attachment and saved. Reload independently confirms build30, Save
+disabled, Prepare for Submission and manual release selected. App Review was
+not submitted and privacy Publish remains untouched.
+
+Apple automatically associated build30 with existing Team (Expo), whose only
+member is the owner's Tyler account. Its setting is Automatic for Xcode Builds.
+No group assignment/new tester invitation was requested by the agent and no
+external testers were added. The automatic internal access is now explicitly
+recorded rather than describing the uploaded build as having no tester access.
+Portal installation metadata does not substitute for physical-device testing,
+which remains outside the laptop-only scope. See ios-store-30-upload.json.
+
+PR20's two existing inline review threads are resolved: standard API .env loading
+is fixed byaf072f5 and the canonical log includes hosted/native evidence. The
+three synthetic credential-loader tests pass freshly; CI268/35660470071 on
+01319f8 completed successfully. No merge was performed.
