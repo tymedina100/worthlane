@@ -883,3 +883,30 @@ The local0600 `.tmp/hosted-mac-sep21-link-fixture.json` identifies the added
 synthetic Chase Item for scoped follow-up. Initial stale-frame/recovery behavior
 also remains unresolved. No production banking, merge, store submission or
 release signing occurred.
+
+
+### Verification correction: transaction-ID selection
+
+During forced Mac repair verification, the temporary lifecycle helper was found
+to use transaction.accountId although the API returns transaction.account.id.
+Its added-bank transaction-ID subset was empty. Earlier full-ledger repeat-sync
+comparisons, original-row checks and complete partner-ledger comparisons remain
+valid, but the claimed preservation of the390 added transaction IDs across
+reconnect/repair was not established by that helper. This correction supersedes
+those specific ID-preservation claims above.
+
+The Mac did show Needs Relink/14attention with retained balances after scoped
+Sandbox reset, and actual OAuth reauthentication returned Healthy/zeroattention.
+Database check confirmed HEALTHY, needsRelink false, errorCode null. The separate
+API check initially hit429; no limits changed. After cooldown, corrected committed
+`scripts/test-hosted-linked-bank.mjs --capture` with explicit Sandbox opt-in
+passed:14accounts,390nonempty added transaction IDs,439stable full owner rows,
+original objects and partner15accounts/392transaction IDs preserved. The new
+verifier uses account.id and refuses an empty historical transaction baseline.
+Syntax and no-approval guard checks pass.
+
+Next: repeat forced repair against this corrected nonempty baseline with
+`WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-linked-bank.mjs --verify`,
+then selected unlink/provider revocation. The added Chase Item remains present
+for that test. Failed observer attempts were terminal and did not unlink or
+mutate data. Initial Mac rendering reliability remains unresolved.
