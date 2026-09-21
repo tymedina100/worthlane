@@ -398,3 +398,15 @@ collected: authentication, financial records, consented household details and
 Plaid SDK collection remain in scope. This check does not establish historical
 retention, other app versions, production telemetry, or a full network audit.
 Evidence: `evidence/2026-09-21/sandbox-telemetry-configuration.json`.
+
+
+## September 21 — mobile brand source provenance
+
+All four current mobile PNGs (icon, adaptive icon, splash and notification icon)
+match the in-memory rendered pixels from `scripts/generate-mobile-brand.mjs`.
+The generator authors a geometric vector path with explicit colors/transforms
+and reads no outside artwork. Its original commit is `ab8122e`; `37184a4`
+updated transparent Android notifications. `brand-mark.svg` exposes the same
+path. No asset was changed by verification. This resolves the earlier unknown
+source of these four mobile assets; it is not a trademark clearance or a
+certification of Plaid/institution content rights. See mobile-brand-provenance.json.

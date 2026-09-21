@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-09-21T21:57:40.924304+00:00",
+  "generator": "scripts/generate-mobile-brand.mjs",
+  "originalGeneratorCommit": "ab8122e",
+  "notificationUpdateCommit": "37184a4",
+  "method": "Reconstruct vector sources from the checked-in generator; render in memory with installed Sharp; compare raw pixel buffers with checked-in PNGs. No assets overwritten.",
+  "pixelMatches": {
+    "icon.png": true,
+    "adaptive-icon.png": true,
+    "splash.png": true,
+    "notification-icon.png": true
+  },
+  "source": "A geometric vector path with explicit fills/strokes/transforms; generator reads no outside artwork.",
+  "limitation": "Technical source provenance only, not trademark clearance or rights certification for Plaid and institution branding."
+}

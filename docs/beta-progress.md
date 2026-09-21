@@ -4423,3 +4423,20 @@ service evidence. See sandbox-telemetry-configuration.json.
 Private reviewer notes now truthfully say build30 was uploaded and is processing.
 Save disabled confirms the notes save. Apple's build30 processing job remains
 live; exact attachment is still pending and no older build was substituted.
+
+
+### September 21 — Mac cold-start investigation and mobile brand provenance
+
+With Android emulator stopped to reduce contention, the exact hosted Mac app
+was launched from its existing package. Its accessible loading state transitioned
+to Morgan's saved household; a fresh screenshot independently matched the
+current dashboard at 14:55 MST, including -77064.15 visible net worth and2450
+plan. No Worthlane/Electron/GPU-named crash report was found in the user's
+DiagnosticReports directory. Stale-frame behavior did not reproduce; no rendering
+fix or established root cause is claimed. The app was quit after the check.
+
+All four mobile brand PNGs exactly match the raw rendered pixels of the local
+vector generator, without file writes. Its source history establishes technical
+provenance (ab8122e/37184a4); separate provider and trademark rights remain outside
+that proof. Evidence: mobile-brand-provenance.json. Apple build30 processing was
+rechecked and remains live, so no different build was substituted.
