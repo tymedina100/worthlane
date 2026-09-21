@@ -4340,3 +4340,22 @@ Android e474ea38 remains IN_PROGRESS at latest poll. Stopped iOS Simulator and
 idle Mac test app before Android-only boot; boot_completed1 and no am_anr/am_crash
 events observed so far. Launcher screenshot was still loading. This is not app
 startup acceptance; wait for current APK, preserve AVD data and verify UI.
+
+
+### September21 current Android startup and two-login parity
+
+Android e474ea38/74c6bbf FINISHED. APK100,429,519bytes, v2 signature PASS with
+existing signer; Sandbox endpoint, startup recovery/timeout and empty diagnostic
+DSN verified. Installed in place, preserving AVD data. With iOS stopped and idle
+Mac app closed, Android-only boot/software renderer exposes normal launcher and
+app sign-in. No am_anr/am_crash events observed for this boot.
+
+Alex native sign-in shows1500privatechecking and25bill. Household readback proves
+600equal300/300,150Sam100%,1700Alex1020/Sam680. Force-stop/start restored Alex
+1500dashboard without login. Initial UIAutomator cold-start dump returnednullroot
+and retained staleXML; that read was excluded and actual fresh screenshot proves
+the cold-launch result. Sign out returns empty login; separate Sam sign-in shows
+900privatebalance and no Alex bill. Evidence android-recovery-artifact.json and
+three screenshots record the results. Earlier host ANRs remain unexplained; this
+is current-session success, not root-cause proof. Native Retry failure injection,
+current banking replay and final store/publication gates remain distinct.

@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-09-21T21:27:39.120054+00:00",
+  "build": "e474ea38-6384-4f73-9ef0-3d8817314fa6",
+  "source": "74c6bbf0685efefe0e5a5e6f905f3b98d7119998",
+  "profile": "sandbox-preview",
+  "bytes": 100429519,
+  "sha256": "be7af618cfda1a8499cf6e8ea3b57c42bafdbb0ee7f87a1e1b39634ecb96a06c",
+  "signature": "PASS APK v2; same existing signer",
+  "signerSha256": "bb3fd1e47164421d9d40a4e6594e1ab69c2be8d4056f587dfb0af29b50992432",
+  "package": "com.worthlane.mobile",
+  "version": "1.0.0",
+  "versionCode": 4,
+  "minSdk": 26,
+  "targetSdk": 36,
+  "sandboxApiPresent": true,
+  "startupRecoveryAndTimeoutPresent": true,
+  "sentryEnvironment": "sandbox-preview",
+  "sentryDsnEmpty": true,
+  "installation": "PASS adb install-r, retained data",
+  "runtime": {
+    "environment": "Existing AVD,2048MB/2cores/software renderer; iOS Simulator shut down and idle Mac test app closed",
+    "startup": "PASS: normal sign-in screen, no endless spinner",
+    "alexLogin": "PASS:1500 private checking and25 due item",
+    "householdReadback": "PASS:600 Groceries300/300;150 Utilities Sam100%;1700 Rent Alex1020/Sam680",
+    "coldLaunch": "PASS: force-stop/start returned1500 saved dashboard without login; initial UIAutomator null-root dump was stale and excluded, fresh screenshot proves result",
+    "secondLogin": "PASS: sign-out clears form; Sam login shows900 private account and no Alex due item",
+    "crashOrAnrEventsObserved": false,
+    "limits": "Does not establish prior ANR root cause or directly exercise startup failure Retry. No new banking lifecycle or physical-phone execution claimed."
+  }
+}
