@@ -2,6 +2,7 @@
   "environment": "isolated hosted Sandbox",
   "pair": "Alex/Sam dedicated reviewers",
   "apiVerification": "PASS: fresh separate sessions, consented household, total245000minor, private manual account isolation, private zero-APR plan with March2027 payoff and25 due item",
-  "credentials": "Restricted0600 local fixture only; no credentials or tokens in evidence/source/Apple",
-  "interactiveVerification": "Pending current native candidate; this seeded setup is reviewer preparation, not replacement for existing end-to-end onboarding proof"
+  "credentials": "Saved under explicit owner approval to Apple private App Review fields: Alex primary sign-in, Sam in private notes. Restricted local fixture retained; no credentials in repository evidence.",
+  "interactiveVerification": "PASS on iOS Simulator1fbc6a09/b61b36c: separate Alex/Sam logins,1500/900 private accounts, shared exact responsibilities, Alex saved payoff March2027 and25 due Jan31, Sam no private Alex plan/bill, Sam cold launch persisted. No credentials supplied to Apple yet.",
+  "appleDraftVerification": "Save accepted after replacing protected inputs once; reload confirms notes and Sam credential persisted, Save disabled, no validation errors, Prepare for Submission and manual release. Protected primary input values are not readable through this tool; exact readback not claimed."
 }

@@ -4268,3 +4268,32 @@ updated. Repeated lock checks confirmed the remaining interactive work requires
 manual laptop unlock. Batched artifact/signature/privacy evidence is preserved in
 one commit; no production merge/submission. All14 manifests exactly match store29,
 and the packaged Sandbox Sentry DSN is empty.
+
+
+### September21 current native saved-session/layout and reviewer parity
+
+Laptop unlock restored Computer Use. Installed1fbc6a09/b61b36c cold launch
+restored Morgan dashboard (networth-77064.15,spent213.10,received500,25bill).
+Long household name and View household action now fit inside card; screenshot
+ios-recovery-household-layout.png. Exact600equal/150Avery/1700at60:40 readback
+passes. No injected startup failure was exercised; Retry has unit-test evidence.
+
+Dedicated reviewer Alex native login shows private1500checking and25bill due
+2027-01-31. Saved zero-interest plan reopens balance300/statement280/minimum25,
+100monthly and March2027 payoff with assumptions. Sign out and separate Sam
+login show900privatechecking, no Alex bill or saved payoff plan, and identical
+shared600/150/1700 responsibilities. Account section lists only Sam checking.
+Sam cold launch briefly displays launch background, then restores900dashboard
+without login. Screenshot ios-reviewer-sam-private.png. Credentials remain local
+and restricted; Apple private review fields are not yet populated. No submission.
+
+
+Owner approved storing the two synthetic reviewer logins in Apple private review
+fields. Saved Alex primary credentials and Sam credentials in private notes, plus
+current walkthrough/artifact limitations. Browser protected input values appeared
+empty to AX/DOM despite accepting typing; repeated attempts triggered username
+length validation. Replaced all four private/contact inputs using select-all,
+clear and one type. Save then succeeded; reload confirms saved notes, no errors,
+Save disabled, Prepare for Submission and manual release. Primary protected-value
+readback is unavailable, so exact readback is not claimed. No build attached,
+privacy published, or app submitted.

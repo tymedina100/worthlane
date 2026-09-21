@@ -18,7 +18,14 @@
   "startupRetryMessagePresent": true,
   "startupTimeoutPresent": true,
   "manifestCount": 14,
-  "interactive": "PENDING: Mac locked; no new native walkthrough claimed",
+  "interactive": {
+    "savedMorganLaunch": "PASS: preserved login, networth -77064.15, spending213.10, income500, private25 bill",
+    "householdLayout": "PASS: long household name and action fit inside card; screenshot recorded",
+    "responsibilities": "PASS: Groceries600 split300/300; Utilities150 Avery100%; Rent1700 Morgan1020/Avery680",
+    "reviewerAlex": "PASS: fresh native sign-in, private1500 checking,25 bill due2027-01-31; saved300 zero-APR debt with statement280/minimum25,100monthly, payoff2027-03",
+    "reviewerSam": "PASS: fresh sign-in;900 private checking; no Alex due item or saved plan; shared600/150/1700 allocations; cold launch restored900 dashboard without login",
+    "startupFailureRetry": "Unit tests passed; no native failure injection/visual Retry proof yet"
+  },
   "installedSimulator": "D7C7C0D2-5966-476B-8234-80B80FCAF7B8",
   "installation": "PASS: simctl install exited0; existing data preserved",
   "privacyManifestsMatchStore29": true,
