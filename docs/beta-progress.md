@@ -4400,3 +4400,26 @@ or invitation was requested. App Review remains unsubmitted. Next: once Apple
 finishes processing, select exact build 30, update the private walkthrough's
 old not-uploaded wording, save and verify the preparation draft.
 Evidence: `evidence/2026-09-21/ios-store-30-upload.json`.
+
+
+### September 21 — Sandbox privacy configuration reconciled
+
+Read-only Railway UI verification confirmed empty SENTRY_DSN and
+POSTHOG_PROJECT_KEY on the exact beta-sandbox API service. Values were hidden
+after inspection; no service configuration changed. This matches store30's
+empty mobile DSN and its build-time prohibition on Sentry/PostHog settings.
+Bundled manifests were re-read: Sentry describes possible diagnostics, but the
+actual candidate disables native SDK/tracing and lacks a JavaScript collector;
+LinkKit declares linked UserID. Purchase history remains disclosed for financial
+transactions regardless of the disabled paywall.
+
+Removed the unsupported Crash Data category from the unpublished Apple privacy
+draft. Save and reload now show six categories: Name, Email Address, Other
+Financial Info, Other User Content, UserID and Purchase History. Existing
+functionality/linked/no-tracking purposes remain; Publish was untouched. This
+is candidate configuration evidence, not historical retention or production
+service evidence. See sandbox-telemetry-configuration.json.
+
+Private reviewer notes now truthfully say build30 was uploaded and is processing.
+Save disabled confirms the notes save. Apple's build30 processing job remains
+live; exact attachment is still pending and no older build was substituted.

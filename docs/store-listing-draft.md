@@ -379,3 +379,22 @@ of historical data deletion or broad organizational compliance is made.
 
 Apple still has no attached build or reviewer credentials; release remains manual.
 This finishes one draft questionnaire section, not store preparation or submission.
+
+
+## September 21 — exact Sandbox telemetry configuration
+
+Read-only Railway UI inspection of beta-sandbox / worthlane confirmed
+`SENTRY_DSN` and `POSTHOG_PROJECT_KEY` are both empty. Each value was revealed
+only for this check and then hidden; no configuration was changed. The service
+was Sleeping and no pending changes were visible. Current store30 artifact
+independently has an empty mobile Sentry DSN, and its Sandbox build guard rejects
+nonempty mobile Sentry/PostHog settings.
+
+This candidate therefore has no configured Sentry or PostHog collector on the
+inspected mobile/API pair. The unpublished Crash Data answer was removed after this reconciliation;
+the saved draft now has six data types and Publish remains untouched.
+Source support for optional diagnostics alone does not prove collection in this candidate. Do not infer that no data is
+collected: authentication, financial records, consented household details and
+Plaid SDK collection remain in scope. This check does not establish historical
+retention, other app versions, production telemetry, or a full network audit.
+Evidence: `evidence/2026-09-21/sandbox-telemetry-configuration.json`.
