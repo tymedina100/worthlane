@@ -1,4 +1,5 @@
 "use client";
+import { sessionFetch } from "@/src/lib/session-fetch";
 
 import { BankCoverageNotices } from "./bank-coverage-notices";
 
@@ -476,7 +477,7 @@ export function HouseholdDashboard({ mode, initialSummary }: HouseholdDashboardP
       const activeRequest = ++requestId.current;
       if (!background) setIsRefreshing(true);
       try {
-        const response = await fetch("/api/household/summary", {
+        const response = await sessionFetch("/api/household/summary", {
           cache: "no-store",
           credentials: "same-origin",
         });
@@ -629,7 +630,7 @@ export function HouseholdDashboard({ mode, initialSummary }: HouseholdDashboardP
         return;
       }
 
-      const response = await fetch(
+      const response = await sessionFetch(
         `/api/household/goals/${encodeURIComponent(goalId)}/contributions`,
         {
           method: "POST",

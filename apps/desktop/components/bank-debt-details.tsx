@@ -1,4 +1,5 @@
 "use client";
+import { sessionFetch } from "@/src/lib/session-fetch";
 import { BankDebtCopy } from "./bank-debt-copy";
 import type { DebtPlanInput } from "@worthlane/contracts";
 import { PlaidLinkButton } from "./plaid-link-button";
@@ -10,7 +11,7 @@ export function BankDebtDetails({ connections, currency, onCopy, copyDisabled }:
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const manage: ManagePlaid = async ({ path, body }) => {
-    const response = await fetch(`/api/plaid${path}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body ?? {}) });
+    const response = await sessionFetch(`/api/plaid${path}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body ?? {}) });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.error?.message ?? "Bank linking is unavailable.");
     return payload.data;
@@ -18,7 +19,7 @@ export function BankDebtDetails({ connections, currency, onCopy, copyDisabled }:
   async function check(id: string) {
     setBusy(true); setMessage(""); setSnapshot(null);
     try {
-      const response = await fetch(`/api/plaid/items/${encodeURIComponent(id)}/liabilities`, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}", cache: "no-store" });
+      const response = await sessionFetch(`/api/plaid/items/${encodeURIComponent(id)}/liabilities`, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}", cache: "no-store" });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error?.message ?? "Debt details are unavailable. Enter confirmed details manually below.");
       setSnapshot({ id, data: liabilitySnapshotSchema.parse(payload.data) });

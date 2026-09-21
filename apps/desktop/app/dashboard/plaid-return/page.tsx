@@ -1,11 +1,12 @@
 "use client";
+import { sessionFetch } from "@/src/lib/session-fetch";
 
 import { PlaidLinkButton } from "../../../components/plaid-link-button";
 import { WorthlaneMark } from "../../../components/icons";
 import type { ManagePlaid } from "../../../src/lib/workspace-data";
 
 const manage: ManagePlaid = async ({ path, body }) => {
-  const response = await fetch(`/api/plaid${path}`, {
+  const response = await sessionFetch(`/api/plaid${path}`, {
     method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body ?? {}), cache: "no-store",
   });

@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import {
-  authenticatedServerRequest,
+  publicServerRequest,
   clearSessionCookies,
   jsonResponse,
   REFRESH_TOKEN_COOKIE,
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       // Revoke the server-side token family before removing the only browser
       // copy of the refresh credential. Cookie clearing still completes if the
       // API is temporarily unavailable so the local device is signed out.
-      await authenticatedServerRequest(cookieStore, "/auth/logout", {
+      await publicServerRequest("/auth/logout", {
         method: "POST",
         body: JSON.stringify({ refreshToken }),
       });

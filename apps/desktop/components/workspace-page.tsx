@@ -1,4 +1,5 @@
 "use client";
+import { sessionFetch } from "@/src/lib/session-fetch";
 
 import { BankCoverageNotices } from "./bank-coverage-notices";
 
@@ -117,12 +118,12 @@ export function WorkspacePage({ view }: { view: WorkspaceView }) {
 
     try {
       const responses = await Promise.all([
-        fetch("/api/household/summary", { cache: "no-store", credentials: "same-origin" }),
-        fetch("/api/personal/budgets", { cache: "no-store", credentials: "same-origin" }),
-        fetch("/api/personal/transactions?limit=100", { cache: "no-store", credentials: "same-origin" }),
-        fetch("/api/personal/goals", { cache: "no-store", credentials: "same-origin" }),
-        fetch("/api/personal/accounts", { cache: "no-store", credentials: "same-origin" }),
-        fetch("/api/personal/categories", { cache: "no-store", credentials: "same-origin" }),
+        sessionFetch("/api/household/summary", { cache: "no-store", credentials: "same-origin" }),
+        sessionFetch("/api/personal/budgets", { cache: "no-store", credentials: "same-origin" }),
+        sessionFetch("/api/personal/transactions?limit=100", { cache: "no-store", credentials: "same-origin" }),
+        sessionFetch("/api/personal/goals", { cache: "no-store", credentials: "same-origin" }),
+        sessionFetch("/api/personal/accounts", { cache: "no-store", credentials: "same-origin" }),
+        sessionFetch("/api/personal/categories", { cache: "no-store", credentials: "same-origin" }),
       ]);
 
       if (responses.some((response) => response.status === 401)) {
@@ -206,7 +207,7 @@ export function WorkspacePage({ view }: { view: WorkspaceView }) {
   }, [loadWorkspace]);
 
   const contribute = useCallback(async (goalId: string, amountMinor: number, note: string | null) => {
-    const response = await fetch(
+    const response = await sessionFetch(
       `/api/household/goals/${encodeURIComponent(goalId)}/contributions`,
       {
         method: "POST",
@@ -254,7 +255,7 @@ export function WorkspacePage({ view }: { view: WorkspaceView }) {
     method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
     body?: unknown;
   }): Promise<T> => {
-    const response = await fetch(`/api/household/manage${path}`, {
+    const response = await sessionFetch(`/api/household/manage${path}`, {
       method,
       credentials: "same-origin",
       ...(method === "GET" ? {} : { headers: { "Content-Type": "application/json" } }),
@@ -284,7 +285,7 @@ export function WorkspacePage({ view }: { view: WorkspaceView }) {
     body?: unknown;
   }): Promise<T> => {
     const isCollectionPost = method === "POST" && path.split("/").filter(Boolean).length === 1;
-    const response = await fetch(
+    const response = await sessionFetch(
       isCollectionPost ? `/api/personal${path}` : `/api/personal/manage${path}`,
       {
         method,
@@ -310,7 +311,7 @@ export function WorkspacePage({ view }: { view: WorkspaceView }) {
   const managePlaid = useCallback(async <T,>(
     { path, body }: { path: string; body?: unknown }
   ): Promise<T> => {
-    const response = await fetch(`/api/plaid${path}`, {
+    const response = await sessionFetch(`/api/plaid${path}`, {
       method: "POST",
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },

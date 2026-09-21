@@ -67,6 +67,7 @@ try {
     // credentials and recover the same persisted account IDs.
     const oldRefresh = jar.get(refresh);
     jar.delete(access);
+    await request('/api/auth/session', jar, {});
     check(same(ids((await data('/api/personal/accounts', jar)).accounts), expectedIds.slice().sort()), 'Refresh changed account visibility');
     check(jar.has(access) && jar.get(refresh) !== oldRefresh, 'BFF did not rotate and restore session cookies');
     snapshots.push({ accounts: ids(accounts.accounts), ledger: ids(ledger.transactions), responsibilities: summary.responsibilities });
