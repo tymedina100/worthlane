@@ -4440,3 +4440,14 @@ vector generator, without file writes. Its source history establishes technical
 provenance (ab8122e/37184a4); separate provider and trademark rights remain outside
 that proof. Evidence: mobile-brand-provenance.json. Apple build30 processing was
 rechecked and remains live, so no different build was substituted.
+
+
+### September 21 — preserve laptop storage during release preparation
+
+Official SDK manager removed the unused2.4GiB temporary Android NDK after
+checking no local compiler/build process was running. Emulator data and verified
+archives remain. Available disk space is9.3GiB, versus5.6GiB before emulator
+shutdown/cleanup; not all reclaimed space is attributed to the NDK. Restore
+command and exact scope: evidence/2026-09-21/storage-cleanup.md. A future local
+native Android build must reinstall that compiler; EAS and emulator runtime
+are unaffected. Apple build30 processing remains live.
