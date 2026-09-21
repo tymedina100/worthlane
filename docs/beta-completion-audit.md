@@ -1,4 +1,12 @@
-# Worthlane completion audit — September 18, 2026
+# Worthlane completion audit — updated September 21, 2026
+
+September21 update: isolated hosted browser standard banking and Mac OAuth
+connect/healthy reconnect have fresh evidence. Corrected nonempty-ID verification
+now proves hosted Mac forced repair retained14accounts/390transactions; selected
+unlink removed the Item and revoked its Plaid token. Post-cleanup two-login BFF
+verification passes. See hosted-sandbox.md for the helper correction and scope.
+Mac unexpected sign-in return and initial stale-frame recovery remain unresolved;
+these findings prevent treating hosted Mac reliability as complete.
 
 Goal remains active. This is an evidence reconciliation, not a new claim that every
 journey has been replayed or permission to publish. The requirement matrix below

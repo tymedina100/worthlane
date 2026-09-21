@@ -910,3 +910,32 @@ Next: repeat forced repair against this corrected nonempty baseline with
 then selected unlink/provider revocation. The added Chase Item remains present
 for that test. Failed observer attempts were terminal and did not unlink or
 mutate data. Initial Mac rendering reliability remains unresolved.
+
+
+### September 21 corrected Mac repair and unlink complete
+
+Repeated guarded provider login reset on only the added Chase Item. Native Sync
+showed Needs Relink/14attention, then actual OAuth login/challenge/account
+selection/simulated consent/return/Finish without saving restored Healthy.
+`WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-linked-bank.mjs --verify`
+passed after final return (session3060): exact same Item,14accounts and all390
+nonempty baseline transaction IDs;439full owner rows stable across repeat sync;
+original rows and partner15accounts/392transaction IDs preserved/private. This
+new run closes the empty-subset evidence gap for this Mac repair, without
+retroactively strengthening the earlier browser helper's claims.
+
+A scoped provider observer independently verified HEALTHY/relinkfalse/errornull
+and the exact14account/390transaction IDs before removal. Native Unlink on the
+added Chase row and its confirmation returned Chase was unlinked and15original
+accounts/oneinstitution/zeroattention. Observer58590 exited0 after confirming
+database removal and Plaid ITEM_NOT_FOUND for the former token (memory only).
+Full post-cleanup hosted BFF verifier16470 exited0: both persisted logins,
+privacy/totals, protected cookies, refresh rotation and logout revocation.
+See `docs/evidence/2026-09-21/hosted-mac-unlinked.txt`. The local Chase fixture
+now identifies a deleted Item and must not be reused as an active connection.
+
+Remaining Mac reliability findings: this run unexpectedly returned to login
+before Sync; signing back into the synthetic account recovered it. Cause not
+established. Earlier initial stale-frame recovery also remains unresolved.
+Successful banking lifecycle does not close these session/rendering findings,
+public Mac signing/notarization, iOS OAuth or other recorded release gates.
