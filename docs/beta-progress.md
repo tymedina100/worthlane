@@ -3672,3 +3672,32 @@ After that restart, Accounts & privacy navigation also rendered correctly in
 both AX and screenshot: 15 original accounts, one institution, zero attention,
 private100 manual fallback. This recovery does not establish a root cause or
 prove the initial stale-frame problem cannot recur.
+
+
+### September 21 hosted Mac OAuth connection and healthy reconnect
+
+Using the exact ad-hoc Sandbox Mac package recorded above, Connect bank →
+Continue without phone number → Chase → Continue to log in opened the separate
+cdn.plaid.com simulated OAuth window. Public Sandbox credentials/code and all
+14 test accounts completed simulated consent; the popup closed, Plaid returned
+to Worthlane, and Finish without saving produced Connection saved. The native
+accounts page showed29 accounts/two institutions/zero attention, Chase Healthy.
+
+An independent API verifier initially collided with the in-progress initial
+sync (409); its later successful run confirmed14 new accounts and439 complete
+owner transactions (49 original +390 added), exact original transaction objects
+retained, no repeated-sync duplicates, and partner15 accounts/392 transaction
+IDs unchanged/private. No rate-limit or concurrency safeguard was weakened.
+
+Healthy Reconnect repeated the actual OAuth popup/challenge/consent/return
+flow. After the final Finish without saving returned Connection saved, a fresh
+independent run (session23378, exit0) verified the same Item,14 account IDs and
+390 added transaction IDs,439 stable owner rows, and unchanged private partner
+ledger. See `docs/evidence/2026-09-21/hosted-mac-oauth-saved.txt`.
+
+This establishes hosted Mac OAuth connect and healthy reconnect, not forced
+login-required repair or selected unlink for this new Item; those remain next.
+The local0600 `.tmp/hosted-mac-sep21-link-fixture.json` identifies the added
+synthetic Chase Item for scoped follow-up. Initial stale-frame/recovery behavior
+also remains unresolved. No production banking, merge, store submission or
+release signing occurred.

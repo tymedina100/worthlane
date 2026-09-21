@@ -1,0 +1,368 @@
+Window: "Accounts & privacy · Worthlane", App: Worthlane.
+0 standard window Accounts & privacy · Worthlane, Secondary Actions: Raise
+	1 container Accounts & privacy · Worthlane
+		2 container
+			3 HTML content Accounts & privacy · Worthlane, URL: [redacted]
+				4 container
+					5 text Accounts & privacy · Worthlane
+					6 link Description: Skip to planning workspace, Value: worthlane-beta-desktop.vercel.app/dashboard/accounts#main-content
+					7 container Primary navigation
+						8 link Description: Worthlane worthlane, Value: worthlane-beta-desktop.vercel.app/dashboard
+						9 text HOUSEHOLD
+						10 text Hosted synthetic household
+						11 text Morgan + Avery
+						12 container
+							13 text WORKSPACE
+							14 link Description: Overview Alt+1, Help: Overview (Alt+1), Value: worthlane-beta-desktop.vercel.app/dashboard
+							15 link Description: Monthly plan Alt+2, Help: Monthly plan (Alt+2), Value: worthlane-beta-desktop.vercel.app/dashboard/plan
+							16 link Description: Accounts & privacy Alt+3, Help: Accounts & privacy (Alt+3), Value: worthlane-beta-desktop.vercel.app/dashboard/accounts
+							17 link Description: Goals & bills Alt+4, Help: Goals & bills (Alt+4), Value: worthlane-beta-desktop.vercel.app/dashboard/goals
+							18 link Description: Reports Alt+5, Help: Reports (Alt+5), Value: worthlane-beta-desktop.vercel.app/dashboard/reports
+						19 text Privacy stays personal
+						20 text You decide what your partner sees.
+						21 text Morgan
+						22 text Household member
+						23 button Sign out
+					24 container
+						25 text ACCOUNTS & PRIVACY
+						26 heading Your accounts. Your choice., Value: 1
+							27 text Your accounts. Your choice.
+						28 text Connect a bank or add an account, then choose what to share.
+						29 text Snapshot Sep 21, 2026, 11:13 AM MST
+						30 button Refresh planning data
+					31 disclosure triangle Bank history may be incomplete · 28 accounts
+						32 text Bank history may be incomplete · 
+						33 text 28
+						34 text  accounts
+					35 container Account and privacy summary
+						36 container
+							37 text VISIBLE NET WORTH -$154,228.30 Personal accounts plus partner detail or summaries shared with you
+						38 container
+							39 text YOUR ACCOUNTS 29 2 connected institutions; 0 need attention
+						40 container
+							41 text HOUSEHOLD DETAIL ACCESS 0 Accounts currently shared with full household detail
+					42 container
+						43 text Find an account
+						44 search text field (settable) Find an account, Placeholder: Search account, owner, institution…
+						45 text Your account source
+						46 pop up button Your account source, Value: All sources
+							47 (selected) All sources
+						48 text Household visibility
+						49 pop up button Household visibility, Value: All access levels
+							50 (selected) All access levels
+						51 button Clear filters
+					52 container Your connected accounts
+						53 text PERSONAL OWNERSHIP
+						54 heading Your connected accounts, Value: 2
+							55 text Your connected accounts
+						56 text Connection health and balances from your existing Worthlane account.
+						57 text Live connection status
+						58 button Connect bank
+						59 text Connection saved. Review account freshness and choose what to share.
+						60 text Imported spending uses posted transactions. Pending bank authorizations are excluded until they post.
+						61 text Bank-labeled transfers and credit card payments are excluded from spending and income. You can change this in Transactions.
+						62 container
+							63 text Hosted Sandbox fixture 14  account s  -  Healthy Worthlane has not retrieved bank activity in the past day. Sync to check for available updates. Last retrieved Sep 18, 2026
+							64 button Reconnect
+							65 button Sync
+							66 button Unlink
+						67 container
+							68 text Chase 14  account s  -  Healthy Available bank history loaded. New bank activity can arrive later; older history may be limited by your bank. Last retrieved Sep 21, 2026
+							69 button Reconnect
+							70 text Connection saved. Review account freshness and choose what to share.
+							71 button Sync
+							72 button Unlink
+						73 container
+							74 text Hosted synthetic checking Checking Manual account Manual $100.00
+						75 container
+							76 text Plaid Checking Hosted Sandbox fixture Synced Sep 18, 2026 Plaid $110.00
+						77 container
+							78 text Plaid Saving Hosted Sandbox fixture Synced Sep 18, 2026 Plaid $210.00
+						79 container
+							80 text Plaid CD Hosted Sandbox fixture Synced Sep 18, 2026 Plaid $1,000.00
+						81 container
+							82 text Plaid Credit Card Hosted Sandbox fixture Synced Sep 18, 2026 Plaid $410.00
+						83 container
+							84 text Plaid Money Market Hosted Sandbox fixture Synced Sep 18, 2026 Plaid $43,200.00
+						85 container
+							86 text Plaid IRA Hosted Sandbox fixture Synced Sep 18, 2026 Plaid $320.76
+						87 container
+							88 text Plaid 401k Hosted Sandbox fixture Synced Sep 18, 2026 Plaid $23,631.98
+						89 container
+							90 text Plaid Student Loan Hosted Sandbox fixture Synced Sep 18, 2026 Plaid $65,262.00
+						91 container
+							92 text Plaid Mortgage Hosted Sandbox fixture Synced Sep 18, 2026 Plaid $56,302.06
+						93 container
+							94 text Plaid HSA Hosted Sandbox fixture Synced Sep 18, 2026 Plaid $6,009.00
+						95 container
+							96 text Plaid Cash Management Hosted Sandbox fixture Synced Sep 18, 2026 Plaid $12,060.00
+						97 container
+							98 text Plaid Auto Loan Hosted Sandbox fixture Synced Sep 18, 2026 Plaid $23,211.33
+						99 container
+							100 text Plaid Home Equity Line of Credit Hosted Sandbox fixture Synced Sep 18, 2026 Plaid $13,500.50
+						101 container
+							102 text Plaid Business Credit Card Hosted Sandbox fixture Synced Sep 18, 2026 Plaid $5,020.00
+						103 container
+							104 text Plaid Checking Chase Synced Sep 21, 2026 Plaid $110.00
+						105 container
+							106 text Plaid Saving Chase Synced Sep 21, 2026 Plaid $210.00
+						107 container
+							108 text Plaid CD Chase Synced Sep 21, 2026 Plaid $1,000.00
+						109 container
+							110 text Plaid Credit Card Chase Synced Sep 21, 2026 Plaid $410.00
+						111 container
+							112 text Plaid Money Market Chase Synced Sep 21, 2026 Plaid $43,200.00
+						113 container
+							114 text Plaid IRA Chase Synced Sep 21, 2026 Plaid $320.76
+						115 container
+							116 text Plaid 401k Chase Synced Sep 21, 2026 Plaid $23,631.98
+						117 container
+							118 text Plaid Student Loan Chase Synced Sep 21, 2026 Plaid $65,262.00
+						119 container
+							120 text Plaid Mortgage Chase Synced Sep 21, 2026 Plaid $56,302.06
+						121 container
+							122 text Plaid HSA Chase Synced Sep 21, 2026 Plaid $6,009.00
+						123 container
+							124 text Plaid Cash Management Chase Synced Sep 21, 2026 Plaid $12,060.00
+						125 container
+							126 text Plaid Auto Loan Chase Synced Sep 21, 2026 Plaid $23,211.33
+						127 container
+							128 text Plaid Home Equity Line of Credit Chase Synced Sep 21, 2026 Plaid $13,500.50
+						129 container
+							130 text Plaid Business Credit Card Chase Synced Sep 21, 2026 Plaid $5,020.00
+					131 disclosure triangle Connected the same joint account twice?
+						132 text Connected the same joint account twice?
+					133 container Manage manual accounts
+						134 text PERSONAL ACCOUNT CONTROLS
+						135 heading Manage manual accounts, Value: 2
+							136 text Manage manual accounts
+						137 text Add or edit accounts that are not connected through Plaid.
+						138 container
+							139 text Working on
+							140 pop up button Working on, Value: + New manual account
+								141 (selected) + New manual account
+						142 container
+							143 text Name
+							144 text field (settable) Name, Placeholder: Emergency savings
+							145 text Institution  optional
+							146 text field (settable) Institution optional, Placeholder: Credit union
+							147 text Type
+							148 pop up button Type, Value: Checking
+								149 (selected) Checking
+							150 text Current balance
+							151 text $
+							152 text field (settable) Current balance $, Value: 0.00
+							153 button Add manual account
+					154 container What Morgan can see
+						155 text HOUSEHOLD PRIVACY MAP
+						156 heading What Morgan can see, Value: 2
+							157 text What  Morgan  can see
+						158 text Account owners can change partner access here; every view follows the saved permission.
+						159 text Full detail Summary only
+						160 container
+							161 text Hosted synthetic checking Morgan  · You
+							162 pop up button Description: Partner visibility for Hosted synthetic checking, Value: Personal
+								163 (selected) Personal
+							164 button View activity
+							165 text $100.00
+						166 container
+							167 text Plaid Checking Morgan  · You
+							168 pop up button Description: Partner visibility for Plaid Checking, Value: Personal
+								169 (selected) Personal
+							170 button View activity
+							171 text $110.00
+						172 container
+							173 text Plaid Saving Morgan  · You
+							174 pop up button Description: Partner visibility for Plaid Saving, Value: Personal
+								175 (selected) Personal
+							176 button View activity
+							177 text $210.00
+						178 container
+							179 text Plaid CD Morgan  · You
+							180 pop up button Description: Partner visibility for Plaid CD, Value: Personal
+								181 (selected) Personal
+							182 button View activity
+							183 text $1,000.00
+						184 container
+							185 text Plaid Credit Card Morgan  · You
+							186 pop up button Description: Partner visibility for Plaid Credit Card, Value: Personal
+								187 (selected) Personal
+							188 button View activity
+							189 text $410.00
+						190 container
+							191 text Plaid Money Market Morgan  · You
+							192 pop up button Description: Partner visibility for Plaid Money Market, Value: Personal
+								193 (selected) Personal
+							194 button View activity
+							195 text $43,200.00
+						196 container
+							197 text Plaid IRA Morgan  · You
+							198 pop up button Description: Partner visibility for Plaid IRA, Value: Personal
+								199 (selected) Personal
+							200 button View activity
+							201 text $320.76
+						202 container
+							203 text Plaid 401k Morgan  · You
+							204 pop up button Description: Partner visibility for Plaid 401k, Value: Personal
+								205 (selected) Personal
+							206 button View activity
+							207 text $23,631.98
+						208 container
+							209 text Plaid Student Loan Morgan  · You
+							210 pop up button Description: Partner visibility for Plaid Student Loan, Value: Personal
+								211 (selected) Personal
+							212 button View activity
+							213 text $65,262.00
+						214 container
+							215 text Plaid Mortgage Morgan  · You
+							216 pop up button Description: Partner visibility for Plaid Mortgage, Value: Personal
+								217 (selected) Personal
+							218 button View activity
+							219 text $56,302.06
+						220 container
+							221 text Plaid HSA Morgan  · You
+							222 pop up button Description: Partner visibility for Plaid HSA, Value: Personal
+								223 (selected) Personal
+							224 button View activity
+							225 text $6,009.00
+						226 container
+							227 text Plaid Cash Management Morgan  · You
+							228 pop up button Description: Partner visibility for Plaid Cash Management, Value: Personal
+								229 (selected) Personal
+							230 button View activity
+							231 text $12,060.00
+						232 container
+							233 text Plaid Auto Loan Morgan  · You
+							234 pop up button Description: Partner visibility for Plaid Auto Loan, Value: Personal
+								235 (selected) Personal
+							236 button View activity
+							237 text $23,211.33
+						238 container
+							239 text Plaid Home Equity Line of Credit Morgan  · You
+							240 pop up button Description: Partner visibility for Plaid Home Equity Line of Credit, Value: Personal
+								241 (selected) Personal
+							242 button View activity
+							243 text $13,500.50
+						244 container
+							245 text Plaid Business Credit Card Morgan  · You
+							246 pop up button Description: Partner visibility for Plaid Business Credit Card, Value: Personal
+								247 (selected) Personal
+							248 button View activity
+							249 text $5,020.00
+						250 container
+							251 text Plaid Checking Morgan  · You
+							252 pop up button Description: Partner visibility for Plaid Checking, Value: Personal
+								253 (selected) Personal
+							254 button View activity
+							255 text $110.00
+						256 container
+							257 text Plaid Saving Morgan  · You
+							258 pop up button Description: Partner visibility for Plaid Saving, Value: Personal
+								259 (selected) Personal
+							260 button View activity
+							261 text $210.00
+						262 container
+							263 text Plaid CD Morgan  · You
+							264 pop up button Description: Partner visibility for Plaid CD, Value: Personal
+								265 (selected) Personal
+							266 button View activity
+							267 text $1,000.00
+						268 container
+							269 text Plaid Credit Card Morgan  · You
+							270 pop up button Description: Partner visibility for Plaid Credit Card, Value: Personal
+								271 (selected) Personal
+							272 button View activity
+							273 text $410.00
+						274 container
+							275 text Plaid Money Market Morgan  · You
+							276 pop up button Description: Partner visibility for Plaid Money Market, Value: Personal
+								277 (selected) Personal
+							278 button View activity
+							279 text $43,200.00
+						280 container
+							281 text Plaid IRA Morgan  · You
+							282 pop up button Description: Partner visibility for Plaid IRA, Value: Personal
+								283 (selected) Personal
+							284 button View activity
+							285 text $320.76
+						286 container
+							287 text Plaid 401k Morgan  · You
+							288 pop up button Description: Partner visibility for Plaid 401k, Value: Personal
+								289 (selected) Personal
+							290 button View activity
+							291 text $23,631.98
+						292 container
+							293 text Plaid Student Loan Morgan  · You
+							294 pop up button Description: Partner visibility for Plaid Student Loan, Value: Personal
+								295 (selected) Personal
+							296 button View activity
+							297 text $65,262.00
+						298 container
+							299 text Plaid Mortgage Morgan  · You
+							300 pop up button Description: Partner visibility for Plaid Mortgage, Value: Personal
+								301 (selected) Personal
+							302 button View activity
+							303 text $56,302.06
+						304 container
+							305 text Plaid HSA Morgan  · You
+							306 pop up button Description: Partner visibility for Plaid HSA, Value: Personal
+								307 (selected) Personal
+							308 button View activity
+							309 text $6,009.00
+						310 container
+							311 text Plaid Cash Management Morgan  · You
+							312 pop up button Description: Partner visibility for Plaid Cash Management, Value: Personal
+								313 (selected) Personal
+							314 button View activity
+							315 text $12,060.00
+						316 container
+							317 text Plaid Auto Loan Morgan  · You
+							318 pop up button Description: Partner visibility for Plaid Auto Loan, Value: Personal
+								319 (selected) Personal
+							320 button View activity
+							321 text $23,211.33
+						322 container
+							323 text Plaid Home Equity Line of Credit Morgan  · You
+							324 pop up button Description: Partner visibility for Plaid Home Equity Line of Credit, Value: Personal
+								325 (selected) Personal
+							326 button View activity
+							327 text $13,500.50
+						328 container
+							329 text Plaid Business Credit Card Morgan  · You
+							330 pop up button Description: Partner visibility for Plaid Business Credit Card, Value: Personal
+								331 (selected) Personal
+							332 button View activity
+							333 text $5,020.00
+					334 container Household members
+						335 text SEPARATE LOGINS, ONE HOUSEHOLD
+						336 heading Household members, Value: 2
+							337 text Household members
+						338 text Invite your partner even before they register. Share the private code directly; they must sign in with the invited email and accept.
+						339 container 2 household members
+							340 text M
+							341 text A
+						342 container
+							343 text M Morgan  · You Owner  · Separate Worthlane login
+						344 container
+							345 text A Avery Member  · Separate Worthlane login
+						346 container
+							347 text Partner email
+							348 email (settable) Partner email, Placeholder: partner@example.com
+							349 text Display name  optional
+							350 text field (settable) Display name optional, Placeholder: Rachel
+							351 button Create invitation code
+					352 container
+						353 text Personal detail stays private by default; shared data follows household permissions. Keyboard: Alt+1–5 switches workspace views ·  America/Phoenix
+	354 close button
+	355 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	356 minimize button
+357 menu bar
+	358 Worthlane
+	359 File
+	360 Edit
+	361 Navigate
+	362 View
+	363 Window
+	364 Help
+
+The focused UI element is 3 HTML content Accounts & privacy · Worthlane, URL: [redacted]
