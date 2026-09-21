@@ -4184,3 +4184,22 @@ same preserved AVD with supported -gpu software, no snapshot/wipe, session95722.
 Current saved-journey acceptance remains open. Next: observe this boot once; if
 system failure recurs, switch to independent layout/store work rather than keep
 repeating identical emulator restarts.
+
+
+## September21 Crash Data draft completed, not published
+
+App Store Connect live App Privacy questionnaire saved Crash Data with App
+Functionality purpose, not linked to identity and not used for tracking. The
+resulting preview lists Diagnostics under Data Not Linked to You; Publish is now
+enabled but was not clicked. Other six collected types retain account linkage.
+Basis: mobile diagnostic-privacy.ts reconstructs a generic allowlist with bundle
+positions, without user/request/context/breadcrumbs/raw messages; sentry.ts disables
+native capture, sessions, traces, screenshots and default PII. Earlier approved
+provider IP-storage prevention was verified in both Sentry projects. Current
+Sandbox artifact has no usable DSN; the draft conservatively retains crash
+collection for the configured backend/possible release diagnostics. Reconcile
+against the exact final selected build and services before publishing. No claim
+of historical data deletion or broad organizational compliance is made.
+
+Apple still has no attached build or reviewer credentials; release remains manual.
+This finishes one draft questionnaire section, not store preparation or submission.
