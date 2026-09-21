@@ -4006,3 +4006,23 @@ exploitability; Expo's production graph also includes development tooling.
 Remaining module/path evidence is in evidence/2026-09-21/dependency-audit.json.
 Do not attest that vulnerability management is complete. No production merge,
 deployment approval, app-store upload or new security attestation occurred.
+
+
+### September21 dependency caller triage and compatible tooling patches
+
+Traced remaining registry paths: most findings are Expo/Metro/CLI or Sentry build
+plugins; OpenTelemetry is server diagnostics and decode-uri-component is the mobile
+router path. Do not equate all audit findings with exposed application endpoints.
+Applied same-family updates: xmldom0.8.15, forge1.4.0, PostCSS8.5.23, nanoid3.3.18,
+shell-quote1.9.0 and tar7.5.21. Existing unrelated security overrides preserved.
+Frozen install passes; all10 release-config/image-adapter tests pass; Expo plist
+roundtrip preserves app ID, Associated Domains,boolean andinteger values. The first
+ad-hoc plist check used the wrong CommonJS export; corrected to the package's
+default export and passed. Isolated no-dotenv iOS export passes with7.05MB Hermes
+bundle. None of the patched modules remain in the new audit:32high/18moderate/3low
+remain, down from58high/24moderate/3low. Snapshot:
+evidence/2026-09-21/dependency-audit-tooling-patches.json. Full candidate CI pending.
+Earlier Sharp-only CI243 has both PostgreSQL17/18 jobs passed and core/API/privacy/
+image checks passed; build jobs were still running when inspected. No production
+merge, store submission or new Plaid security attestation. Existing build29 remains
+its recorded earlier source; these tooling changes are not retroactive artifact proof.
