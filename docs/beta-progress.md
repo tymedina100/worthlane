@@ -4088,3 +4088,17 @@ no audit ignore. Detailed remaining-caller disposition:dependency-security-statu
 Inspected XML caller only parses/validates manifest, UUID callers usev4 without
 provided buffers; remaining advisories affect different operations. This is scoped
 reachability evidence, not an organization-wide attestation or a clean audit claim.
+
+
+### September21 refreshed laptop native candidates started
+
+Live Expo billing shows Free/$0,4of15iOS and5of15Android builds used, estimate$0.
+Started refreshed Sandbox laptop candidates fromb75245cea938caaa56b756575ac58f5aa254adec
+using included capacity, no paid plan or submission:
+- iOS sandbox-simulator: c6e4b91a-4f9a-4229-865c-a9a0d37188bd (IN_PROGRESS,build29).
+- Android sandbox-preview:307fcac1-78fe-4655-adb1-5d793346a2be (accepted by EAS).
+Both42.5MB archives uploaded. No preview environment variables were returned by
+EAS; only guarded profile settings loaded. Android reused its existing remote
+keystore. Exact candidate signatures/configuration/installed journeys remain
+pending; monitor these jobs, do not restart on an observation timeout.
+CI246 at29dcf25 completed SUCCESS; latestCI247 atb75245c was still running.
