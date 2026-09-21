@@ -4382,3 +4382,21 @@ and https://plaid.com/docs/link/troubleshooting/.
 Requested scoped permission to upload verified build30 only to the private Apple
 build list for processing/draft attachment, with no App Review submission, public
 release or tester invitation. Approval pending; no upload initiated.
+
+
+### September 21 — approved private build 30 upload
+
+Tyler approved the prepared upload for private processing and draft attachment.
+EAS Submit job `a693881e-2254-4a81-b1fe-c4edc1c614e9` succeeded at 14:44 MST,
+using the existing EAS-hosted App Store Connect API key. Apple independently
+lists version 1.0.0 build 30 as **Processing** (build ID
+`2208b168-2933-459e-b64f-0f16400262f1`). The archive is the verified
+`e47249aa-9e37-4cf9-a35f-14c7de692cdc` from `74c6bbf`.
+
+The draft build picker still exposes only older processed builds, so none was
+selected. Processing and attachment remain pending; upload success is not
+App Review submission or native device execution. No tester group assignment
+or invitation was requested. App Review remains unsubmitted. Next: once Apple
+finishes processing, select exact build 30, update the private walkthrough's
+old not-uploaded wording, save and verify the preparation draft.
+Evidence: `evidence/2026-09-21/ios-store-30-upload.json`.
