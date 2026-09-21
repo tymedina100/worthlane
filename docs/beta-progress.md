@@ -4048,3 +4048,27 @@ CLI caller inspected uses XMLParser, not XMLBuilder; the builder advisory requir
 separate reachability evaluation. image-size registry currently reports no fixed
 range. Full module/path snapshot:dependency-audit-compatible-patches.json.
 No production merge, store submission or organizational security attestation.
+
+
+### September21 router decoding and server telemetry hardening
+
+CI244/35645550201 at92bd57e completed SUCCESS. Updated fast-xml-parser within4.x
+to4.5.5 and OpenTelemetry core within2.x to2.8.0. Backported upstream
+decode-uri-component0.5.0's bounded decoder into0.2.2 using a reproducible pnpm patch,
+preserving CommonJS and plus-to-space behavior required by query-string. Upstream
+MIT package/source provenance and SHA256 recorded in dependency-audit-runtime-patches.json.
+No audit ignore was added. The registry continues to flag the original package
+version; do not report its advisory as absent.
+
+Original registry0.2.2 timed out on3000 malformed percent-encoded groups after2s
+in a disposable child; child terminated. Actual installed router/query-string path
+completed equivalent test in52ms and preserves Unicode,plus signs,repeated keys and
+partially malformed bytes. Regression runs child with5s deadline to prevent CIhang.
+12 router/release/diagnostic tests pass, frozen install passes, isolated no-dotenv
+iOS export passes. Latest full CI still needed.
+
+Registry now2high/4moderate/0low: Metro image-size two high parser findings (registry
+has no patched range); unused-by-inspected-caller XMLBuilder; build UUID; and locally
+mitigated decoder. Continue caller-specific triage. Earlier build29 is unchanged and
+does not include this JavaScript change. No production merge, submission or security
+attestation.
