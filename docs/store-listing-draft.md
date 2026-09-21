@@ -286,3 +286,20 @@ and default scrubbers also remained checked. Verified at 18:57 UTC. This closes
 the pending two-switch approval gate. It applies to new events only; no claim
 of historical IP deletion or a completed final App Store privacy declaration.
 No paid plan, credential, application deployment or store submission changed.
+
+## Prepared store-format Sandbox build profile
+
+`sandbox-store` inherits the guarded sandbox-preview environment but produces
+store-format signed device artifacts: iOS simulator=false and Android app-bundle.
+It uses remote build-number increments and has no matching submit profile.
+It still targets only the isolated hosted Sandbox API and rejects inherited
+production URLs, analytics/diagnostic credentials, AI or paywall activation.
+The production profile is unchanged. This is preparation, not a built, uploaded,
+submitted, or accepted store candidate.
+
+Seven mobile-release configuration tests pass, including malicious/inherited
+setting rejection for this new profile. The installed EAS18.3.0 schema/resolver
+independently resolves both platforms to distribution=store, environment=preview
+and the isolated API; iOS resolves simulator=false and Android app-bundle.
+Reference: https://docs.expo.dev/eas/json/ . Before building, verify included
+capacity and authorized signing; do not use --auto-submit or eas submit.

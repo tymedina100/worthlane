@@ -35,6 +35,17 @@
       "ios": {
         "simulator": true
       }
+    },
+    "sandbox-store": {
+      "extends": "sandbox-preview",
+      "distribution": "store",
+      "autoIncrement": true,
+      "ios": {
+        "simulator": false
+      },
+      "android": {
+        "buildType": "app-bundle"
+      }
     }
   },
   "submit": {

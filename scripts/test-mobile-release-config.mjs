@@ -62,7 +62,7 @@ test('Sandbox candidate fails closed on inherited production settings', () => {
     EXPO_PUBLIC_POSTHOG_KEY: 'synthetic', EXPO_PUBLIC_SENTRY_DSN: 'synthetic',
     SENTRY_ORG: 'synthetic', SENTRY_PROJECT: 'synthetic', SENTRY_AUTH_TOKEN: 'synthetic',
   })) {
-    for (const profile of ['sandbox-preview', 'sandbox-simulator']) {
+    for (const profile of ['sandbox-preview', 'sandbox-simulator', 'sandbox-store']) {
       assert.throws(() => config({ ...env, EAS_BUILD_PROFILE: profile, [name]: value }), new RegExp(name));
     }
   }
@@ -77,4 +77,24 @@ test('laptop Simulator candidate inherits guarded internal settings without a de
   const result = config({ ...eas.build['sandbox-preview'].env, EAS_BUILD_PROFILE: 'sandbox-simulator' });
   assert.equal(result.ios.bundleIdentifier, 'com.worthlane.mobile');
   assert.equal(result.extra.sentry.dsn, null);
+});
+
+
+test('store-format Sandbox candidate retains isolation without submission configuration', () => {
+  const store = eas.build['sandbox-store'];
+  const parent = eas.build[store.extends];
+  const grandparent = eas.build[parent.extends];
+  assert.equal(grandparent.environment, 'preview');
+  assert.equal(store.distribution, 'store');
+  assert.equal(store.ios.simulator, false);
+  assert.equal(store.android.buildType, 'app-bundle');
+  assert.equal(store.autoIncrement, true);
+  assert.equal(eas.submit['sandbox-store'], undefined);
+  const result = config({ ...parent.env, EAS_BUILD_PROFILE: 'sandbox-store' });
+  assert.equal(result.ios.bundleIdentifier, 'com.worthlane.mobile');
+  assert.equal(result.android.package, 'com.worthlane.mobile');
+  assert.equal(result.ios.appleTeamId, '5FBXR5M5PJ');
+  assert.equal(result.extra.sentry.dsn, null);
+  assert.ok(result.ios.associatedDomains.includes('applinks:worthlane.app'));
+  assert(!result.plugins.some(p => Array.isArray(p) && p[0] === '@sentry/react-native/expo'));
 });

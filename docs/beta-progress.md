@@ -3884,3 +3884,14 @@ and default scrubbers also remained checked. Verified at 18:57 UTC. This closes
 the pending two-switch approval gate. It applies to new events only; no claim
 of historical IP deletion or a completed final App Store privacy declaration.
 No paid plan, credential, application deployment or store submission changed.
+
+### September 21 store-format Sandbox preparation
+
+Added sandbox-store EAS profile to close the configuration gap between tested
+internal/Simulator builds and a future review archive. Extended the fail-closed
+Sandbox guard and regression matrix. Seven release-config tests pass; installed
+EAS18.3.0 schema/resolver confirms inherited preview environment and fixed Sandbox
+API on both platforms, iOS device/store and Android app-bundle. No remote build,
+credential change, store upload or submission started. Final artifact verification
+still required, and mobile source-parity note now excludes this configuration-only
+addition (existing app runtime/shared business code remains unchanged).

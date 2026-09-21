@@ -9,7 +9,7 @@ function requireReleaseEnv(name, value) {
 
 module.exports = () => {
   const easBuildProfile = process.env.EAS_BUILD_PROFILE ?? "development";
-  const isSandboxPreview = ["sandbox-preview", "sandbox-simulator"].includes(easBuildProfile);
+  const isSandboxPreview = ["sandbox-preview", "sandbox-simulator", "sandbox-store"].includes(easBuildProfile);
   const isReleaseProfile = isSandboxPreview || easBuildProfile === "preview" || easBuildProfile === "production";
   const apiUrl = process.env.EXPO_PUBLIC_API_URL?.trim();
   const associatedDomain = process.env.PLAID_IOS_ASSOCIATED_DOMAIN?.trim();
