@@ -4251,3 +4251,20 @@ not source or Apple. Native reviewer walkthrough remains pending.
 CI256/35651378064 atb61b36c now all4jobs SUCCESS. Simulator1fbc6a09 still monitored;
 no duplicate build, production merge or store submission. See sanitized
 evidence/2026-09-21/reviewer-access-preparation.json.
+
+
+### September21 recovery/layout Simulator artifact verified and installed
+
+Build1fbc6a09-88a3-4c84-80c4-268236211a77 atb61b36c FINISHED.
+Downloaded27,358,971bytes, strict deep signature PASS; Sandbox endpoint, startup
+Retry and timeout markers present;14 privacy manifests. Actual Simulator bundle
+version remains7 (remote EAS version is separate). Installed in place successfully
+on laptop iPhone16Pro Simulator, preserving existing data. See
+evidence/2026-09-21/ios-recovery-artifact.json for exact hashes.
+
+Computer Use reports the Mac locked; requested manual unlock. No native visual
+acceptance claimed for this new artifact yet. TylerOS project and baseline task
+updated. Repeated lock checks confirmed the remaining interactive work requires
+manual laptop unlock. Batched artifact/signature/privacy evidence is preserved in
+one commit; no production merge/submission. All14 manifests exactly match store29,
+and the packaged Sandbox Sentry DSN is empty.

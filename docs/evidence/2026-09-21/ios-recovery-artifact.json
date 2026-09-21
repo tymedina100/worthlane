@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-09-21T20:43:20.450951+00:00",
+  "build": "1fbc6a09-88a3-4c84-80c4-268236211a77",
+  "source": "b61b36c4f686e303668232cc6fee6b314c340258",
+  "profile": "sandbox-simulator",
+  "archiveSha256": "e02f3ab24e6b0a2d99a1ec88b72866242a96563a173f4722e8e10cd702badfbc",
+  "strictDeepSignature": "PASS",
+  "bundleSha256": "4dc0ce2b532833e6c1c270d630c01443ee14082fb4c76b453f00717fd407cf43",
+  "info": {
+    "CFBundleIdentifier": "com.worthlane.mobile",
+    "CFBundleVersion": "7",
+    "CFBundleShortVersionString": "1.0.0",
+    "CFBundleSupportedPlatforms": [
+      "iPhoneSimulator"
+    ]
+  },
+  "sandboxApiPresent": true,
+  "startupRetryMessagePresent": true,
+  "startupTimeoutPresent": true,
+  "manifestCount": 14,
+  "interactive": "PENDING: Mac locked; no new native walkthrough claimed",
+  "installedSimulator": "D7C7C0D2-5966-476B-8234-80B80FCAF7B8",
+  "installation": "PASS: simctl install exited0; existing data preserved",
+  "privacyManifestsMatchStore29": true,
+  "privacyManifestCountCompared": 14,
+  "sentryEnvironment": "sandbox-simulator",
+  "sentryDsnEmpty": true
+}
