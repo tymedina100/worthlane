@@ -4220,3 +4220,20 @@ cleanup, late completion after a signed-out retry, and late storage not changing
 reminder ownership. Mobile typecheck and diff check pass. New code is not in the
 installed b75245c artifacts; rendered recovery/layout verification and final
 artifact parity remain pending. No production merge or release.
+
+
+### September21 current recovery/layout Simulator candidate queued
+
+Expo billing freshly confirms Free/$0 estimate with5/15iOS and6/15Android builds
+used. Started exactly one included iOS sandbox-simulator build:
+1fbc6a09-88a3-4c84-80c4-268236211a77, sourceb61b36c, now IN_PROGRESS.
+43.7MB archive uploaded; no EAS preview environment variables returned, only
+guarded Sandbox profile environment loaded. No store upload/submission.
+
+Before that, current Metro web bundle1693modules loaded the intentional mobile
+web handoff page atlocalhost8084. This is correct behavior, not native recovery
+verification: _layout.web.tsx deliberately never mounts SecureStore/auth. Stopped
+that local server afterward. Android software-renderer still showed loading;
+closed the test emulator without wiping data to avoid repeated identical restarts.
+CI256/35651378064: PG17,PG18 andWindows pass; Linux job still running.
+Next: inspect this exact iOS candidate then test saved-session/layout and recovery.
