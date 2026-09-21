@@ -4026,3 +4026,25 @@ Earlier Sharp-only CI243 has both PostgreSQL17/18 jobs passed and core/API/priva
 image checks passed; build jobs were still running when inspected. No production
 merge, store submission or new Plaid security attestation. Existing build29 remains
 its recorded earlier source; these tooling changes are not retroactive artifact proof.
+
+
+### September21 compatible dependency patch sweep
+
+Sharp-only CI243/35645191576 at86a2a0b completed SUCCESS. Subsequent same-major
+patches cover brace-expansion1/2/5, picomatch2/3, yaml2,ws6/7/8,joi17,js-yaml3/4,
+Babel7,fast-uri3,browserslist4 andbaseline-browser-mapping2. Frozen install succeeds.
+Initially broad picomatch overrides narrowed fdir's optional peer; replaced them
+with exact caller overrides for Expo CLI and jest-util, eliminating that new warning.
+Only the prior React type peer warning remains. Isolated iOS export passes, as do
+13 release-config/image-optimizer/diagnostic checks. Full CI for this sweep pending.
+
+Fresh registry audit now3high/6moderate/0low. Remaining callers: fast-xml-parser in
+Android CLI manifest parsing; image-size in Metro asset processing; uuid in build
+tooling; decode-uri-component in mobile router query-string; OpenTelemetry core in
+server diagnostics. Registry findings are not automatically runtime exploitability.
+Do not blanket-ignore them: decode-uri-component0.5 is ESM while its installed
+query-string caller uses CommonJS; it needs an integration-safe fix. fast-xml-parser
+CLI caller inspected uses XMLParser, not XMLBuilder; the builder advisory requires
+separate reachability evaluation. image-size registry currently reports no fixed
+range. Full module/path snapshot:dependency-audit-compatible-patches.json.
+No production merge, store submission or organizational security attestation.
