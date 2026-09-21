@@ -4237,3 +4237,17 @@ that local server afterward. Android software-renderer still showed loading;
 closed the test emulator without wiping data to avoid repeated identical restarts.
 CI256/35651378064: PG17,PG18 andWindows pass; Linux job still running.
 Next: inspect this exact iOS candidate then test saved-session/layout and recovery.
+
+
+### September21 dedicated reviewer preparation and CI256 green
+
+Created dedicated Alex/Sam synthetic reviewer logins only in the isolated hosted
+Sandbox, separate from ongoing bank/deletion test fixtures. Household consent and
+2450plan, private manual accounts1500/900, and Alex zero-APR300 debt with100monthly
+payment and25January31 due item persisted across fresh sessions. Sam receives404
+for Alex debt and cannot see its due item or private account. No live bank/email
+was connected. Random credentials stay in .tmp/reviewer-sandbox-access.json0600,
+not source or Apple. Native reviewer walkthrough remains pending.
+CI256/35651378064 atb61b36c now all4jobs SUCCESS. Simulator1fbc6a09 still monitored;
+no duplicate build, production merge or store submission. See sanitized
+evidence/2026-09-21/reviewer-access-preparation.json.
