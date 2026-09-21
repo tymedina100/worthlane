@@ -3857,3 +3857,19 @@ confirms access lifetime and cookie age are 15 minutes. Leave this session open;
 verify current snapshot/Refresh planning data after 19:06 UTC without signing in
 again, then cold-launch/read back. This pending observation is not yet an expiry
 pass. Browser cross-tab expiry and logout evidence does not substitute for Mac.
+
+### September 21 storage cleanup during Mac expiry observation
+
+Disk check found 7.3 GiB free. Removed six superseded generated Worthlane.app
+bundles from .tmp after confirming none was running. Removed bundle paths,
+allocated sizes and ASAR hashes are recorded in
+`evidence/2026-09-21/generated-build-cleanup.json`; current mac-hosted-20260921,
+source, credentials, fixtures, Android emulators, logs and committed evidence
+were preserved. About 1.61 GiB of generated bundles removed; fresh df shows
+8.9 GiB free. These old executable bundles must be rebuilt if needed; their
+historical evidence remains. No claim that this resolves Mac rendering.
+
+App Store Connect redirected to login; owner chose to continue other work, so
+Apple preparation is deferred without another sign-in request. Sentry privacy
+switch approval remains pending. Mac session stays open for normal expiry
+verification after 19:06 UTC.
