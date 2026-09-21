@@ -4359,3 +4359,26 @@ the cold-launch result. Sign out returns empty login; separate Sam sign-in shows
 three screenshots record the results. Earlier host ANRs remain unexplained; this
 is current-session success, not root-cause proof. Native Retry failure injection,
 current banking replay and final store/publication gates remain distinct.
+
+
+### September21 native banking source/entitlement audit
+
+Compared tested banking candidate1dd2196 with current74c6bbf: only mobile
+app.config.js, eas.json, dashboard.tsx, _layout.tsx and auth.ts changed within
+mobile/API/shared scope. Banking, debt, reminder implementations and mobile
+package versions are unchanged. Prior lifecycle evidence remains relevant; this
+is not a fresh banking replay. Dependency patches and startup have their own
+tests/current native reviewer checks.
+
+An initial codesign-only read showed no Simulator entitlement fields. Deeper
+Mach-O inspection corrects that incomplete result: arm64 __TEXT,__entitlements
+contains approved5FBXR5M5PJ.com.worthlane.mobile andapplinks:worthlane.app. No
+signing modification was made. Store30 separately has the signed entitlement.
+This rules out the hypothesized missing Simulator entitlement, not all OAuth
+causes. Plaid troubleshooting explicitly recommends physical-device testing for
+Universal Links; phone work remains excluded. See native-banking-parity-audit.json
+and https://plaid.com/docs/link/troubleshooting/.
+
+Requested scoped permission to upload verified build30 only to the private Apple
+build list for processing/draft attachment, with no App Review submission, public
+release or tester invitation. Approval pending; no upload initiated.
