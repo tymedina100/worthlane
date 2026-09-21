@@ -3962,3 +3962,31 @@ archive success or store readiness claimed. Earlier build28 remains ERRORED.
 Private Apple review notes now refer to build29/source2c86931; saved without
 Add for Review. Nothing uploaded/submitted to Apple. Next inspect completed
 archive entitlements, signature, API/SDK configuration and privacy manifests.
+
+
+### September21 signing follow-through and current Mac refresh
+
+EAS build29/95aeed0d-68aa-434d-b879-f2ba35540eb5 is authoritatively
+IN_PROGRESS. Old build28 is terminal; corrected store-listing guidance to monitor
+the new job. Reloaded Apple draft retains build29/source2c86931 notes, disabled
+Save and Prepare for Submission. No upload or submission.
+
+Current packaged Mac session also passed View > Refresh: both the accessibility
+tree and screenshot rendered Morgan's household,2450plan and private100manual
+account. This narrows the current symptom but does not resolve or explain the
+earlier stale-frame incident. No rendering code was changed.
+
+
+### September21 build29 archive verification passed
+
+Build29 finished19:21:40UTC. Downloaded21,803,499-byte IPA SHA256
+1c6a03c61ec318460202d1dc437f1a41a8e295de734601bb8bf12586d52776ea.
+Strict deep codesign verification passes; actual embedded profile exactly matches
+the approved replacement. Signed app ID, personal team, Associated Domains,
+production APS and get-task-allow=false verified. iPhoneOS1.0.0/build29 targets
+iPhone with minimumiOS15.1. Sandbox API literal present. Packaged non-string
+Sentry DSN is rejected by the inspected runtime configString guard; build guard
+requires optional credentials absent and AI/paywall disabled. All14 packaged
+privacy manifests exactly match the previously inventoried Simulator archive.
+See evidence/2026-09-21/ios-store-29-archive.json. This is static archive evidence,
+not runtime network or physical-device acceptance. No upload/submission occurred.

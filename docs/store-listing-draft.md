@@ -316,9 +316,9 @@ Root gitignore excluded .tmp, environment files and native generated output;
 upload was42.5MB. EAS reports build31792944-ceec-473a-ab52-3c8515650b14 IN_QUEUE,
 IOS/STORE/sandbox-store. No --auto-submit, eas submit or App Store upload occurred.
 
-Monitor this exact build; inspect signature/profile, bundle entitlements, packaged
-privacy manifests and fixed Sandbox configuration after completion. A queued job
-is not a successful archive, and a store-format Sandbox archive is not live banking.
+This attempt subsequently failed signing because its cached profile lacked Associated
+Domains. It is terminal and must not be monitored or restarted. The corrected
+build29 below supersedes this attempt. A store-format Sandbox archive is not live banking.
 
 ### September 21 Apple draft refreshed after owner sign-in
 
@@ -335,3 +335,28 @@ Set Up Crash Data and Publish is disabled. This is a live preparation-state read
 not a completed final declaration. Review actual build28 enabled services and
 backend before finalizing diagnostics; do not infer collection solely from a
 bundled SDK manifest. No privacy publication or review submission occurred.
+
+
+### September 21 corrected signing and current archive
+
+Under owner approval, regenerated the existing Apple App Store provisioning profile
+and replaced only its cached EAS association. Exact-byte readback of the uploaded
+profile matched SHA256
+`30cae4ec1df11a79541e5010681a5ac12447f4850604de2a56755c5f6c4fd37e`.
+The existing distribution certificate and personal team5FBXR5M5PJ were preserved.
+The replacement includes Associated Domains; no capabilities were broadened.
+
+Current job: **95aeed0d-68aa-434d-b879-f2ba35540eb5**, build29, source
+`2c8693102d94cea516e04b104e0c12f18fabcc1a`, profile sandbox-store.
+EAS finished at19:21:40UTC on September21. Downloaded21.8MB IPA passes
+strict deep codesign verification. Its embedded profile exactly matches the approved
+replacement; signed app/team, Associated Domains and get-task-allow=false pass.
+The actual bundle contains the fixed Sandbox API; all14 privacy manifests exactly
+match the tested Simulator archive. Packaged Sentry DSN is a non-string object,
+which configString rejects; guarded build settings require analytics/diagnostics
+credentials absent and AI/paywall disabled. This static check is not a network
+audit or a physical-device launch. Evidence: evidence/2026-09-21/ios-store-29-archive.json.
+
+Reloading App Store Connect confirmed the saved review notes name build29/source
+2c86931, Save is disabled and the version remains Prepare for Submission.
+No build was uploaded or submitted. The privacy questionnaire is still unfinished.
