@@ -15,5 +15,7 @@
   "oldDecoderMarkerPresent": false,
   "sentryEnvironment": "sandbox-preview",
   "sentryDsnConfigured": false,
-  "scope": "Static artifact checked. In-place emulator install still running; installed and interactive acceptance not claimed. Layout commit9bf9dc5 is newer than this artifact."
+  "scope": "Static artifact and in-place install verified. Interactive acceptance blocked by observed emulator system ANR, not a claimed app defect. Layout9bf9dc5 is newer than this artifact.",
+  "installation": "PASS: adb install -r Success; lastUpdateTime2026-09-21 13:15:47",
+  "launch": "UNVERIFIED: first screenshot Android Process system is not responding; emulator recovery in progress"
 }

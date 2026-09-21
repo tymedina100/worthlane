@@ -4165,3 +4165,8 @@ or data wipe. Installed package readback still shows September18, so new install
 acceptance is not claimed. Disk5.7GiB free. Continue exact install handle.
 CI251/35649405929 on9bf9dc5 passed all4jobs, including PG17/18, Linux tests/builds
 and Windows packaging. Layout visual verification remains pending.
+
+Install session49221 subsequently finished SUCCESS; package lastUpdateTime now
+September21 13:15:47. First launch screenshot instead shows Android Process system
+is not responding. No app launch acceptance claimed. Emulator recovery under
+owner restart instruction begun; no data wipe.
