@@ -4149,3 +4149,19 @@ outside the card. Source now stacks that action below the full-width name and
 gives it a44-point minimum hit target. This layout correction is not in the
 currently tested EAS artifact; visual verification remains pending. Android
 307fcac1 remains IN_PROGRESS. Free disk space6.4GiB; no additional deletion.
+
+
+### September21 refreshed Android artifact and layout CI
+
+Android EAS307fcac1 finished atb75245c. Downloaded100,427,975-byte APK;
+apksigner v2 verifies with the existing certificate. Packagecom.worthlane.mobile
+version1.0.0/code4, min26/target36. Actual bundle contains isolated Sandbox
+API and patched decoder markers; old decoder marker absent. Sentry environment
+sandbox-preview with no configured DSN. See android-refreshed-artifact.json.
+
+iOS Simulator shut down to conserve memory before booting preserved WorthlaneRelease
+AVD. Android boot completed; adb install -r is still live (session49221), no restart
+or data wipe. Installed package readback still shows September18, so new installed
+acceptance is not claimed. Disk5.7GiB free. Continue exact install handle.
+CI251/35649405929 on9bf9dc5 passed all4jobs, including PG17/18, Linux tests/builds
+and Windows packaging. Layout visual verification remains pending.

@@ -1,0 +1,19 @@
+{
+  "build": "307fcac1-78fe-4655-adb1-5d793346a2be",
+  "source": "b75245cea938caaa56b756575ac58f5aa254adec",
+  "profile": "sandbox-preview",
+  "status": "FINISHED",
+  "apkBytes": 100427975,
+  "apkSha256": "1ed5c2e9ffaddf0c025a1e6e1e22b3b78621259f01bd24013fa91275d202f7c6",
+  "bundleSha256": "a492974eeaeb50c487be7aec5e95c4f7569f8658d9064bdd4134a2acc7c0ef30",
+  "signature": "apksigner PASS v2",
+  "certificateSha256": "bb3fd1e47164421d9d40a4e6594e1ab69c2be8d4056f587dfb0af29b50992432",
+  "versionCode": 4,
+  "versionName": "1.0.0",
+  "sandboxEndpointPresent": true,
+  "patchedDecoderMarkersPresent": true,
+  "oldDecoderMarkerPresent": false,
+  "sentryEnvironment": "sandbox-preview",
+  "sentryDsnConfigured": false,
+  "scope": "Static artifact checked. In-place emulator install still running; installed and interactive acceptance not claimed. Layout commit9bf9dc5 is newer than this artifact."
+}
