@@ -939,3 +939,25 @@ before Sync; signing back into the synthetic account recovered it. Cause not
 established. Earlier initial stale-frame recovery also remains unresolved.
 Successful banking lifecycle does not close these session/rendering findings,
 public Mac signing/notarization, iOS OAuth or other recorded release gates.
+
+
+### September21 reproducible hosted session race
+
+Isolated diagnostic68726 used a new synthetic login, removed only its access
+cookie, then issued four concurrent requests with the same refresh cookie:
+accounts200, householdsummary401, transactions401, debtplans401. Only test-created
+sessions were cleaned up. No financial data changed. This reproduces unexpected
+logout at the BFF layer independently of native painting.
+
+Source confirms workspace-page.tsx loads six endpoints in Promise.all. The BFF
+refreshFlights map deduplicates only within one process/route instance; API
+rotateRefreshSession consumes each credential once and revokes the family on
+reuse. That protection must remain. Sequential refresh tests cannot establish
+concurrent hosted session recovery. Added guarded regression
+`scripts/test-hosted-refresh-concurrency.mjs` requires all four requests to recover;
+the current hosted implementation does not meet it. Syntax check passed.
+
+Next implementation: coordinate refresh for requests sharing browser cookies
+across tabs/windows and serverless routes, preserve HttpOnly credentials and API
+replay protection, then test parallel expiry and logout races before replaying
+the Mac session. Do not treat bank lifecycle completion as session reliability.
