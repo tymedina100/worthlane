@@ -275,3 +275,14 @@ Sentry live settings were also rechecked: both worthlane-api and
 worthlane-mobile have server-side/default scrubbing enabled and IP-storage
 prevention disabled. Scoped owner approval has been requested for only those
 two IP switches; no setting changed during this inspection.
+
+## September 21 approved Sentry IP privacy change
+
+Owner approved enabling Prevent Storing of IP Addresses in worthlane-api and
+worthlane-mobile. Both previously-off switches were enabled through the signed-in
+Sentry project Security & Privacy pages. Autosave completed, then both pages were
+reloaded: each IP-prevention control remained checked (1); server-side scrubbing
+and default scrubbers also remained checked. Verified at 18:57 UTC. This closes
+the pending two-switch approval gate. It applies to new events only; no claim
+of historical IP deletion or a completed final App Store privacy declaration.
+No paid plan, credential, application deployment or store submission changed.
