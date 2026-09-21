@@ -3905,3 +3905,26 @@ credentials without auto-submit. EAS readback confirms IN_QUEUE/STORE/sandbox-st
 at exact da5677cd862f7b8385c63387b16b03532edd52cf. No Apple portal verification or
 App Store upload/submission; final archive checks remain. Mac session expiry
 observation after19:06UTC is still pending.
+
+### September21 Mac normal expiry and cold launch PASS
+
+The synthetic Mac login established before18:51UTC remained open beyond its
+15-minute access-token lifetime. At19:06:16UTC the native accounts screen still
+showed15accounts; clicked Refresh planning data, observed disabled/loading then
+reenabled button and fresh12:06PM MST snapshot. Screenshot confirms15accounts,
+one institution, zero attention and preserved household. No re-login or cookie
+mutation was performed. Native menu Quit/full relaunch then loaded the saved
+Morgan household at12:07PM with2450plan/private100. This closes the current normal
+Mac expiry/relaunch gap; initial pre-quit stale-frame root cause remains unknown.
+
+### September21 iOS archive signing failure isolated
+
+EAS build31792944 is terminal ERRORED/XCODE_BUILD_ERROR: cached provisioning
+profile lacks Associated Domains entitlement. No archive produced or retry started.
+Live Apple personal team5FBXR5M5PJ confirms com.worthlane.mobile has Associated
+Domains enabled, but existing AppStore profileCW5LLD8366 is Invalid. Edit form
+prepared using the same app ID and selected existing distribution certificate;
+owner approval requested to regenerate and replace EAS cached profile. No new
+certificate, capability toggle, agreement acceptance or store submission occurred.
+Apple review notes refreshed/saved/reloaded; private credentials empty, no build
+attached, manual release retained. App Privacy crash-data setup remains unfinished.

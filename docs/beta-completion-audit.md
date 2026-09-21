@@ -11,8 +11,10 @@ passed. Deployed cd03cc9 also passed immediate cross-tab private-view clearing o
 logout, with all four CI jobs successful. Mac initial stale-frame rendering remains
 unresolved: September21 login changed the title but retained the old screenshot.
 Full quit/relaunch rendered the saved household, and subsequent logout/login and
-accounts navigation rendered correctly. Normal Mac token-expiry recovery is still
-pending; these limits prevent treating hosted Mac reliability as complete.
+accounts navigation rendered correctly. Normal Mac token-expiry recovery passed September21: login before18:51UTC,
+fresh15-account readback after19:06UTC, then cold launch restored2450plan/private100
+without another login. Initial stale-frame root cause remains unresolved; do not
+treat that finding as fixed by the passed expiry test.
 
 Goal remains active. This is an evidence reconciliation, not a new claim that every
 journey has been replayed or permission to publish. The requirement matrix below
