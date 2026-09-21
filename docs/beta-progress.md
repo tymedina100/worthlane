@@ -4133,3 +4133,19 @@ Open household details. Saved Avery membership, privacy-qualified total and
 Groceries/Utilities/Rent edit controls rendered. Further parity checks remain pending. Android307fcac1
 is IN_PROGRESS. No store upload/submission or production merge.
 See evidence/2026-09-21/ios-refreshed-artifact.json.
+
+
+### September21 refreshed iOS allocation and cold-launch readback
+
+On c6e4b91a/b75245c, actual native household screenshots show600 groceries
+allocated300/300,150 utilities entirely to Avery, and1700 rent allocated
+1020Morgan/680Avery. Responsibility/payer/privacy copy is visible. Maestro
+stopApp/launchApp preserved Morgan session and saved dashboard/bill. Initial
+swipe did not move; scrollUntilVisible succeeded. Evidence: ios-refreshed-
+groceries/rent/coldlaunch PNGs under evidence/2026-09-21.
+
+The dashboard screenshot revealed long household names pushing View household
+outside the card. Source now stacks that action below the full-width name and
+gives it a44-point minimum hit target. This layout correction is not in the
+currently tested EAS artifact; visual verification remains pending. Android
+307fcac1 remains IN_PROGRESS. Free disk space6.4GiB; no additional deletion.

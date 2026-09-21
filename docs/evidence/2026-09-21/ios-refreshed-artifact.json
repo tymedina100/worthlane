@@ -31,6 +31,9 @@
     "dashboard": "PASS: net worth -77064.15; spent213.10; received500; saved25 bill; hosted household with Avery",
     "passwordSaveSheet": "Dismissed Not Now; Maestro dashboard assertion passed",
     "initialAutomationAssertion": "Overview assertion failed because that label is not on Today dashboard; screenshot independently confirms login succeeded",
-    "householdNavigation": "PASS: saved household shared with Avery, privacy-qualified net worth, Groceries/Utilities/Rent edit controls; screenshot visually checked"
+    "householdNavigation": "PASS: saved household shared with Avery, privacy-qualified net worth, Groceries/Utilities/Rent edit controls; screenshot visually checked",
+    "responsibilityReadback": "PASS: Groceries600=300/300; Utilities150 assigned Avery100%; Rent1700=1020Morgan60%/680Avery40%",
+    "coldLaunch": "PASS: stop/launch preserved login and dashboard/bill",
+    "layoutFinding": "Long household name clips View household link on b75245c; source correction pending visual verification"
   }
 }
