@@ -4170,3 +4170,17 @@ Install session49221 subsequently finished SUCCESS; package lastUpdateTime now
 September21 13:15:47. First launch screenshot instead shows Android Process system
 is not responding. No app launch acceptance claimed. Emulator recovery under
 owner restart instruction begun; no data wipe.
+
+
+### September21 Android emulator recovery diagnosis
+
+2048MB cold boot completed but subsequent System UI ANR confirms broader runtime
+failure. Worthlane process1986 ran main and reached session spinner; no JS fatal
+was captured. UIAutomator itself timed out connecting and exited137. An app-only
+restart did not establish acceptance. Guest MemAvailable~1.2GB and host free
+memory40% were observed; do not assume simple RAM exhaustion. Boot log also
+reported Failed to find ColorBuffer. After verified emulator exit, restarted the
+same preserved AVD with supported -gpu software, no snapshot/wipe, session95722.
+Current saved-journey acceptance remains open. Next: observe this boot once; if
+system failure recurs, switch to independent layout/store work rather than keep
+repeating identical emulator restarts.
