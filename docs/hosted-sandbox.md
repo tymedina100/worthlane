@@ -780,3 +780,55 @@ HTTP404 before credentials were sent. This is a fail-closed preflight, not a
 claim that the full runner passed. Candidate Vercel deployment remains queued
 during the provider outage. All4 CI jobs on preceding b995305 passed in
 35396342603.
+
+### September 21 — isolated HTTPS browser acceptance
+
+Verified clean local source `9d84d1ee2024efbda6b6b4f2a2162addf7ec5178`.
+Vercel dashboard independently shows Ready deployment
+`3H6K6JGD4WHpB6NDsjM6FoJ93uZQ`, that same source, at
+`https://worthlane-beta-desktop.vercel.app`. The former deployment outage is no
+longer the blocker. Origin verification passed the desktop identity header.
+
+`WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-desktop.mjs`
+completed successfully against that HTTPS origin using only the existing0600
+local synthetic fixture. It verified anonymous401, cross-origin403, protected
+host-only HttpOnly/Secure cookies, both saved logins, disjoint private accounts
+and complete ledgers, the2450 household responsibility total, refresh rotation,
+and logout refresh-token revocation. Credentials/tokens were not exported.
+
+Actual IAB Morgan login rendered the saved household,300/300 Groceries,
+Avery150 Utilities,1020/680 Rent, and private100 manual fallback. Chase Sandbox
+OAuth handoff exposed no popup in this IAB inventory; canceled and observed
+"Bank linking closed". This is not successful hosted OAuth evidence.
+
+Actual standard First Platypus Sandbox Link completed, saved14 new accounts,
+and displayed29 total accounts/two institutions. Independent API checks found
+439 complete owner transactions (49 existing +390 added), all stable across
+repeat sync, with exact original account/transaction objects retained. Partner
+15 accounts/392 transaction IDs remained unchanged and private. Visible Sync
+completed. Healthy Reconnect completed in update mode with the same Item,
+account and transaction IDs. Guarded provider reset affected only the added
+Item; visible Sync showed Needs Relink and incomplete-spending warning. Password
+reauthentication returned Healthy with all439 records stable and partner privacy
+preserved. Selected unlink removed only the added Item. A guarded in-memory
+provider observer independently confirmed database removal and ITEM_NOT_FOUND.
+Reload retained Morgan's original15 accounts/one institution and manual100;
+see `docs/evidence/2026-09-21/hosted-browser-restored.txt`.
+
+A subsequent full-login rerun hit HTTP429 after repeated synthetic logins; this
+is recorded as a rate-limit interruption, not a successful post-cleanup run.
+No rate-limit setting was weakened. Initial full BFF run passed before linking.
+
+Local Mac test package from9d84d1e pins the verified HTTPS origin, developmentOnly
+true, appId com.worthlane.desktop.sandbox; nine assets/eight hardened fuses pass.
+ASAR SHA256:
+`b01e30cd54fb97671db299626607e1b866441a8d7e09987d69299563bbb26749`.
+Path `.tmp/mac-hosted-20260921/mac-arm64/Worthlane.app`. This uses local ad-hoc
+packaging, no Developer ID credential, notarization or store distribution.
+Startup coincided with SecurityAgent; requested user handling without inspecting
+it. After that process disappeared, native app remained on recovery. Native
+View/Refresh changed title to hosted login, but screenshot and AX retained the
+recovery frame until the window's zoom action. Zoom exposed actual HTTPS login.
+This rendering/recovery regression contradicts a claim of complete hosted Mac
+parity; authentication/cold-launch/OAuth remain unverified for this exact package.
+No implementation fix, merge, production configuration or store submission here.
