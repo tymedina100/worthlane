@@ -832,3 +832,25 @@ recovery frame until the window's zoom action. Zoom exposed actual HTTPS login.
 This rendering/recovery regression contradicts a claim of complete hosted Mac
 parity; authentication/cold-launch/OAuth remain unverified for this exact package.
 No implementation fix, merge, production configuration or store submission here.
+
+
+### September 21 continuation: post-unlink and Mac session checks
+
+The guarded full hosted BFF verifier completed successfully after the login
+cooldown (session 57150, exit 0): protected cookies, cross-origin rejection,
+persisted two-login privacy/totals, refresh rotation and logout revocation.
+This closes the earlier post-cleanup HTTP429 verification gap without changing
+rate limits.
+
+The exact local Mac Sandbox package above authenticated Morgan. Initially the
+window title advanced while accessibility content and screenshots remained
+stale; a window zoom exposed the saved dashboard in accessibility. Native
+menu Quit followed by a full launch then visibly restored Morgan's saved
+session, household 2450 plan and private100 manual account without resizing.
+Cold-launch persistence is now observed, but the earlier rendering/recovery
+failure is unresolved and is not claimed fixed. Mac OAuth remains unverified.
+
+After that restart, Accounts & privacy navigation also rendered correctly in
+both AX and screenshot: 15 original accounts, one institution, zero attention,
+private100 manual fallback. This recovery does not establish a root cause or
+prove the initial stale-frame problem cannot recur.
