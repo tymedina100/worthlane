@@ -3941,3 +3941,24 @@ inspect entitlements before uploading to the approved EAS destination. Interacti
 EAS credentials session62519 is at Build Credentials menu, sandbox-store selected,
 Apple CLI login declined. Do not delete cached profile until replacement is usable.
 CI236/35642096195 at da5677c completed all four jobs successfully.
+
+### September21 approved EAS profile replacement complete
+
+Downloaded regenerated profile found in Downloads and copied to private0600
+.tmp/approved-worthlane-store.mobileprovision. CMS plist checks confirm exact
+personal-team/app ID, Associated Domains entitlement, App Store distribution
+(no provisioned devices/get-task-allow), and same existing certificate serial.
+SHA256:30cae4ec1df11a79541e5010681a5ac12447f4850604de2a56755c5f6c4fd37e.
+Removed only the obsolete EAS App Store profile association using credentials CLI.
+CLI setup required another Apple login, so uploaded/attached the approved profile
+using the installed EAS credential API with the existing authenticated Expo session.
+No private key was exported or logged. Server readback bytes match the approved
+profile hash, statusactive, same certificate retained. Apple capabilities unchanged.
+
+Retried included-capacity iOS Sandbox build29:
+95aeed0d-68aa-434d-b879-f2ba35540eb5, exactsource
+2c8693102d94cea516e04b104e0c12f18fabcc1a, sandbox-store. Readback IN_QUEUE; no
+archive success or store readiness claimed. Earlier build28 remains ERRORED.
+Private Apple review notes now refer to build29/source2c86931; saved without
+Add for Review. Nothing uploaded/submitted to Apple. Next inspect completed
+archive entitlements, signature, API/SDK configuration and privacy manifests.
