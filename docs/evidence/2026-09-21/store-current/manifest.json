@@ -1,0 +1,32 @@
+{
+  "source": "b61b36c4f686e303668232cc6fee6b314c340258",
+  "simulatorBuild": "1fbc6a09-88a3-4c84-80c4-268236211a77",
+  "data": "Dedicated synthetic Alex/Sam reviewer fixture",
+  "screenshots": [
+    {
+      "file": "01-personal-overview.png",
+      "width": 1320,
+      "height": 2868,
+      "sha256": "06177c4673b2301bc00e973fc341c16a3a741cad3b9322476331dc417263d1a0"
+    },
+    {
+      "file": "02-household-privacy.png",
+      "width": 1320,
+      "height": 2868,
+      "sha256": "ebdba89aa2d204954305bd618b64ad1d25a29bb60f3c4f4d5554dd998c9a3336"
+    },
+    {
+      "file": "03-custom-responsibility.png",
+      "width": 1320,
+      "height": 2868,
+      "sha256": "bed432a60594ae1659cb3b402be3bec4b9e18d8cb822cbfb25b4302d4a86b067"
+    },
+    {
+      "file": "04-explainable-payoff.png",
+      "width": 1320,
+      "height": 2868,
+      "sha256": "fd70a557fa592bff4e72b76ef5740abbc01afe7a8b84b304c4d23da1594f3ae2"
+    }
+  ],
+  "appleUpload": "Not yet uploaded"
+}

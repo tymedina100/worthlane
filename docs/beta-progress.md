@@ -4297,3 +4297,22 @@ clear and one type. Save then succeeded; reload confirms saved notes, no errors,
 Save disabled, Prepare for Submission and manual release. Primary protected-value
 readback is unavailable, so exact readback is not claimed. No build attached,
 privacy published, or app submitted.
+
+
+### September21 current Android/store builds and screenshot refresh
+
+Fresh Expo billing: Free,0estimated bill,6/15Android and6/15iOS used. Started
+Android Sandbox e474ea38-6384-4f73-9ef0-3d8817314fa6 and iOS sandbox-store
+e47249aa-9e37-4cf9-a35f-14c7de692cdc/build30, both source74c6bbf. Existing
+signing credentials retained; guarded profiles have no external EAS preview
+variables and disable production telemetry/paid AI. Last observation Android
+IN_QUEUE/iOS IN_PROGRESS. No Apple upload/submission.
+
+Updated existing iPhone16ProMax Simulator in place with tested1fbc6a09/b61b36c,
+stopping the smaller Simulator to limit resource use. Alex reviewer native
+sign-in passed. Four unmodified1320x2868 captures are prepared under
+evidence/2026-09-21/store-current: personal overview, household privacy, custom
+60/40 responsibility and saved explainable payoff. Manifest records hashes and
+source. They are not yet uploaded to Apple; match to verified store30 first.
+Mac existing saved plan renders correctly on inspection; this does not explain
+the earlier initial stale-frame incident.
