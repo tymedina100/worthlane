@@ -3928,3 +3928,16 @@ owner approval requested to regenerate and replace EAS cached profile. No new
 certificate, capability toggle, agreement acceptance or store submission occurred.
 Apple review notes refreshed/saved/reloaded; private credentials empty, no build
 attached, manual release retained. App Privacy crash-data setup remains unfinished.
+
+### September21 approved signing-profile repair
+
+Owner approved regeneration and EAS replacement. Saved Apple profileCW5LLD8366
+with the unchanged com.worthlane.mobile app ID and selected existing certificate.
+Apple returned Download and Install for App Store/personal team, expiryMarch16,2027.
+No new capability or certificate was created. EAS cached profile has not yet been
+replaced: browser download event exposes no local path and Computer Use blocks
+Codex's own download dialog. Requested owner save .mobileprovision to Downloads;
+inspect entitlements before uploading to the approved EAS destination. Interactive
+EAS credentials session62519 is at Build Credentials menu, sandbox-store selected,
+Apple CLI login declined. Do not delete cached profile until replacement is usable.
+CI236/35642096195 at da5677c completed all four jobs successfully.
