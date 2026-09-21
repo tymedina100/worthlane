@@ -5,8 +5,14 @@ connect/healthy reconnect have fresh evidence. Corrected nonempty-ID verificatio
 now proves hosted Mac forced repair retained14accounts/390transactions; selected
 unlink removed the Item and revoked its Plaid token. Post-cleanup two-login BFF
 verification passes. See hosted-sandbox.md for the helper correction and scope.
-Mac unexpected sign-in return and initial stale-frame recovery remain unresolved;
-these findings prevent treating hosted Mac reliability as complete.
+The unexpected browser sign-in return was reproduced as concurrent refresh-token
+rotation and corrected in f294826/78823cd; actual parallel browser expiry recovery
+passed. Deployed cd03cc9 also passed immediate cross-tab private-view clearing on
+logout, with all four CI jobs successful. Mac initial stale-frame rendering remains
+unresolved: September21 login changed the title but retained the old screenshot.
+Full quit/relaunch rendered the saved household, and subsequent logout/login and
+accounts navigation rendered correctly. Normal Mac token-expiry recovery is still
+pending; these limits prevent treating hosted Mac reliability as complete.
 
 Goal remains active. This is an evidence reconciliation, not a new claim that every
 journey has been replayed or permission to publish. The requirement matrix below

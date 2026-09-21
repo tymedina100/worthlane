@@ -3839,3 +3839,21 @@ remaining financial snapshot; tab 1 subsequently completed logout as well.
 This verifies the SessionBoundary follow-up separately from prior expiry tests.
 The Mac client is at sign-in; current Mac expiry/recovery remains pending.
 No main merge, production activation, or store submission occurred.
+
+### September 21 Mac rendering and saved-session checkpoint
+
+The existing hosted Mac package opened the current client at sign-in. Login
+succeeded (title changed to household dashboard), while screenshot still showed
+the old empty login form and AX temporarily exposed no HTML subtree. Native
+menu Quit followed by full relaunch restored the saved Morgan household without
+entering credentials. Screenshot and AX agreed on $2,450 plan and private $100
+manual checking. Subsequent logout visibly cleared the dashboard; another login
+and Accounts navigation rendered correctly with 15 accounts, one institution,
+zero needing attention. Initial stale-frame root cause remains unknown; no
+speculative native change was made.
+
+The new synthetic Mac session was signed in before 2026-09-21 18:51 UTC. Source
+confirms access lifetime and cookie age are 15 minutes. Leave this session open;
+verify current snapshot/Refresh planning data after 19:06 UTC without signing in
+again, then cold-launch/read back. This pending observation is not yet an expiry
+pass. Browser cross-tab expiry and logout evidence does not substitute for Mac.
