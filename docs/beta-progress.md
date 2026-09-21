@@ -4116,3 +4116,20 @@ from6.4to6.9GiB (only0.5GiB actually reclaimed; do not claim2GB free). Installed
 workspace dependencies remained intact: all4 Metro/router tests passed afterward.
 No project/source,credentials,fixture database,AVD or installed app was removed.
 Cached dependencies can be downloaded again by pnpm when needed.
+
+
+### September21 refreshed iOS security candidate installed
+
+iOS EAS c6e4b91a finished from b75245c. Archive/hash, strict deep signature,
+Sandbox endpoint, patched decoder bundle markers and14 privacy manifests checked;
+installed in place on laptop iPhone16Pro Simulator. Actual Info.plist build is7
+although EAS remote metadata reports29; this is not a device App Store artifact.
+Synthetic Morgan sign-in loaded saved net worth -77,064.15, spending213.10,
+received500,25 card-minimum obligation and household with Avery. Apple password
+save sheet dismissed without saving; explicit dashboard assertion passed. Initial
+Overview assertion was incorrect for the Today screen, not evidence of login failure.
+Household navigation passed after using its actual accessibility label
+Open household details. Saved Avery membership, privacy-qualified total and
+Groceries/Utilities/Rent edit controls rendered. Further parity checks remain pending. Android307fcac1
+is IN_PROGRESS. No store upload/submission or production merge.
+See evidence/2026-09-21/ios-refreshed-artifact.json.

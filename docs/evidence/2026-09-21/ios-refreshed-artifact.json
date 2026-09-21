@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-09-21T19:58:23.666632+00:00",
+  "build": "c6e4b91a-4f9a-4229-865c-a9a0d37188bd",
+  "source": "b75245cea938caaa56b756575ac58f5aa254adec",
+  "profile": "sandbox-simulator",
+  "archiveSha256": "bbff078bc7baa2a084251ef523b60310018cfaab8a0c28da1c769c1810564d5a",
+  "strictDeepSignature": "PASS",
+  "bundleSha256": "fc7465dfcd5c6ec99a542f2d62ade8ecde525ff3eb1923bda8c28a52fd70498d",
+  "info": {
+    "CFBundleIdentifier": "com.worthlane.mobile",
+    "CFBundleVersion": "7",
+    "CFBundleShortVersionString": "1.0.0",
+    "CFBundleSupportedPlatforms": [
+      "iPhoneSimulator"
+    ]
+  },
+  "sandboxApiPresent": true,
+  "decoderEvidence": {
+    "parsePercentBytePresent": true,
+    "utf8SequenceLengthPresent": true,
+    "oldDecodeComponentsPresent": false
+  },
+  "sentryEnvironment": "sandbox-simulator",
+  "sentryDsnType": "dict",
+  "manifestCount": 14,
+  "manifestsMatchStore29": true,
+  "installedSimulator": "D7C7C0D2-5966-476B-8234-80B80FCAF7B8",
+  "scope": "Static artifact, installation, synthetic sign-in and persisted dashboard verified. Further household/two-login/Plaid parity pending. EAS reports remote build29 but simulator Info.plist is7.",
+  "interactive": {
+    "syntheticMorganSignIn": "PASS",
+    "dashboard": "PASS: net worth -77064.15; spent213.10; received500; saved25 bill; hosted household with Avery",
+    "passwordSaveSheet": "Dismissed Not Now; Maestro dashboard assertion passed",
+    "initialAutomationAssertion": "Overview assertion failed because that label is not on Today dashboard; screenshot independently confirms login succeeded",
+    "householdNavigation": "PASS: saved household shared with Avery, privacy-qualified net worth, Groceries/Utilities/Rent edit controls; screenshot visually checked"
+  }
+}
