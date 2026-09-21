@@ -238,3 +238,40 @@ the final device/store archive, compare enabled services and complete Apple
 privacy answers before submission. No questionnaire or production setting was
 changed. Earlier September14 support-mailbox/deletion gaps are historical; later
 email and deletion acceptance evidence supersedes them, not this manifest audit.
+
+## September 21 content-rights and mobile source parity review
+
+Read-only source comparison from packaged mobile source `1dd2196` to `3bb0edc`
+shows no changes under apps/mobile, packages/core, packages/contracts or
+packages/types. Thus the recent desktop session fixes do not themselves require
+another mobile build. This does not turn a Simulator archive into a signed device
+archive or close the iOS OAuth gap.
+
+Visible third-party material includes Plaid's bank-link interface, institution
+branding, and account/transaction data returned under user consent. The mobile
+UI also uses Ionicons via @expo/vector-icons. Its installed package and vendored
+react-native-vector-icons both include MIT license notices; retain applicable
+notices in distribution. SDK/open-source licensing and the authorization to
+access financial content are distinct checks. Source inspection found system
+fonts and no remote photo/video loading in the app/app-source TSX paths searched;
+that limited negative search does not establish ownership of every asset.
+Worthlane brand assets are present locally; their filenames alone do not prove
+provenance or worldwide rights.
+
+Installed direct runtime dependency versions, declared licenses and license-file
+names are inventoried in
+`evidence/2026-09-21/mobile-direct-dependency-licenses.json`. This inventory omits
+transitive/native frameworks and is not a complete license-compliance finding.
+No App Store content-rights certification was saved. Apple's content-rights field
+requires the necessary rights or legal permission for third-party material in
+each distributed region; do not answer “no third-party content” merely because
+there are no third-party articles or videos. Review the actual Plaid agreement,
+asset provenance and intended territories before making the final declaration.
+
+Reference inspected September21:
+https://developer.apple.com/help/app-store-connect/reference/app-information/app-information
+
+Sentry live settings were also rechecked: both worthlane-api and
+worthlane-mobile have server-side/default scrubbing enabled and IP-storage
+prevention disabled. Scoped owner approval has been requested for only those
+two IP switches; no setting changed during this inspection.

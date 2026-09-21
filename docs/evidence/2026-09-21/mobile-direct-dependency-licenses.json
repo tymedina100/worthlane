@@ -1,0 +1,293 @@
+{
+  "scope": "Installed direct mobile runtime packages only; metadata is not a complete transitive or native license audit. No certification of content rights.",
+  "packages": [
+    {
+      "name": "@babel/runtime",
+      "declared": "^7.28.6",
+      "installedVersion": "7.28.6",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@expo/metro-runtime",
+      "declared": "6.1.2",
+      "installedVersion": "6.1.2",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "@expo/vector-icons",
+      "declared": "^15.0.3",
+      "installedVersion": "15.0.3",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@react-native-async-storage/async-storage",
+      "declared": "2.2.0",
+      "installedVersion": "2.2.0",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@sentry/react-native",
+      "declared": "^7.2.0",
+      "installedVersion": "7.2.0",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE.md"
+      ]
+    },
+    {
+      "name": "@tanstack/react-query",
+      "declared": "^5.45.0",
+      "installedVersion": "5.90.21",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "expo",
+      "declared": "~54.0.33",
+      "installedVersion": "54.0.33",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-application",
+      "declared": "~7.0.8",
+      "installedVersion": "7.0.8",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-asset",
+      "declared": "^12.0.12",
+      "installedVersion": "12.0.12",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-build-properties",
+      "declared": "~1.0.10",
+      "installedVersion": "1.0.10",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-constants",
+      "declared": "~18.0.13",
+      "installedVersion": "18.0.13",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-dev-client",
+      "declared": "~6.0.20",
+      "installedVersion": "6.0.20",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-device",
+      "declared": "~8.0.10",
+      "installedVersion": "8.0.10",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-file-system",
+      "declared": "~19.0.21",
+      "installedVersion": "19.0.21",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-font",
+      "declared": "~14.0.11",
+      "installedVersion": "14.0.11",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-linking",
+      "declared": "~8.0.11",
+      "installedVersion": "8.0.11",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-local-authentication",
+      "declared": "~17.0.8",
+      "installedVersion": "17.0.8",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-localization",
+      "declared": "~17.0.8",
+      "installedVersion": "17.0.8",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-notifications",
+      "declared": "~0.32.16",
+      "installedVersion": "0.32.16",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-router",
+      "declared": "~6.0.23",
+      "installedVersion": "6.0.23",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-secure-store",
+      "declared": "~15.0.8",
+      "installedVersion": "15.0.8",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-splash-screen",
+      "declared": "~31.0.13",
+      "installedVersion": "31.0.13",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "expo-status-bar",
+      "declared": "~3.0.9",
+      "installedVersion": "3.0.9",
+      "declaredLicense": "MIT",
+      "licenseFiles": []
+    },
+    {
+      "name": "posthog-react-native",
+      "declared": "^4.39.2",
+      "installedVersion": "4.39.2",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "react",
+      "declared": "19.1.0",
+      "installedVersion": "19.1.0",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "react-dom",
+      "declared": "19.1.0",
+      "installedVersion": "19.1.0",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "react-native",
+      "declared": "0.81.5",
+      "installedVersion": "0.81.5",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "react-native-gesture-handler",
+      "declared": "~2.28.0",
+      "installedVersion": "2.28.0",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "react-native-plaid-link-sdk",
+      "declared": "13.2.0",
+      "installedVersion": "13.2.0",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "react-native-purchases",
+      "declared": "^9.15.1",
+      "installedVersion": "9.15.1",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "react-native-safe-area-context",
+      "declared": "5.6.2",
+      "installedVersion": "5.6.2",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "react-native-screens",
+      "declared": "4.16.0",
+      "installedVersion": "4.16.0",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "react-native-svg",
+      "declared": "15.12.1",
+      "installedVersion": "15.12.1",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "react-native-web",
+      "declared": "~0.21.2",
+      "installedVersion": "0.21.2",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "zod",
+      "declared": "^3.23.0",
+      "installedVersion": "3.25.76",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "zustand",
+      "declared": "^4.5.0",
+      "installedVersion": "4.5.7",
+      "declaredLicense": "MIT",
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    }
+  ]
+}
