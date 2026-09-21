@@ -99,6 +99,9 @@ jobs:
       - name: Test router query decoder compatibility and malformed input
         run: node --test scripts/test-router-query-decoder.mjs
 
+      - name: Test Metro image parser progress on malformed input
+        run: node --test scripts/test-metro-image-parsers.mjs
+
       - name: Test web Plaid startup recovery and cancellation
         run: node --test scripts/test-plaid-web-lifecycle.mjs scripts/test-desktop-session.mjs
 

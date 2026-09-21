@@ -4072,3 +4072,19 @@ has no patched range); unused-by-inspected-caller XMLBuilder; build UUID; and lo
 mitigated decoder. Continue caller-specific triage. Earlier build29 is unchanged and
 does not include this JavaScript change. No production merge, submission or security
 attestation.
+
+
+### September21 image parser mitigation and final caller triage
+
+CI245/35645909432 at811a7ab completed SUCCESS. Inspected actual Metro asset-size
+call: filename extension gating does not prevent parser selection by content. Added
+reproducible image-size1.2.1 patch requiring valid advancing ICNS entry headers and
+ISO boxes. Zero-size ISO boxes now consume remaining input instead of returning a
+zero-sized match to JXL partial-stream iteration. Four actual Metro/router tests
+pass: malformedICNS/JXL/HEIF buffers reject promptly; realPNG/AVIF and validICNS
+dimensions remain correct. Frozen install and isolated iOS export pass. Full CI
+for this new patch pending. Registry flags remain because versions are unchanged;
+no audit ignore. Detailed remaining-caller disposition:dependency-security-status.md.
+Inspected XML caller only parses/validates manifest, UUID callers usev4 without
+provided buffers; remaining advisories affect different operations. This is scoped
+reachability evidence, not an organization-wide attestation or a clean audit claim.
