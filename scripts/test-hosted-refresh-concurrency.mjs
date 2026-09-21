@@ -72,6 +72,7 @@ try {
  const boundary={read:()=>epoch,change:()=>{epoch+='x';}};
  const clients=[exports.createSessionFetch(transport,locks,boundary),exports.createSessionFetch(transport,locks,boundary)];
  const recovered=await Promise.all(paths.map((p,i)=>clients[i%2](p)));
+ console.log('Coordinated route statuses: '+recovered.map(r=>r.status).join(','));
  check(recovered.every(r=>r.status===200),'Coordinated expired-session requests must all recover');
  check(jar.has(access)&&jar.has(refresh),'Recovered secure cookies required');
  const renewed=jar.get(refresh);jar.delete(access);

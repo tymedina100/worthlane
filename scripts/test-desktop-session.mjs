@@ -33,6 +33,7 @@ function harness({failure=0}={}){
   calls.push(path);const wasValid=valid;await tick();
   if(path==='/api/auth/logout'){valid=false;loggedIn=false;return new Response('{}');}
   if(path==='/api/auth/session'){
+   assert.equal(init.headers['Content-Type'],'application/json');assert.equal(init.body,'{}');
    if(failure)return new Response('{}',{status:failure});
    if(!loggedIn)return new Response('{}',{status:401});
    if(!valid){rotations++;valid=true;}

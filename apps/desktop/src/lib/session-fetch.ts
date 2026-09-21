@@ -26,7 +26,7 @@ export function createSessionFetch(fetcher: Fetcher, locks: Locks, epoch: Epoch)
     return locks.request(LOCK, { mode: "exclusive" }, async () => {
       if (epoch.read() !== started) return expired();
       if (init?.signal?.aborted) throw init.signal.reason;
-      const session = await fetcher("/api/auth/session", { method: "POST", credentials: "same-origin", cache: "no-store" });
+      const session = await fetcher("/api/auth/session", { method: "POST", credentials: "same-origin", cache: "no-store", headers: { "Content-Type": "application/json" }, body: "{}" });
       if (!session.ok) return session;
       // The original request was rejected before its mutation handler ran.
       return fetcher(input, init);

@@ -961,3 +961,29 @@ Next implementation: coordinate refresh for requests sharing browser cookies
 across tabs/windows and serverless routes, preserve HttpOnly credentials and API
 replay protection, then test parallel expiry and logout races before replaying
 the Mac session. Do not treat bank lifecycle completion as session reliability.
+
+
+### September21 concurrent refresh fix candidate
+
+Code f294826 replaces automatic refresh in ordinary BFF requests with an
+explicit same-origin JSON session endpoint. All desktop API callers use a shared
+Web Lock for ordinary parallel requests and an exclusive lock for refresh and
+login/logout; a nonsecret local epoch prevents replaying an old user's queued
+mutation after an identity change. HttpOnly credentials and API family replay
+revocation remain unchanged. Logout revokes refresh directly even with expired
+access. Refresh429 becomes retryable502 without clearing cookies.
+
+Local desktop build/typecheck,22 desktop-session/Plaid tests and16 native/auth
+privacy tests pass. The password-recovery integration runner was not configured
+with its isolated database and refused to run; it is not claimed passed here.
+Vercel Sandbox deploymentAFWEGC1TFC5sCacehCX4iSA4UysZ is Ready at f294826 with
+worthlane-beta-desktop.vercel.app current alias. Initial hosted replay exposed a
+missingJSON header; corrected client now supplies JSON and a regression assertion
+covers it. With corrected local client against deployed BFF, hosted run56280
+passes all four coordinated endpoints200, plus a further rotation proving the
+family remains usable. Ordinary concurrent401s do not change cookies.
+
+The hosted runner tests the real BFF with two client instances and a shared lock
+model; actual browser/Mac cross-window expiry after the header correction is
+still required. CI228/35639331950 was in progress at last check. No production
+merge, API schema/auth-policy change, or store submission occurred.
