@@ -3827,3 +3827,15 @@ nonsecret epoch already changes under exclusive lock before login/register/logou
 Local build/typecheck and11desktop-session tests pass, including immediate
 private-tree removal. Interactive verification of this follow-up and Mac expiry
 remain pending; do not conflate the passed78823cdCI with this newer change.
+
+### September 21 cross-tab sign-out verified on deployed cd03cc9
+
+Vercel deployment 6GawVcZ3cyJT5g912nBG9kJxNb2E was Ready with the Sandbox
+alias on cd03cc9. CI run 35640283270 passed all four jobs. Reloaded both IAB
+clients, signed into the approved Morgan synthetic account, and confirmed the
+persisted $2,450 household plan in both dashboard tabs. Signing out in tab 1
+immediately returned tab 5 to the login screen without a manual refresh or
+remaining financial snapshot; tab 1 subsequently completed logout as well.
+This verifies the SessionBoundary follow-up separately from prior expiry tests.
+The Mac client is at sign-in; current Mac expiry/recovery remains pending.
+No main merge, production activation, or store submission occurred.
