@@ -319,3 +319,19 @@ IOS/STORE/sandbox-store. No --auto-submit, eas submit or App Store upload occurr
 Monitor this exact build; inspect signature/profile, bundle entitlements, packaged
 privacy manifests and fixed Sandbox configuration after completion. A queued job
 is not a successful archive, and a store-format Sandbox archive is not live banking.
+
+### September 21 Apple draft refreshed after owner sign-in
+
+Owner restored Apple access. Updated private App Review notes to reflect current
+hosted native Sandbox evidence, explicit iOS OAuth limitation, and build28 still
+being prepared rather than verified/uploaded. Saved and reloaded: notes persisted,
+Save disabled, Prepare for Submission, manual release selected, Add Build still
+shown (no attached build). Reviewer username/password remain empty.
+
+App Privacy currently lists seven collected types: Name, Email Address, Other
+Financial Info, Other User Content, User ID, Purchase History and Crash Data.
+The first six show app functionality and account linkage; Crash Data still says
+Set Up Crash Data and Publish is disabled. This is a live preparation-state read,
+not a completed final declaration. Review actual build28 enabled services and
+backend before finalizing diagnostics; do not infer collection solely from a
+bundled SDK manifest. No privacy publication or review submission occurred.
