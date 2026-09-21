@@ -4316,3 +4316,27 @@ evidence/2026-09-21/store-current: personal overview, household privacy, custom
 source. They are not yet uploaded to Apple; match to verified store30 first.
 Mac existing saved plan renders correctly on inspection; this does not explain
 the earlier initial stale-frame incident.
+
+
+### September21 store30 verified and current screenshots saved
+
+EAS e47249aa-9e37-4cf9-a35f-14c7de692cdc FINISHED at74c6bbf. Downloaded
+21,805,183bytes, SHA37a3e75f01f9b87b37b957cfd1636f0fe35f69953a17c8048402e2d5184d0f7c.
+Strict deep signature PASS, actual Info.plist build30/iPhoneOS, approved team/app
+and Associated Domains, embedded regenerated profile f21c88e8-1e6b-4090-bbd1-4a86eefe1709,
+Sandbox endpoint/startup recovery and empty Sandbox Sentry DSN verified. All14
+privacy manifests match tested Simulator. No application/dependency diff between
+b61b36c tested source and74c6bbf archive. Static checks are not device execution.
+See ios-store-30.json. Archive remains local, not uploaded to Apple.
+
+Uploaded four current1320x2868 synthetic screenshots into Apple6.9-inch draft.
+Replaced three superseded draft captures (original files retained), ordered
+overview/household/custom responsibility/payoff, and reloaded to verify all four
+persist. Review notes saved with current build30/static/runtime limitations and
+existing approved reviewer credentials preserved. Save disabled, no errors, still
+Prepare for Submission/manual release. No privacy publication or submission.
+
+Android e474ea38 remains IN_PROGRESS at latest poll. Stopped iOS Simulator and
+idle Mac test app before Android-only boot; boot_completed1 and no am_anr/am_crash
+events observed so far. Launcher screenshot was still loading. This is not app
+startup acceptance; wait for current APK, preserve AVD data and verify UI.

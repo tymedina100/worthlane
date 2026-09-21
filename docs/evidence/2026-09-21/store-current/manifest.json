@@ -28,5 +28,7 @@
       "sha256": "fd70a557fa592bff4e72b76ef5740abbc01afe7a8b84b304c4d23da1594f3ae2"
     }
   ],
-  "appleUpload": "Not yet uploaded"
+  "appleUpload": "PASS: four current screenshots saved in6.9-inch draft; reload confirmed order overview/household/custom/payoff. Three superseded draft screenshots removed; original source files remain available. No submission.",
+  "matchingStoreBuild": "e47249aa-9e37-4cf9-a35f-14c7de692cdc / build30",
+  "sourceParity": "git diff shows no apps/packages/patches/lockfile/workspace changes between testedb61b36c and archive74c6bbf"
 }
