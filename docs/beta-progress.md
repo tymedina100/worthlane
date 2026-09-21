@@ -4203,3 +4203,20 @@ of historical data deletion or broad organizational compliance is made.
 
 Apple still has no attached build or reviewer credentials; release remains manual.
 This finishes one draft questionnaire section, not store preparation or submission.
+
+
+### September21 recoverable native session startup
+
+Software-renderer Android still displayed the session-loading spinner. Source
+inspection found hydrate has no rejection handling or bound on secure-store/native
+notification initialization. This does not isolate the emulator's root cause, but
+shows a real missing recovery path. Startup now times out after15seconds into a
+plain-language Retry screen, preserves credentials/data, and keeps protected
+screens closed. Attempt generations ignore stale storage and late native results;
+optional telemetry remains nonblocking. Secure-store reads run concurrently.
+
+Six real-store adapter tests pass, including read failure/retry, stalled native
+cleanup, late completion after a signed-out retry, and late storage not changing
+reminder ownership. Mobile typecheck and diff check pass. New code is not in the
+installed b75245c artifacts; rendered recovery/layout verification and final
+artifact parity remain pending. No production merge or release.
