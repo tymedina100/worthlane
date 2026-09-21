@@ -3990,3 +3990,19 @@ requires optional credentials absent and AI/paywall disabled. All14 packaged
 privacy manifests exactly match the previously inventoried Simulator archive.
 See evidence/2026-09-21/ios-store-29-archive.json. This is static archive evidence,
 not runtime network or physical-device acceptance. No upload/submission occurred.
+
+
+### September21 server image dependency remediation
+
+Fresh pnpm audit --prod reported60high/24moderate/3low advisories, including
+Sharp0.34.5's libvips/libheif issues (GHSA-f88m-g3jw-g9cj and
+GHSA-rgj7-g3m4-5g8c). Confirmed the latter against the maintainer advisory.
+Added a scoped Sharp<0.35.4 override to0.35.4 while preserving all existing
+workspace security overrides. Frozen install succeeds. Next's real image optimizer
+resizes/encodes PNG,WebP,AVIF correctly in API,desktop andweb (3 tests passed);
+the same regression check is now in LinuxCI. Updated audit has zero Sharp findings
+and58high/24moderate/3low remaining. Registry findings do not establish runtime
+exploitability; Expo's production graph also includes development tooling.
+Remaining module/path evidence is in evidence/2026-09-21/dependency-audit.json.
+Do not attest that vulnerability management is complete. No production merge,
+deployment approval, app-store upload or new security attestation occurred.
