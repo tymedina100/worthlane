@@ -3805,3 +3805,25 @@ The hosted runner tests the real BFF with two client instances and a shared lock
 model; actual browser/Mac cross-window expiry after the header correction is
 still required. CI228/35639331950 was in progress at last check. No production
 merge, API schema/auth-policy change, or store submission occurred.
+
+
+### September21 actual two-tab expiry recovery
+
+Vercel current alias was independently observed Ready at78823cd; CI229
+35639651360 completed all4jobs successfully. Actual IAB synthetic login and
+second accounts tab shared cookies. Removed only __Host-worthlane-access via
+origin-scoped developer controls, retained refresh, and reloaded both tabs:
+both recovered Morgan's saved household without signing in again. Repeated
+access-cookie removal and simultaneous visible Refresh buttons exercised the
+six workspace requests plus overview. Captured statuses show all initial401s
+followed by session200 and retried financial endpoints200, retained15accounts
+and saved2450plan. No token values were read/exported. Evidence:
+`docs/evidence/2026-09-21/browser-parallel-session-recovery.json`.
+
+Logout in the second tab completed, but the first retained its private snapshot
+until the next refresh. New SessionBoundary now synchronously hides children
+on another window's session-epoch storage event and navigates to signin. The
+nonsecret epoch already changes under exclusive lock before login/register/logout.
+Local build/typecheck and11desktop-session tests pass, including immediate
+private-tree removal. Interactive verification of this follow-up and Mac expiry
+remain pending; do not conflate the passed78823cdCI with this newer change.

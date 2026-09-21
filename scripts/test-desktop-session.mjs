@@ -7,7 +7,7 @@ const tick=()=>new Promise(resolve=>setImmediate(resolve));
 function load(path, globals={}) {
  const exports={};
  const source=readFileSync(new URL(path,import.meta.url),'utf8');
- const code=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
+ const code=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText;
  vm.runInNewContext(code,{exports,Response,Headers,URL,Map,Error,...globals});
  return exports;
 }
@@ -100,4 +100,16 @@ test('logout revokes refresh directly without attempting access-token rotation',
   clearSessionCookies:()=>{},jsonResponse:body=>new Response(JSON.stringify(body)),
  }});
  assert.equal((await route.POST({})).status,200);assert.equal(sent.path,'/auth/logout');assert.equal(JSON.parse(sent.init.body).refreshToken,'synthetic-refresh');assert.equal(sent.init.headers,undefined);
+});
+
+test('another window changing identity immediately hides the old financial tree',()=>{
+ let changed=false,handler,redirect;const child={privateBalance:100};
+ const component=load('../apps/desktop/components/session-boundary.tsx',{
+  window:{addEventListener:(_type,fn)=>{handler=fn;},removeEventListener:()=>{},location:{replace:path=>{assert.equal(changed,true);redirect=path;}}},
+  require:name=>name==='react'?{useState:()=>[changed,x=>{changed=x;}],useEffect:fn=>fn()}:name==='react-dom'?{flushSync:fn=>fn()}:name==='react/jsx-runtime'?{jsx:(type,props)=>({type,props})}:{SESSION_EPOCH_KEY:'worthlane.session.epoch'},
+ });
+ assert.equal(component.SessionBoundary({children:child}),child);
+ handler({key:'unrelated'});assert.equal(changed,false);
+ handler({key:'worthlane.session.epoch'});assert.equal(redirect,'/login');
+ const hidden=component.SessionBoundary({children:child});assert.equal(hidden.props.role,'status');assert(!JSON.stringify(hidden).includes('privateBalance'));
 });

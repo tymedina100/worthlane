@@ -1,6 +1,7 @@
 type Fetcher = typeof fetch;
 type Locks = Pick<LockManager, "request">;
 type Epoch = { read(): string; change(): void };
+export const SESSION_EPOCH_KEY = "worthlane.session.epoch";
 const LOCK = "worthlane-session";
 
 /** HttpOnly cookies stay in the browser. Web Locks coordinate tabs AND windows. */
@@ -38,7 +39,7 @@ let client: Fetcher | undefined;
 export const sessionFetch: Fetcher = (input, init) => {
   if (!client) {
     if (!navigator.locks) throw new Error("This browser does not support secure session coordination. Please use a current browser.");
-    const key = "worthlane.session.epoch"; // Nonsecret coordination value only.
+    const key = SESSION_EPOCH_KEY; // Nonsecret coordination value only.
     client = createSessionFetch(fetch.bind(globalThis), navigator.locks, {
       read: () => localStorage.getItem(key) ?? "",
       change: () => localStorage.setItem(key, crypto.randomUUID()),
