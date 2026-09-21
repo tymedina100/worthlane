@@ -303,3 +303,19 @@ independently resolves both platforms to distribution=store, environment=preview
 and the isolated API; iOS resolves simulator=false and Android app-bundle.
 Reference: https://docs.expo.dev/eas/json/ . Before building, verify included
 capacity and authorized signing; do not use --auto-submit or eas submit.
+
+### September 21 iOS store-format archive queued
+
+Expo billing UI showed Free/$0, 3 iOS builds used of 15 included and a $0 estimate.
+Using included capacity, invoked `eas build --platform ios --profile sandbox-store
+--non-interactive --no-wait` at source da5677cd862f7b8385c63387b16b03532edd52cf.
+EAS reused existing remote personal-team credentials and incremented build28.
+No new credentials were generated. Non-interactive mode skipped fresh Apple
+certificate/profile validation, so cached active metadata is not that proof.
+Root gitignore excluded .tmp, environment files and native generated output;
+upload was42.5MB. EAS reports build31792944-ceec-473a-ab52-3c8515650b14 IN_QUEUE,
+IOS/STORE/sandbox-store. No --auto-submit, eas submit or App Store upload occurred.
+
+Monitor this exact build; inspect signature/profile, bundle entitlements, packaged
+privacy manifests and fixed Sandbox configuration after completion. A queued job
+is not a successful archive, and a store-format Sandbox archive is not live banking.

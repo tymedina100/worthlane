@@ -3895,3 +3895,13 @@ API on both platforms, iOS device/store and Android app-bundle. No remote build,
 credential change, store upload or submission started. Final artifact verification
 still required, and mobile source-parity note now excludes this configuration-only
 addition (existing app runtime/shared business code remains unchanged).
+
+### September 21 signed Sandbox archive preparation started
+
+Prepared guarded sandbox-store profile at da5677c;7tests and EAS schema resolution
+passed. Verified included Expo Free capacity (3/15 iOS builds, $0 estimate), then
+queued iOS build28,31792944-ceec-473a-ab52-3c8515650b14, using existing remote
+credentials without auto-submit. EAS readback confirms IN_QUEUE/STORE/sandbox-store
+at exact da5677cd862f7b8385c63387b16b03532edd52cf. No Apple portal verification or
+App Store upload/submission; final archive checks remain. Mac session expiry
+observation after19:06UTC is still pending.
