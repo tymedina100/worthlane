@@ -4102,3 +4102,17 @@ EAS; only guarded profile settings loaded. Android reused its existing remote
 keystore. Exact candidate signatures/configuration/installed journeys remain
 pending; monitor these jobs, do not restart on an observation timeout.
 CI246 at29dcf25 completed SUCCESS; latestCI247 atb75245c was still running.
+
+
+### September21 current candidate CI green and cache housekeeping
+
+CI247/35646773858 atb75245c completed all4jobs SUCCESS, including PostgreSQL17/18,
+new router/Metro regressions, all builds and Windows packaging. Native EAS artifact
+inspection/installed parity still pending.
+
+Under prior owner storage-cleanup request, pnpm store prune removed cached metadata
+and73,907 files/1,689 cached packages. Store was2.0GB; free APFS space increased
+from6.4to6.9GiB (only0.5GiB actually reclaimed; do not claim2GB free). Installed
+workspace dependencies remained intact: all4 Metro/router tests passed afterward.
+No project/source,credentials,fixture database,AVD or installed app was removed.
+Cached dependencies can be downloaded again by pnpm when needed.

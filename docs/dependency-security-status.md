@@ -13,8 +13,9 @@ including locally patched packages. No advisory ignore was added.
 | fast-xml-parser4.5.5 | React Native Android CLI `getMainActivity` uses XMLParser/XMLValidator on AndroidManifest.xml, not XMLBuilder. The remaining finding concerns XMLBuilder comment/CDATA serialization. | Inspected installed caller; affected operation not found in this path. This does not declare every possible use safe. Revisit if builder use is introduced. |
 | uuid7/9 | Xcode project generation and Sentry Webpack plugin call v4 without a caller-provided output buffer. The advisory concerns v3/v5/v6 with a buffer. | Inspected `xcode/lib/pbxProject.js` and `@sentry/webpack-plugin/dist/cjs/index.js`; vulnerable operation not used by these callers. Revisit with dependency/caller changes. |
 
-CI243/244/245 passed all four jobs for earlier patch sets. The newest image parser
-patch still requires full CI. Existing signed iOS build29 predates the router
+CI247/35646773858 atb75245c passed all four jobs: PostgreSQL17/18, Linux
+typechecks/tests/mobile export/all server builds, and Windows packaging. This
+includes the decoder and Metro image regressions on Linux. Existing signed iOS build29 predates the router
 JavaScript patch and must not be described as containing these changes.
 
 Next: verify current CI, refresh candidate parity, and continue the separate
