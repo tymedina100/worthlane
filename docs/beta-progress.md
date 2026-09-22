@@ -5093,3 +5093,20 @@ balances may be outdated, rather than claiming missing spending. Shared core tes
 verification after the approved isolated branch deployment. Evidence:
 `evidence/2026-09-22/hosted-investment-oauth.json`. The prior IAB Betterment unlink
 dialog remains separate; no native iOS OAuth, production or store claim.
+
+## September 22 — native standard OAuth boundary and candidate CI
+
+All four CI299 jobs passed for f5b3688 (35787930646). PR20 now reflects hosted
+Chrome OAuth/forced repair, native deletion recovery and remaining release gates;
+it remains open and unmerged.
+
+Retried native investment linking with standard Platypus OAuth Bank, distinct
+from the earlier App2App attempt. Both Computer Use and an authorized Maestro
+native touch emitted OPEN_OAUTH but showed no bank login screen. Independent
+Maestro screenshot confirmed the same view. No cause is established; this is not
+a native OAuth pass. Explicit cancellation returned to Settings. Fresh API/provider
+readback confirms the original two accounts remain Healthy with identical IDs and
+balances, $23,952.74 net worth and zero transactions/spending. The reminder queue
+was independently reconfirmed for September23 09:00 Phoenix after a transient
+local API read timeout; delivery remains unobserved. No phone or production action.
+Evidence: `evidence/2026-09-22/native-standard-oauth-attempt.json`.
