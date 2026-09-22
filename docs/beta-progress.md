@@ -4622,3 +4622,27 @@ Clean tracked-source archive uploaded; new internal iOS build
 95061ba9-de4d-485a-a828-df072e9b57d2 is verified IN_PROGRESS. This is a local
 Simulator development client, not a store submission. Install and native investment
 acceptance remain pending. TylerOS project/Plaid task updated.
+
+### 2026-09-22 — Native investment build ready; OAuth retry remains open
+
+EAS95061ba9-de4d-485a-a828-df072e9b57d2 FINISHED and installed on the laptop
+Simulator. Current local Metro8087/API3101 loads successfully; synthetic Casey
+sign-in works and Settings renders the separate Connect investments control and
+balance-only explanation. Existing stale session was rejected against local auth.
+CI35751119011 at97aaba6 passed all four jobs, including both PostgreSQL versions,
+mobile bundle, API/desktop/web builds and Windows packaging.
+
+Native Connect investments opened Plaid. Using the authorized Maestro fallback
+for inaccessible Simulator sheets, First Platypus OAuth App2App opened Safari,
+accepted published Sandbox credentials/MFA, and reached confirmation. Its return
+reopened native Plaid but looped back to Continue to login rather than completing.
+Account label taps were not independently verified as checked, and confirmation
+showed no cash accounts; the cause remains unknown. Do not count this as linked,
+selected-account enforcement, or investment OAuth acceptance. Sandbox selection
+behavior also differs from Production per Plaid documentation.
+
+Exited Link via its confirmation. Native Settings remains usable and says Nothing
+linked yet; fresh API read confirms zero accounts and zero Items for this test
+login. Next: standard native investment lifecycle, then focused OAuth retry with
+verified checkbox state. API/Metro/isolated database remain running for that check.
+No production changes, store submission, or real banking occurred.
