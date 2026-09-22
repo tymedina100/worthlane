@@ -4473,3 +4473,22 @@ PR20's two existing inline review threads are resolved: standard API .env loadin
 is fixed byaf072f5 and the canonical log includes hosted/native evidence. The
 three synthetic credential-loader tests pass freshly; CI268/35660470071 on
 01319f8 completed successfully. No merge was performed.
+
+### September 22 — Developer ID signed Mac session persists
+
+With Tyler's scoped approval, created the personal-team Developer ID Application
+certificate, imported its key into login Keychain and signed the local arm64
+Sandbox package. Deep/strict signature, hardened runtime, timestamp, nine archived
+assets and eight hardened fuses pass. Temporary private-key PEM was removed.
+See `evidence/2026-09-21/mac-developer-id-signing.json`.
+
+After Tyler handled the Keychain prompt, Alex sign-in succeeded. On September22,
+visually inspected the dashboard, quit using the app menu, verified the exact
+main process was absent and relaunched the signed package. Alex's authenticated
+dashboard restored without entering credentials: private checking1500, household
+plan2450, groceries600 equal, utilities150 Sam, rent1700 Alex60/Sam40. Sam's private
+account was absent. Initial connection-recovery cause remains unproven.
+
+No notarization upload, public distribution, live bank connection, main merge or
+store submission occurred. Continue provider-rights/compliance and scoped release
+verification; do not treat this package check as production banking acceptance.
