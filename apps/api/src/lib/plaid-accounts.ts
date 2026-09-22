@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { AccountSource, AccountType, Prisma, prisma } from "@worthlane/db";
 import type { AccountBase } from "plaid";
+import { removePlaidAccountData } from "./plaid-revocation";
 import { PlaidIntegrationError } from "./plaid";
 
 function accountType(type: string, subtype?: string | null): AccountType {
@@ -16,18 +17,30 @@ function duplicateAccount(): PlaidIntegrationError {
 }
 
 /** All accounts in a provider snapshot are checked and saved atomically. */
-export async function savePlaidAccounts(
+async function persistAccounts(
   item: { id?: string; userId: string; itemId: string; institution: string | null; consentRevision?: number },
   accounts: AccountBase[],
   now = new Date(),
-): Promise<Map<string, string>> {
+  providerAccountIds?: string[],
+): Promise<{ accountMap: Map<string, string>; consentRevision: number }> {
   try {
     return await prisma.$transaction(async db => {
       if (item.id) {
         const current = await db.plaidItem.findFirst({ where: { id: item.id, userId: item.userId } });
-        if (!current || current.consentRevision !== (item.consentRevision ?? 0)) {
+        if (!current || current.itemId !== item.itemId || current.consentRevision !== (item.consentRevision ?? 0)) {
           throw new PlaidIntegrationError("Bank access changed while syncing. Retry to fetch current permissions.", { code: "SYNC_CONFLICT", status: 409 });
         }
+      }
+      if (providerAccountIds) {
+        if (!item.id) throw new Error("A complete account snapshot requires a saved Item");
+        const missing = await db.account.findMany({ where: {
+          userId: item.userId, plaidItemId: item.itemId, source: "PLAID",
+          plaidAccountId: { notIn: providerAccountIds },
+        }, select: { id: true } });
+        await removePlaidAccountData(db, item.userId, missing.map(account => account.id));
+        // Advance for every complete snapshot, even an empty/no-change one.
+        // An older in-flight snapshot must not restore de-selected accounts.
+        await db.plaidItem.update({ where: { id: item.id }, data: { consentRevision: { increment: 1 } } });
       }
       const accountMap = new Map<string, string>();
       for (const account of accounts) {
@@ -58,7 +71,7 @@ export async function savePlaidAccounts(
         });
         accountMap.set(account.account_id, saved.id);
       }
-      return accountMap;
+      return { accountMap, consentRevision: (item.consentRevision ?? 0) + (providerAccountIds ? 1 : 0) };
     }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable, timeout: 30_000 });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && ["P2002", "P2034"].includes(error.code)) {
@@ -66,4 +79,18 @@ export async function savePlaidAccounts(
     }
     throw error;
   }
+}
+
+/** Partial account upserts; does not infer revocation from omitted accounts. */
+export async function savePlaidAccounts(
+  item: Parameters<typeof persistAccounts>[0], accounts: AccountBase[], now = new Date(),
+): Promise<Map<string, string>> {
+  return (await persistAccounts(item, accounts, now)).accountMap;
+}
+
+/** Only call with a successful, complete /accounts/get response for this Item. */
+export async function reconcilePlaidAccountSnapshot(
+  item: Parameters<typeof persistAccounts>[0], providerAccounts: AccountBase[], selectedAccounts: AccountBase[], now = new Date(),
+) {
+  return persistAccounts(item, selectedAccounts, now, providerAccounts.map(account => account.account_id));
 }

@@ -4886,3 +4886,33 @@ app/domain; this narrows but does not resolve native OAuth.
 Remaining privacy audit: verify account deselection during Link update removes
 previously imported data even without a revocation webhook; current save logic
 upserts returned accounts. No production deployment or product activation.
+
+## September 22 — account-selection cleanup
+
+Completed the missing-account privacy reconciliation identified in c65efda. A
+successful complete provider account snapshot now atomically removes missing
+accounts and their imports/derived caches, preserving authored transactions in a
+private zero-balance manual ledger. Every complete snapshot advances the existing
+consent revision; older account snapshots and transaction batches cannot restore
+the removed data. Sync uses the returned revision for subsequent writes. Failed
+provider reads do not imply an empty snapshot. No new database migration.
+
+API260/260, TypeScript, PostgreSQL15/15, and real Plaid Sandbox3/3 pass. Database
+cases cover empty/repeated selection, partner/manual preservation, stale snapshot
+rejection and rollback when account ownership conflicts. Native Sync now removed
+a seeded stale synthetic bank account and its $20 import while retaining a private
+$7 manual entry. Cold launch showed unchanged $23,952.74 investment net worth and
+$7 spending, with exact investment IDs preserved in independent readback. This
+proves stale-account cleanup through native sync, not clicking deselect at a live
+bank. [Evidence](evidence/2026-09-22/account-selection-cleanup.json).
+
+Storage fell to ~200MiB during testing. Removed three stopped disposable database
+clusters (retaining logs) and writable data layers of the stopped synthetic Android
+emulator; ~3GiB became available. Active database, source, credentials and signed
+artifacts preserved. Android test data will reinitialize; old evidence does not
+claim the emulator still holds its former state.
+
+Remaining: native OAuth, intended-client/hosted candidate parity, actual calendar
+reminder delivery, live pricing/access/security and release gates. No production
+deployment, paid activation or store submission occurred. Prior c65efda CI289
+completed successfully; this new commit requires its own CI.

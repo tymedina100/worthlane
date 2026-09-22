@@ -4,7 +4,7 @@ import {
 } from "@worthlane/db";
 import { Products } from "plaid";
 import { applyPlaidSyncBatch } from "./plaid-reconciliation";
-import { savePlaidAccounts } from "./plaid-accounts";
+import { reconcilePlaidAccountSnapshot } from "./plaid-accounts";
 import { bankHistoryStatus } from "@worthlane/core";
 import {
   decryptPlaidAccessToken,
@@ -39,11 +39,8 @@ async function upsertAccountsForItem(item: {
     throw new PlaidIntegrationError("This connection has no supported data product. Reconnect with the intended account type.", { code: "PLAID_PRODUCT_MISSING", status: 409 });
   }
   const selectedAccounts = investmentOnly ? snapshot.accounts.filter(account => account.type === "investment") : snapshot.accounts;
-  if (investmentOnly && selectedAccounts.length === 0) {
-    throw new PlaidIntegrationError("No investment accounts were shared. Reconnect and select a brokerage or retirement account.", { code: "NO_ACCOUNTS", status: 422 });
-  }
-  const accountMap = await savePlaidAccounts(item, selectedAccounts);
-  return { accessToken, accountMap, investmentOnly };
+  const { accountMap, consentRevision } = await reconcilePlaidAccountSnapshot(item, snapshot.accounts, selectedAccounts);
+  return { accessToken, accountMap, investmentOnly, consentRevision };
 }
 
 export async function syncPlaidItemById(
@@ -109,7 +106,11 @@ export async function syncPlaidItemRecord(
   const now = new Date();
 
   try {
-    const { accessToken, accountMap, investmentOnly } = await upsertAccountsForItem(item);
+    const { accessToken, accountMap, investmentOnly, consentRevision } = await upsertAccountsForItem(item);
+    item = { ...item, consentRevision };
+    if (investmentOnly && accountMap.size === 0) {
+      throw new PlaidIntegrationError("No investment accounts were shared. Reconnect and select a brokerage or retirement account.", { code: "NO_ACCOUNTS", status: 422 });
+    }
 
     if (investmentOnly) {
       const saved = await prisma.plaidItem.updateMany({ where: { id: item.id, consentRevision: item.consentRevision ?? 0 }, data: {

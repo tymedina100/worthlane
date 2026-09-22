@@ -7,7 +7,7 @@ vi.mock("@worthlane/db", () => ({
   PlaidItemStatus: { ERROR: "ERROR", NEEDS_RELINK: "NEEDS_RELINK", PENDING_EXPIRATION: "PENDING_EXPIRATION" },
   prisma: { plaidItem: { updateMany: mocks.update } },
 }));
-vi.mock("../plaid-accounts", () => ({ savePlaidAccounts: mocks.save }));
+vi.mock("../plaid-accounts", () => ({ reconcilePlaidAccountSnapshot: mocks.save }));
 vi.mock("../plaid-reconciliation", () => ({ applyPlaidSyncBatch: mocks.apply }));
 vi.mock("../recurring", () => ({ detectRecurringForUser: mocks.recurring }));
 vi.mock("../sentry", () => ({ captureServerException: vi.fn() }));
@@ -28,7 +28,7 @@ beforeEach(() => {
   vi.stubEnv("PLAID_ENV", "sandbox");
   vi.stubEnv("PLAID_TRANSACTIONS_REFRESH_ENABLED", "false");
   vi.stubEnv("PLAID_TOKEN_ENCRYPTION_KEY", "synthetic-only-test-encryption-key");
-  mocks.save.mockResolvedValue(new Map([["checking", "local-checking"]]));
+  mocks.save.mockResolvedValue({ accountMap: new Map([["checking", "local-checking"]]), consentRevision: 1 });
   mocks.apply.mockResolvedValue(undefined);
   mocks.update.mockResolvedValue({ count: 1 });
   mocks.recurring.mockResolvedValue(undefined);
@@ -48,7 +48,7 @@ function expectAvailableUpdatesSaved(record: ReturnType<typeof item>) {
   expect(plaidClient.transactionsSync).toHaveBeenCalledWith({
     access_token: token, cursor: "saved-cursor", options: { include_personal_finance_category: true },
   });
-  expect(mocks.apply).toHaveBeenCalledWith(record, new Map([["checking", "local-checking"]]), {
+  expect(mocks.apply).toHaveBeenCalledWith({ ...record, consentRevision: 1 }, new Map([["checking", "local-checking"]]), {
     added: [transaction], modified: [], removed: [],
   }, "next-cursor", expect.any(Date), "HISTORICAL_UPDATE_COMPLETE");
 }
@@ -125,7 +125,7 @@ describe("optional Transactions Refresh", () => {
     await expect(syncPlaidItemRecord(record, { refresh: true })).rejects.toMatchObject({ code, needsRelink });
     expect(plaidClient.transactionsSync).not.toHaveBeenCalled();
     expect(mocks.apply).not.toHaveBeenCalled();
-    expect(mocks.update).toHaveBeenCalledWith({ where: { id: record.id, consentRevision: 0 }, data: {
+    expect(mocks.update).toHaveBeenCalledWith({ where: { id: record.id, consentRevision: 1 }, data: {
       status, needsRelink, errorCode: code, errorMessage: expect.any(String),
     } });
   });
