@@ -4646,3 +4646,22 @@ linked yet; fresh API read confirms zero accounts and zero Items for this test
 login. Next: standard native investment lifecycle, then focused OAuth retry with
 verified checkbox state. API/Metro/isolated database remain running for that check.
 No production changes, store submission, or real banking occurred.
+
+### 2026-09-22 — Standard native investment lifecycle passes
+
+Current development Simulator client completed First Platypus standard Link,
+exchange and sync. Exactly two investment accounts persisted (IRA320.76,
+401k23631.98), with23952.74 net worth and0 spending/income. Repeat native Sync
+completed, and a full terminate/relaunch preserved those totals. Native Unlink
+confirmation removed the connection; a second full restart shows0 visible net
+worth. Fresh API reads and independent PostgreSQL counts confirm0 accounts,
+0 Items and0 transactions for this test login. Evidence:
+`evidence/2026-09-22/investment-native-standard.json`.
+
+The first typed credential attempt was rejected; clearing, retyping and visibly
+verifying the published test password resolved it. Tests used no real bank login.
+Found and fixed misleading native dashboard/Household wording that called all
+bank-data notices incomplete history, including healthy investment snapshots.
+The dashboard's corrected coverage/freshness wording was rendered interactively;
+mobile typecheck passed. Investment OAuth remains open after the previous loop;
+this standard-flow result does not substitute for that acceptance check.
