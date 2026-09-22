@@ -4589,3 +4589,18 @@ account-type assertions, stable IDs, no Transactions initialization, owner
 isolation and provider revocation. Focused unit4/4 and API/desktop typechecks pass.
 Native investment UI and investment OAuth return remain open; ordinary bank/native
 prior evidence does not substitute. No production changes or paid calls occurred.
+
+### 2026-09-22 — Native investment test boundary and restoration
+
+Tried a local copy of the existing Simulator release package with the current
+investment JavaScript bundle. The release export failed at the API URL guard;
+a development export then failed because the release binary lacks DevSettings.
+Neither attempt qualifies as native investment acceptance. Release URL safeguards
+were preserved; no production configuration changed and no remote build started.
+
+Restored the original `.tmp/eas-ios-recovery/Worthlane.app` in place, preserving
+Simulator data. Interactive verification shows the saved synthetic household
+with Alex, 900 visible net worth and the 600 groceries budget. Local test API and
+PostgreSQL were stopped. Native investment testing requires a proper rebuilt
+client; investment OAuth return and production Investments entitlement/pricing
+remain open. TylerOS project and Plaid task updated with this boundary.
