@@ -5003,3 +5003,19 @@ The new tests are wired into existing CI. Interactive failure injection remains
 unverified because the Mac is locked. The September23 calendar fixture was not
 deleted or modified. Prior runtime402387e CI292 completed all four jobs
 successfully; this new change needs its own CI. No production/store actions.
+
+## September 22 — independent OS calendar schedule confirmed
+
+Read the booted iOS Simulator UserNotifications archive without mutation. Resolve
+Worthlane's folder through the bundle-ID map, then match pending userInfo to the
+bill ID and owner returned by a fresh synthetic API login. Exactly one pending
+notification matches; generic title Upcoming payment, not repeating. Its native
+TimeInterval plus RequestDate resolves to September23 16:00:00.046UTC (09:00Phoenix),
+within two seconds of the requested time. The API bill remains $1, unpaid, active,
+DUE_DATE. This upgrades native queue evidence, not actual delivery acceptance.
+No token or private identifiers are retained in the evidence JSON.
+
+Evidence: `evidence/2026-09-22/calendar-reminder-os.json`; read-only local verifier
+`.tmp/verify-calendar-os.py`. Mac remains locked for UI checks. CI294 at8a5adc0
+is live: PostgreSQL17/18 and Windows packaging passed, main job still building.
+No deployment, financial action, test fixture mutation or store submission.

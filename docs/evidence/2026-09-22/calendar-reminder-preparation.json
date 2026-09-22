@@ -11,10 +11,11 @@
   "nativeAction": "Opened edit screen, selected On due date, saved; native Saved confirmation observed without permission/scheduling error",
   "expectedDelivery": "2026-09-23T09:00:00-07:00",
   "deliveryObserved": false,
-  "osPendingQueueIndependentlyVerified": false,
+  "osPendingQueueIndependentlyVerified": true,
   "limits": [
     "Preparation is not delivery acceptance.",
     "Keep the Simulator fixture signed in; logout cancels device reminders.",
     "No real financial data, production changes, outbound email or paid products."
-  ]
+  ],
+  "osEvidence": "calendar-reminder-os.json"
 }
