@@ -1,0 +1,1 @@
+ALTER TABLE "PlaidItem" ADD COLUMN "consentRevision" INTEGER NOT NULL DEFAULT 0;

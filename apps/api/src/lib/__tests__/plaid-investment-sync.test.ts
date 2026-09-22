@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({ snapshot: vi.fn(), save: vi.fn(), update: vi.fn(), sync: vi.fn(), refresh: vi.fn(), apply: vi.fn() }));
-vi.mock("@worthlane/db", () => ({ PlaidItemStatus: { ERROR: "ERROR" }, prisma: { plaidItem: { update: mocks.update } } }));
+vi.mock("@worthlane/db", () => ({ PlaidItemStatus: { ERROR: "ERROR" }, prisma: { plaidItem: { updateMany: mocks.update } } }));
 vi.mock("../plaid", () => ({
   decryptPlaidAccessToken: () => "synthetic", getAccountSnapshot: mocks.snapshot,
   syncTransactions: mocks.sync, refreshTransactions: mocks.refresh,
@@ -14,10 +14,17 @@ import { syncPlaidItemRecord } from "../plaid-sync";
 const item = { id: "item", userId: "owner", itemId: "provider-item", institution: "Synthetic brokerage", accessTokenEncrypted: "encrypted", syncCursor: null };
 const accounts = [{ account_id: "investment", type: "investment", balances: { current: 1500 } }];
 beforeEach(() => {
-  vi.clearAllMocks(); mocks.save.mockResolvedValue(new Map([["investment", "local-account"]])); mocks.update.mockResolvedValue({});
+  vi.clearAllMocks(); mocks.save.mockResolvedValue(new Map([["investment", "local-account"]])); mocks.update.mockResolvedValue({ count: 1 });
   mocks.sync.mockResolvedValue({ added: [], modified: [], removed: [], next_cursor: "cursor", has_more: false });
 });
 describe("investment-only sync", () => {
+  it("does not overwrite revocation with a late successful investment snapshot", async () => {
+    mocks.snapshot.mockResolvedValue({ accounts, products: ["investments"] });
+    mocks.update.mockResolvedValue({ count: 0 });
+    await expect(syncPlaidItemRecord({ ...item, consentRevision: 3 })).rejects.toMatchObject({ code: "SYNC_CONFLICT" });
+    expect(mocks.update).toHaveBeenCalledTimes(1);
+    expect(mocks.update).toHaveBeenCalledWith(expect.objectContaining({ where: { id: item.id, consentRevision: 3 } }));
+  });
   it("persists balances without initializing transaction products, even on forced refresh", async () => {
     mocks.snapshot.mockResolvedValue({ accounts: [...accounts, { account_id: "checking", type: "depository", balances: { current: 100 } }], products: ["investments"] });
     expect(await syncPlaidItemRecord(item, { refresh: true })).toEqual({ plaidItemId: "item", added: 0, modified: 0, removed: 0 });

@@ -117,3 +117,25 @@ to127.0.0.1:3301 and must not be mistaken for a phone-accessible localhost URL.
 Tyler subsequently signed into Xcode and Plaid. Later September 10 progress records a successful personal-team signed build and installation; see `beta-progress.md`. These are historical results. Current work is laptop-only, and the original failed-build prerequisite above is no longer an active blocker.
 
 A historical Chrome extension UI interruption was not bypassed. Desktop Sandbox acceptance later completed; current native interaction uses the laptop simulator through Maestro.
+
+## Bank-side consent revocation
+
+Verified ITEM/USER_ACCOUNT_REVOKED notices require a nonempty provider account ID;
+ITEM/USER_PERMISSION_REVOKED applies to the whole stored Item. The owner comes
+from the stored Item, never webhook user fields. Revocation removes affected
+imported accounts/activity, household access/match links, related recurring
+predictions, and the owner's generated planning notices and net-worth history
+cache. Historical aggregate snapshots cannot be separated by source account, so
+that cache is discarded and current totals are rebuilt from remaining accounts.
+Manually entered transactions are moved to a private, zero-balance “Saved manual
+entries” account. Other accounts, logins, manual bills and saved debt plans remain.
+
+Migration `20260922190000_plaid_consent_revision` must precede this API rollout.
+Each revocation increments the Item's consent revision; stale account saves,
+transaction batches and investment/error status writes cannot override it.
+Recurring predictions, notices and net-worth snapshots use serializable database
+transactions so concurrent revocation cannot leave stale derived writes behind.
+A subsequent sync fetches a fresh authorized account snapshot from Plaid; user
+re-granting access at the provider may make those accounts available again.
+This is not proof of signed hosted webhook delivery or real-bank behavior.
+Reference: https://plaid.com/docs/api/items/#user_account_revoked

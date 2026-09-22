@@ -5,7 +5,7 @@ const mocks = vi.hoisted(() => ({
 }));
 vi.mock("@worthlane/db", () => ({
   PlaidItemStatus: { ERROR: "ERROR", NEEDS_RELINK: "NEEDS_RELINK", PENDING_EXPIRATION: "PENDING_EXPIRATION" },
-  prisma: { plaidItem: { update: mocks.update } },
+  prisma: { plaidItem: { updateMany: mocks.update } },
 }));
 vi.mock("../plaid-accounts", () => ({ savePlaidAccounts: mocks.save }));
 vi.mock("../plaid-reconciliation", () => ({ applyPlaidSyncBatch: mocks.apply }));
@@ -30,7 +30,7 @@ beforeEach(() => {
   vi.stubEnv("PLAID_TOKEN_ENCRYPTION_KEY", "synthetic-only-test-encryption-key");
   mocks.save.mockResolvedValue(new Map([["checking", "local-checking"]]));
   mocks.apply.mockResolvedValue(undefined);
-  mocks.update.mockResolvedValue({});
+  mocks.update.mockResolvedValue({ count: 1 });
   mocks.recurring.mockResolvedValue(undefined);
   vi.spyOn(plaidClient, "accountsGet").mockResolvedValue({ data: {
     accounts: [{ account_id: "checking", type: "depository", balances: { current: 100 } }],
@@ -125,7 +125,7 @@ describe("optional Transactions Refresh", () => {
     await expect(syncPlaidItemRecord(record, { refresh: true })).rejects.toMatchObject({ code, needsRelink });
     expect(plaidClient.transactionsSync).not.toHaveBeenCalled();
     expect(mocks.apply).not.toHaveBeenCalled();
-    expect(mocks.update).toHaveBeenCalledWith({ where: { id: record.id }, data: {
+    expect(mocks.update).toHaveBeenCalledWith({ where: { id: record.id, consentRevision: 0 }, data: {
       status, needsRelink, errorCode: code, errorMessage: expect.any(String),
     } });
   });

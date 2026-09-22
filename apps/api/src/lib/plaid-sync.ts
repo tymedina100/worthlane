@@ -28,6 +28,7 @@ async function upsertAccountsForItem(item: {
   itemId: string;
   institution: string | null;
   accessTokenEncrypted: string;
+  consentRevision?: number;
 }) {
   const accessToken = decryptPlaidAccessToken(item.accessTokenEncrypted);
   const snapshot = await getAccountSnapshot(accessToken);
@@ -101,6 +102,7 @@ export async function syncPlaidItemRecord(
     institution: string | null;
     accessTokenEncrypted: string;
     syncCursor: string | null;
+    consentRevision?: number;
   },
   options: { refresh?: boolean } = {}
 ) {
@@ -110,10 +112,11 @@ export async function syncPlaidItemRecord(
     const { accessToken, accountMap, investmentOnly } = await upsertAccountsForItem(item);
 
     if (investmentOnly) {
-      await prisma.plaidItem.update({ where: { id: item.id }, data: {
+      const saved = await prisma.plaidItem.updateMany({ where: { id: item.id, consentRevision: item.consentRevision ?? 0 }, data: {
         transactionHistoryStatus: "INVESTMENT_BALANCES_ONLY", lastSyncAt: now,
         status: "HEALTHY", needsRelink: false, errorCode: null, errorMessage: null,
       } });
+      if (!saved.count) throw new PlaidIntegrationError("Bank access changed while syncing. Retry sync.", { code: "SYNC_CONFLICT", status: 409 });
       return { plaidItemId: item.id, added: 0, modified: 0, removed: 0 };
     }
 
@@ -189,8 +192,8 @@ export async function syncPlaidItemRecord(
     };
   } catch (error) {
     if (error instanceof PlaidIntegrationError && error.code !== "SYNC_CONFLICT") {
-      await prisma.plaidItem.update({
-        where: { id: item.id },
+      await prisma.plaidItem.updateMany({
+        where: { id: item.id, consentRevision: item.consentRevision ?? 0 },
         data: {
           status: statusForPlaidError(error),
           needsRelink: error.needsRelink,

@@ -4802,3 +4802,24 @@ and ITEM_LOGIN_REQUIRED. Evidence: investment-native-repair-incomplete.json.
 
 CI283 at code45e7e37 completed SUCCESS:
 https://github.com/tymedina100/worthlane/actions/runs/35768141270.
+
+### 2026-09-22 — Bank-side revocation privacy and stale-sync protection
+
+Implemented account-specific and full-Item revocation cleanup behind existing
+webhook signature verification. Malformed account IDs fail closed without widening
+the deletion. Imported rows and derived displays are removed; authored manual
+transactions move to a private zero-balance account. Other accounts/logins and
+manual bills/debt plans remain. Cached historical net-worth aggregates are cleared
+because they cannot be separated by revoked source account. New consentRevision
+migration prevents older in-flight sync commits/statuses from restoring data.
+Derived predictions/notices/net-worth writes now run serializably against their
+source reads. No push occurs before its planning-notice transaction commits.
+
+Verification: 252 API tests and API TypeScript pass. Fresh PostgreSQL14/14 includes
+partial/full revocation, unknown IDs, repeated notices, manual retention, other
+owner preservation, stale account/transaction snapshot rejection, cached-data
+removal and regenerated current totals. Real Plaid Sandbox3/3 passed after the
+core revocation changes; the final notices/manual-retention refinements then
+passed the full local PostgreSQL14/14 suite. Existing native repair/OAuth failures
+remain separate open checks. Migration applied only to local synthetic DB55439
+and disposable test clusters; no production migration/deployment/merge.

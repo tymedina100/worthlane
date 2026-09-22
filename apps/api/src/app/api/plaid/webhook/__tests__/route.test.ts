@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 
 const mocks = vi.hoisted(() => ({
+  revoke: vi.fn(),
   isPlaidSandbox: vi.fn(),
   verifyPlaidWebhook: vi.fn(),
   findUnique: vi.fn(),
@@ -24,6 +25,7 @@ vi.mock("@/lib/plaid", async importOriginal => ({
   isPlaidSandbox: mocks.isPlaidSandbox,
   verifyPlaidWebhook: mocks.verifyPlaidWebhook,
 }));
+vi.mock("@/lib/plaid-revocation", () => ({ revokePlaidData: mocks.revoke }));
 vi.mock("@/lib/plaid-sync", () => ({ syncPlaidItemRecord: mocks.syncPlaidItemRecord }));
 vi.mock("@/lib/sentry", () => ({ captureServerException: mocks.captureServerException }));
 
@@ -196,9 +198,16 @@ describe("POST /api/plaid/webhook", () => {
     }
   );
 
+  it.each([undefined, "", 42])("rejects malformed account revocation without broad deletion: %s", async account_id => {
+    const response = await POST(request(notification("USER_ACCOUNT_REVOKED", "ITEM", { account_id })));
+    expect(response.status).toBe(400);
+    expect(mocks.revoke).not.toHaveBeenCalled();
+    expect(mocks.update).not.toHaveBeenCalled();
+  });
+
   it.each(["USER_PERMISSION_REVOKED", "USER_ACCOUNT_REVOKED"])("keeps ITEM/%s actionable", async code => {
-    await POST(request(notification(code)));
-    expect(persistedItem).toMatchObject({ status: "NEEDS_RELINK", needsRelink: true, errorCode: code });
+    await POST(request(notification(code, "ITEM", { account_id: "revoked-account" })));
+    expect(mocks.revoke).toHaveBeenCalledWith(savedItem, code === "USER_ACCOUNT_REVOKED" ? "revoked-account" : undefined);
     expect(mocks.syncPlaidItemRecord).not.toHaveBeenCalled();
   });
 

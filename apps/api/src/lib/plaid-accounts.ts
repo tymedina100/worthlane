@@ -17,12 +17,18 @@ function duplicateAccount(): PlaidIntegrationError {
 
 /** All accounts in a provider snapshot are checked and saved atomically. */
 export async function savePlaidAccounts(
-  item: { userId: string; itemId: string; institution: string | null },
+  item: { id?: string; userId: string; itemId: string; institution: string | null; consentRevision?: number },
   accounts: AccountBase[],
   now = new Date(),
 ): Promise<Map<string, string>> {
   try {
     return await prisma.$transaction(async db => {
+      if (item.id) {
+        const current = await db.plaidItem.findFirst({ where: { id: item.id, userId: item.userId } });
+        if (!current || current.consentRevision !== (item.consentRevision ?? 0)) {
+          throw new PlaidIntegrationError("Bank access changed while syncing. Retry to fetch current permissions.", { code: "SYNC_CONFLICT", status: 409 });
+        }
+      }
       const accountMap = new Map<string, string>();
       for (const account of accounts) {
         // Names, balances and masks are not proof of identity. Only use the

@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { PlaidItemStatus, prisma } from "@worthlane/db";
 import { isPlaidSandbox, toPlaidIntegrationError, verifyPlaidWebhook } from "@/lib/plaid";
+import { revokePlaidData } from "@/lib/plaid-revocation";
 import { syncPlaidItemRecord } from "@/lib/plaid-sync";
 import { err, ok } from "@/lib/response";
 import { captureServerException } from "@/lib/sentry";
@@ -34,6 +35,15 @@ export async function POST(req: NextRequest) {
 
   const plaidItem = await prisma.plaidItem.findUnique({ where: { itemId } });
   if (!plaidItem) return ok({ received: true, ignored: true });
+
+  if (webhookType === "ITEM" && ["USER_ACCOUNT_REVOKED", "USER_PERMISSION_REVOKED"].includes(webhookCode)) {
+    const accountId = (body as any).account_id;
+    if (webhookCode === "USER_ACCOUNT_REVOKED" && (typeof accountId !== "string" || !accountId.trim())) {
+      return err("Revoked account identifier is required", 400);
+    }
+    await revokePlaidData(plaidItem, webhookCode === "USER_ACCOUNT_REVOKED" ? accountId : undefined);
+    return ok({ received: true });
+  }
 
   const now = new Date();
   await prisma.plaidItem.update({
