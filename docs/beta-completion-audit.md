@@ -240,3 +240,19 @@ balances may be outdated, rather than claiming missing spending. Shared core tes
 verification after the approved isolated branch deployment. Evidence:
 `evidence/2026-09-22/hosted-investment-oauth.json`. The prior IAB Betterment unlink
 dialog remains separate; no native iOS OAuth, production or store claim.
+
+## September 22 — deployed investment warning verified
+
+Isolated API deployment `5d5bd98d-7ee4-49bf-bfb1-531fa221ccba` from `cd40dd9`
+completed successfully. Ready health, runtime shared-core source hash and Sandbox
+configuration passed; email and paid-AI keys are absent. CI300 succeeded.
+The API and hosted browser now show the investment-specific stale-balance warning.
+Exact two-account/Item IDs and $23,952.74 were retained with zero spending/imports.
+The complete hosted two-login regression passed: 53/396-row ledgers, private
+$125.50 manual fallback, $2,450 responsibilities, saved debt and idempotent due date.
+Guarded API unlink removed the disposable Betterment connection; fresh readback
+confirms zero accounts/Items/net worth/spending/transactions. This cleanup was
+through the API, not browser unlink. The earlier stuck IAB confirmation was closed
+and no longer requires Tyler. Native OAuth, final artifacts and actual calendar
+reminder delivery remain open. No production or store action occurred.
+Evidence: `evidence/2026-09-22/hosted-investment-warning.json`.
