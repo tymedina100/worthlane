@@ -4963,3 +4963,23 @@ already passed: it now explicitly says no reminder was scheduled, matching the
 editor. `corepack pnpm --filter @worthlane/mobile typecheck` and `git diff --check`
 pass. That new past-time message has not been interactively exercised. No new
 build, production deploy, paid activation or store submission occurred.
+
+## September 22 — native return boundary and hosted BFF recheck
+
+At source402387e, Plaid's documented direct `simctl openurl` test for
+https://worthlane.app/plaid-oauth visibly opened protected Settings from Upcoming
+in the existing signed-in development Simulator. This verifies direct registered
+URL routing only; no active Plaid session existed. A synthetic-query probe command
+also completed, but the Mac locked before visual observation, so that result is
+unverified. Native OAuth remains incomplete. Two routing/privacy tests passed;
+the prepared calendar reminder remained persisted. See
+`evidence/2026-09-22/native-return-boundary.json`.
+
+`WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-desktop.mjs`
+passed against the isolated HTTPS frontend and current Sandbox API: protected
+cookies, cross-origin rejection, exact saved two-login accounts/household totals,
+refresh rotation and logout revocation. This is HTTP integration evidence, not a
+fresh interactive investment replay. Vercel connector returned403 for the team;
+exact frontend deployment source remains unverified. CI292 run35779631915 at
+402387e was still building web clients at last observation; PostgreSQL17/18 and
+Windows packaging jobs passed. No production changes or store submission.
