@@ -1,0 +1,26 @@
+{
+  "date": "2026-09-22",
+  "origin": "https://worthlane-beta-desktop.vercel.app",
+  "apiOrigin": "https://worthlane-beta-sandbox.up.railway.app",
+  "browser": "Chrome native UI",
+  "data": "New synthetic solo owner; Plaid Sandbox only",
+  "observed": [
+    "Solo onboarding completed with no invitation",
+    "Platypus OAuth bank opened a separate authorization tab; public test credentials and simulated MFA accepted",
+    "Selected only IRA and401k; simulated bank consent returned to original Worthlane tab",
+    "Finished without Plaid enrollment; Worthlane saved two Personal investment accounts and23952.74networth",
+    "Guarded Railway Sandbox helper verified sole fixture owner, exact investment balances, zero transactions and Investments-only provider product before forcing ITEM_LOGIN_REQUIRED",
+    "UI Sync displayed Needs Relink and retained exact account and Item IDs/balances with zero spending",
+    "UI Reconnect repeated OAuth login and consent; Plaid displayed success and Worthlane returned to Healthy",
+    "Independent API and hosted database/provider readback confirmed exact account/Item IDs,23952.74networth,zero transactions/spending,Investments-only product and no provider error",
+    "Repeat UI sync and full reload retained Healthy/private balances",
+    "UI Unlink confirmed in Chrome; success message,0accounts,0Items,0networth,0spending/transactions independently verified through fresh API login"
+  ],
+  "limits": [
+    "No real bank connection or native iOS OAuth proof",
+    "Provider revocation after unlink was not independently queried in this run; application removal verified",
+    "Earlier IAB Betterment fixture still awaits its separate confirmation dialog",
+    "Small Chrome window Sandbox banner obscured continuation controls; keyboard navigation worked",
+    "New investment error-copy fix is locally tested, not yet verified on hosted deployment"
+  ]
+}

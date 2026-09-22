@@ -218,3 +218,25 @@ This updates hosted API acceptance, not the frontend/native artifact versions.
 Native OAuth, intended-client parity, calendar-time reminder observation and
 separate live-provider/distribution preparation remain open. No production
 deployment, paid plan/product activation, public release or store submission.
+
+## September 22 — hosted investment OAuth and expired repair pass
+
+Chrome recovered after toolbar reload. A fresh synthetic solo owner completed
+Platypus OAuth Sandbox bank authorization, selecting only IRA and 401k. Returning
+to Worthlane saved two Personal investment accounts totaling $23,952.74, with no
+spending or transaction imports. A guarded helper inside the isolated Railway
+service forced ITEM_LOGIN_REQUIRED only for this verified synthetic Item. UI Sync
+showed Needs Relink while preserving balances. UI Reconnect repeated OAuth login
+and simulated consent, returning to Healthy. Fresh API and hosted database/provider
+readback verified identical account/Item IDs and balances, Investments-only product,
+zero spending/transactions and no remaining provider error. Repeat sync and full
+reload passed. UI unlink in Chrome removed all accounts/Items; fresh API readback
+confirmed zero net worth, spending and transactions. Provider revocation after
+unlink was not independently queried in this run.
+
+Found and fixed inaccurate connection-error copy: investments now warn that saved
+balances may be outdated, rather than claiming missing spending. Shared core tests
+52/52, core typecheck and diff check pass. This copy change still needs hosted UI
+verification after the approved isolated branch deployment. Evidence:
+`evidence/2026-09-22/hosted-investment-oauth.json`. The prior IAB Betterment unlink
+dialog remains separate; no native iOS OAuth, production or store claim.

@@ -42,12 +42,13 @@ export function countedBankAccountIds(
 
 /** App retrieval time is not the bank's last successful update time. */
 export function bankDataNotice(item: { transactionHistoryStatus: string; lastSyncAt: string | null; status: string }, now: Date): string {
-  if (item.status !== "HEALTHY") return "Bank updates need attention. Spending may be missing recent activity.";
   if (item.transactionHistoryStatus === "INVESTMENT_BALANCES_ONLY") {
+    if (item.status !== "HEALTHY") return "Investment updates need attention. Saved balances may be out of date. Holdings and trades are not imported or counted as spending.";
     const elapsed = item.lastSyncAt ? now.getTime() - new Date(item.lastSyncAt).getTime() : NaN;
     const stale = !Number.isFinite(elapsed) || elapsed > 24 * 60 * 60 * 1000;
     return `${stale ? "Investment balances have not been retrieved in the past day. Sync to check for updates. " : "Investment balances from the institution’s latest available snapshot. "}Holdings and trades are not imported or counted as spending.`;
   }
+  if (item.status !== "HEALTHY") return "Bank updates need attention. Spending may be missing recent activity.";
   if (!item.lastSyncAt || item.transactionHistoryStatus === "NOT_READY") return "Bank activity is still loading. Spending totals are incomplete.";
   if (item.transactionHistoryStatus === "INITIAL_UPDATE_COMPLETE") return "Recent activity loaded; older history is still loading. Spending totals may be incomplete.";
   if (item.transactionHistoryStatus !== "HISTORICAL_UPDATE_COMPLETE") return "Bank history coverage is unconfirmed. Spending totals may be incomplete.";

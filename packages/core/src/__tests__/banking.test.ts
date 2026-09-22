@@ -19,6 +19,9 @@ it("distinguishes retrieval age, connection failure and limited bank coverage", 
 
 it("labels investment balances without implying imported spending history", () => {
   expect(bankDataNotice({ ...ready, transactionHistoryStatus: "INVESTMENT_BALANCES_ONLY" }, now)).toContain("Holdings and trades are not imported");
+  const interrupted = bankDataNotice({ ...ready, transactionHistoryStatus: "INVESTMENT_BALANCES_ONLY", status: "NEEDS_RELINK" }, now);
+  expect(interrupted).toContain("Saved balances may be out of date");
+  expect(interrupted).not.toContain("Spending may be missing");
 });
 
 it("flags old investment retrieval without presenting it as current market data", () => {
