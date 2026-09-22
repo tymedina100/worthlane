@@ -4665,3 +4665,22 @@ bank-data notices incomplete history, including healthy investment snapshots.
 The dashboard's corrected coverage/freshness wording was rendered interactively;
 mobile typecheck passed. Investment OAuth remains open after the previous loop;
 this standard-flow result does not substitute for that acceptance check.
+
+### 2026-09-22 — Recovered storage after interrupted OAuth retry
+
+The resumed Maestro job terminated with selector failure and explicit
+No space left on device errors. Disk inspection showed only114MiB free. This
+attempt adds no OAuth acceptance evidence; storage exhaustion does not establish
+the cause of the earlier completed-return loop.
+
+Within Tyler's cleanup authorization, removed seven regenerable old/failed build
+copies and the inactive WorthlaneLaptop synthetic Android development fixture.
+No Android emulator process was running. Retained WorthlaneRelease, all iOS
+devices, current development/recovery packages, signed Mac package, credentials,
+source and databases. Available space increased to3.5GiB. Exact removal inventory
+is local `.tmp/storage-cleanup-20260922.json`.
+
+Stopped only the current local API/Metro processes and isolated PostgreSQL cluster
+while recovering space; restored generated next-env noise. Restart those services
+before resuming native investment OAuth. Latest completed standard-native
+lifecycle evidence remains unchanged; goal and OAuth gate remain open.
