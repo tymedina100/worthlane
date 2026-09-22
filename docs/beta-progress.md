@@ -5038,3 +5038,20 @@ This closes interactive deletion-server-failure acceptance for this development
 candidate, not store-build parity or actual scheduled delivery. Current source
 bc331be had all four CI295 jobs pass before this evidence-only change. No
 production deployment, live banking, paid activation or store submission.
+
+## September 22 — current hosted frontend version and two-login UI verified
+
+Authenticated Vercel dashboard shows isolated worthlane-beta-desktop Ready at
+3d6dc16, deploymentG2Lx6w6kjQ6wWyY52VCX7GGsqwNx. Branch pushes update this approved
+Sandbox project automatically. This resolves the unknown frontend source despite
+the connector403. Current frontend now demonstrably contains investment controls.
+
+Fresh Morgan login showed private owned account and exact $2450 category shares.
+Connect investments opened actual Plaid Sandbox Link; confirmed exit restored
+controls without exchange. Logout reached empty sign-in. Separate Avery login
+showed private$125.50 fallback, no Morgan private checking, same $2450 plan, and
+retained correct visibility/totals on reload; logout confirmed. HTTP hosted desktop
+regression also passed cookies/CSRF/privacy/refresh/logout. Full hosted investment
+connect/sync/repair/unlink remains separate; startup/cancel is not that lifecycle.
+No native artifact parity, live banking or production rollout claim. Evidence:
+`evidence/2026-09-22/current-hosted-client.json`. Temporary verification tabs closed.
