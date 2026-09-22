@@ -4762,3 +4762,30 @@ standard full rerun is `WORTHLANE_TEST_PORT=55441 bash scripts/test-postgres.sh
 Expanded TypeScript validation explicitly included integration/plaid.sandbox.ts
 in the API program with noEmit and incremental:false because normal configuration
 excludes it. Test cluster55441 was stopped; current local UI services remain live.
+
+### 2026-09-22 — Production preparation: refresh billing and webhook classification
+
+Added an explicit production-only opt-in for the separately billed Transactions
+Refresh call. Without it, manual sync retrieves available scheduled updates;
+Sandbox refresh remains testable. Unsupported Refresh products may fall back to
+sync, but authentication and institution failures are no longer swallowed.
+
+Corrected webhook routing by exact type/code: informational ITEM notices do not
+become login failures, LOGIN_REPAIRED is reachable without advancing lastSyncAt,
+and institution outages use ERROR rather than falsely asking for credentials.
+Revocation notices still retain previous imports: provider-derived data removal
+on account revocation needs separate implementation/verification. Hosted signed
+webhook delivery is also still unproven.
+
+Validation: API 248/248 and API TypeScript passed; a fresh isolated PostgreSQL run
+passed 13/13, followed by real Plaid Sandbox 3/3 (including investment repair
+preparation and provider revocation on unlink/deletion). No production calls,
+configuration changes, product activation, merge or store submission occurred.
+
+Read-only Plaid dashboard: Worthlane approved for Production; current Pay As You
+Go plan has no monthly minimum. Transactions enabled at $0.30/Item/month and
+Balance at $0.10/call in current Contracts & Rates. Investments not enabled and
+not priced there. Viewing/selecting its card was undone without Add products.
+Checking and investment scopes remain separate; private web live acceptance can
+be completed independently of store distribution, after hosted OAuth/webhook,
+privacy, persistence and approved live-pilot gates. Native OAuth remains open.

@@ -12,6 +12,25 @@ This starts API port 3301 and desktop port 3303. Mobile uses `EXPO_PUBLIC_API_UR
 
 `test-http.mjs --interactive --sandbox` is different: it creates temporary connections and revokes them on completion. It now removes their local account/transaction records too. Existing records from older test runs are not silently deleted; they may reference previously revoked Sandbox Items. Use a fresh synthetic login for persistent testing until those old fixtures are cleaned up.
 
+## Transaction sync and optional paid refresh
+
+The app's Sync action retrieves available banking transaction updates through
+`/transactions/sync`. Production skips `/transactions/refresh` unless
+`PLAID_TRANSACTIONS_REFRESH_ENABLED` is exactly `true`. Leave it unset or `false`
+until product access, current pricing and spending approval are confirmed. This
+setting does not enable the provider product or configure any live environment.
+Sandbox keeps forced refresh available for synthetic lifecycle/recovery tests,
+regardless of the production opt-in value; investment-only Items never use it.
+
+Plaid's normal update schedule continues without forced refresh. Optional refresh
+errors `PRODUCTS_NOT_SUPPORTED` and `PRODUCT_NOT_ENABLED` fall back to sync;
+authentication, consent, institution and other failures remain visible rather
+than being overwritten by a successful cached read. A successful sync means
+available updates were retrieved, not that the institution was fetched in real
+time. Sources: [Transactions API](https://plaid.com/docs/api/products/transactions/#transactionsrefresh),
+[refresh billing](https://plaid.com/docs/account/billing/#per-request-flat-fee),
+[Item errors](https://plaid.com/docs/errors/item/).
+
 ## iOS association — approved website routes published
 
 The user confirmed ownership of `worthlane.app`. The local personal Apple Development certificate has organizational unit/team ID `5FBXR5M5PJ`. This does not prove paid-program membership or entitlement availability. Do not use the separate company signing identity for Worthlane without user direction.

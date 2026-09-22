@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { PlaidItemStatus, prisma } from "@worthlane/db";
-import { isPlaidSandbox, verifyPlaidWebhook } from "@/lib/plaid";
+import { isPlaidSandbox, toPlaidIntegrationError, verifyPlaidWebhook } from "@/lib/plaid";
 import { syncPlaidItemRecord } from "@/lib/plaid-sync";
 import { err, ok } from "@/lib/response";
 import { captureServerException } from "@/lib/sentry";
@@ -41,7 +41,10 @@ export async function POST(req: NextRequest) {
     data: { lastWebhookAt: now },
   });
 
-  if (webhookCode === "SYNC_UPDATES_AVAILABLE" || (webhookType === "HOLDINGS" && webhookCode === "DEFAULT_UPDATE")) {
+  if (
+    (webhookType === "TRANSACTIONS" && webhookCode === "SYNC_UPDATES_AVAILABLE") ||
+    (webhookType === "HOLDINGS" && webhookCode === "DEFAULT_UPDATE")
+  ) {
     try {
       await syncPlaidItemRecord({ ...plaidItem, lastWebhookAt: now } as any);
     } catch (error) {
@@ -59,45 +62,10 @@ export async function POST(req: NextRequest) {
     return ok({ received: true });
   }
 
-  if (webhookCode === "PENDING_EXPIRATION") {
-    await prisma.plaidItem.update({
-      where: { id: plaidItem.id },
-      data: {
-        status: PlaidItemStatus.PENDING_EXPIRATION,
-        needsRelink: true,
-        errorCode: webhookCode,
-        errorMessage: "Your bank connection is expiring soon. Please re-link it.",
-      },
-    });
-    return ok({ received: true });
-  }
-
-  if (
-    webhookType === "ITEM" ||
-    webhookCode === "ERROR" ||
-    webhookCode === "USER_PERMISSION_REVOKED" ||
-    webhookCode === "ITEM_LOGIN_REQUIRED"
-  ) {
-    const errorCode =
-      typeof (body as any).error?.error_code === "string"
-        ? (body as any).error.error_code
-        : webhookCode;
-    const errorMessage =
-      typeof (body as any).error?.error_message === "string"
-        ? (body as any).error.error_message
-        : "Your bank connection needs attention.";
-
-    await prisma.plaidItem.update({
-      where: { id: plaidItem.id },
-      data: {
-        status: PlaidItemStatus.NEEDS_RELINK,
-        needsRelink: true,
-        errorCode,
-        errorMessage,
-      },
-    });
-    return ok({ received: true });
-  }
+  // Item webhook codes are scoped to ITEM. Informational notifications such as
+  // NEW_ACCOUNTS_AVAILABLE and WEBHOOK_UPDATE_ACKNOWLEDGED are not login errors.
+  // https://plaid.com/docs/api/items/#webhooks
+  if (webhookType !== "ITEM") return ok({ received: true });
 
   if (webhookCode === "LOGIN_REPAIRED") {
     await prisma.plaidItem.update({
@@ -109,6 +77,52 @@ export async function POST(req: NextRequest) {
         errorMessage: null,
       },
     });
+    // Login repair does not mean account data has been synced again.
+    return ok({ received: true });
+  }
+
+  if (webhookCode === "PENDING_EXPIRATION" || webhookCode === "PENDING_DISCONNECT") {
+    await prisma.plaidItem.update({
+      where: { id: plaidItem.id },
+      data: {
+        status: PlaidItemStatus.PENDING_EXPIRATION,
+        needsRelink: true,
+        errorCode: webhookCode,
+        errorMessage: webhookCode === "PENDING_DISCONNECT"
+          ? "Your bank connection will disconnect soon. Please re-link it."
+          : "Your bank connection is expiring soon. Please re-link it.",
+      },
+    });
+    return ok({ received: true });
+  }
+
+  if (
+    webhookCode === "ERROR" ||
+    webhookCode === "USER_PERMISSION_REVOKED" ||
+    webhookCode === "USER_ACCOUNT_REVOKED"
+  ) {
+    const errorCode =
+      typeof (body as any).error?.error_code === "string"
+        ? (body as any).error.error_code
+        : webhookCode;
+    const errorMessage =
+      typeof (body as any).error?.error_message === "string"
+        ? (body as any).error.error_message
+        : "Your bank connection needs attention.";
+
+    const needsRelink = webhookCode !== "ERROR" || toPlaidIntegrationError({
+      response: { data: { error_code: errorCode } },
+    }).needsRelink;
+    await prisma.plaidItem.update({
+      where: { id: plaidItem.id },
+      data: {
+        status: needsRelink ? PlaidItemStatus.NEEDS_RELINK : PlaidItemStatus.ERROR,
+        needsRelink,
+        errorCode,
+        errorMessage,
+      },
+    });
+    return ok({ received: true });
   }
 
   return ok({ received: true });

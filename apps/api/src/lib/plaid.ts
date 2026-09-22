@@ -255,6 +255,14 @@ export async function syncTransactions(accessToken: string, cursor?: string) {
 }
 
 export async function refreshTransactions(accessToken: string) {
+  // Refresh is a separately billed add-on, unlike retrieving available updates
+  // with /transactions/sync. Sandbox remains available for recovery tests.
+  const environment = process.env.PLAID_ENV ?? "sandbox";
+  if (environment !== "sandbox" &&
+    !(environment === "production" && process.env.PLAID_TRANSACTIONS_REFRESH_ENABLED === "true")) {
+    return;
+  }
+
   try {
     await plaidClient.transactionsRefresh({ access_token: accessToken });
   } catch (error) {

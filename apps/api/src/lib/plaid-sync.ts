@@ -121,8 +121,12 @@ export async function syncPlaidItemRecord(
       try {
         await refreshTransactions(accessToken);
       } catch (error) {
-        // Manual refresh should still fall back to sync if Plaid won't do a forced refresh.
-        if (!(error instanceof PlaidIntegrationError)) throw error;
+        // Some Items cannot use the optional Refresh product. Still retrieve
+        // their scheduled updates, but never hide auth or institution failures.
+        if (!(error instanceof PlaidIntegrationError) ||
+          !["PRODUCTS_NOT_SUPPORTED", "PRODUCT_NOT_ENABLED"].includes(error.code)) {
+          throw error;
+        }
       }
     }
 
