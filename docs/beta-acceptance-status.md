@@ -267,3 +267,17 @@ Plaid documentation still cautions that Simulator Universal Links can fail:
 https://plaid.com/docs/link/troubleshooting/. The installed session integration
 uses the supported create/open API. Native OAuth remains unverified; no phone
 access, SDK upgrade, production deployment or store submission occurred.
+
+## September 22 — native launch guard interactive acceptance
+
+Candidate b0bec35 passed all four CI302 jobs (35790783973). Laptop Simulator
+interaction observed all three connection controls disabled/busy during startup,
+then Plaid opened normally. Explicit cancellation restored enabled Settings. A
+fresh second launch also opened Plaid; explicit cancellation and Maestro assertions
+returned to Settings. Rapid concurrent-request suppression is separately proved
+by the source-executing regression, not inferred from sequential UI taps.
+The existing two investment accounts remained unchanged on the initial independent
+readback; calendar OS read retained exactly one owner-matched September23 9am
+Phoenix reminder. This is launch/cancel/retry acceptance, not OAuth completion.
+Evidence: `evidence/2026-09-22/native-launch-guard.json`. PR20 remains unmerged;
+no phone, production release or store submission.

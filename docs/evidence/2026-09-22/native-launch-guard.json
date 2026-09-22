@@ -1,0 +1,33 @@
+{
+  "verifiedAt": "2026-09-22T22:15:06.506959+00:00",
+  "source": "b0bec3556f8b0cd5559359e87ec847e9db6b2d18",
+  "surface": "laptop iPhone16Pro iOS18.3 development Simulator with Metro8087",
+  "interactive": [
+    "Connect investments displayed disabled/busy Connect bank, Connect investments and Repair controls",
+    "Plaid phone-optional introduction displayed",
+    "Explicit Exit and Yes exit returned to Settings with enabled controls",
+    "Second Connect investments attempt again displayed busy controls and opened Plaid",
+    "Second explicit Exit/Yes exit returned to Settings; Maestro assertions for Settings and Connect investments passed"
+  ],
+  "ci": {
+    "run": 35790783973,
+    "number": 302,
+    "allFourJobs": "success"
+  },
+  "calendar": "Independent OS read at22:11UTC retained exactly one owner-matched September23 09:00Phoenix reminder; actual delivery unobserved",
+  "limits": [
+    "Rapid concurrent requests are regression-test evidence; interactive run verified busy state and cancellation/retry",
+    "No bank authorization or OAuth exchange in this check",
+    "No production or phone access"
+  ],
+  "finalReadback": {
+    "time": "2026-09-22T22:15:11.893Z",
+    "sameAccountsAndBalances": true,
+    "accounts": 2,
+    "netWorth": 23952.74,
+    "transactions": 0,
+    "spending": 0,
+    "providerError": null,
+    "status": "HEALTHY"
+  }
+}
