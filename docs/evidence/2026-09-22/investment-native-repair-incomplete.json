@@ -1,0 +1,17 @@
+{
+  "action": "check",
+  "status": "NEEDS_RELINK",
+  "needsRelink": true,
+  "errorCode": "ITEM_LOGIN_REQUIRED",
+  "history": "INVESTMENT_BALANCES_ONLY",
+  "accounts": 2,
+  "sameAccountsAndBalances": true,
+  "transactions": 0,
+  "netWorth": 23952.74,
+  "monthlySpending": 0,
+  "billedProducts": [
+    "investments"
+  ],
+  "providerErrorCode": "ITEM_LOGIN_REQUIRED",
+  "at": "2026-09-22T18:46:34.218Z"
+}

@@ -4789,3 +4789,16 @@ not priced there. Viewing/selecting its card was undone without Add products.
 Checking and investment scopes remain separate; private web live acceptance can
 be completed independently of store distribution, after hosted OAuth/webhook,
 privacy, persistence and approved live-pilot gates. Native OAuth remains open.
+
+Native investment update-mode attempt: seeded a known two-account Investments-only
+Sandbox Item via API (not an interactive creation), forced ITEM_LOGIN_REQUIRED,
+and observed Needs relink with retained balances in the development Simulator.
+Relink reached First Platypus Bank's password screen. Published pass_good was
+visually checked after entry, but repeated submission showed Incorrect credentials;
+actual repair is NOT passed and the cause remains unproven. Independent API,
+Prisma and provider readback retains the same Item/account IDs and balances,
+$23,952.74 net worth, zero transactions/spending, Investments-only billed products,
+and ITEM_LOGIN_REQUIRED. Evidence: investment-native-repair-incomplete.json.
+
+CI283 at code45e7e37 completed SUCCESS:
+https://github.com/tymedina100/worthlane/actions/runs/35768141270.
