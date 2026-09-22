@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { validateLiveLinkConfiguration } from "./plaid-link-configuration";
 import jwt from "jsonwebtoken";
 import {
   Configuration,
@@ -183,6 +184,7 @@ export async function createLinkToken(
     includeLiabilities?: boolean;
   }
 ) {
+  validateLiveLinkConfiguration(options.platform);
   const request: LinkTokenCreateRequest = {
     user: { client_user_id: userId },
     client_name: "Worthlane",

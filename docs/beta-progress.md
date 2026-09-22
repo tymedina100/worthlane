@@ -4492,3 +4492,35 @@ account was absent. Initial connection-recovery cause remains unproven.
 No notarization upload, public distribution, live bank connection, main merge or
 store submission occurred. Continue provider-rights/compliance and scoped release
 verification; do not treat this package check as production banking acceptance.
+
+### September 22 — institution coverage and live Link configuration guard
+
+Read-only Worthlane Plaid dashboard inspection now shows Chase and Charles Schwab
+OAuth Enabled (superseding the earlier Schwab access-request state). Wells Fargo
+ins_127991 and Desert Financial ins_114213 detail panels list Transactions and
+Balance support. Coverage is not a successful live connection or a claim that all
+institution entitlements are approved. Transactions and Balance remain Enabled;
+Investments and Liabilities are not enabled. Compliance Center still says Action
+required. No product activation, paid call or real account connection occurred.
+
+Source audit: account import already maps investment accounts and their balances,
+but Link requires Transactions and sync always calls transactions/sync. Holdings
+and investment activity are not implemented. Brokerage/retirement support needs
+an explicit product-aware connection/sync path and separate acceptance; do not
+promise it based on the account enum or institution OAuth status. Plaid documents
+that Investments initialization can incur a Holdings subscription even before
+calling its data endpoint: https://plaid.com/docs/link/initializing-products/.
+
+Added validateLiveLinkConfiguration before provider Link-token creation. Production
+requires credentials/encryption key, HTTPS webhook and platform return settings;
+unknown environments and malformed/credential-bearing callbacks are rejected
+without echoing their values. Sandbox defaults remain unchanged. This validates
+configuration shape/presence only, not DNS reachability, credential validity,
+provider allowlists or delivery. It deliberately leaves production blocked when
+required configuration is missing rather than creating an unusable live session.
+
+Validation: API suite190/190 passed before adding one provider-boundary regression;
+then focused24/24 and API typecheck passed. The additional regression proves a
+missing production webhook prevents calling Plaid. No schema or production changes.
+Next: complete scoped production configuration review and investment connection
+implementation, then persisted Sandbox/UI checks before requesting live rollout.
