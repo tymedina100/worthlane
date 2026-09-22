@@ -21,3 +21,11 @@ JavaScript patch and must not be described as containing these changes.
 Next: verify current CI, refresh candidate parity, and continue the separate
 platform/privacy/reviewer gates. Dependency work does not prove employee-device
 scanning, centralized identity, consumer MFA or other outstanding Plaid claims.
+
+## September 22 candidate recheck
+
+`corepack pnpm audit --prod --json` again reports 2 high/4 moderate, zero critical
+findings. `node --test scripts/test-router-query-decoder.mjs
+scripts/test-metro-image-parsers.mjs` passes all four tests against the installed
+actual callers. This confirms the documented mitigations remain present; it does
+not remove the registry findings or certify unrelated security controls.

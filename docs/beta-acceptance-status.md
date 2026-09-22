@@ -246,3 +246,24 @@ through the API, not browser unlink. The earlier stuck IAB confirmation was clos
 and no longer requires Tyler. Native OAuth, final artifacts and actual calendar
 reminder delivery remain open. No production or store action occurred.
 Evidence: `evidence/2026-09-22/hosted-investment-warning.json`.
+
+## September 22 — native launch race and dependency recheck
+
+Repeated Connect bank/Connect investments/Repair taps could overlap token requests
+and SDK session creation; SDK13.2.0 resets its global callbacks on each create.
+A synchronous ref guard now prevents overlapping startup, with disabled/busy
+controls and release on success, failure or a stale login. This guard ends after
+native presentation; it is not a claim to manage the entire native session.
+Tests execute the actual profile launch function. The old source produces three
+requests instead of one; current tests pass for overlap during token/SDK creation,
+token/presentation failure retries and a login change. Auth/privacy suite26/26
+and mobile typecheck pass. Interactive rapid-tap verification remains pending.
+This is a separately demonstrated race, not a proven cause or fix for OAuth.
+
+Fresh production dependency audit still reports2high/4moderate, no criticals.
+All four actual Metro-image/router-decoder mitigation tests pass. No advisories
+were suppressed; caller limitations in dependency-security-status.md still apply.
+Plaid documentation still cautions that Simulator Universal Links can fail:
+https://plaid.com/docs/link/troubleshooting/. The installed session integration
+uses the supported create/open API. Native OAuth remains unverified; no phone
+access, SDK upgrade, production deployment or store submission occurred.
