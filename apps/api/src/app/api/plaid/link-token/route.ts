@@ -12,6 +12,7 @@ const schema = z.object({
   mode: z.enum(["create", "update"]),
   plaidItemId: z.string().optional(),
   includeLiabilities: z.boolean().optional(),
+  purpose: z.enum(["banking", "investments"]).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -47,6 +48,7 @@ export async function POST(req: NextRequest) {
       platform: parsed.data.platform,
       mode: parsed.data.mode,
       accessToken,
+      ...(parsed.data.purpose ? { purpose: parsed.data.purpose } : {}),
       ...(parsed.data.includeLiabilities ? { includeLiabilities: true } : {}),
     });
 
@@ -76,6 +78,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return err(error instanceof Error ? error.message : "Could not create a Plaid link token.", 500);
+    return err("Bank linking could not start. Try again later or add a manual account.", 500);
   }
 }

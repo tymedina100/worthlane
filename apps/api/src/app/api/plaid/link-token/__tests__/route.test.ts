@@ -58,6 +58,19 @@ describe("POST /api/plaid/link-token", () => {
     expect(JSON.stringify(payload)).not.toContain("PLAID_SECRET");
   });
 
+  it("passes an explicit investment purpose and rejects unknown purposes", async () => {
+    expect((await POST(request({ platform: "web", mode: "create", purpose: "investments" }))).status).toBe(200);
+    expect(mockCreateLinkToken).toHaveBeenCalledWith("user-1", expect.objectContaining({ purpose: "investments" }));
+    mockCreateLinkToken.mockClear();
+    expect((await POST(request({ platform: "web", mode: "create", purpose: "trading" }))).status).toBe(400);
+    expect(mockCreateLinkToken).not.toHaveBeenCalled();
+  });
+  it("does not expose server configuration details to the client", async () => {
+    mockCreateLinkToken.mockRejectedValueOnce(new Error("PLAID_SECRET internal detail"));
+    const response = await POST(request({ platform: "web", mode: "create" }));
+    expect(response.status).toBe(500);
+    expect(JSON.stringify(await response.json())).not.toContain("PLAID_SECRET");
+  });
   it("rejects an unknown client platform", async () => {
     const response = await POST(request({ platform: "desktop", mode: "create" }));
 

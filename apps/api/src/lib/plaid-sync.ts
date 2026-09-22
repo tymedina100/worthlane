@@ -2,12 +2,13 @@ import {
   PlaidItemStatus,
   prisma,
 } from "@worthlane/db";
+import { Products } from "plaid";
 import { applyPlaidSyncBatch } from "./plaid-reconciliation";
 import { savePlaidAccounts } from "./plaid-accounts";
 import { bankHistoryStatus } from "@worthlane/core";
 import {
   decryptPlaidAccessToken,
-  getAccounts,
+  getAccountSnapshot,
   PlaidIntegrationError,
   refreshTransactions,
   syncTransactions,
@@ -29,9 +30,15 @@ async function upsertAccountsForItem(item: {
   accessTokenEncrypted: string;
 }) {
   const accessToken = decryptPlaidAccessToken(item.accessTokenEncrypted);
-  const plaidAccounts = await getAccounts(accessToken);
-  const accountMap = await savePlaidAccounts(item, plaidAccounts);
-  return { accessToken, accountMap };
+  const snapshot = await getAccountSnapshot(accessToken);
+  // Provider product metadata is authoritative. Never initialize Transactions
+  // on a brokerage-only connection merely because the user pressed Sync.
+  const investmentOnly = snapshot.products.includes(Products.Investments) && !snapshot.products.includes(Products.Transactions);
+  if (!investmentOnly && !snapshot.products.includes(Products.Transactions)) {
+    throw new PlaidIntegrationError("This connection has no supported data product. Reconnect with the intended account type.", { code: "PLAID_PRODUCT_MISSING", status: 409 });
+  }
+  const accountMap = await savePlaidAccounts(item, snapshot.accounts);
+  return { accessToken, accountMap, investmentOnly };
 }
 
 export async function syncPlaidItemById(
@@ -96,7 +103,15 @@ export async function syncPlaidItemRecord(
   const now = new Date();
 
   try {
-    const { accessToken, accountMap } = await upsertAccountsForItem(item);
+    const { accessToken, accountMap, investmentOnly } = await upsertAccountsForItem(item);
+
+    if (investmentOnly) {
+      await prisma.plaidItem.update({ where: { id: item.id }, data: {
+        transactionHistoryStatus: "INVESTMENT_BALANCES_ONLY", lastSyncAt: now,
+        status: "HEALTHY", needsRelink: false, errorCode: null, errorMessage: null,
+      } });
+      return { plaidItemId: item.id, added: 0, modified: 0, removed: 0 };
+    }
 
     if (options.refresh) {
       try {

@@ -26,3 +26,4 @@ corepack pnpm --filter @worthlane/db db:generate
 corepack pnpm --filter @worthlane/db db:migrate:deploy
 corepack pnpm --filter @worthlane/api exec vitest run --config vitest.integration.config.ts
 if [[ "${1:-}" == --http ]]; then node scripts/test-http.mjs; fi
+if [[ "${1:-}" == --sandbox ]]; then node scripts/run-plaid-integration.mjs; fi

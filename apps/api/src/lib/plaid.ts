@@ -182,18 +182,22 @@ export async function createLinkToken(
     mode: PlaidLinkMode;
     accessToken?: string;
     includeLiabilities?: boolean;
+    purpose?: "banking" | "investments";
   }
 ) {
   validateLiveLinkConfiguration(options.platform);
+  if (options.purpose === "investments" && !isPlaidSandbox() && process.env.PLAID_INVESTMENTS_ENABLED !== "true") {
+    throw new PlaidIntegrationError("Investment connections are not enabled here. Use manual entry.", { status: 503, code: "INVESTMENTS_DISABLED" });
+  }
   const request: LinkTokenCreateRequest = {
     user: { client_user_id: userId },
     client_name: "Worthlane",
-    products: options.mode === "create" ? [Products.Transactions] : undefined,
+    products: options.mode === "create" ? [options.purpose === "investments" ? Products.Investments : Products.Transactions] : undefined,
     additional_consented_products: options.includeLiabilities ? [Products.Liabilities] : undefined,
     country_codes: [CountryCode.Us],
     language: "en",
     webhook: getWebhookUrl(),
-    transactions: options.mode === "create" ? { days_requested: 730 } : undefined,
+    transactions: options.mode === "create" && options.purpose !== "investments" ? { days_requested: 730 } : undefined,
   };
 
   if (options.platform === "ios") {
@@ -259,9 +263,13 @@ export async function refreshTransactions(accessToken: string) {
 }
 
 export async function getAccounts(accessToken: string) {
+  return (await getAccountSnapshot(accessToken)).accounts;
+}
+
+export async function getAccountSnapshot(accessToken: string) {
   try {
     const response = await plaidClient.accountsGet({ access_token: accessToken });
-    return response.data.accounts;
+    return { accounts: response.data.accounts, products: response.data.item.products ?? response.data.item.billed_products };
   } catch (error) {
     throw toPlaidIntegrationError(error, "Could not load institution accounts right now.");
   }

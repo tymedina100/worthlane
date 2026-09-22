@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     data: { lastWebhookAt: now },
   });
 
-  if (webhookCode === "SYNC_UPDATES_AVAILABLE") {
+  if (webhookCode === "SYNC_UPDATES_AVAILABLE" || (webhookType === "HOLDINGS" && webhookCode === "DEFAULT_UPDATE")) {
     try {
       await syncPlaidItemRecord({ ...plaidItem, lastWebhookAt: now } as any);
     } catch (error) {

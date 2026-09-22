@@ -351,7 +351,7 @@ export default function ProfileScreen() {
     ].map((key) => queryClient.invalidateQueries({ queryKey: [key] })));
   };
 
-  const launchPlaid = async (mode: "create" | "update", plaidItemId?: string) => {
+  const launchPlaid = async (mode: "create" | "update", plaidItemId?: string, purpose: "banking" | "investments" = "banking") => {
     const linkingUserId = useAuthStore.getState().userId;
     if (!linkingUserId) return;
     try {
@@ -359,6 +359,7 @@ export default function ProfileScreen() {
         platform: Platform.OS === "ios" ? "ios" : "android",
         mode,
         plaidItemId,
+        purpose,
       });
       if (useAuthStore.getState().userId !== linkingUserId) return;
 
@@ -617,6 +618,18 @@ export default function ProfileScreen() {
               </Text>
             </TouchableOpacity>
           </View>
+
+          {PLAID_ENABLED ? (
+            <View>
+              <TouchableOpacity accessibilityRole="button" style={styles.secondaryButton} onPress={() => {
+                if (!isPremium && plaidItems.length >= 1) { router.push("/paywall" as any); return; }
+                launchPlaid("create", undefined, "investments");
+              }}>
+                <Text style={styles.secondaryButtonText}>Connect investments</Text>
+              </TouchableOpacity>
+              <Text style={styles.sectionSubtitle}>Connect brokerage and retirement balances for net worth. Holdings and trades are not imported. Connect checking separately for spending.</Text>
+            </View>
+          ) : null}
 
           {PLAID_ENABLED || plaidItems.length > 0 ? (
             <TouchableOpacity

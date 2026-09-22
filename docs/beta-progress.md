@@ -4524,3 +4524,37 @@ then focused24/24 and API typecheck passed. The additional regression proves a
 missing production webhook prevents calling Plaid. No schema or production changes.
 Next: complete scoped production configuration review and investment connection
 implementation, then persisted Sandbox/UI checks before requesting live rollout.
+
+### September 22 — investment-only balance connections implemented
+
+Added explicit banking/investments Link purpose, separate desktop/mobile Connect
+investments controls and strict desktop proxy validation. Investment creation
+requests Investments only, so brokerage-only users do not need a checking account.
+Production requires PLAID_INVESTMENTS_ENABLED=true in addition to normal live
+configuration; it remains unset/unmodified here. No provider product was enabled.
+
+Sync derives initialized products from Plaid's accounts response, not client
+assertions. Investment-only connections save account balances and a distinct
+INVESTMENT_BALANCES_ONLY history state without calling transactions/sync or
+transactions/refresh. Mixed Items retain ordinary spending sync. Holdings update
+webhooks trigger account refresh. UI notices state the snapshot limitation and
+that holdings/trades are not imported, with a stale retrieval warning after a day.
+This delivers the balance connection path; it does not implement a holdings or
+investment-performance product. No schema migration is needed. Generic Link
+configuration errors no longer expose internal variable names to end users.
+
+Verified commands/results:
+- API/core tests:198/52 passed; API/mobile/desktop/core typechecks passed.
+- `bash scripts/test-postgres.sh --sandbox`:13 isolated PostgreSQL tests and3 real
+  Plaid Sandbox tests passed. New investment test creates Link, exchanges/saves,
+  repeats refresh with stable account IDs and zero spending rows, verifies Plaid
+  has not added the Transactions product, rejects the other login and unlinks with
+  provider ITEM_NOT_FOUND verification. Existing banking and deletion tests pass.
+- `pnpm --filter @worthlane/desktop build`:passed.
+- React checklist reviewed; no new eager provider SDK or effect-driven requests.
+
+Interactive new-control/Link acceptance on desktop and native remains open; do
+not infer it from API tests. These Sandbox tests do not prove Schwab Production
+coverage. Next run the actual investment UI journey, then prepare scoped provider
+activation/pricing and production configuration approval. No main merge, live
+bank Item, paid product activation or store submission.

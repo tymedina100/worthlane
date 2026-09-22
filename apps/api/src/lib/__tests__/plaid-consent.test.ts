@@ -13,6 +13,19 @@ describe("Link product consent", () => {
     await expect(createLinkToken("user", { platform: "web", mode: "create" })).rejects.toThrow("PLAID_WEBHOOK_URL");
     expect(create).not.toHaveBeenCalled();
   });
+  it("initializes investment connections without requiring spending transactions", async () => {
+    vi.stubEnv("PLAID_ENV", "sandbox");
+    const create = vi.spyOn(plaidClient, "linkTokenCreate").mockResolvedValue({ data: { link_token: "test" } } as any);
+    await createLinkToken("user", { platform: "web", mode: "create", purpose: "investments" });
+    expect(create.mock.calls[0][0].products).toEqual([Products.Investments]);
+    expect(create.mock.calls[0][0].transactions).toBeUndefined();
+  });
+  it("blocks live Investments unless explicitly enabled", async () => {
+    for (const [key, value] of Object.entries({ PLAID_ENV: "production", PLAID_CLIENT_ID: "synthetic", PLAID_SECRET: "synthetic", PLAID_TOKEN_ENCRYPTION_KEY: "synthetic", PLAID_WEBHOOK_URL: "https://api.example.com/webhook", PLAID_WEB_REDIRECT_URI: "https://app.example.com/return", PLAID_INVESTMENTS_ENABLED: "false" })) vi.stubEnv(key, value);
+    const create = vi.spyOn(plaidClient, "linkTokenCreate");
+    await expect(createLinkToken("user", { platform: "web", mode: "create", purpose: "investments" })).rejects.toThrow("not enabled");
+    expect(create).not.toHaveBeenCalled();
+  });
   it("keeps ordinary creation transaction-only", async () => {
     const create = vi.spyOn(plaidClient, "linkTokenCreate").mockResolvedValue({ data: { link_token: "test" } } as any);
     await createLinkToken("user", { platform: "web", mode: "create" });
