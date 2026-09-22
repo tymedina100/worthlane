@@ -80,3 +80,18 @@ fixture; unsigned/invalid requests were rejected. Existing owner53/partner396
 ledgers, private fallback, $2,450 household plan and debt/due-date checks survived
 deployment and cleanup. See `evidence/2026-09-22/hosted-signed-webhook.json`. The
 consentRevision migration is Sandbox-only; production and store gates remain.
+
+## September 22 — native investment repair verified
+
+First Platypus non-OAuth investment update mode now passes in the laptop iOS
+development Simulator. An API-created, forced-expired Sandbox Item was repaired
+interactively; clearing/retyping the public test password resolved the prior
+rejection. Worthlane displayed Connection repaired and Healthy. Independent
+API/DB/provider readback preserved exact account IDs/balances: two investment
+accounts, $23,952.74 net worth, zero transactions/spending, Investments product
+only, and no remaining provider login error. Repeat native sync and cold launch
+preserved totals and the signed-in session. Fixture retained for further checks.
+
+This supersedes the earlier non-OAuth repair blocker, not the native OAuth return
+blocker. No live bank, paid product, production deployment, main merge, or store
+submission occurred. [Evidence](evidence/2026-09-22/investment-native-repair.json).

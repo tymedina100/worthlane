@@ -122,3 +122,18 @@ approved isolated API. Signature enforcement, actual provider-signed full-Item
 revocation, fixture cleanup and preserved two-login ledger/planning checks pass.
 Evidence: `evidence/2026-09-22/hosted-signed-webhook.json`. Native investment repair
 and OAuth remain open; this is not a live-bank or store-binary pass.
+
+## September 22 — native investment repair verified
+
+First Platypus non-OAuth investment update mode now passes in the laptop iOS
+development Simulator. An API-created, forced-expired Sandbox Item was repaired
+interactively; clearing/retyping the public test password resolved the prior
+rejection. Worthlane displayed Connection repaired and Healthy. Independent
+API/DB/provider readback preserved exact account IDs/balances: two investment
+accounts, $23,952.74 net worth, zero transactions/spending, Investments product
+only, and no remaining provider login error. Repeat native sync and cold launch
+preserved totals and the signed-in session. Fixture retained for further checks.
+
+This supersedes the earlier non-OAuth repair blocker, not the native OAuth return
+blocker. No live bank, paid product, production deployment, main merge, or store
+submission occurred. [Evidence](evidence/2026-09-22/investment-native-repair.json).
