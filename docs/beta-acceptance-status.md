@@ -192,3 +192,19 @@ The new tests are wired into existing CI. Interactive failure injection remains
 unverified because the Mac is locked. The September23 calendar fixture was not
 deleted or modified. Prior runtime402387e CI292 completed all four jobs
 successfully; this new change needs its own CI. No production/store actions.
+
+## September 22 — hosted investment connection and update verified
+
+Fresh synthetic solo onboarding on the isolated hosted frontend completed without
+an invitation. IAB Plaid Sandbox Betterment connection saved exactly IRA $320.76
+and 401k $23,631.98, both Personal. UI Sync, reload and Reconnect/update-mode selection
+completed. Fresh API login verified exact account/Item IDs and balances retained,
+ $23,952.74 net worth, zero spending/transactions and INVESTMENT_BALANCES_ONLY.
+CI 297 for 0849086 passed. No runtime source changed in this milestone.
+
+Unlink is pending the IAB JavaScript confirmation; browser dialog APIs could not
+observe/accept it, so user assistance was requested. Forced-expiration hosted
+repair and OAuth are separate unresolved checks. Platypus OAuth did not open its
+authorization window. Chrome remained blank after dismissing its storage notice;
+4.9 GiB free, no browser data deleted. Evidence:
+`evidence/2026-09-22/hosted-investment-ui.json`. No production/store action.

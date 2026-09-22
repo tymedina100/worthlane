@@ -4651,7 +4651,7 @@ No production changes, store submission, or real banking occurred.
 
 Current development Simulator client completed First Platypus standard Link,
 exchange and sync. Exactly two investment accounts persisted (IRA320.76,
-401k23631.98), with23952.74 net worth and0 spending/income. Repeat native Sync
+401k23631.98), with $23,952.74 net worth and0 spending/income. Repeat native Sync
 completed, and a full terminate/relaunch preserved those totals. Native Unlink
 confirmation removed the connection; a second full restart shows0 visible net
 worth. Fresh API reads and independent PostgreSQL counts confirm0 accounts,
@@ -5055,3 +5055,19 @@ regression also passed cookies/CSRF/privacy/refresh/logout. Full hosted investme
 connect/sync/repair/unlink remains separate; startup/cancel is not that lifecycle.
 No native artifact parity, live banking or production rollout claim. Evidence:
 `evidence/2026-09-22/current-hosted-client.json`. Temporary verification tabs closed.
+
+## September 22 — hosted investment connection and update verified
+
+Fresh synthetic solo onboarding on the isolated hosted frontend completed without
+an invitation. IAB Plaid Sandbox Betterment connection saved exactly IRA $320.76
+and 401k $23,631.98, both Personal. UI Sync, reload and Reconnect/update-mode selection
+completed. Fresh API login verified exact account/Item IDs and balances retained,
+ $23,952.74 net worth, zero spending/transactions and INVESTMENT_BALANCES_ONLY.
+CI 297 for 0849086 passed. No runtime source changed in this milestone.
+
+Unlink is pending the IAB JavaScript confirmation; browser dialog APIs could not
+observe/accept it, so user assistance was requested. Forced-expiration hosted
+repair and OAuth are separate unresolved checks. Platypus OAuth did not open its
+authorization window. Chrome remained blank after dismissing its storage notice;
+4.9 GiB free, no browser data deleted. Evidence:
+`evidence/2026-09-22/hosted-investment-ui.json`. No production/store action.
