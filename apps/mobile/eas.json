@@ -61,7 +61,8 @@
         "EXPO_PUBLIC_ENABLE_AI": "false",
         "EXPO_PUBLIC_ENABLE_PAYWALL": "false",
         "SENTRY_DISABLE_AUTO_UPLOAD": "true"
-      }
+      },
+      "environment": "preview"
     }
   },
   "submit": {

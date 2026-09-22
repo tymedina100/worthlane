@@ -102,6 +102,7 @@ test('store-format Sandbox candidate retains isolation without submission config
 test('local Sandbox development client is Simulator-only and rejects inherited services', () => {
   const profile = eas.build['sandbox-development-simulator'];
   assert.equal(profile.extends, 'development');
+  assert.equal(profile.environment, 'preview');
   assert.equal(eas.build.development.developmentClient, true);
   assert.equal(eas.build.development.distribution, 'internal');
   assert.equal(profile.ios.simulator, true);
