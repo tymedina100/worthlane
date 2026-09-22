@@ -4604,3 +4604,21 @@ with Alex, 900 visible net worth and the 600 groceries budget. Local test API an
 PostgreSQL were stopped. Native investment testing requires a proper rebuilt
 client; investment OAuth return and production Investments entitlement/pricing
 remain open. TylerOS project and Plaid task updated with this boundary.
+
+### 2026-09-22 — Proper native investment development client building
+
+Added guarded `sandbox-development-simulator` profile for local API3101,
+Simulator development modules and disabled telemetry/AI/paywall. It explicitly
+uses EAS's isolated preview environment. Eight release/configuration tests pass;
+full API regression now passes199/199. Changes pushed at7f3a386.
+
+Expo billing currently shows Free,7/15 iOS and7/15 Android builds before this
+attempt, with a0 estimate. First build0844ba4d-0a5f-4cdc-8350-6afb8876accb inherited
+shared development telemetry settings; canceled successfully before using any
+artifact. Corrected profile uses preview, which EAS reports has no plain/sensitive
+environment variables. No production settings were changed.
+
+Clean tracked-source archive uploaded; new internal iOS build
+95061ba9-de4d-485a-a828-df072e9b57d2 is verified IN_PROGRESS. This is a local
+Simulator development client, not a store submission. Install and native investment
+acceptance remain pending. TylerOS project/Plaid task updated.
