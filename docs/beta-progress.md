@@ -4684,3 +4684,81 @@ Stopped only the current local API/Metro processes and isolated PostgreSQL clust
 while recovering space; restored generated next-env noise. Restart those services
 before resuming native investment OAuth. Latest completed standard-native
 lifecycle evidence remains unchanged; goal and OAuth gate remain open.
+
+### 2026-09-22 — Investment repair preparation and local diagnostic privacy
+
+Pushed `36ef044`. Extended the real Plaid Sandbox investment integration to force
+login expiration: the Item stays NEEDS_RELINK while saved balances/account IDs
+and lastSyncAt remain unchanged. Only the owner can request update-mode tokens;
+default and explicit investment requests do not initialize Transactions. Token
+creation does not falsely clear the error. Zero spending and cross-login privacy
+remain intact, and unlink still revokes the provider token. The focused test
+passed against a fresh PostgreSQL17 cluster on port55441, which was then stopped.
+Actual investment Link reauthentication remains a separate interactive gate.
+
+Added development-only native Link diagnostics with fixed event/view/error
+vocabularies. Raw URLs, provider free text, names, masks and identifiers are never
+copied; release builds return before inspecting metadata. `node --test
+scripts/test-mobile-diagnostics.mjs` passes5/5, mobile typecheck and the expanded
+API/integration TypeScript check pass. Independent review found no blocker and
+added the explicit INCORRECT_OAUTH_NONCE vocabulary.
+
+Local API3101/Metro8087/database restarted after storage recovery;4.8GiB free
+was observed. Native retry now visibly verifies both IRA/401k checkboxes before
+authorization. No completed OAuth exchange is claimed yet. TylerOS project and
+Plaid task updated. Main freshly rechecked at4b22bec; CI281/35765231000 on36ef044
+is running, not yet a pass. No production deployment or store submission.
+
+### 2026-09-22 — Verified selection still reproduces native investment OAuth loop
+
+The fresh diagnostic retry visibly checked IRA and401k, continued through the
+Sandbox bank's authorization, and returned to native Plaid. It again showed
+Continue to login, without successful exchange. Clean Yes-exit returned to usable
+Settings/Nothing linked yet. Fresh API read has0accounts/Items/net worth/spending.
+Fourteen fixed-vocabulary events were captured through EXIT with no error code;
+no FAIL_OAUTH or ERROR event was observed. This is a recorded incomplete flow,
+not a successful OAuth connection or a proven root cause. Evidence:
+`evidence/2026-09-22/investment-native-oauth-retry.json`.
+
+Plaid's current official troubleshooting page warns Universal Links may not always
+work in Simulator and recommends physical-device verification. This does not
+diagnose this failure; Tyler's laptop-only boundary remains in force. Continuing
+independent saved-session startup/retry verification rather than counting another
+return-to-app as acceptance.
+
+CI281/35765231000 on36ef044 completed successfully in all four jobs: PostgreSQL17,
+PostgreSQL18, shared/client/API regressions and typechecks/mobile bundle/API +
+desktop + web builds, and Windows packaging. Main remains4b22bec; no merge.
+
+### 2026-09-22 — Native saved-session failure and Retry verified
+
+Temporarily injected a first-attempt rejection at the hydration read boundary
+in the local development bundle, before SecureStore reads. After full launch,
+Computer Use showed the saved-session error, reassurance and Try again button.
+Maestro tapped Retry; the existing Investment test household reappeared without
+credential entry. Restored auth.ts byte-for-byte (SHA256ff8fb2e0…a8e10ff and empty
+git diff), then full stop/launch again reopened the same saved household. Both
+Maestro assertions and independent screenshots passed. No persisted credential
+was edited or deleted; no failure-injection code is committed.
+
+Evidence: `evidence/2026-09-22/native-startup-retry.json`. This proves the local
+native recovery UI for a read rejection; it is not an actual Keychain outage,
+15-second timeout observation or store-format execution. Earlier startup/ANR
+causes remain unknown. Disk remains4.5GiB free.
+
+Read-only OAuth configuration cross-check: installed development executable equals
+the downloaded95061ba9 artifact. Its arm64 Mach-O entitlements contain exact
+5FBXR5M5PJ.com.worthlane.mobile and applinks:worthlane.app. Website and Apple CDN
+AASA both return200 application/json without redirects and map /plaid-oauth to
+that same ID. No association mismatch was found. Per-device cache, the actual
+failed-session redirect parameter and SDK state handling remain unproven.
+
+Repair regression reproducibility: focused Vitest arguments were `run --config
+vitest.sandbox.config.ts integration/plaid.sandbox.ts -t "persists investment
+balances"` from apps/api, with a fresh loopback PostgreSQL17 database, migrated
+schema, explicit Sandbox credentials and disabled email/telemetry/paid AI. Safe
+standard full rerun is `WORTHLANE_TEST_PORT=55441 bash scripts/test-postgres.sh
+--sandbox`; that repeats the full isolated suite rather than only the focused case.
+Expanded TypeScript validation explicitly included integration/plaid.sandbox.ts
+in the API program with noEmit and incremental:false because normal configuration
+excludes it. Test cluster55441 was stopped; current local UI services remain live.

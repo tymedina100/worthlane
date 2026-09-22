@@ -1,0 +1,22 @@
+{
+  "date": "2026-09-22",
+  "source": "36ef044",
+  "surface": "laptop iOS18.3 iPhone16Pro Simulator; development build95061ba9, current Metro8087",
+  "environment": "isolated local Sandbox API3101 and synthetic saved household",
+  "method": "Temporarily inject an Error at the first hydration read boundary, before SecureStore reads. The injected branch did not write credentials or persisted values. Subsequent attempts execute the ordinary hydrate path.",
+  "observed": [
+    "Full app launch displayed Lets try opening Worthlane again with saved-session error and Try again button",
+    "Try again restored the existing Investment test household with0net worth without credential entry",
+    "Temporary injection removed; auth.ts hash exactly matches original",
+    "Full stop/launch with restored source reopened same household without credential entry"
+  ],
+  "restoredAuthSha256": "ff8fb2e0e5e9416fec6fa982ae291f44f65591ac528de4edd71ba2b01a8e10ff",
+  "verification": [
+    "Maestro retry visible-household assertion passed",
+    "Maestro restored cold-launch assertion passed",
+    "Computer Use screenshots independently verified failure screen and both recovered household views",
+    "git diff --exit-code -- apps/mobile/src/store/auth.ts passed"
+  ],
+  "result": "Local native recovery UI and preserved-session retry passed",
+  "limits": "Injected rejection at read boundary, not an actual Keychain outage or timeout. Does not establish the cause of earlier simulator/Mac startup delays or store-format binary execution. Temporary source injection was not committed."
+}

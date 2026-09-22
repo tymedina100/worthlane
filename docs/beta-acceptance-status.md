@@ -1,76 +1,75 @@
-# Beta acceptance status — September 14, 2026
+# Beta acceptance status — updated September 22, 2026
 
 Source of requirements: [Worthlane brief](https://app.notion.com/p/3d57f32d407581d9a9eafcdb4d5ac152).
-Current code baseline: main `4b22bec` (PR19), confirmed September18.
-Hosted evidence branch: `codex/hosted-sandbox-acceptance`; standalone iOS artifact verified from `79d8ae9` on September 18.
-Current gates: [completion audit](beta-completion-audit.md).
-Hosted evidence and limits: [hosted Sandbox acceptance](hosted-sandbox.md).
-The dated chronology below includes historical release/provider states; it is not
-an assertion that PR15 remains open or that earlier portal states are current.
-The beta is **not complete**. This index separates evidence already recorded from
-the final platform and persisted-journey audit still open. Detailed chronology and exact commands
-are in [beta-progress.md](beta-progress.md).
+The beta goal remains **active, not complete**. This index summarizes dated
+acceptance evidence; it does not freshly verify deployed code, provider settings
+or every journey. The [completion audit](beta-completion-audit.md) separates the
+original beta requirements, added investment scope and release/provider gates.
+Exact commands, failures and superseded states remain in
+[beta-progress.md](beta-progress.md) and [hosted-sandbox.md](hosted-sandbox.md).
 
-| Required outcome | Evidence and remaining limit |
+The recorded main baseline is `4b22bec` (approved PR19 merge, rechecked September 22).
+Subsequent work is on the pushed `codex/hosted-sandbox-acceptance` branch / PR20;
+that branch is not merged. Isolated hosted Sandbox deployments and native
+artifacts have separate source versions; do not call the main baseline or a
+particular artifact the current deployment without checking it.
+
+## Original beta requirements
+
+| Required outcome | Recorded evidence and remaining limit |
 | --- | --- |
-| Solo onboarding; invitation before partner registration; separate consenting logins; maximum two members | `apps/api/integration/household.test.ts` and `scripts/test-http.mjs` exercise registration, invitation token replacement/acceptance, access before consent, third-user rejection, fresh sessions and persistence. Latest fresh isolated PostgreSQL and HTTP run passed. Recorded desktop solo and native second-login journeys are in the progress log. A fresh Jamie solo registration through manual account, owned category, expense/refund, bill and debt plan now has September 11 fresh-login readbacks. The initial browser fill/grid-click attempts failed; subsequent real keyboard editing of the card day segment and the bill calendar succeeded, saved and persisted after reload. See jamie-keyboard-calendar-reloaded.txt. |
-| Owned, equal and custom category responsibilities; 600/150/1700 fixtures; cents/refunds/history | The persisted household test creates the exact brief fixtures, verifies fresh-login allocations, privacy-filtered activity and versioned agreement history. Shared finance tests cover allocation extremes and rounding. Recorded desktop/native category and two-login reads supplement those tests. Responsibility is independent of the payer. |
-| Plaid connect/reconnect/sync/recovery/unlink on supported beta clients | Real Sandbox backend persistence and full interactive desktop connect/sync/reconnect/forced-error recovery/unlink passed. Before unlink14 accounts/392transactions remained stable; unlink removed only Avery imported data, persisted after reload, and revoked provider access. Separate Morgan login excluded Avery personal bank accounts. Native app built and installed with verified personal app ID, development push and associated-domain entitlement; actual native OAuth returned from First Platypus, completed consent and saved the selected checking account plus149 imported transactions. Native ordinary sync and required OAuth repair after forced expiration also passed; saved Item/account/transaction IDs remained identical (2 total accounts/150 transactions, including the original manual fixture). Repeated Healthy-to-error transition also passed with immediate repair feedback and retained balance. Native Unlink removed the selected bank imports and revoked provider access; exact IDs of manual data and the other login’s banking data were preserved. Cold restart retained the unlink, original100 net worth and10 spending, and saved upcoming bills. A fresh App2App attempt completed Safari login/consent, returned to selected-account confirmation and saved a Healthy connection with one selected checking account and149 imports. The earlier stalled attempt remains recorded with unknown cause. Normal native cancellation was also verified after correcting the SDK empty-error handling. Final platform/journey coverage audit remains open. Local Maestro/XCTest access is working; phone work is excluded per Tyler's direction. |
-| No double counting; truthful freshness and coverage | Persisted tests cover added/modified/removed/pending changes, transfers/card repayments, manual/import review, one-owner duplicates and bilateral account-match consent/revocation with viewer-specific privacy. Actual two-login match/revoke totals were recorded on desktop and native. Desktop and iOS Simulator ordinary banking lifecycles now have interactive evidence; Android standard Sandbox Link and repeat sync now pass; OAuth connection/import also passes; standard forced-error recovery and unlink also pass with exact retained-ID checks. |
-| Reliable obligations; distinct card fields; manual fallback; estimated recurrence labels | Persisted HTTP checks cover bill edits, payment state, stale updates and partner isolation. Actual native bill recurrence/reminder save and debt-minimum conversion/reopen are recorded. Liabilities data is separate from manual confirmation and recurring predictions. Real foreground banner and background OS-history presentation were proven for the earlier simulator test reminder. Commit65c8b22 switches that diagnostic to DATE, matching obligation triggers; a fresh background banner was captured with this code. Native adapter tests cover the selected due date and local9am scheduling, recurrence replacement and session isolation. Physical-phone and actual9am delivery are not claimed. |
-| Explainable, saved avalanche/snowball debt estimates | Shared deterministic debt tests cover zero APR, promo transitions, insufficient/non-amortizing payments and cents. Persisted debt tests verify current/statement/minimum/due fields, owner isolation, saved estimates and revision conflicts. Desktop and native preview/save/edit/reopen/payment-guidance interactions are recorded. Fresh September 11 browser sign-outs and separate logins preserved Morgan’s edited Snowball method and reopened Avery’s native-created Avalanche plan with distinct current100/statement90/minimum10/dueSeptember25 fields. Repeating minimum conversion returned the existing obligation; Avery retained exactly two upcoming items. Each login exposed only its own debt plan. No automatic payments/transfers. |
-| Regression assurance and reviewable candidate | PR15 runs PostgreSQL, shared/client/API tests, mobile export, API/desktop/web builds and Windows packaging. Run96 exposed a too-small Windows icon;9f2175b fixes the source and adds a dimension check. Run98/34525382333 on code commit4637de3 passed all three jobs, including Windows packaging and the failed-bank-operation refresh regression. Run99/34635576604 on2eeb062 also passed all three jobs after native expired-session cleanup and protected-route changes, including nine auth/privacy checks. Run100/34638570386 on78b2ee8 also completed successfully after the explicit Apple-team configuration correction. Run101/34640584603 on45b97ea and run102/34641852325 on87d6156 subsequently passed all jobs, covering native bank-return routing and failed-operation refresh. Run103/34645896747 on f47e5ff passed all three jobs. Run104/34648733644 on65c8b22 also passed all three jobs after the DATE-trigger diagnostic change, including PostgreSQL integrations and regression builds. |
-| Aesthetic app and full website; beta email list | Website redesign and persisted consent-based signup are live with scoped user approval; production browser signup/dedup/cleanup verified. Native forest/cream branding was built, installed and visually checked on the simulator. See `website-waitlist.md` and evidence images. Automated marketing emails are not part of the signup implementation. |
+| Solo onboarding; invitation before registration; separate consenting logins; maximum two members | PostgreSQL and HTTP tests cover invitation replacement/acceptance, denial before consent, third-member rejection and new-session persistence. Recorded Jamie solo/manual and Morgan/Avery two-login interactions are supplemented by September 21 Alex/Sam hosted native reviewer journeys. Families use the same one/two-adult model. |
+| Owned, equal and custom category responsibilities; clear personal/household totals | Persisted fixtures verify $600 → $300/$300, $150 assigned to one partner, and $1,700 → $1,020/$680, totaling $2,450 once. Tests cover cents/refunds/history/privacy. Actual native 60/40 editing, rejection of 110%, second-login readback and September 21 exact fixture readbacks pass. Responsibility remains independent of who paid. |
+| Plaid spending with manual fallback; connect, repair, sync, cancel and unlink | Real Sandbox integration and interactive browser, Mac, iOS and Android evidence are recorded separately. Hosted Android OAuth/import/repeat sync/forced repair/selective unlink pass; hosted iOS standard Link/import/sync/forced repair/selective unlink pass. Web popup and full-page return have recorded acceptance. Updated hosted iOS Simulator OAuth remains unverified; earlier local native OAuth success does not close that later artifact gate. No actual-bank acceptance is claimed. |
+| Privacy and no double counting | Persisted tests cover pending/posted edits and removals, transfers/card repayments, manual/import review, solo duplicate feeds and bilateral account matching/revocation. Two-login interactions and complete ID/ledger comparisons verify private account isolation and selected unlink preserving unrelated manual/partner data. Hosted browser concurrent refresh and cross-tab logout clearing passed in September 21 checks. |
+| Reliable bill/card due dates and reminders | Saved bill edits, payment state, stale-update rejection, distinct card current/statement/minimum/due fields, manual fallback and estimate labels have persisted and interactive coverage. iOS/Android DATE test reminders actually reached OS presentation/history; logout removed queued/delivered reminders. Tests cover selected dates and local 9am scheduling. Actual future calendar-time/9am delivery and physical-phone delivery remain unobserved. |
+| Explainable saved debt-payoff plans | Deterministic tests cover avalanche/snowball, zero APR, promo transitions, cents, insufficient/non-amortizing payments and owner isolation. Separate native/browser logins preserve saved plans and distinct debt fields; repeated minimum-to-obligation conversion is idempotent. September 21 Alex/Sam reviewer checks include private plan/bill isolation. No automatic payments or transfers. |
+| Aesthetic app and website; beta list | Approved website redesign and persisted consent-based signup were published and verified, including deduplication/cleanup. Forest/cream native screens and current planning layouts were inspected. Four refreshed screenshots were saved in the Apple draft September 21. Signup does not imply automated marketing messages. |
+| Regression assurance and evidence | Full branch CI run `35765231000` at `36ef044`, all four jobs passed, including PostgreSQL 17/18, regressions/typechecks/builds/mobile bundle and Windows packaging. Investment regression records 199 API tests and isolated 13 PostgreSQL + 3 real Sandbox tests; later native wording has a passing mobile typecheck. These results do not claim CI for later commits or uncommitted work. Commits and milestone updates are recorded in Git/Notion. |
 
-## Completion boundary
+## Added investment scope — September 22
 
-Do not convert this draft into a completed beta merely because CI passes. Finish
-the supported-client Sandbox lifecycle, reconcile any remaining interactive gaps
-against the brief, and review current evidence before marking the goal complete.
-Physical-device installation is additional release evidence and is required before
-claiming phone readiness; it is not a substitute for the brief's core journeys.
-Likewise, do not add follow-on forecasting or gamification to extend this goal.
+Tyler requested Chase, Wells Fargo, Desert Financial and Charles Schwab, including
+both Schwab checking and brokerage/retirement. Ordinary banking and the new
+**Connect investments** path have different data semantics. Investment-only
+connections contribute private account balances to net worth; they do not import
+holdings, trades or household spending. Production Investments remains gated.
 
-Existing production website approvals are fulfilled. Tyler subsequently authorized starting Plaid production setup and store
-preparation, but explicitly prohibited submission. No paid services, live-data
-migration, automatic merge/release or store submission is authorized. See
-production-preparation.md for the current scope and remaining gates.
+| Investment check | Recorded result |
+| --- | --- |
+| Product-aware persistence/privacy | Real Plaid Sandbox tests create an Investments-only Item without initializing Transactions, keep stable account IDs, reject the other login, and verify unlink with provider `ITEM_NOT_FOUND`. Filtering retains only investment account types and rejects a connection with none. The current focused Sandbox regression also verifies forced expiration, retained balances/IDs/freshness, owner-only update-token creation and a pending repair state without Transactions or cross-login leakage; focused test/typecheck pass. This is repair preparation, not completed reconnect. |
+| Browser standard connection | September 22 native Chrome UI connected IRA $320.76 and 401k $23,631.98: net worth $23,952.74, zero spending rows. Repeat sync, reload, fresh sign-in and UI unlink pass with independent PostgreSQL readback. The in-app browser's blank Plaid frame is recorded separately. [Evidence](evidence/2026-09-22/investment-browser.json). |
+| Native standard connection | iOS laptop Simulator development build `95061ba9` with the current Metro bundle connected exactly those two investment accounts. Repeat sync and full restart retained $23,952.74 with zero spending/income; UI unlink and another restart returned to zero, confirmed by API and PostgreSQL. This UI run checked local removal; provider revocation comes from the separate Sandbox integration test. [Evidence](evidence/2026-09-22/investment-native-standard.json). |
+| Investment OAuth / distributable parity | **Not passed.** A fresh native App2App retry visibly checked IRA/401k, then returned to the login prompt without exchange. Clean cancellation left usable Settings and zero accounts/Items; filtered events ended with EXIT and no error code. [Retry evidence](evidence/2026-09-22/investment-native-oauth-retry.json). No cause is proven. Browser/native standard success is not OAuth evidence. Hosted deployment, Android investment UI and store-build investment parity are unverified. |
+| Real banks / provider access | September 22 dashboard inspection recorded Chase and Schwab OAuth Enabled and Wells Fargo/Desert Financial product coverage. Transactions/Balance were enabled; Investments/Liabilities were not; Compliance Center still required action. Investments pricing and activation approval remain open. Institution coverage is not an account-specific live connection. |
 
-Android builds and runs in the laptop emulator. Jamie login and saved dashboard,
-activity, bill and debt-field readbacks passed. Android package registration is
-saved and fresh Sandbox link-token creation succeeds. Actual background test
-reminder delivery is captured. CI107 on0ad4085 passed all jobs.
+## Distribution and provider boundary
 
-Standard Android First Platypus Sandbox Link completed interactively in b704555:
-native Bank connected alert, HEALTHY Item, 14 accounts and394 distinct imported
-transactions verified independently in PostgreSQL. Original manual account and
-2 entries remain. Native repeat sync completed without duplicate imports.
-Android OAuth returned to native selected-account confirmation and completed:
-HEALTHY Item with one selected checking account and149 unique imported transactions.
-Both connections and original manual data are preserved in PostgreSQL. See
-android-oauth-success.png/xml; consent label targeting and fresh WebView inspection
-resolved the earlier ambiguous selection/blank captures without an app code change.
-Standard forced-error repair retained all16 account IDs/545 transaction IDs;
-unlink revoked provider access and retained exactly OAuth/manual2 account IDs and
-151 transaction IDs. Native screenshots and DB comparisons recorded September14.
-Fresh Android Morgan edit/Avery login verifies persisted60/40 custom shares,
-110% validation, exact cent totals and4 permitted accounts versus Morgan17.
-PostgreSQL confirms6000/4000 basis points and2 history versions. CI112 onb85d3da
-passes all3jobs. Final requirement-by-requirement evidence audit remains open.
+- **Mac:** personal-team Developer ID signing, hardened runtime/timestamp, asset/fuse
+  checks and September 22 authenticated cold launch pass for the recorded Sandbox
+  package. It is **not notarized or published**. Earlier packaged banking evidence
+  and the new signed-session evidence have distinct scopes.
+  [Signing/session evidence](evidence/2026-09-21/mac-developer-id-signing.json).
+- **Apple:** Sandbox build 30 from `74c6bbf` was uploaded under approval, processed,
+  selected and reload-verified in the saved **Prepare for Submission** draft with
+  manual release. It **predates the investment feature**. Four screenshots and
+  private Alex/Sam reviewer access are saved; the six-type privacy draft is
+  unpublished. Existing owner-only Team (Expo) access was assigned automatically;
+  no external tester invitations or App Review submission occurred.
+  [Upload/draft evidence](evidence/2026-09-21/ios-store-30-upload.json).
+- **Remaining:** current-candidate/hosted parity, native investment OAuth,
+  actual calendar-time reminder observation, supported-platform coverage,
+  substantiated Plaid security/content-rights requirements, production
+  configuration/pricing, Mac notarization and store/privacy preparation must be
+  reconciled before completion. Google Play access/signing/fee questions remain
+  separate. See the completion audit for specific gates.
 
-Apple draft copy, review contact and corrected review notes are saved. Store
-status remains Prepare for Submission with manual release; final screenshots,
-artifact, reviewer access and privacy answers remain open. Plaid Transactions
-and Balance are enabled; Liabilities is not. Observed Pay As You Go prices are
-$0.30 per Item/month for Transactions and $0.10 per Balance call. Capital One is
-in review. No store submission or live banking has occurred.
+Existing scoped website, email, hosted Sandbox and private Apple-upload approvals
+are recorded as fulfilled, not pending again. They are not blanket authority for
+new production changes or spending. No main merge, live bank connection, new paid
+product activation, public distribution or store submission is implied by these
+checks. Work remains laptop-only; physical-device readiness is not claimed.
 
-September14 follow-up: CI131/34876625261 on58fa386 passed all three jobs after
-API/mobile diagnostic privacy changes. Mobile JavaScript diagnostic filtering is
-tested and native diagnostics are disabled; a fresh native launch remains open.
-Actual Chrome Sandbox OAuth popup exchange and repeat sync passed with identical
-three account IDs and201 transaction IDs. This does not prove the separate
-full-page /dashboard/plaid-return path. iPhone12Pro Chrome emulation still chose
-a popup; that attempt was cancelled before exchange and retained the exact IDs.
-The narrow bank-connection layout found during that check is corrected and
-visually verified at390px. See the progress log for evidence and limitations.
+September22 local native saved-session read-failure/Retry and restored cold launch
+now pass without credential reentry. Temporary injection was removed byte-for-byte;
+[evidence and limits](evidence/2026-09-22/native-startup-retry.json).
