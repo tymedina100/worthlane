@@ -4558,3 +4558,34 @@ not infer it from API tests. These Sandbox tests do not prove Schwab Production
 coverage. Next run the actual investment UI journey, then prepare scoped provider
 activation/pricing and production configuration approval. No main merge, live
 bank Item, paid product activation or store submission.
+
+### September 22 — interactive investment connection, filtering fix and unlink
+
+Current local desktop/API ran against the isolated synthetic PostgreSQL cluster
+and real Plaid Sandbox. Solo Casey onboarding completed through the browser. The
+in-app browser left Plaid's frame blank and correctly reached Worthlane's bounded
+retry message; native Chrome completed the same flow using only published Sandbox
+credentials, without saving a phone/provider login. Native Chrome accessibility
+controls required fitting the provider dialog to the small window; zoom was
+restored afterward.
+
+Interactive selection exposed that Sandbox returned all account types even for
+an investment-only Item. Fixed import to retain only investment account types and
+reject a connection with none, with focused regression coverage. This avoids
+importing unrelated checking/loan balances through the investment-only flow.
+Also renamed the combined data-coverage heading so investment notices do not
+falsely imply missing spending history.
+
+Actual saved UI: private Plaid IRA320.76 +401k23631.98 =23952.74. Repeat UI Sync,
+reload and logout/new sign-in retained the exact total/accounts. Independent
+PostgreSQL read confirmed exactly2 investment accounts and0 spending rows. UI
+Unlink returned0 accounts/net worth and no connection; PostgreSQL confirms0
+accounts/Items. Test tabs and local servers/cluster were stopped after cleanup.
+Evidence: `evidence/2026-09-22/investment-browser.json`.
+
+After the filter change, isolated regression rerun on separate port55440 passed
+13 PostgreSQL tests plus3 real Plaid Sandbox tests, including all-investment
+account-type assertions, stable IDs, no Transactions initialization, owner
+isolation and provider revocation. Focused unit4/4 and API/desktop typechecks pass.
+Native investment UI and investment OAuth return remain open; ordinary bank/native
+prior evidence does not substitute. No production changes or paid calls occurred.

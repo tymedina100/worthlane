@@ -19,11 +19,16 @@ beforeEach(() => {
 });
 describe("investment-only sync", () => {
   it("persists balances without initializing transaction products, even on forced refresh", async () => {
-    mocks.snapshot.mockResolvedValue({ accounts, products: ["investments"] });
+    mocks.snapshot.mockResolvedValue({ accounts: [...accounts, { account_id: "checking", type: "depository", balances: { current: 100 } }], products: ["investments"] });
     expect(await syncPlaidItemRecord(item, { refresh: true })).toEqual({ plaidItemId: "item", added: 0, modified: 0, removed: 0 });
     expect(mocks.save).toHaveBeenCalledWith(item, accounts);
     expect(mocks.sync).not.toHaveBeenCalled(); expect(mocks.refresh).not.toHaveBeenCalled(); expect(mocks.apply).not.toHaveBeenCalled();
     expect(mocks.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ transactionHistoryStatus: "INVESTMENT_BALANCES_ONLY", status: "HEALTHY" }) }));
+  });
+  it("rejects an investment connection with no shared investment accounts", async () => {
+    mocks.snapshot.mockResolvedValue({ accounts: [], products: ["investments"] });
+    await expect(syncPlaidItemRecord(item)).rejects.toThrow("No investment accounts");
+    expect(mocks.save).not.toHaveBeenCalled(); expect(mocks.sync).not.toHaveBeenCalled();
   });
   it("preserves spending sync for a mixed-product connection", async () => {
     mocks.snapshot.mockResolvedValue({ accounts, products: ["investments", "transactions"] });

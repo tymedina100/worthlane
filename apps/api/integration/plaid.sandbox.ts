@@ -128,7 +128,8 @@ it("persists investment balances without activating Transactions, isolates owner
     cleanupToken = decryptPlaidAccessToken(item.accessTokenEncrypted);
     expect(item.transactionHistoryStatus).toBe("INVESTMENT_BALANCES_ONLY");
     const before = await prisma.account.findMany({ where: { userId: ownerId }, orderBy: { id: "asc" } });
-    expect(before.some(account => account.type === "INVESTMENT")).toBe(true);
+    expect(before.length).toBeGreaterThan(0);
+    expect(before.every(account => account.type === "INVESTMENT")).toBe(true);
     stage = "repeat investment sync and privacy";
     await data(await sync(req(session.accessToken, { plaidItemId: item.id, refresh: true })));
     const after = await prisma.account.findMany({ where: { userId: ownerId }, orderBy: { id: "asc" } });

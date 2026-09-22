@@ -37,7 +37,11 @@ async function upsertAccountsForItem(item: {
   if (!investmentOnly && !snapshot.products.includes(Products.Transactions)) {
     throw new PlaidIntegrationError("This connection has no supported data product. Reconnect with the intended account type.", { code: "PLAID_PRODUCT_MISSING", status: 409 });
   }
-  const accountMap = await savePlaidAccounts(item, snapshot.accounts);
+  const selectedAccounts = investmentOnly ? snapshot.accounts.filter(account => account.type === "investment") : snapshot.accounts;
+  if (investmentOnly && selectedAccounts.length === 0) {
+    throw new PlaidIntegrationError("No investment accounts were shared. Reconnect and select a brokerage or retirement account.", { code: "NO_ACCOUNTS", status: 422 });
+  }
+  const accountMap = await savePlaidAccounts(item, selectedAccounts);
   return { accessToken, accountMap, investmentOnly };
 }
 
