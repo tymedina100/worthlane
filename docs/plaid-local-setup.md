@@ -139,3 +139,9 @@ A subsequent sync fetches a fresh authorized account snapshot from Plaid; user
 re-granting access at the provider may make those accounts available again.
 This is not proof of signed hosted webhook delivery or real-bank behavior.
 Reference: https://plaid.com/docs/api/items/#user_account_revoked
+
+Webhook signatures are required in every environment, including Sandbox. Trigger
+provider-signed deliveries with Plaid's Sandbox webhook endpoint. The guarded
+`scripts/test-hosted-signed-webhook.cjs` runs only inside the approved isolated
+Railway API with WORTHLANE_HOSTED_SANDBOX_APPROVED=true; it creates and removes a
+disposable synthetic fixture and does not use existing reviewers' bank Items.

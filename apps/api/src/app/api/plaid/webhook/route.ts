@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { PlaidItemStatus, prisma } from "@worthlane/db";
-import { isPlaidSandbox, toPlaidIntegrationError, verifyPlaidWebhook } from "@/lib/plaid";
+import { toPlaidIntegrationError, verifyPlaidWebhook } from "@/lib/plaid";
 import { revokePlaidData } from "@/lib/plaid-revocation";
 import { syncPlaidItemRecord } from "@/lib/plaid-sync";
 import { err, ok } from "@/lib/response";
@@ -9,13 +9,11 @@ import { captureServerException } from "@/lib/sentry";
 export async function POST(req: NextRequest) {
   const rawBody = await req.text().catch(() => "");
 
-  // Verify the request actually came from Plaid. The only exception is
-  // sandbox mode without a verification header (local development).
+  // Plaid signs Sandbox webhooks too. Public test environments must enforce
+  // the same authentication boundary as production, especially for revocation.
   const verificationHeader = req.headers.get("plaid-verification");
-  if (verificationHeader || !isPlaidSandbox()) {
-    const verified = await verifyPlaidWebhook(rawBody, verificationHeader);
-    if (!verified) return err("Invalid webhook signature", 401);
-  }
+  const verified = await verifyPlaidWebhook(rawBody, verificationHeader);
+  if (!verified) return err("Invalid webhook signature", 401);
 
   let body: unknown = null;
   try {

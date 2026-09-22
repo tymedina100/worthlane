@@ -340,8 +340,7 @@ export async function verifyPlaidWebhook(
   }
 }
 
-/** Local/sandbox development without the verification header is allowed;
- *  anything else must present a valid signature. */
+/** Identifies the provider environment; webhook signatures are required in both. */
 export function isPlaidSandbox(): boolean {
   return (process.env.PLAID_ENV ?? "sandbox") === "sandbox";
 }

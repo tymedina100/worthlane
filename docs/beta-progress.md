@@ -4823,3 +4823,15 @@ core revocation changes; the final notices/manual-retention refinements then
 passed the full local PostgreSQL14/14 suite. Existing native repair/OAuth failures
 remain separate open checks. Migration applied only to local synthetic DB55439
 and disposable test clusters; no production migration/deployment/merge.
+
+### 2026-09-22 — Signed hosted-webhook preparation
+
+Read-only SSH verified exact approved Railway beta-sandbox project/environment/API,
+PLAID_ENV=sandbox, disabled email/paid AI, and missing configured webhook URL. Its
+active API is still baseline4b22bec. Removed the unsigned-Sandbox webhook exception:
+Plaid signs Sandbox deliveries too, and public test endpoints must authenticate
+revocation notices. All34 route tests and API TypeScript pass. Added a guarded
+remote test that creates only a disposable synthetic owner/Investments Item,
+rejects unsigned/invalid requests, fires a real provider revocation, checks persisted
+cleanup and removes its fixture. Syntax/negative local guard checks pass; its
+positive hosted run and candidate deployment have NOT run yet.

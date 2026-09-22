@@ -3,7 +3,6 @@ import { NextRequest } from "next/server";
 
 const mocks = vi.hoisted(() => ({
   revoke: vi.fn(),
-  isPlaidSandbox: vi.fn(),
   verifyPlaidWebhook: vi.fn(),
   findUnique: vi.fn(),
   update: vi.fn(),
@@ -22,7 +21,6 @@ vi.mock("@worthlane/db", () => ({
 }));
 vi.mock("@/lib/plaid", async importOriginal => ({
   ...await importOriginal<typeof import("@/lib/plaid")>(),
-  isPlaidSandbox: mocks.isPlaidSandbox,
   verifyPlaidWebhook: mocks.verifyPlaidWebhook,
 }));
 vi.mock("@/lib/plaid-revocation", () => ({ revokePlaidData: mocks.revoke }));
@@ -79,7 +77,6 @@ describe("POST /api/plaid/webhook", () => {
   beforeEach(() => {
     vi.resetAllMocks();
     persistedItem = { ...savedItem };
-    mocks.isPlaidSandbox.mockReturnValue(false);
     mocks.verifyPlaidWebhook.mockResolvedValue(true);
     mocks.findUnique.mockResolvedValue(savedItem);
     mocks.update.mockImplementation(async ({ where, data }) => {
@@ -109,10 +106,10 @@ describe("POST /api/plaid/webhook", () => {
     expect(await response.json()).toEqual({ data: { received: true } });
   });
 
-  it("allows unsigned local Sandbox notifications but still rejects an invalid supplied signature", async () => {
-    mocks.isPlaidSandbox.mockReturnValue(true);
-    expect((await POST(request(notification("LOGIN_REPAIRED"), null))).status).toBe(200);
-    expect(mocks.verifyPlaidWebhook).not.toHaveBeenCalled();
+  it("rejects unsigned Sandbox notifications as well as invalid supplied signatures", async () => {
+    mocks.verifyPlaidWebhook.mockResolvedValue(false);
+    expect((await POST(request(notification("LOGIN_REPAIRED"), null))).status).toBe(401);
+    expect(mocks.findUnique).not.toHaveBeenCalled();
     mocks.findUnique.mockClear();
     mocks.update.mockClear();
     mocks.verifyPlaidWebhook.mockResolvedValue(false);
