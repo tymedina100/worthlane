@@ -172,3 +172,23 @@ already passed: it now explicitly says no reminder was scheduled, matching the
 editor. `corepack pnpm --filter @worthlane/mobile typecheck` and `git diff --check`
 pass. That new past-time message has not been interactively exercised. No new
 build, production deploy, paid activation or store submission occurred.
+
+## September 22 — preserve reminders when deletion fails
+
+Found a native reliability defect during release review: Upcoming canceled the
+local reminder before asking the API to delete the saved obligation. A failed
+network/server request could therefore leave the obligation saved without its
+reminder. Deletion now awaits API confirmation before canceling; native cleanup
+failure reports Item deleted with a cleanup warning instead of reporting the
+server deletion as failed. Late error/refresh callbacks are suppressed after a
+login change. Foreground reminder reconciliation remains the cleanup retry.
+
+Four failure-path tests execute the actual mutation callbacks with controlled
+network/native adapters. They cover pending/failed deletion, confirmed deletion,
+cleanup failure and login changes. They fail against pre-change source and pass
+against this change. `corepack pnpm test:auth-privacy`:23/23 pass;
+`corepack pnpm --filter @worthlane/mobile typecheck` and `git diff --check` pass.
+The new tests are wired into existing CI. Interactive failure injection remains
+unverified because the Mac is locked. The September23 calendar fixture was not
+deleted or modified. Prior runtime402387e CI292 completed all four jobs
+successfully; this new change needs its own CI. No production/store actions.
