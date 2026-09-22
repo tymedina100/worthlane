@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
 
   try {
     let accessToken: string | undefined;
+    let purpose = parsed.data.purpose;
 
     if (parsed.data.mode === "update") {
       if (!parsed.data.plaidItemId) {
@@ -42,13 +43,17 @@ export async function POST(req: NextRequest) {
       });
       if (!plaidItem) return err("Bank connection not found", 404, "PLAID_ITEM_NOT_FOUND");
       accessToken = decryptPlaidAccessToken(plaidItem.accessTokenEncrypted);
+      // A repair must retain the owned connection's established scope, even if
+      // an older client omits purpose or a caller sends a different purpose.
+      purpose = plaidItem.transactionHistoryStatus === "INVESTMENT_BALANCES_ONLY"
+        ? "investments" : "banking";
     }
 
     const linkToken = await createLinkToken(userId, {
       platform: parsed.data.platform,
       mode: parsed.data.mode,
       accessToken,
-      ...(parsed.data.purpose ? { purpose: parsed.data.purpose } : {}),
+      ...(purpose ? { purpose } : {}),
       ...(parsed.data.includeLiabilities ? { includeLiabilities: true } : {}),
     });
 

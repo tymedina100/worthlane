@@ -4864,3 +4864,25 @@ preserved totals and the signed-in session. Fixture retained for further checks.
 This supersedes the earlier non-OAuth repair blocker, not the native OAuth return
 blocker. No live bank, paid product, production deployment, main merge, or store
 submission occurred. [Evidence](evidence/2026-09-22/investment-native-repair.json).
+
+## September 22 — investment account-selection scope
+
+Investment Link now requests Plaid's investment/all account filter. Repair derives
+purpose from the owned Item's established investment-only history marker, so old
+clients or a conflicting client purpose cannot switch that established scope.
+Ordinary banking behavior is preserved. API260/260 and TypeScript pass; actual
+Sandbox link-token metadata verifies create/update filters and iOS callback.
+
+Native update selection displayed IRA, 401(k), and cash management, followed by
+Connection repaired / Healthy. Plaid still returns the depository cash-management
+account despite the requested filter; do not claim access to only two accounts.
+Worthlane preserves its existing two investment IDs/balances ($23,952.74) and zero
+transactions/spending. Cash-management spending uses the separate banking flow.
+[Evidence](evidence/2026-09-22/investment-account-filter.json).
+
+Read-only Simulator swcd logs show approved service association for the expected
+app/domain; this narrows but does not resolve native OAuth.
+[Diagnostic](evidence/2026-09-22/ios-associated-domain-diagnostic.json).
+Remaining privacy audit: verify account deselection during Link update removes
+previously imported data even without a revocation webhook; current save logic
+upserts returned accounts. No production deployment or product activation.

@@ -5,6 +5,7 @@ import {
   Configuration,
   CountryCode,
   LinkTokenCreateRequest,
+  InvestmentAccountSubtype,
   PlaidApi,
   PlaidEnvironments,
   Products,
@@ -194,6 +195,11 @@ export async function createLinkToken(
     client_name: "Worthlane",
     products: options.mode === "create" ? [options.purpose === "investments" ? Products.Investments : Products.Transactions] : undefined,
     additional_consented_products: options.includeLiabilities ? [Products.Liabilities] : undefined,
+    // Keep investment consent aligned with the balances-only connection.
+    // Checking and cards use the separate banking flow.
+    account_filters: options.purpose === "investments"
+      ? { investment: { account_subtypes: [InvestmentAccountSubtype.All] } }
+      : undefined,
     country_codes: [CountryCode.Us],
     language: "en",
     webhook: getWebhookUrl(),
