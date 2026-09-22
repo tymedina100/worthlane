@@ -25,6 +25,7 @@ import { useAuthStore } from "@/store/auth";
 import { ApiError, api } from "@/lib/api";
 import { completePlaidLink } from "@/lib/plaid-completion";
 import { plaidExitError } from "@/lib/plaid-exit";
+import { tracePlaidDevelopmentEvent } from "@/lib/plaid-development-diagnostics";
 import { useSubscription } from "@/hooks/useSubscription";
 import {
   ACCOUNT_TYPES,
@@ -367,7 +368,7 @@ export default function ProfileScreen() {
       const { createPlaidLinkSession } = require("react-native-plaid-link-sdk") as typeof import("react-native-plaid-link-sdk");
       const session = await createPlaidLinkSession({
         token: linkToken,
-        onEvent: () => {},
+        onEvent: tracePlaidDevelopmentEvent,
         onSuccess: async (success: LinkSuccess) => {
           await handlePlaidSuccess(success, mode, linkingUserId, plaidItemId);
         },
