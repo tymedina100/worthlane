@@ -46,6 +46,22 @@
       "android": {
         "buildType": "app-bundle"
       }
+    },
+    "sandbox-development-simulator": {
+      "extends": "development",
+      "ios": {
+        "simulator": true
+      },
+      "env": {
+        "EXPO_NO_DOTENV": "1",
+        "EXPO_PUBLIC_API_URL": "http://localhost:3101/api",
+        "EXPO_PUBLIC_PLAID_ENABLED": "true",
+        "PLAID_IOS_ASSOCIATED_DOMAIN": "worthlane.app",
+        "APPLE_TEAM_ID": "5FBXR5M5PJ",
+        "EXPO_PUBLIC_ENABLE_AI": "false",
+        "EXPO_PUBLIC_ENABLE_PAYWALL": "false",
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
+      }
     }
   },
   "submit": {

@@ -10,6 +10,7 @@ function requireReleaseEnv(name, value) {
 module.exports = () => {
   const easBuildProfile = process.env.EAS_BUILD_PROFILE ?? "development";
   const isSandboxPreview = ["sandbox-preview", "sandbox-simulator", "sandbox-store"].includes(easBuildProfile);
+  const isLocalSandbox = easBuildProfile === "sandbox-development-simulator";
   const isReleaseProfile = isSandboxPreview || easBuildProfile === "preview" || easBuildProfile === "production";
   const apiUrl = process.env.EXPO_PUBLIC_API_URL?.trim();
   const associatedDomain = process.env.PLAID_IOS_ASSOCIATED_DOMAIN?.trim();
@@ -30,11 +31,11 @@ module.exports = () => {
   const plaidEnabled = process.env.EXPO_PUBLIC_PLAID_ENABLED === "true";
 
   // A test artifact must never silently inherit production endpoints or SDKs.
-  if (isSandboxPreview) {
+  if (isSandboxPreview || isLocalSandbox) {
     const expected = {
       EXPO_NO_DOTENV: "1",
       SENTRY_DISABLE_AUTO_UPLOAD: "true",
-      EXPO_PUBLIC_API_URL: "https://worthlane-beta-sandbox.up.railway.app/api",
+      EXPO_PUBLIC_API_URL: isLocalSandbox ? "http://localhost:3101/api" : "https://worthlane-beta-sandbox.up.railway.app/api",
       EXPO_PUBLIC_PLAID_ENABLED: "true",
       PLAID_IOS_ASSOCIATED_DOMAIN: "worthlane.app",
       APPLE_TEAM_ID: "5FBXR5M5PJ",

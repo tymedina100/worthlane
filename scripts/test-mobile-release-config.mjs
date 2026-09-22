@@ -98,3 +98,21 @@ test('store-format Sandbox candidate retains isolation without submission config
   assert.ok(result.ios.associatedDomains.includes('applinks:worthlane.app'));
   assert(!result.plugins.some(p => Array.isArray(p) && p[0] === '@sentry/react-native/expo'));
 });
+
+test('local Sandbox development client is Simulator-only and rejects inherited services', () => {
+  const profile = eas.build['sandbox-development-simulator'];
+  assert.equal(profile.extends, 'development');
+  assert.equal(eas.build.development.developmentClient, true);
+  assert.equal(eas.build.development.distribution, 'internal');
+  assert.equal(profile.ios.simulator, true);
+  assert.equal(eas.submit['sandbox-development-simulator'], undefined);
+  const env = { ...profile.env, EAS_BUILD_PROFILE: 'sandbox-development-simulator' };
+  const result = config(env);
+  assert.equal(result.extra.sentry.dsn, null);
+  for (const [name, value] of Object.entries({
+    EXPO_PUBLIC_API_URL: 'https://production.example/api',
+    EXPO_PUBLIC_ENABLE_AI: 'true', EXPO_PUBLIC_ENABLE_PAYWALL: 'true',
+    EXPO_PUBLIC_POSTHOG_KEY: 'synthetic', EXPO_PUBLIC_SENTRY_DSN: 'synthetic',
+    SENTRY_AUTH_TOKEN: 'synthetic', EXPO_NO_DOTENV: '0',
+  })) assert.throws(() => config({ ...env, [name]: value }), new RegExp(name));
+});
