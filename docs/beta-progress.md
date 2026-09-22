@@ -5019,3 +5019,22 @@ Evidence: `evidence/2026-09-22/calendar-reminder-os.json`; read-only local verif
 `.tmp/verify-calendar-os.py`. Mac remains locked for UI checks. CI294 at8a5adc0
 is live: PostgreSQL17/18 and Windows packaging passed, main job still building.
 No deployment, financial action, test fixture mutation or store submission.
+
+## September 22 — native deletion recovery verified interactively
+
+Mac became accessible; resumed local synthetic testing. Seeded a disposable $1
+bill with DUE_DATE timing separately from tomorrow's calendar acceptance fixture.
+Cold launch exposed a reminder-refresh timeout warning; native Retry cleared it,
+and independent OS archive/API matching confirmed the disposable reminder queued.
+A temporary local development/Sandbox-only API503 for this bill exercised actual
+native Delete/confirmation. Error was visible; saved bill and matching OS reminder
+remained. Restored API source byte-for-byte, retried native deletion, observed only
+the original calendar bill remaining, and independently verified deleted fixture
+absent plus exactly one pending OS notification belonging to original calendar bill.
+
+Evidence: `evidence/2026-09-22/native-deletion-recovery.json`. Temporary API guard
+is absent (`git diff --exit-code` on route passed); disposable fixture cleaned.
+This closes interactive deletion-server-failure acceptance for this development
+candidate, not store-build parity or actual scheduled delivery. Current source
+bc331be had all four CI295 jobs pass before this evidence-only change. No
+production deployment, live banking, paid activation or store submission.
