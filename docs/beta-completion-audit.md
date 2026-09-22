@@ -1,7 +1,9 @@
 # Worthlane completion audit — updated September 22, 2026
 
 Goal remains **active**. Original couples/solo beta journeys have substantial
-persisted and interactive evidence. Added investment balances now pass local
+persisted and interactive evidence. Original beta acceptance, added live-bank
+readiness, and distribution preparation are tracked separately; public submission
+is not a completion step because the user expressly withheld it. Added investment balances now pass local
 browser and standard native Sandbox lifecycles, while investment OAuth and
 release parity remain open. Mac Developer ID signing is complete for the recorded
 package; notarization is not. Apple build 30 is uploaded and attached to a saved,
@@ -24,9 +26,9 @@ production health or current deployed SHA from this document.
 The isolated hosted API, hosted planning frontend, local development servers and
 native binaries have different versions. September 18 hosted two-login checks,
 September 21 frontend session fixes, September 21 release artifacts and September
-22 local investment checks are separate evidence. In particular, the new local
-investment path is not established as deployed to the hosted Sandbox or included
-in store build 30.
+22 local investment checks are separate evidence. The API candidate e985af8 is now deployed and verified in the hosted Sandbox,
+including investment snapshot cleanup and signed revocation. Hosted frontend and
+release-native investment parity remain separate; store build 30 predates it.
 
 ## Original brief and added website/Mac requirements
 
@@ -55,7 +57,7 @@ trades or investment performance.
 | Check | Dated evidence | Result / limit |
 | --- | --- | --- |
 | Product-aware connection and sync | Separate banking/investments Link purposes; Investments-only requests do not initialize Transactions. Sync trusts initialized products from Plaid, filters to investment accounts, avoids spending sync/refresh and uses `INVESTMENT_BALANCES_ONLY` freshness. Production requires explicit `PLAID_INVESTMENTS_ENABLED=true` plus valid live callback configuration. | Implemented on PR20; subsequent revocation protection adds the consentRevision migration, applied only to local/hosted Sandbox. No production activation. Configuration validation checks shape/presence, not DNS, allowlists, valid credentials or delivery. |
-| Persistence, ownership and unlink | 13 isolated PostgreSQL and 3 real Sandbox tests pass, including stable investment IDs, zero spending rows, no Transactions initialization, other-login denial and provider `ITEM_NOT_FOUND` after unlink. | Backend Sandbox evidence; not actual Schwab account acceptance. The current focused Sandbox regression/typecheck also passes forced expiration, `NEEDS_RELINK`, retained account IDs/balances/lastSyncAt and owner-only update-token creation without Transactions, spending rows or cross-login leakage. State remains pending actual reauthentication: this is repair preparation, not completed reconnect. |
+| Persistence, ownership and unlink | 13 isolated PostgreSQL and 3 real Sandbox tests pass, including stable investment IDs, zero spending rows, no Transactions initialization, other-login denial and provider `ITEM_NOT_FOUND` after unlink. | Backend Sandbox evidence; not actual Schwab account acceptance. The current focused Sandbox regression/typecheck also passes forced expiration, `NEEDS_RELINK`, retained account IDs/balances/lastSyncAt and owner-only update-token creation without Transactions, spending rows or cross-login leakage. The later native non-OAuth update-mode run completed reauthentication, repeat sync and cold restart with exact account IDs/balances preserved; see investment-native-repair.json. Native OAuth remains separate. |
 | Browser lifecycle | Native Chrome local UI connected private IRA $320.76 and 401k $23,631.98, totaling $23,952.74 with zero spending rows. Repeat sync, reload, fresh sign-in and UI unlink passed; independent PostgreSQL confirmed two accounts before and zero accounts/Items after. [Evidence](evidence/2026-09-22/investment-browser.json). | Browser standard flow passed. In-app browser frame stayed blank and reached bounded retry; Chrome completed. No browser investment OAuth claim. |
 | Native standard lifecycle | EAS development Simulator `95061ba9` with the current Metro bundle showed Healthy/two investment accounts, repeat sync, persisted $23,952.74/zero spending/income after restart, then zero after unlink and another restart. API and PostgreSQL confirmed final zero accounts/Items/transactions. [Evidence](evidence/2026-09-22/investment-native-standard.json). | Passed on local laptop Simulator. UI run independently checked local deletion; provider revocation is separate integration evidence. Not store-build, Android or physical-device proof. |
 | Native investment OAuth | First Platypus App2App returned from Safari to native Plaid, then looped to Continue to login without exchange. Checkbox selection was not independently verified. A later retry was interrupted by storage exhaustion. | **Not passed.** A fresh retry visibly checked IRA/401k, completed mock-bank authorization, then reproduced Continue to login without exchange. Clean exit returned usable Settings; fresh API read retained zero accounts/Items. Filtered events ended in EXIT without an error code. [Retry evidence](evidence/2026-09-22/investment-native-oauth-retry.json). No cause is proven; storage does not explain the earlier loop. |
@@ -189,3 +191,30 @@ Remaining: native OAuth, intended-client/hosted candidate parity, actual calenda
 reminder delivery, live pricing/access/security and release gates. No production
 deployment, paid activation or store submission occurred. Prior c65efda CI289
 completed successfully; this new commit requires its own CI.
+
+## September 22 — hosted account-selection candidate verified
+
+CI290 (`35777068765`) passed all four jobs for `e985af8`. Deployed the committed
+archive to the already-approved isolated API as
+`c2fb95ea-9c6e-47e7-af23-d6e1382e33e8`; SUCCESS, ready health, four runtime source
+hashes and explicit Sandbox/email-off/paid-AI-off checks pass. No new migration.
+
+Actual Plaid-signed full-Item revocation and unsigned/invalid rejection pass on
+this candidate. A separate guarded hosted test seeded a missing synthetic account
+with an import and authored entry, then called real provider-backed sync. The
+missing account/import were removed; its private $7 manual entry and exact
+investment IDs/balances were preserved, including repeat sync. Both disposable
+fixtures and provider Items were cleaned up. This is snapshot-reconciliation
+evidence, not a live bank's deselect screen. Reproducible guarded scripts:
+`test-hosted-signed-webhook.cjs` and `test-hosted-account-selection.cjs`.
+
+`WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-sandbox.mjs --verify`
+passed before deployment, after deployment, and after disposable tests: exact
+53/396 ledgers, separate-login privacy, private $125.50 fallback, $2,450 agreed
+responsibilities, saved zero-APR payoff plan and idempotent unpaid due-date handoff.
+[Deployment evidence](evidence/2026-09-22/hosted-selection-cleanup.json).
+
+This updates hosted API acceptance, not the frontend/native artifact versions.
+Native OAuth, intended-client parity, calendar-time reminder observation and
+separate live-provider/distribution preparation remain open. No production
+deployment, paid plan/product activation, public release or store submission.

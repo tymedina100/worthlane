@@ -125,3 +125,30 @@ Remaining: native OAuth, intended-client/hosted candidate parity, actual calenda
 reminder delivery, live pricing/access/security and release gates. No production
 deployment, paid activation or store submission occurred. Prior c65efda CI289
 completed successfully; this new commit requires its own CI.
+
+## September 22 — hosted account-selection candidate verified
+
+CI290 (`35777068765`) passed all four jobs for `e985af8`. Deployed the committed
+archive to the already-approved isolated API as
+`c2fb95ea-9c6e-47e7-af23-d6e1382e33e8`; SUCCESS, ready health, four runtime source
+hashes and explicit Sandbox/email-off/paid-AI-off checks pass. No new migration.
+
+Actual Plaid-signed full-Item revocation and unsigned/invalid rejection pass on
+this candidate. A separate guarded hosted test seeded a missing synthetic account
+with an import and authored entry, then called real provider-backed sync. The
+missing account/import were removed; its private $7 manual entry and exact
+investment IDs/balances were preserved, including repeat sync. Both disposable
+fixtures and provider Items were cleaned up. This is snapshot-reconciliation
+evidence, not a live bank's deselect screen. Reproducible guarded scripts:
+`test-hosted-signed-webhook.cjs` and `test-hosted-account-selection.cjs`.
+
+`WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-sandbox.mjs --verify`
+passed before deployment, after deployment, and after disposable tests: exact
+53/396 ledgers, separate-login privacy, private $125.50 fallback, $2,450 agreed
+responsibilities, saved zero-APR payoff plan and idempotent unpaid due-date handoff.
+[Deployment evidence](evidence/2026-09-22/hosted-selection-cleanup.json).
+
+This updates hosted API acceptance, not the frontend/native artifact versions.
+Native OAuth, intended-client parity, calendar-time reminder observation and
+separate live-provider/distribution preparation remain open. No production
+deployment, paid plan/product activation, public release or store submission.
