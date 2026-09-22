@@ -114,6 +114,8 @@ function QuickAddContent({ userId }: { userId: string }) {
         "Saved",
         result && typeof result === "object" && "reminderResult" in result && (result.reminderResult === "denied" || result.reminderResult === "unavailable")
           ? "Your item was saved, but its device reminder could not be scheduled. Check notification settings before relying on a reminder."
+          : result && typeof result === "object" && "reminderResult" in result && result.reminderResult === "past"
+            ? "Your item was saved. The selected reminder time has already passed, so no reminder was scheduled."
           : "It’s now reflected in your Today view."
       );
       router.back();

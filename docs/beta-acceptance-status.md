@@ -152,3 +152,23 @@ This updates hosted API acceptance, not the frontend/native artifact versions.
 Native OAuth, intended-client parity, calendar-time reminder observation and
 separate live-provider/distribution preparation remain open. No production
 deployment, paid plan/product activation, public release or store submission.
+
+## September 22 — real calendar reminder prepared
+
+Created a synthetic $1 bill through local API3101 with reminders off after
+unreliable Simulator text entry was discarded unsaved. In the native Upcoming
+editor, selected On due date and saved; native Saved confirmation showed no
+permission/scheduling warning. Independent fresh API login readback confirms
+exactly one active, unpaid bill due September 23 with DUE_DATE timing. Expected
+trigger is September 23 at 9 a.m. Phoenix time. Keep this synthetic Simulator
+session signed in for observation; logout cancels its device reminders.
+
+This is preparation, **not observed delivery** or independent OS queue proof.
+Evidence: `evidence/2026-09-22/calendar-reminder-preparation.json`. The temporary
+local readback helper is `.tmp/calendar-reminder-readback.cjs`.
+
+Also corrected Quick add's success copy when the selected reminder time has
+already passed: it now explicitly says no reminder was scheduled, matching the
+editor. `corepack pnpm --filter @worthlane/mobile typecheck` and `git diff --check`
+pass. That new past-time message has not been interactively exercised. No new
+build, production deploy, paid activation or store submission occurred.
