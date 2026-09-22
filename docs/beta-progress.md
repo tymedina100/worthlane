@@ -4835,3 +4835,17 @@ remote test that creates only a disposable synthetic owner/Investments Item,
 rejects unsigned/invalid requests, fires a real provider revocation, checks persisted
 cleanup and removes its fixture. Syntax/negative local guard checks pass; its
 positive hosted run and candidate deployment have NOT run yet.
+
+### 2026-09-22 — Hosted signed webhook and preserved household acceptance PASS
+
+CI285/69553f4 and CI286/df12257 passed. Approved isolated Railway deployment
+1a78264d-5201-407b-8825-2cc74de4af73 is SUCCESS/ready on df12257 with source hashes
+matching and consentRevision migration applied. Set only its Sandbox webhook URL.
+Actual provider-signed full-Item revocation passed after unsigned/invalid requests
+were rejected401; two disposable investment accounts were removed and all test
+fixture/provider cleanup completed. Existing two-login journeys passed before
+and after deployment and again after the webhook test. Owner53/partner396 complete
+ledgers, $2,450 plan, private manual fallback and saved debt/due item persisted.
+Four scheduled Sandbox rows required a disclosed, audited additive fixture update
+before deployment; all392 prior partner IDs were retained. See hosted-sandbox.md
+and evidence/2026-09-22/hosted-signed-webhook.json. No production/store changes.

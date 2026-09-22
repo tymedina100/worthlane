@@ -73,3 +73,10 @@ checks. Work remains laptop-only; physical-device readiness is not claimed.
 September22 local native saved-session read-failure/Retry and restored cold launch
 now pass without credential reentry. Temporary injection was removed byte-for-byte;
 [evidence and limits](evidence/2026-09-22/native-startup-retry.json).
+
+September 22 hosted candidate update: API df12257 / CI286 is active in the approved
+isolated Sandbox. Actual Plaid-signed full-Item revocation removed its disposable
+fixture; unsigned/invalid requests were rejected. Existing owner53/partner396
+ledgers, private fallback, $2,450 household plan and debt/due-date checks survived
+deployment and cleanup. See `evidence/2026-09-22/hosted-signed-webhook.json`. The
+consentRevision migration is Sandbox-only; production and store gates remain.

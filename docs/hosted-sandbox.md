@@ -10,8 +10,8 @@ submission was authorized by this approval.
 - API: `59dc5245-3e9e-4d69-8450-72c4c834aff1`.
 - Database: `feadc03e-fdf4-49d6-a518-be9f1df9bf38`, separate PostgreSQL service/volume.
 - HTTPS API: `https://worthlane-beta-sandbox.up.railway.app/api`.
-- Active candidate: main merge `4b22bec`; corrected deployment
-  `5e2f5f4d-7f8d-4c7a-8aa5-624a8eeffd93`.
+- Active API candidate (September 22): `df12257`; isolated deployment
+  `1a78264d-5201-407b-8825-2cc74de4af73`. Original baseline was `4b22bec`.
 
 The initial deployment applied all 25 migrations successfully, including system
 category bootstrap, and started Next.js on port 3001. Its readiness probe failed
@@ -1009,3 +1009,36 @@ nonsecret epoch already changes under exclusive lock before login/register/logou
 Local build/typecheck and11desktop-session tests pass, including immediate
 private-tree removal. Interactive verification of this follow-up and Mac expiry
 remain pending; do not conflate the passed78823cdCI with this newer change.
+
+## September 22 — Current candidate and signed revocation delivery
+
+Deployed committed archive df122572 to the already-approved isolated API as
+1a78264d-5201-407b-8825-2cc74de4af73 (SUCCESS). CI286/35771600522 passed all jobs.
+Health returns ready; source hashes for webhook, revocation service and schema
+match the candidate. Logs confirm consentRevision migration20260922190000.
+Only beta-sandbox PLAID_WEBHOOK_URL was configured; production was not changed.
+Railway showed project usage $1.71 current/$2.88 estimated, below the existing
+$10/month additional Sandbox allowance; no plan change or new service.
+
+The guarded remote signed-webhook test passed: unsigned and invalid-signature
+revocation requests returned401 without deleting the fixture; an actual Plaid
+Sandbox-signed full-Item revocation was received and persisted, removing its two
+investment accounts. Provider Item removal and synthetic user cleanup completed.
+No credentials, webhook signatures or tokens are in the evidence artifact.
+Account-specific revocation is covered by PostgreSQL tests, not this remote test.
+
+Existing household checks passed before deployment, after migration, and after
+disposable-fixture cleanup: exact original accounts, owner53/partner396 full
+ledgers with stable repeat sync, private$125.50 manual fallback, $2,450 household
+responsibilities, saved three-payment zero-APR plan and idempotent$25 due item.
+The first pre-deploy run failed its zero-change assertion because scheduled
+Sandbox data added4 transactions to the previous392-row partner ledger. Audited
+all392 original IDs retained plus4 non-manual new rows; preserved the old fixture
+before updating that synthetic expectation, then repeated verification passed.
+This is disclosed provider-data evolution, not an application regression or a
+claim that the first run passed.
+
+Evidence: evidence/2026-09-22/hosted-signed-webhook.json. Native investment OAuth
+and update-mode repair remain incomplete; this does not prove actual-bank or
+store-binary acceptance. Four stopped passing local PostgreSQL test clusters were
+removed (~193MiB), preserving the active local UI database and source.

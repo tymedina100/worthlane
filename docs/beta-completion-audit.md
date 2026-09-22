@@ -54,7 +54,7 @@ trades or investment performance.
 
 | Check | Dated evidence | Result / limit |
 | --- | --- | --- |
-| Product-aware connection and sync | Separate banking/investments Link purposes; Investments-only requests do not initialize Transactions. Sync trusts initialized products from Plaid, filters to investment accounts, avoids spending sync/refresh and uses `INVESTMENT_BALANCES_ONLY` freshness. Production requires explicit `PLAID_INVESTMENTS_ENABLED=true` plus valid live callback configuration. | Implemented on PR20; no schema migration or production activation. Configuration validation checks shape/presence, not DNS, allowlists, valid credentials or delivery. |
+| Product-aware connection and sync | Separate banking/investments Link purposes; Investments-only requests do not initialize Transactions. Sync trusts initialized products from Plaid, filters to investment accounts, avoids spending sync/refresh and uses `INVESTMENT_BALANCES_ONLY` freshness. Production requires explicit `PLAID_INVESTMENTS_ENABLED=true` plus valid live callback configuration. | Implemented on PR20; subsequent revocation protection adds the consentRevision migration, applied only to local/hosted Sandbox. No production activation. Configuration validation checks shape/presence, not DNS, allowlists, valid credentials or delivery. |
 | Persistence, ownership and unlink | 13 isolated PostgreSQL and 3 real Sandbox tests pass, including stable investment IDs, zero spending rows, no Transactions initialization, other-login denial and provider `ITEM_NOT_FOUND` after unlink. | Backend Sandbox evidence; not actual Schwab account acceptance. The current focused Sandbox regression/typecheck also passes forced expiration, `NEEDS_RELINK`, retained account IDs/balances/lastSyncAt and owner-only update-token creation without Transactions, spending rows or cross-login leakage. State remains pending actual reauthentication: this is repair preparation, not completed reconnect. |
 | Browser lifecycle | Native Chrome local UI connected private IRA $320.76 and 401k $23,631.98, totaling $23,952.74 with zero spending rows. Repeat sync, reload, fresh sign-in and UI unlink passed; independent PostgreSQL confirmed two accounts before and zero accounts/Items after. [Evidence](evidence/2026-09-22/investment-browser.json). | Browser standard flow passed. In-app browser frame stayed blank and reached bounded retry; Chrome completed. No browser investment OAuth claim. |
 | Native standard lifecycle | EAS development Simulator `95061ba9` with the current Metro bundle showed Healthy/two investment accounts, repeat sync, persisted $23,952.74/zero spending/income after restart, then zero after unlink and another restart. API and PostgreSQL confirmed final zero accounts/Items/transactions. [Evidence](evidence/2026-09-22/investment-native-standard.json). | Passed on local laptop Simulator. UI run independently checked local deletion; provider revocation is separate integration evidence. Not store-build, Android or physical-device proof. |
@@ -116,3 +116,9 @@ the correction and Plaid's documented Simulator Universal Link limitation.
 
 Source: [Notion brief](https://app.notion.com/p/3d57f32d407581d9a9eafcdb4d5ac152).
 Exact chronology and commands: [beta-progress.md](beta-progress.md).
+
+September 22 hosted update: candidate df12257 passed CI286 and was deployed to the
+approved isolated API. Signature enforcement, actual provider-signed full-Item
+revocation, fixture cleanup and preserved two-login ledger/planning checks pass.
+Evidence: `evidence/2026-09-22/hosted-signed-webhook.json`. Native investment repair
+and OAuth remain open; this is not a live-bank or store-binary pass.
