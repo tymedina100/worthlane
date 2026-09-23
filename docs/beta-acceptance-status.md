@@ -451,3 +451,26 @@ restored the saved session, with no proven cause. Disabling background throttlin
 can increase rendering work while covered; battery impact was not measured.
 Android2a2aee67 remains IN_QUEUE at fresh provider check. No production deployment,
 notarization, paid service or store submission.
+
+## September 23 — Developer ID rendering candidate verified; signing launcher fixed
+
+Built bdb7e29 runtime with the existing Developer ID Application certificate
+(team5FBXR5M5PJ), hardened runtime and timestamp. Strict deep verification and
+9asset/8fuse package verification passed. The signed app.asar hash matches the
+previously tested ad-hoc package exactly; all7runtime files match source. Cold
+launch restored the saved disposable Sandbox dashboard without login or Retry.
+Signed UI manual create42.17, edit43.17 and delete0 each updated automatically;
+independent API confirmed values, zero spending/transactions and final cleanup.
+Sign-out rendered an empty login form; screenshot and AX agree without resizing.
+Signed-package banking was not rerun; identical archive parity and prior local
+connect/unlink evidence are recorded separately in mac-rendering.json.
+
+Found and corrected a distribution-script mismatch: our preflight requires the
+explicit Developer ID Application label, but electron-builder rejects that prefix
+in CSC_NAME. The new launcher validates the full identity, then supplies only the
+builder-compatible name in the child environment. Ad-hoc/development/ambiguous
+identities still fail validation. Target architectures, forced signing and
+publish-never behavior are retained. All24native tests pass, including the new
+identity-normalization regression; syntax and diff checks pass. Actual signed
+packaging succeeded with the equivalent normalized identity. No notarization,
+production deployment, paid action or store submission.

@@ -6,13 +6,13 @@
   "main": "src/main.cjs",
   "scripts": {
     "native:dev": "node scripts/dev.mjs",
-    "typecheck": "node --check src/bank-window.cjs && node --check src/main.cjs && node --check src/navigation.cjs && node --check src/security.cjs && node --check src/offline.js && node --check scripts/write-config.cjs && node --check scripts/verify-origin.mjs && node --check scripts/verify-package.cjs && node --check scripts/after-pack.cjs && node --check scripts/dev.mjs && node --check scripts/check-mac-signing.cjs && node --check src/recovery-protocol.cjs",
+    "typecheck": "node --check src/bank-window.cjs && node --check src/main.cjs && node --check src/navigation.cjs && node --check src/security.cjs && node --check src/offline.js && node --check scripts/write-config.cjs && node --check scripts/verify-origin.mjs && node --check scripts/verify-package.cjs && node --check scripts/after-pack.cjs && node --check scripts/dev.mjs && node --check scripts/check-mac-signing.cjs && node --check scripts/build-mac.cjs && node --check src/recovery-protocol.cjs",
     "test": "node --test tests/bank-window.test.cjs tests/navigation.test.cjs tests/packaging.test.cjs tests/security.test.cjs tests/recovery-protocol.test.cjs",
     "verify:packaged": "node scripts/verify-package.cjs",
     "pack:win:local": "node scripts/write-config.cjs --allow-local && electron-builder --win --dir --x64 && node scripts/verify-package.cjs",
     "dist:win": "node scripts/verify-origin.mjs && node scripts/write-config.cjs && electron-builder --win nsis --x64 && node scripts/verify-package.cjs --production",
     "pack:mac:local": "node scripts/write-config.cjs --allow-local && electron-builder --mac --dir --arm64 -c.mac.identity=- -c.mac.notarize=false --publish never && node scripts/verify-package.cjs release/mac-arm64/Worthlane.app",
-    "dist:mac": "node scripts/check-mac-signing.cjs && node scripts/verify-origin.mjs && node scripts/write-config.cjs && electron-builder --mac dmg --arm64 --x64 --publish never -c.forceCodeSigning=true"
+    "dist:mac": "node scripts/check-mac-signing.cjs && node scripts/verify-origin.mjs && node scripts/write-config.cjs && node scripts/build-mac.cjs"
   },
   "devDependencies": {
     "@electron/fuses": "2.1.3",

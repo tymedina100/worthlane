@@ -63,10 +63,19 @@ test("root native commands work when pnpm is provided only by Corepack", () => {
   }
 });
 
-const { checkMacSigning } = require("../scripts/check-mac-signing.cjs");
+const { checkMacSigning, macBuilderEnvironment } = require("../scripts/check-mac-signing.cjs");
 test("Mac distribution requires an explicit Developer ID identity", () => {
   for (const CSC_NAME of [undefined, "", "-", "Apple Development: Sample (TEAM)"]) {
     assert.throws(() => checkMacSigning({ CSC_NAME }), /explicitly selected/);
   }
   assert.doesNotThrow(() => checkMacSigning({ CSC_NAME: "Developer ID Application: Sample (TEAM)" }));
+});
+
+test("Mac builder receives its accepted name without losing explicit identity validation", () => {
+  const env = { CSC_NAME: "Developer ID Application: Sample (TEAM)", OTHER: "preserved" };
+  assert.deepEqual(macBuilderEnvironment(env), { CSC_NAME: "Sample (TEAM)", OTHER: "preserved" });
+  assert.equal(env.CSC_NAME, "Developer ID Application: Sample (TEAM)");
+  for (const CSC_NAME of ["-", "Sample (TEAM)", "Apple Development: Sample (TEAM)"]) {
+    assert.throws(() => macBuilderEnvironment({ CSC_NAME }), /explicitly selected/);
+  }
 });
