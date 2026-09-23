@@ -5480,3 +5480,25 @@ Evidence: android-investment-artifact.json. Original reminder Simulator preserve
 No production action, new paid service, real-bank credentials or store submission.
 Next: Chrome confirmation for Android repair, or independent remaining planning
 and separate-login checks while that input is pending.
+
+## September 23 — Android upcoming lifecycle and bounded storage cleanup
+
+Current Android86001c0 candidate created a synthetic150 bill due2026-09-25 via
+Quick add. Native Saved and Upcoming exact date/amount agree with fresh API;
+reminderTimingNONE. Native Paid moved it to Recently paid, APIisPaid/statusPAID.
+Force-stop/start preserved signed-in session and Recently paid card. Native Unpaid
+restored Upcoming/APIisPaidfalse. Separate Sam reviewer cannot list this obligation
+(different household). Investment IDs/Item/netWorth23952.74 and0spending/transactions
+remain unchanged. Retained unpaid test bill for later edit/privacy coverage. This
+is not actual calendar reminder delivery, date editing or deletion acceptance.
+
+Removed668MiB logical obsolete test binaries/download cache: duplicate ad-hoc Mac
+package (ASAR identical to retained signed candidate), old iOS recovery extraction
+(archive kept),2superseded Android APKs and Electron download ZIP. Executable-path
+guard confirmed none running; source,credentials,current artifacts,logs/screenshots,
+SDK/AVD and reminder Simulator retained. Free space2.5→3.1GiB. Exact manifest:
+evidence/2026-09-23/storage-cleanup.json. Native evidence:android-investment-artifact.json.
+
+Chrome terms confirmation remains pending for Android OAuth comparison. iOS OAuth
+repair, remaining current planning/separate-login coverage, calendar observation,
+live-provider and distribution gates remain. No production/spending/store action.

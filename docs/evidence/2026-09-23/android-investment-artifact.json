@@ -38,5 +38,17 @@
       "delete": "Native Delete confirmation removed synthetic account; fresh API exact original investment IDs/Item retained,23952.74netWorth,0transactions/spending,NEEDS_RELINK"
     },
     "limits": "Non-owner privacy checked on API separately; not a current Android banking connect/sync/repair/unlink pass"
+  },
+  "upcomingCheckedAt": "2026-09-23T18:41:04.564039+00:00",
+  "upcoming": {
+    "nativeCreate": "Android calendar acceptance, BILL,150,2026-09-25; native Saved then Upcoming card exact date/amount",
+    "reminderTiming": "NONE confirmed by API; no OS notification requested",
+    "paid": "Native Paid moved to Recently paid; fresh API isPaid=true/statusPAID",
+    "coldLaunch": "Force-stop/start restored login; Upcoming still Recently paid with exact150/date",
+    "unpaid": "Native Unpaid restored Upcoming; fresh API isPaid=false/statusUPCOMING",
+    "privacy": "Separate Sam reviewer API login cannot list this private obligation; different household",
+    "ledger": "Original2investment/Item IDs and23952.74 retained;0spending/transactions after both state changes",
+    "fixture": "Retained unpaid for edit/privacy coverage; no real bill or money movement",
+    "limits": "Date editing/deletion and actual reminder delivery not proved by this run; transient null UI dumps during navigation resolved by re-observation without extra restart"
   }
 }
