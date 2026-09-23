@@ -425,3 +425,29 @@ Evidence: docs/evidence/2026-09-23/ios-investment-artifact.json. The original
 September24 reminder Simulator remains separate. Android2a2aee67 was freshly
 IN_QUEUE this turn. Next: native OAuth, remaining current-artifact banking/planning
 mutations, Android when ready, and Mac stale-rendering diagnosis.
+
+## September 23 — Mac stale rendering reproduced and fixed in local package
+
+The original signed package reproduced login navigation with a dashboard window
+title but the old login page in both screenshot and accessibility. Raise/Tab did
+not fix it; native window zoom immediately revealed the loaded dashboard.
+The main Mac BrowserWindow now disables background throttling so frames continue
+updating while covered. Windows retains its previous behavior. Existing software
+rendering, sandbox, context isolation, origin pinning and packaged fuse settings
+remain intact. Electron documents that this option controls frame drawing/swapping
+as well as timers: https://www.electronjs.org/docs/latest/api/browser-window.
+
+A fresh local ad-hoc package passed all23 native tests, syntax,9asset/8fuse checks
+and strict deep signature verification. Interactive login, sign-out and account
+navigation updated without resizing. Real Betterment Sandbox connect returned
+automatically to2private investments/$23,952.74. UI unlink then automatically
+removed balances and controls and displayed its confirmation, without Refresh
+or resize. Screenshot and AX agreed; API independently confirmed zero accounts,
+Items, transactions, spending and net worth. Evidence: mac-rendering.json.
+
+Limits: local test package only; updated Developer ID package still needs build
+and acceptance. Initial startup reached a timeout recovery page; normal Retry
+restored the saved session, with no proven cause. Disabling background throttling
+can increase rendering work while covered; battery impact was not measured.
+Android2a2aee67 remains IN_QUEUE at fresh provider check. No production deployment,
+notarization, paid service or store submission.

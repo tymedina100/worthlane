@@ -322,6 +322,10 @@ function createMainWindow() {
       allowRunningInsecureContent: false,
       devTools: !app.isPackaged,
       spellcheck: true,
+      // On macOS an occluded window can retain the previous finance screen
+      // after navigation until a resize. Keep frame delivery active so returning
+      // from bank authorization or signing out does not leave stale balances.
+      backgroundThrottling: process.platform !== "darwin",
     },
   });
   mainWindow = window;

@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-09-23T17:34:24.949568+00:00",
+  "baseline": "Signed Mac login advanced native title to dashboard while AX and screenshot retained login; Raise and Tab did not reconcile. Native window zoom immediately showed loaded dashboard.",
+  "change": "On macOS only, main BrowserWindow backgroundThrottling=false; existing software rendering/security options retained.",
+  "reference": "https://www.electronjs.org/docs/latest/api/browser-window",
+  "localPackage": ".tmp/mac-render-check/mac-arm64/Worthlane.app",
+  "archiveSha256": "d8f2c58501bf69c352f9bde052d84b9e3215e6d9e3678e9344aeb447d6f920bc",
+  "checks": {
+    "nativeTests": 23,
+    "syntax": "passed",
+    "packagedAssets": 9,
+    "hardenedFuses": 8,
+    "strictDeepSignature": "passed, ad-hoc only",
+    "loginLogoutNavigation": "Passed without resizing; screenshot and AX agree on loaded dashboard",
+    "bankUnlink": "Passed: real Betterment Sandbox UI connect and automatic return showed2private investments/$23,952.74. UI unlink automatically showed0accounts/$0 and confirmation without Refresh or resize; screenshot agrees and API confirms0accounts/Items/spending/transactions."
+  },
+  "limits": [
+    "Local ad-hoc package; Developer ID distribution package not rebuilt",
+    "Initial startup timed out; normal Retry restored saved session; cause not established",
+    "Disabling background throttling can increase background rendering work; no battery benchmark",
+    "No production deployment or notarization"
+  ]
+}
