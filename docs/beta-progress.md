@@ -5200,3 +5200,19 @@ and no delivered notification. Calendar delivery remains unobserved; this cannot
 be counted as an on-time pass. Restore the laptop environment and schedule a new
 real future check. Evidence: `evidence/2026-09-23/calendar-delivery-unobserved.json`.
 No production change, paid build, phone access or store submission.
+
+## September 23 — restored local runtime and rescheduled calendar acceptance
+
+Confirmed local PG55439/API3101/Metro8087 were stopped after reboot before
+restarting the existing cluster and guarded Sandbox launchers. API ready and
+Metro listening; no database reset or new credentials. Booted the existing laptop
+Simulator and launched installed development client. Saved login restored with
+$23,952.74 private investment net worth and zero spending/income.
+
+Guarded API edit changed only the existing synthetic $1 calendar bill from
+September23 to September24 using its current version. Native dashboard showed
+Tomorrow. Independent OS archive and fresh API login verified exactly one matching
+owner/bill notification, trigger September24 16:00UTC (09:00Phoenix), non-repeating,
+and correct saved DUE_DATE timing. This demonstrates restored-session scheduling,
+not observed delivery. Keep this test session and Simulator running; logout clears
+reminders. Evidence: `evidence/2026-09-23/calendar-rescheduled-os.json`.
