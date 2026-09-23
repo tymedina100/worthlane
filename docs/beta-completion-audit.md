@@ -256,3 +256,24 @@ through the API, not browser unlink. The earlier stuck IAB confirmation was clos
 and no longer requires Tyler. Native OAuth, final artifacts and actual calendar
 reminder delivery remain open. No production or store action occurred.
 Evidence: `evidence/2026-09-22/hosted-investment-warning.json`.
+
+## September 22 — exact Mac package and mobile artifact comparison
+
+The signed Mac archive SHA256 remains
+`b05fa072cb447e09ebaeba8bcffa606b23ff7e60c3b585a577f3ccecd6276217`.
+All seven runtime source files extracted from app.asar match current fc766ca
+byte-for-byte; deep/strict signing and nine-asset/eight-fuse verification pass.
+Its configured origin is the isolated hosted Sandbox. No Mac shell source rebuild
+is needed solely to obtain the new hosted investment page. Interactive investment
+acceptance is still required. Initial Accounts navigation retained a stale
+dashboard, refresh exposed empty content, and clean quit/relaunch reached login
+rather than restoring Alex. Causes remain unproven. The Mac then locked before
+synthetic credential entry; unlock requested. No session persistence pass claimed.
+Evidence: `evidence/2026-09-22/mac-current-source-parity.json`.
+
+Apple build30 remains sourced from74c6bbf. Comparing that source to fc766ca shows
+eight changed mobile files: investment launch/diagnostics and data-coverage copy,
+reminder deletion ordering and past-time feedback, and local Simulator configuration.
+A new installable mobile candidate must include these changes and the updated
+shared banking rules; the old store artifact cannot close those checks. This
+comparison starts no build, spends nothing and submits nothing.
