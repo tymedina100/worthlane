@@ -70,5 +70,14 @@
       "fixture": "Saved Snowball plan and one synthetic25 obligation retained for persistence/cleanup.",
       "limits": "Single zero-APR debt does not distinguish multi-debt allocation order; deterministic algorithm coverage exists separately. No payment, production or original reminder-device change."
     }
+  },
+  "accountSwitch": {
+    "checkedAt": "2026-09-23T19:05:20.540942+00:00",
+    "obligationRestart": "Force-stop/start restored prior login; Upcoming shows one Test card minimum payment25 due2026-09-27.",
+    "logout": "Native Sign Out confirmation returns empty Email/password form, no previous financial screen.",
+    "partnerLogin": "Existing synthetic Sam reviewer authenticated through native form. Dashboard900 net worth,0spending/income; Upcoming empty; Settings only Sam review checking900, no previous investment Item; Debt payoff shows no saved plans.",
+    "household": "Sam native household Review household/Shared with Alex shows visible netWorth900; Groceries600 50/50=300each, Utilities150 Sam100%, Rent1700 Alex60%=1020/Sam40%=680. Owner-manages-assignment explanation and payer/privacy caveats visible.",
+    "limits": "Previous investment fixture belongs to a different household; account-switch cache isolation is distinct from same-household privacy. Sam household excludes private partner balance; existing persisted fixture evidence verifies that balance separately. No fresh API login repeated during this check.",
+    "fixture": "Android remains signed in as Sam reviewer; disposable Snowball plan and25obligation remain owned by investment fixture; iOS candidate retains that fixture for OAuth comparison."
   }
 }

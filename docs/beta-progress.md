@@ -5573,3 +5573,22 @@ enablement is not evidence of a defect. No speculative runtime patch made.
 Next: controlled same-expired-Item comparison on another client; Android Chrome
 terms confirmation remains pending. Native persistence/calendar/provider/release
 gates remain. Storage2.7GiB free; no large build started. No production changes.
+
+## September 23 — Android account switching and partner plan readback
+
+After cold restart, the first synthetic login retained exactly one25 minimum
+obligation dueSept27. Native Sign Out confirmation cleared to empty credential
+form. Native Sam reviewer login then showed900 net worth/0activity, empty Upcoming,
+only Sam review checking900 in Settings and no saved debt plans. Prior investment
+fixture data did not carry across accounts (different household).
+Sam household view shows visible netWorth900, groceries600→300each, utilities150
+assigned entirely toSam, rent1700→Alex1020/Sam680, and owner-management plus
+responsibility/payer/privacy explanations. Existing same-household fixture evidence
+provides the other private balance; this native view does not expose it.
+
+Evidence: evidence/2026-09-23/android-investment-artifact.json. No extra API login
+helpers run; earlier second-helper throttled check is not reclassified. Android
+now signed in as Sam. First fixture's plan/obligation and expired OAuth Item remain
+for further checks; original reminder Simulator untouched. No production/spending
+or store submission. Next: controlled OAuth comparison, reminder observation,
+remaining release/provider gates and fixture cleanup.
