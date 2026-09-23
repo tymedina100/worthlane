@@ -15,7 +15,28 @@
     "INVESTMENT_BALANCES_ONLY": true
   },
   "limits": [
-    "Not installed or interactively verified yet",
+    "Chrome first-run terms approval pending for OAuth comparison",
+    "Current Android banking lifecycle and remaining planning/second-user coverage open",
     "No production or store publication"
-  ]
+  ],
+  "installed": true,
+  "runtimeCheckedAt": "2026-09-23T18:33:44.386460+00:00",
+  "device": "Laptop emulator5554 WorthlaneRelease, software GPU",
+  "runtime": {
+    "installedVersionCode": 4,
+    "login": "Existing disposable Sandbox user authenticated; UI23952.74netWorth and0spending/income",
+    "coldLaunch": "Force-stop/start restored saved session and same balances without credentials",
+    "expiredConnection": "Native Settings shows2accounts/Needs relink, saved-balance warning and exact320.76/23631.98",
+    "repairEntry": "Relink opens Plaid; Continue without phone and bank Continue to login reached Chrome first-run setup",
+    "repairBlocker": "Chrome Terms of Service confirmation requested and pending; no bank login/repair result on Android yet",
+    "manualFallback": {
+      "create": 42.17,
+      "netWorthAfterCreate": 23994.91,
+      "edit": 43.17,
+      "netWorthAfterEdit": 23995.91,
+      "coldLaunch": "Restored23995.91 and0spent/received without login",
+      "delete": "Native Delete confirmation removed synthetic account; fresh API exact original investment IDs/Item retained,23952.74netWorth,0transactions/spending,NEEDS_RELINK"
+    },
+    "limits": "Non-owner privacy checked on API separately; not a current Android banking connect/sync/repair/unlink pass"
+  }
 }

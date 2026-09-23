@@ -5459,3 +5459,24 @@ for a controlled comparison in the finished Android candidate before unlinking.
 
 Evidence: ios-investment-artifact.json. No runtime patch, production action,
 spending, store submission or original-reminder Simulator change.
+
+## September 23 — Android candidate installed; manual fallback lifecycle passes
+
+Installed signed APK2a2aee67/source86001c0/version4 in laptop emulator5554.
+Existing disposable hosted Sandbox login showed23952.74 and0spending/income;
+force-stop/start restored session and balances. Settings shows same2investments,
+Needs relink and honest stale-balance warning. Relink opened Plaid and bank
+Continue to login reached Chrome first-run Terms of Service. Scoped confirmation
+requested; still pending. No Android OAuth repair outcome is claimed.
+
+Independent work: native manual Checking account Android manual acceptance
+created42.17 (netWorth23994.91), edited43.17 (23995.91), persisted after cold launch,
+then deleted through native confirmation. UI refreshed and API independently
+confirmed every aggregate and final exact original2investment/Item baseline,
+23952.74,0spending/transactions,NEEDS_RELINK. This proves current-artifact manual
+fallback mutations while retaining the expired OAuth fixture for comparison.
+
+Evidence: android-investment-artifact.json. Original reminder Simulator preserved.
+No production action, new paid service, real-bank credentials or store submission.
+Next: Chrome confirmation for Android repair, or independent remaining planning
+and separate-login checks while that input is pending.
