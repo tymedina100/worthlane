@@ -5502,3 +5502,22 @@ evidence/2026-09-23/storage-cleanup.json. Native evidence:android-investment-art
 Chrome terms confirmation remains pending for Android OAuth comparison. iOS OAuth
 repair, remaining current planning/separate-login coverage, calendar observation,
 live-provider and distribution gates remain. No production/spending/store action.
+
+## September 23 — Android bill edit, persistence and deletion pass
+
+Current Android86001c0 native editor changed the synthetic bill from150 dueSept25
+to175.25 due2026-09-26. Saved confirmation followed by force-stop/start restored
+the session and exact Upcoming card. Fresh API verified amount/date, unpaid active
+BILL/reminderNONE; separate Sam reviewer cannot list the obligation (different
+household). Native Delete confirmation yielded the empty Upcoming screen; fresh
+API confirms the saved ID absent and zero upcoming items.
+
+After both edit and deletion, independent API reads confirm exact original two
+investment accounts/Item,23952.74netWorth,0spending/transactions,NEEDS_RELINK and
+INVESTMENT_BALANCES_ONLY. This resolves the earlier rate-limited final ledger
+check. The synthetic bill is removed; expired OAuth fixture is retained.
+Evidence: evidence/2026-09-23/android-investment-artifact.json. No app code change,
+production action, spending or store submission. Original September24 09:00Phoenix
+reminder Simulator untouched. Next: remaining native debt/separate-login checks,
+OAuth repair comparison after pending Chrome terms approval, scheduled reminder
+observation and live-provider/distribution gates.

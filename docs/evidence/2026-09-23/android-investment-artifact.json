@@ -39,16 +39,18 @@
     },
     "limits": "Non-owner privacy checked on API separately; not a current Android banking connect/sync/repair/unlink pass"
   },
-  "upcomingCheckedAt": "2026-09-23T18:41:04.564039+00:00",
+  "upcomingCheckedAt": "2026-09-23T18:48:23.664973+00:00",
   "upcoming": {
     "nativeCreate": "Android calendar acceptance, BILL,150,2026-09-25; native Saved then Upcoming card exact date/amount",
     "reminderTiming": "NONE confirmed by API; no OS notification requested",
     "paid": "Native Paid moved to Recently paid; fresh API isPaid=true/statusPAID",
     "coldLaunch": "Force-stop/start restored login; Upcoming still Recently paid with exact150/date",
     "unpaid": "Native Unpaid restored Upcoming; fresh API isPaid=false/statusUPCOMING",
-    "privacy": "Separate Sam reviewer API login cannot list this private obligation; different household",
-    "ledger": "Final post-toggle ledger reread could not complete: fresh-login helper receivedHTTP429. Prior exact investment baseline passed before bill creation; do not claim final ledger recheck.",
-    "fixture": "Retained unpaid for edit/privacy coverage; no real bill or money movement",
-    "limits": "Date editing/deletion and actual reminder delivery not proved by this run; transient null UI dumps during navigation resolved by re-observation without extra restart"
+    "privacy": "Separate Sam reviewer API login cannot list this edited obligation; different household, not same-household native proof.",
+    "ledger": "After edit and again after delete, fresh API confirms exact original two investment account IDs/balances and Item ID, netWorth23952.74, spending0, transactions0, NEEDS_RELINK, INVESTMENT_BALANCES_ONLY. Earlier HTTP429 recheck is resolved.",
+    "fixture": "Synthetic bill deleted; expired investment fixture retained for OAuth comparison.",
+    "limits": "Actual scheduled reminder delivery and remaining native debt/second-login journey are still open.",
+    "edit": "Native edit changed amount150 to175.25 and confirmed due date2026-09-25 to2026-09-26; Saved confirmation, then force-stop/start restored session and exact Upcoming card. Fresh API verifies175.25/date/unpaid/active/BILL/reminderNONE.",
+    "delete": "Native Delete confirmation yielded Nothing is due yet; fresh API confirms saved bill ID absent and zero upcoming items."
   }
 }
