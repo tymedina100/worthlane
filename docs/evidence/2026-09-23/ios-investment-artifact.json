@@ -73,7 +73,7 @@
     "initialRetry": "Initial App Password Required screen cleared after erasing/retyping public Sandbox credentials; cause not proven",
     "automationLimit": "Finish-without-saving selector timed out; fresh native Bank connected alert and API persistence independently establish completion",
     "repair": "Native Relink completed with Connection repaired and Healthy; provider error null and Investments-only verified; exact account/Item IDs retained",
-    "oauth": "Not verified on this artifact",
+    "oauth": "Separate current-artifact OAuth connect and cold launch passed; see investmentOAuth.verifiedSelectionRetry",
     "expiration": "Provider ITEM_LOGIN_REQUIRED confirmed; native Needs relink and investment-specific stale warning observed; exact IDs/balances retained",
     "postRepairSync": "Native repeat Sync now settled with Healthy",
     "unlink": "Native confirmation removed connection immediately; Nothing linked yet; API zero accounts/Items/transactions/netWorth/spending; cold launch restored empty dashboard and household net worth0",
@@ -98,6 +98,37 @@
     "configuration": "Hosted API readback confirmed sandbox and https://worthlane.app/plaid-oauth; SDK13.2.0 uses createPlaidLinkSession/session.open",
     "rootCause": "Unproven; provider error screen narrows outcome but does not establish Simulator, SDK or configuration cause",
     "scope": "Synthetic laptop Simulator only; no real bank or production change",
-    "cancellation": "Yes, exit returned to usable Settings with Nothing linked yet"
+    "cancellation": "Yes, exit returned to usable Settings with Nothing linked yet",
+    "providerLog": {
+      "checkedDate": "2026-09-23",
+      "eventTimePhoenix": "10:58:27",
+      "environment": "Sandbox",
+      "institution": "ins_127287",
+      "event": "EXIT - onExit",
+      "exitStatus": "REQUIRES_OAUTH",
+      "debugger": "Provider-linked session debugger returned Invalid request / No item found",
+      "interpretation": "Not evidence of a specific callback bug; Plaid OAuth guide lists bank-flow error or access not granted as possible reasons",
+      "reference": "https://plaid.com/docs/link/oauth/"
+    },
+    "verifiedSelectionRetry": {
+      "checkedAt": "2026-09-23T18:05:54.684436+00:00",
+      "selection": "Fresh screenshot visibly confirms purple checked IRA and401k; neighboring CD/credit/money-market/student-loan boxes unchecked",
+      "result": "PASSED connection and cold-launch persistence",
+      "nativeResult": "Plaid Success and two accounts; Finish without saving led to Worthlane Bank connected and Healthy",
+      "api": {
+        "accounts": 2,
+        "items": 1,
+        "netWorth": 23952.74,
+        "spending": 0,
+        "transactions": 0,
+        "status": "HEALTHY",
+        "history": "INVESTMENT_BALANCES_ONLY"
+      },
+      "coldLaunch": "Terminated and launched exact installed bundle; saved login restored23952.74 and0spent/received; API exact account/Item IDs unchanged",
+      "syncLimit": "Sync every institution was tapped; stable IDs/balances checked afterward, but request timestamp advancement not independently compared",
+      "automationLimit": "Finish without saving selector reported timeout despite final native Bank connected and independent saved-account proof; text taps alone are insufficient evidence",
+      "remaining": "Forced-expiration OAuth repair, stronger repeat-sync request proof, cross-login privacy and unlink on this exact connection",
+      "conclusion": "Successful verified-checkbox retry supersedes blanket current-candidate OAuth-connect failure. Earlier failure cause is not proven; no app code changed."
+    }
   }
 }

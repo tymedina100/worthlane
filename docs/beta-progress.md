@@ -5412,3 +5412,30 @@ session diagnostics and distinguish selection/auth failure from callback handlin
 Android2a2aee67 remains IN_QUEUE at fresh provider check. Original reminder device
 was not changed. Evidence: evidence/2026-09-23/ios-investment-artifact.json.
 No production changes, spending, real-bank credentials or store submission.
+
+## September 23 — current iOS OAuth connect and cold launch pass
+
+Provider logs show prior attempt EXIT/REQUIRES_OAUTH; session debugger returned
+Invalid request/No item found. Plaid documentation says this status can follow a
+bank error or access not granted, so it does not establish a callback bug.
+A bounded retry directly clicked IRA and401k checkboxes; fresh screenshot proved
+both checked and neighboring accounts unchecked. Final mock confirmation returned
+Plaid Success/two accounts, then Worthlane Bank connected/Healthy. Fresh API login
+confirmed2INVESTMENT accounts,1Item,$23,952.74,0spending/transactions and
+INVESTMENT_BALANCES_ONLY. Cold terminate/relaunch restored dashboard23952.74 and
+zero spent/received without credentials; exact IDs/balances remained unchanged.
+
+This supersedes current-candidate OAuth connection failure, not the full lifecycle.
+No runtime code changed and the prior failure cause is unproven. Text selectors
+were unreliable; final state and independent readbacks support acceptance. The
+Sync every institution action was invoked, but timestamp advancement was not
+independently compared. Keep the disposable Item for stronger repeat-sync proof,
+forced-expiration OAuth repair, privacy and unlink. No actual-bank acceptance.
+
+Android2a2aee67 completed. Downloaded APK SHA256
+95a68eb02b896e4daa9e5a7c2c2b6f718f8fe3af1937aee43654dacab08d3ea3;
+apksigner verifies the existing signer, packagecom.worthlane.mobile/version4,
+and embedded hosted Sandbox origin/investment markers. Not installed/tested yet.
+CI313 for c438a9a passed all4jobs (CI,PG17,PG18,Windows). Evidence:
+ios-investment-artifact.json,android-investment-artifact.json,mac-rendering.json.
+No production change, spending, store submission or reminder-device changes.

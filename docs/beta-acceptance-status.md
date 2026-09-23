@@ -1,4 +1,4 @@
-# Beta acceptance status — updated September 22, 2026
+# Beta acceptance status — updated September 23, 2026
 
 Source of requirements: [Worthlane brief](https://app.notion.com/p/3d57f32d407581d9a9eafcdb4d5ac152).
 The beta goal remains **active, not complete**. This index summarizes dated
@@ -39,8 +39,8 @@ holdings, trades or household spending. Production Investments remains gated.
 | --- | --- |
 | Product-aware persistence/privacy | Real Plaid Sandbox tests create an Investments-only Item without initializing Transactions, keep stable account IDs, reject the other login, and verify unlink with provider `ITEM_NOT_FOUND`. Filtering retains only investment account types and rejects a connection with none. The current focused Sandbox regression also verifies forced expiration, retained balances/IDs/freshness, owner-only update-token creation and a pending repair state without Transactions or cross-login leakage; focused test/typecheck pass. This is repair preparation, not completed reconnect. |
 | Browser standard connection | September 22 native Chrome UI connected IRA $320.76 and 401k $23,631.98: net worth $23,952.74, zero spending rows. Repeat sync, reload, fresh sign-in and UI unlink pass with independent PostgreSQL readback. The in-app browser's blank Plaid frame is recorded separately. [Evidence](evidence/2026-09-22/investment-browser.json). |
-| Native standard connection | iOS laptop Simulator development build `95061ba9` with the current Metro bundle connected exactly those two investment accounts. Repeat sync and full restart retained $23,952.74 with zero spending/income; UI unlink and another restart returned to zero, confirmed by API and PostgreSQL. This UI run checked local removal; provider revocation comes from the separate Sandbox integration test. [Evidence](evidence/2026-09-22/investment-native-standard.json). |
-| Investment OAuth / distributable parity | **Not passed.** A fresh native App2App retry visibly checked IRA/401k, then returned to the login prompt without exchange. Clean cancellation left usable Settings and zero accounts/Items; filtered events ended with EXIT and no error code. [Retry evidence](evidence/2026-09-22/investment-native-oauth-retry.json). No cause is proven. Browser/native standard success is not OAuth evidence. Hosted deployment, Android investment UI and store-build investment parity are unverified. |
+| Native standard connection | Current standalone iOS Simulator candidate `aced2d4e`, source `86001c0`, passed hosted Sandbox Betterment connect, repeat sync, cold launch, forced-expiration repair and UI unlink. Exactly two investments totaled $23,952.74 with zero spending/transactions and stable account IDs through repair. Unlink and restart returned to zero. Provider revocation is covered separately by integration tests. [Evidence](evidence/2026-09-23/ios-investment-artifact.json). |
+| Investment OAuth / distributable parity | **Current iOS connect and cold launch pass.** A retry with visibly checked IRA/401k completed native OAuth, saved exactly two private investments/$23,952.74 and zero spending, and restored the same accounts after restart. Earlier failed attempt remains documented; no code changed. Forced-expiration OAuth repair, stronger repeat-sync proof, cross-login privacy and unlink for this exact connection remain. Android candidate finished and passed static checks; interactive coverage and store-build parity remain open. [Current iOS evidence](evidence/2026-09-23/ios-investment-artifact.json). |
 | Real banks / provider access | September 22 dashboard inspection recorded Chase and Schwab OAuth Enabled and Wells Fargo/Desert Financial product coverage. Transactions/Balance were enabled; Investments/Liabilities were not; Compliance Center still required action. Investments pricing and activation approval remain open. Institution coverage is not an account-specific live connection. |
 
 ## Distribution and provider boundary
@@ -495,3 +495,30 @@ session diagnostics and distinguish selection/auth failure from callback handlin
 Android2a2aee67 remains IN_QUEUE at fresh provider check. Original reminder device
 was not changed. Evidence: evidence/2026-09-23/ios-investment-artifact.json.
 No production changes, spending, real-bank credentials or store submission.
+
+## September 23 — current iOS OAuth connect and cold launch pass
+
+Provider logs show prior attempt EXIT/REQUIRES_OAUTH; session debugger returned
+Invalid request/No item found. Plaid documentation says this status can follow a
+bank error or access not granted, so it does not establish a callback bug.
+A bounded retry directly clicked IRA and401k checkboxes; fresh screenshot proved
+both checked and neighboring accounts unchecked. Final mock confirmation returned
+Plaid Success/two accounts, then Worthlane Bank connected/Healthy. Fresh API login
+confirmed2INVESTMENT accounts,1Item,$23,952.74,0spending/transactions and
+INVESTMENT_BALANCES_ONLY. Cold terminate/relaunch restored dashboard23952.74 and
+zero spent/received without credentials; exact IDs/balances remained unchanged.
+
+This supersedes current-candidate OAuth connection failure, not the full lifecycle.
+No runtime code changed and the prior failure cause is unproven. Text selectors
+were unreliable; final state and independent readbacks support acceptance. The
+Sync every institution action was invoked, but timestamp advancement was not
+independently compared. Keep the disposable Item for stronger repeat-sync proof,
+forced-expiration OAuth repair, privacy and unlink. No actual-bank acceptance.
+
+Android2a2aee67 completed. Downloaded APK SHA256
+95a68eb02b896e4daa9e5a7c2c2b6f718f8fe3af1937aee43654dacab08d3ea3;
+apksigner verifies the existing signer, packagecom.worthlane.mobile/version4,
+and embedded hosted Sandbox origin/investment markers. Not installed/tested yet.
+CI313 for c438a9a passed all4jobs (CI,PG17,PG18,Windows). Evidence:
+ios-investment-artifact.json,android-investment-artifact.json,mac-rendering.json.
+No production change, spending, store submission or reminder-device changes.

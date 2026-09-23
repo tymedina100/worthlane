@@ -1,0 +1,21 @@
+{
+  "date": "2026-09-23",
+  "id": "2a2aee67-deaa-4571-874b-2f57fb0f6e2a",
+  "source": "86001c0c437a04c0f7ee1a8504e61824de4d32bb",
+  "status": "FINISHED",
+  "sha256": "95a68eb02b896e4daa9e5a7c2c2b6f718f8fe3af1937aee43654dacab08d3ea3",
+  "bytes": 100431711,
+  "package": "com.worthlane.mobile",
+  "versionCode": 4,
+  "signature": "apksigner verify passed; existing signer matched September21 evidence",
+  "signerSha256": "bb3fd1e47164421d9d40a4e6594e1ab69c2be8d4056f587dfb0af29b50992432",
+  "bundleMarkers": {
+    "https://worthlane-beta-sandbox.up.railway.app/api": true,
+    "Connect investments": true,
+    "INVESTMENT_BALANCES_ONLY": true
+  },
+  "limits": [
+    "Not installed or interactively verified yet",
+    "No production or store publication"
+  ]
+}

@@ -34,5 +34,17 @@
     "bankLifecycleLimit": "Same app.asar as ad-hoc bank connect/unlink acceptance; bank lifecycle not rerun under new signature",
     "notarized": false,
     "published": false
+  },
+  "signingFixCI": {
+    "commit": "c438a9aa11e9903757efa6aacb0c602fbc6a9290",
+    "run": 35897279932,
+    "conclusion": "success",
+    "jobs": [
+      "ci",
+      "postgres-integration (17)",
+      "postgres-integration (18)",
+      "native-windows"
+    ],
+    "url": "https://github.com/tymedina100/worthlane/actions/runs/35897279932"
   }
 }
