@@ -5240,3 +5240,27 @@ artifact. Delivery remains unobserved. Next: inspect completed artifacts and
 verify investment, banking recovery and persisted journeys. Native OAuth and
 live provider requirements remain open.
 Evidence: `evidence/2026-09-23/mobile-candidate-builds.json`.
+
+## September 23 — signed Mac investment OAuth/repair and current iOS artifact
+
+Signed Mac app completed real Plaid Sandbox OAuth in its isolated bank popup.
+Only IRA/401k were selected; fresh API baseline confirmed two private investments,
+$23,952.74 net worth and zero spending/transactions. A guarded provider reset
+forced ITEM_LOGIN_REQUIRED. Native Sync showed Needs Relink and stale-balance
+copy while preserving data. Interactive OAuth repair returned Healthy; independent
+provider read confirmed no error and Investments-only product. Exact account/Item
+IDs and balances survived repair, repeat sync and full UI reload.
+
+UI unlink removed accounts/Item on the server (fresh API confirmed all zero), but
+the Mac retained old balances and disabled controls until explicit Refresh planning
+data. That refresh showed zero and the unlink confirmation. Do not count automatic
+unlink reconciliation as passed; investigate this delay. No provider revocation
+query was performed after this unlink. Evidence: mac-investment-oauth.json.
+
+iOS build aced2d4e from86001c0 finished. Downloaded archive SHA256
+6c973360580b4facb9299ec09134796f77ce104dc318ee078ac5be95a538015a; strict deep
+signature passes, bundle com.worthlane.mobile/build7, embedded hosted Sandbox
+origin and investment/launch-guard markers present. Not installed or UI-accepted.
+Android2a2aee67 remains IN_QUEUE; its laptop emulator booted successfully. Keep
+original iOS reminder Simulator intact. Evidence: ios-investment-artifact.json.
+No production change, spending, store upload or submission.

@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-09-23T16:50:43.187011+00:00",
+  "id": "aced2d4e-8af7-4324-9aab-ca977c115613",
+  "source": "86001c0c437a04c0f7ee1a8504e61824de4d32bb",
+  "status": "FINISHED",
+  "profile": "sandbox-simulator",
+  "archiveBytes": 27361220,
+  "archiveSha256": "6c973360580b4facb9299ec09134796f77ce104dc318ee078ac5be95a538015a",
+  "strictDeepSignature": "passed",
+  "bundleId": "com.worthlane.mobile",
+  "bundleVersion": "7",
+  "embeddedMarkers": [
+    "hosted Sandbox API origin",
+    "Connect investments",
+    "Opening bank connection",
+    "INVESTMENT_BALANCES_ONLY"
+  ],
+  "installed": false,
+  "limits": [
+    "Static artifact check only; installation and interactive acceptance pending",
+    "Original reminder Simulator untouched"
+  ]
+}
