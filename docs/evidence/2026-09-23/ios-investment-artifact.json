@@ -78,5 +78,26 @@
     "postRepairSync": "Native repeat Sync now settled with Healthy",
     "unlink": "Native confirmation removed connection immediately; Nothing linked yet; API zero accounts/Items/transactions/netWorth/spending; cold launch restored empty dashboard and household net worth0",
     "providerRevocationLimit": "No provider itemGet performed after unlink in this interactive run; separate integration tests cover revocation"
+  },
+  "oauthCheckedAt": "2026-09-23T17:58:30.855133+00:00",
+  "investmentOAuth": {
+    "institution": "Platypus OAuth Bank (Sandbox)",
+    "artifact": "aced2d4e / 86001c0 build7",
+    "result": "FAILED: native Plaid displays Could not connect to Platypus OAuth Bank after mock-bank final confirmation",
+    "flow": "Public Sandbox login and fixed verification code; automation tapped IRA and 401k labels; mock confirmation reached and enabled final button tapped by fresh screenshot coordinates",
+    "selectionLimit": "The selected checkboxes were not captured together in this run; label taps alone do not prove provider selection state",
+    "automationCorrection": "Text selector matched explanatory copy rather than final control; corrected using visible enabled button coordinates",
+    "persistedReadback": {
+      "accounts": 0,
+      "items": 0,
+      "netWorth": 0,
+      "spending": 0,
+      "transactions": 0
+    },
+    "universalLink": "Earlier same-artifact direct HTTPS return opened Worthlane Settings from Safari; this does not prove provider callback completion",
+    "configuration": "Hosted API readback confirmed sandbox and https://worthlane.app/plaid-oauth; SDK13.2.0 uses createPlaidLinkSession/session.open",
+    "rootCause": "Unproven; provider error screen narrows outcome but does not establish Simulator, SDK or configuration cause",
+    "scope": "Synthetic laptop Simulator only; no real bank or production change",
+    "cancellation": "Yes, exit returned to usable Settings with Nothing linked yet"
   }
 }

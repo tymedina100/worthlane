@@ -474,3 +474,24 @@ publish-never behavior are retained. All24native tests pass, including the new
 identity-normalization regression; syntax and diff checks pass. Actual signed
 packaging succeeded with the equivalent normalized identity. No notarization,
 production deployment, paid action or store submission.
+
+## September 23 — current iOS OAuth failure isolated and clean exit verified
+
+Standalone aced2d4e/86001c0 build7 reached Platypus OAuth Bank mock login,
+verification and final confirmation. After enabling and tapping the actual final
+button, native Plaid displayed Couldn't connect to Platypus OAuth Bank. Text
+selectors had earlier matched explanatory copy; fresh screenshot coordinates
+resolved that automation error. IRA/401k labels were tapped, but their checked
+states were not captured together, so this run does not prove final selection.
+
+Yes, exit returned to usable Worthlane Settings with Nothing linked yet. Fresh
+API readback confirms zero accounts, Items, net worth, spending and transactions.
+The earlier same-artifact direct Universal Link opened Settings from Safari;
+hosted API reports Sandbox and the expected HTTPS redirect, and SDK13.2 uses its
+session API. These checks narrow the investigation, not prove the provider return
+or a root cause. No speculative runtime patch was made. Next: inspect provider
+session diagnostics and distinguish selection/auth failure from callback handling.
+
+Android2a2aee67 remains IN_QUEUE at fresh provider check. Original reminder device
+was not changed. Evidence: evidence/2026-09-23/ios-investment-artifact.json.
+No production changes, spending, real-bank credentials or store submission.
