@@ -142,5 +142,19 @@
         "cancellation": "Yes, exit returned to usable Settings; balances retained with explicit relink/stale warning"
       }
     }
+  },
+  "oauthRepairProviderDiagnostic": {
+    "date": "2026-09-23",
+    "source": "Authenticated Plaid dashboard Developers Logs; failed repair event at2026-09-23T18:21:37.631Z",
+    "status": "EXIT - onExit; exitStatus REQUIRES_OAUTH; Sandbox; institution ins_127287; dashboard labels client Web",
+    "requestId": "e6f540400b7df9a",
+    "linkSessionId": "01a0cf79-8c3b-7a5d-b74f-f8db8a9cf133",
+    "debugger": "Following this exact session link returns Invalid request / No item found. No further session details available.",
+    "codeReview": "Update-mode route derives investments purpose from owned saved Item; omits products, supplies access_token, account_selection_enabled true and investment account filter; iOS redirect configured. No proven defect or speculative change.",
+    "officialReferences": [
+      "https://plaid.com/docs/link/update-mode/",
+      "https://plaid.com/docs/link/oauth/"
+    ],
+    "next": "Compare same expired synthetic Item on another client after pending browser prerequisites; correlate actual success callback and provider error clearance. Do not infer native callback root cause from REQUIRES_OAUTH alone."
   }
 }

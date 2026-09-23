@@ -640,3 +640,19 @@ debt verifies native strategy persistence, not multi-debt ordering (tested separ
 No code, production, spending, store submission or original-reminder device change.
 Next: remaining separate-login/persistence coverage; OAuth repair comparison,
 actual scheduled reminder observation, provider/distribution gates remain.
+
+## September 23 — failed OAuth repair provider diagnostics
+
+Authenticated Plaid Developers Logs now inspected for the specific11:21:37AM
+repair exit, not the earlier create failure. It reports EXIT/onExit and
+REQUIRES_OAUTH, Sandbox/ins_127287. The exact session debugger again returns
+Invalid request / No item found. Session/request references are retained in
+ios-investment-artifact.json; no credentials copied.
+
+Code review confirms update mode derives investment scope from the owned saved
+Item, omits create products, supplies access token/account selection and the iOS
+redirect. Official update-mode/OAuth docs support this flow; account-selection
+enablement is not evidence of a defect. No speculative runtime patch made.
+Next: controlled same-expired-Item comparison on another client; Android Chrome
+terms confirmation remains pending. Native persistence/calendar/provider/release
+gates remain. Storage2.7GiB free; no large build started. No production changes.
