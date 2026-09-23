@@ -347,3 +347,29 @@ origin and investment/launch-guard markers present. Not installed or UI-accepted
 Android2a2aee67 remains IN_QUEUE; its laptop emulator booted successfully. Keep
 original iOS reminder Simulator intact. Evidence: ios-investment-artifact.json.
 No production change, spending, store upload or submission.
+
+## September 23 — current iOS artifact installed and saved journey read back
+
+Installed completed aced2d4e/86001c0 build7 in a separate named Simulator
+D9057EC1-22AE-4C7A-AD66-7E3409256EEB, preserving the original reminder device.
+Actual Alex reviewer sign-in against hosted Sandbox showed private $1,500, zero
+spending/income and the saved $25 bill. Household readback showed exact $600
+groceries split300/300, $150 utilities assigned to Sam, and $1,700 rent1020/680.
+Terminating/relaunching the exact bundle restored the signed-in dashboard without
+credentials. Fresh screenshot verifies this; the post-launch accessibility tree
+was empty and must not be treated as an app failure. Maestro dismissed the OS
+Save Password sheet without saving test credentials.
+
+Independent read-only verification still finds exactly one original owner-matched
+September24 9amPhoenix notification. The Android emulator is booted, but remote
+APK2a2aee67 remains IN_QUEUE at last provider read. Second-login, current-artifact
+banking/mutations and native OAuth remain unverified. Evidence updated in
+evidence/2026-09-23/ios-investment-artifact.json.
+
+Mac follow-up: title/accessibility/rendered image disagree after sign-out; sampled
+main and renderer processes are alive in event waits, not proof of a specific
+deadlock. Screenshot retained older investment content while accessibility had
+zero-account state. Preserve the open rendering/reconciliation issue; no speculative
+source patch or claim of successful visual sign-out. Raw local process samples
+remain .tmp/mac-main-stall-sample.txt and .tmp/mac-renderer-stall-sample.txt.
+No production change, paid action or store submission.

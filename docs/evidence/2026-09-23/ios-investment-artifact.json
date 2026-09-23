@@ -15,9 +15,36 @@
     "Opening bank connection",
     "INVESTMENT_BALANCES_ONLY"
   ],
-  "installed": false,
+  "installed": true,
   "limits": [
-    "Static artifact check only; installation and interactive acceptance pending",
-    "Original reminder Simulator untouched"
-  ]
+    "Alex saved-journey readback only; second-login, banking/investment lifecycle and mutation checks on this artifact remain",
+    "Cold-launch accessibility tree was empty; fresh screenshot verifies rendered result",
+    "No physical device or store build acceptance"
+  ],
+  "runtimeCheckedAt": "2026-09-23T16:58:19.122503+00:00",
+  "simulator": "D9057EC1-22AE-4C7A-AD66-7E3409256EEB",
+  "runtime": {
+    "hostedAlexLogin": "passed",
+    "privateNetWorth": 1500,
+    "spending": 0,
+    "income": 0,
+    "savedBill": {
+      "title": "Review card minimum payment",
+      "amount": 25
+    },
+    "householdReadback": {
+      "groceries": [
+        300,
+        300
+      ],
+      "utilitiesSam": 150,
+      "rent": [
+        1020,
+        680
+      ]
+    },
+    "coldLaunch": "Terminated and relaunched exact bundle; screenshot confirms restored dashboard without login",
+    "passwordSheet": "Dismissed Not Now with authorized Maestro; assertion passed",
+    "originalReminderSimulator": "Unchanged; fresh API/OS confirms one September24 09:00 Phoenix reminder"
+  }
 }
