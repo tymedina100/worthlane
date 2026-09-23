@@ -40,7 +40,7 @@ holdings, trades or household spending. Production Investments remains gated.
 | Product-aware persistence/privacy | Real Plaid Sandbox tests create an Investments-only Item without initializing Transactions, keep stable account IDs, reject the other login, and verify unlink with provider `ITEM_NOT_FOUND`. Filtering retains only investment account types and rejects a connection with none. The current focused Sandbox regression also verifies forced expiration, retained balances/IDs/freshness, owner-only update-token creation and a pending repair state without Transactions or cross-login leakage; focused test/typecheck pass. This is repair preparation, not completed reconnect. |
 | Browser standard connection | September 22 native Chrome UI connected IRA $320.76 and 401k $23,631.98: net worth $23,952.74, zero spending rows. Repeat sync, reload, fresh sign-in and UI unlink pass with independent PostgreSQL readback. The in-app browser's blank Plaid frame is recorded separately. [Evidence](evidence/2026-09-22/investment-browser.json). |
 | Native standard connection | Current standalone iOS Simulator candidate `aced2d4e`, source `86001c0`, passed hosted Sandbox Betterment connect, repeat sync, cold launch, forced-expiration repair and UI unlink. Exactly two investments totaled $23,952.74 with zero spending/transactions and stable account IDs through repair. Unlink and restart returned to zero. Provider revocation is covered separately by integration tests. [Evidence](evidence/2026-09-23/ios-investment-artifact.json). |
-| Investment OAuth / distributable parity | **Current iOS connect and cold launch pass.** A retry with visibly checked IRA/401k completed native OAuth, saved exactly two private investments/$23,952.74 and zero spending, and restored the same accounts after restart. Earlier failed attempt remains documented; no code changed. Forced-expiration OAuth repair, stronger repeat-sync proof, cross-login privacy and unlink for this exact connection remain. Android candidate finished and passed static checks; interactive coverage and store-build parity remain open. [Current iOS evidence](evidence/2026-09-23/ios-investment-artifact.json). |
+| Investment OAuth / distributable parity | **Current iOS connect and cold launch pass.** A retry with visibly checked IRA/401k completed native OAuth, saved exactly two private investments/$23,952.74 and zero spending, and restored the same accounts after restart. Earlier failed attempt remains documented; no code changed. Repeat-sync timestamps and separate non-owner API denial now pass. Forced-expiration OAuth repair returned to login and provider ITEM_LOGIN_REQUIRED persists; unlink and Android/current-planning coverage remain. Android candidate finished and passed static checks; interactive coverage and store-build parity remain open. [Current iOS evidence](evidence/2026-09-23/ios-investment-artifact.json). |
 | Real banks / provider access | September 22 dashboard inspection recorded Chase and Schwab OAuth Enabled and Wells Fargo/Desert Financial product coverage. Transactions/Balance were enabled; Investments/Liabilities were not; Compliance Center still required action. Investments pricing and activation approval remain open. Institution coverage is not an account-specific live connection. |
 
 ## Distribution and provider boundary
@@ -522,3 +522,23 @@ and embedded hosted Sandbox origin/investment markers. Not installed/tested yet.
 CI313 for c438a9a passed all4jobs (CI,PG17,PG18,Windows). Evidence:
 ios-investment-artifact.json,android-investment-artifact.json,mac-rendering.json.
 No production change, spending, store submission or reminder-device changes.
+
+## September 23 — OAuth repeat-sync/privacy pass; repair remains open
+
+Current iOS candidate native Sync every institution advanced both saved account
+lastSyncedAt timestamps. Exact account/Item IDs,$23,952.74,0spending/transactions
+and Healthy state remained unchanged. A separate Sam reviewer login could not list
+these accounts/Item; update-token,targeted sync and unlink each returned404.
+That login is in a different household; same-household privacy is separate evidence.
+
+Guarded real Sandbox reset confirmed ITEM_LOGIN_REQUIRED with Investments-only
+product. Native sync showed Could not sync/relink required and the investment
+stale-balance warning; exact IDs and balances remained intact. Native Relink then
+completed mock login/verification, visibly checked IRA/401k and final confirmation,
+but returned to Plaid's login prompt. Provider readback confirms ITEM_LOGIN_REQUIRED
+still present. No successful repair is claimed. Yes, exit returned usable Settings
+with the warning and unchanged balances. Keep this disposable expired connection
+for a controlled comparison in the finished Android candidate before unlinking.
+
+Evidence: ios-investment-artifact.json. No runtime patch, production action,
+spending, store submission or original-reminder Simulator change.

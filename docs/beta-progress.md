@@ -5439,3 +5439,23 @@ and embedded hosted Sandbox origin/investment markers. Not installed/tested yet.
 CI313 for c438a9a passed all4jobs (CI,PG17,PG18,Windows). Evidence:
 ios-investment-artifact.json,android-investment-artifact.json,mac-rendering.json.
 No production change, spending, store submission or reminder-device changes.
+
+## September 23 — OAuth repeat-sync/privacy pass; repair remains open
+
+Current iOS candidate native Sync every institution advanced both saved account
+lastSyncedAt timestamps. Exact account/Item IDs,$23,952.74,0spending/transactions
+and Healthy state remained unchanged. A separate Sam reviewer login could not list
+these accounts/Item; update-token,targeted sync and unlink each returned404.
+That login is in a different household; same-household privacy is separate evidence.
+
+Guarded real Sandbox reset confirmed ITEM_LOGIN_REQUIRED with Investments-only
+product. Native sync showed Could not sync/relink required and the investment
+stale-balance warning; exact IDs and balances remained intact. Native Relink then
+completed mock login/verification, visibly checked IRA/401k and final confirmation,
+but returned to Plaid's login prompt. Provider readback confirms ITEM_LOGIN_REQUIRED
+still present. No successful repair is claimed. Yes, exit returned usable Settings
+with the warning and unchanged balances. Keep this disposable expired connection
+for a controlled comparison in the finished Android candidate before unlinking.
+
+Evidence: ios-investment-artifact.json. No runtime patch, production action,
+spending, store submission or original-reminder Simulator change.

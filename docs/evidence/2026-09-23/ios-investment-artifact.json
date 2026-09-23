@@ -125,10 +125,22 @@
         "history": "INVESTMENT_BALANCES_ONLY"
       },
       "coldLaunch": "Terminated and launched exact installed bundle; saved login restored23952.74 and0spent/received; API exact account/Item IDs unchanged",
-      "syncLimit": "Sync every institution was tapped; stable IDs/balances checked afterward, but request timestamp advancement not independently compared",
+      "syncLimit": "Resolved: captured both account lastSyncedAt before native Sync every institution; fresh API proves each timestamp advanced with unchanged IDs/balances and Healthy state",
       "automationLimit": "Finish without saving selector reported timeout despite final native Bank connected and independent saved-account proof; text taps alone are insufficient evidence",
-      "remaining": "Forced-expiration OAuth repair, stronger repeat-sync request proof, cross-login privacy and unlink on this exact connection",
-      "conclusion": "Successful verified-checkbox retry supersedes blanket current-candidate OAuth-connect failure. Earlier failure cause is not proven; no app code changed."
+      "remaining": "OAuth repair completion, unlink, current planning and Android coverage",
+      "conclusion": "Successful verified-checkbox retry supersedes blanket current-candidate OAuth-connect failure. Earlier failure cause is not proven; no app code changed.",
+      "otherLogin": "Separate Sam reviewer API login (different household) cannot list these accounts/Item; update-token, targeted sync and unlink each404. Same-household coverage is separate evidence.",
+      "forcedExpiration": "Guarded real Sandbox reset confirmed ITEM_LOGIN_REQUIRED and Investments-only provider product. Native sync showed Could not sync/relink required and investment stale-balance warning; exact account/Item IDs,23952.74 and0transactions retained.",
+      "repairAttempt": {
+        "result": "NOT PASSED",
+        "steps": "Native Relink, public Sandbox login/verification, visibly checked IRA/401k, final mock confirmation",
+        "nativeReturn": "Returned to Log into Platypus OAuth Bank prompt rather than success",
+        "providerReadback": "ITEM_LOGIN_REQUIRED remains; Investments-only product;2accounts23952.74 and0transactions",
+        "apiReadback": "Exact original account and Item IDs unchanged, NEEDS_RELINK,23952.74netWorth,0spending/transactions",
+        "rootCause": "Unproven. No runtime patch or repeated blind authorization attempt.",
+        "next": "Retain expired disposable connection for comparison using current Android candidate; unlink after lifecycle investigation.",
+        "cancellation": "Yes, exit returned to usable Settings; balances retained with explicit relink/stale warning"
+      }
     }
   }
 }
