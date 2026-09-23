@@ -61,6 +61,14 @@
     "privacy": "Separate Sam reviewer cannot list plan; direct ID GET returns404. Different household; not same-household native check.",
     "ledger": "Fresh API netWorth23952.74,spending0,transactions0 after plan save.",
     "fixture": "Synthetic saved plan retained for strategy editing and idempotent minimum-to-Upcoming check.",
-    "limits": "No actual payment; zero-APR single-debt UI case does not substitute for multi-debt algorithm tests. First unsaved draft was discarded after automation back navigation; re-entered with keyboard-state guard."
+    "limits": "No actual payment; zero-APR single-debt UI case does not substitute for multi-debt algorithm tests. First unsaved draft was discarded after automation back navigation; re-entered with keyboard-state guard.",
+    "strategyAndHandoff": {
+      "checkedAt": "2026-09-23T18:57:40.418859+00:00",
+      "strategy": "Native Use snowball then Save plan; Saved message and Snowball explanation with same2027-06/0interest/1000total. Independent API asserts persisted SNOWBALL and unchanged distinct input fields.",
+      "firstHandoff": "Native Add Test card25 due2026-09-27 to Upcoming; API returns one named minimum-payment obligation with reminderNONE. Full first-check ledger/other-login privacy assertions passed.",
+      "repeatHandoff": "Second native tap; subsequent API asserts exactly one upcoming item,25,due2026-09-27,reminderNONE,unpaid. Native Manage Upcoming shows one exact card. Later assertion sequence receivedHTTP429, so no complete second-run privacy/ledger pass claimed.",
+      "fixture": "Saved Snowball plan and one synthetic25 obligation retained for persistence/cleanup.",
+      "limits": "Single zero-APR debt does not distinguish multi-debt allocation order; deterministic algorithm coverage exists separately. No payment, production or original reminder-device change."
+    }
   }
 }

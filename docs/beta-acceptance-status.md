@@ -622,3 +622,21 @@ Evidence: evidence/2026-09-23/android-investment-artifact.json. No runtime code,
 production, paid service, store or original-reminder Simulator changes.
 Next: native strategy/due handoff and separate-login checks; existing OAuth repair,
 calendar observation and provider/distribution gates remain.
+
+## September 23 — Android strategy editing and duplicate-safe due handoff
+
+Current Android86001c0 switched the saved plan to Snowball and saved. Native Saved
+and explanation agree with fresh API SNOWBALL; distinct1000current/800statement/
+25minimum/0APR and100budget persist, estimate2027-06/0interest/1000total unchanged.
+First native minimum-to-Upcoming handoff created exactly one25 obligation due
+2026-09-27 with reminderNONE. Full first API check also passed ledger and separate
+reviewer plan privacy. Second native handoff still yields exactly one unpaid25
+obligation with same due date/reminderNONE; Manage Upcoming displays one card.
+Later checks in that second helper hitHTTP429, so do not claim a complete repeated
+privacy/ledger pass. Retain synthetic saved plan/obligation for persistence/cleanup.
+
+Evidence: evidence/2026-09-23/android-investment-artifact.json. Single zero-APR
+debt verifies native strategy persistence, not multi-debt ordering (tested separately).
+No code, production, spending, store submission or original-reminder device change.
+Next: remaining separate-login/persistence coverage; OAuth repair comparison,
+actual scheduled reminder observation, provider/distribution gates remain.
