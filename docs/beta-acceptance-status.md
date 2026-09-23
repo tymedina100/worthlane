@@ -299,3 +299,27 @@ and no delivered notification. Calendar delivery remains unobserved; this cannot
 be counted as an on-time pass. Restore the laptop environment and schedule a new
 real future check. Evidence: `evidence/2026-09-23/calendar-delivery-unobserved.json`.
 No production change, paid build, phone access or store submission.
+
+## September 23 — updated mobile Sandbox candidates queued
+
+Authenticated Expo billing showed Free/$0 estimated bill, 8/15 iOS and 7/15
+Android builds used. Started one included Android sandbox-preview APK build
+(2a2aee67-deaa-4571-874b-2f57fb0f6e2a) and one iOS sandbox-simulator build
+(aced2d4e-8af7-4324-9aab-ca977c115613), both from pushed source 86001c0.
+Provider readback reports IN_QUEUE for both; they are not completed or installed.
+No upgrade, payment, production configuration, store upload or submission.
+
+CI306/35889254734 for that exact source succeeded. Sixteen focused mobile
+release-configuration and native launch-state tests passed. Inspected the EAS
+archive: 721 files, all 670 included tracked files match source, no private
+environment files, fixture directory or signing exports. EAS reported no preview
+environment variables; guarded Sandbox profile values and existing Android
+signing credentials were used.
+
+The original Simulator remains booted and signed in. Fresh API/OS readback still
+finds exactly one owner-matched reminder for September24 09:00 Phoenix. Do not
+replace that app/session before observation; use another Simulator for the new
+artifact. Delivery remains unobserved. Next: inspect completed artifacts and
+verify investment, banking recovery and persisted journeys. Native OAuth and
+live provider requirements remain open.
+Evidence: `evidence/2026-09-23/mobile-candidate-builds.json`.
