@@ -17,7 +17,7 @@
   ],
   "installed": true,
   "limits": [
-    "Current artifact banking/investment lifecycle and mutation checks remain",
+    "Current artifact OAuth, ordinary banking and fresh planning mutation checks remain",
     "Cold-launch accessibility tree was empty; fresh screenshots verify rendered results",
     "No physical device or store build acceptance"
   ],
@@ -57,5 +57,26 @@
     "ownerOnlyEditControls": true,
     "coldLaunch": "Restored Sam dashboard without login; fresh screenshot900/no upcoming items",
     "apiVerification": "Both fresh reviewer logins preserve exact owned account IDs,245000minor shared plan, private debt404 and hidden bill"
+  },
+  "investmentCheckedAt": "2026-09-23T17:25:20.265629+00:00",
+  "investmentStandard": {
+    "institution": "Betterment Sandbox",
+    "connected": true,
+    "accounts": 2,
+    "netWorth": 23952.74,
+    "spending": 0,
+    "transactions": 0,
+    "history": "INVESTMENT_BALANCES_ONLY",
+    "cashManagementFiltered": true,
+    "repeatSync": "Native Sync now completed; API exact account and Item IDs unchanged",
+    "coldLaunch": "Exact bundle terminate/relaunch restored23952.74 with0spending/income without login",
+    "initialRetry": "Initial App Password Required screen cleared after erasing/retyping public Sandbox credentials; cause not proven",
+    "automationLimit": "Finish-without-saving selector timed out; fresh native Bank connected alert and API persistence independently establish completion",
+    "repair": "Native Relink completed with Connection repaired and Healthy; provider error null and Investments-only verified; exact account/Item IDs retained",
+    "oauth": "Not verified on this artifact",
+    "expiration": "Provider ITEM_LOGIN_REQUIRED confirmed; native Needs relink and investment-specific stale warning observed; exact IDs/balances retained",
+    "postRepairSync": "Native repeat Sync now settled with Healthy",
+    "unlink": "Native confirmation removed connection immediately; Nothing linked yet; API zero accounts/Items/transactions/netWorth/spending; cold launch restored empty dashboard and household net worth0",
+    "providerRevocationLimit": "No provider itemGet performed after unlink in this interactive run; separate integration tests cover revocation"
   }
 }

@@ -5313,3 +5313,32 @@ This closes current-candidate two-login readback/restart coverage, not its banki
 lifecycle or fresh interactive mutations. Native OAuth, Mac stale rendering,
 actual calendar delivery and release/provider gates remain. No production or store
 action; current Simulator remains signed in as synthetic Sam.
+
+## September 23 — current iOS investment lifecycle passes
+
+Installed standalone Simulator build aced2d4e/86001c0 completed Betterment
+Sandbox investment connect, repeat sync, cold launch, forced-expiration repair,
+post-repair sync and UI unlink against the hosted Sandbox. Plaid offered IRA,
+401k and cash management; server filtering retained exactly two investments
+totaling $23,952.74, with zero spending/transactions. API comparisons preserved
+exact account and Item IDs through sync and repair. Native restart restored the
+saved balance without login.
+
+Guarded Sandbox expiration produced ITEM_LOGIN_REQUIRED. Native Settings showed
+Needs relink and the investment-specific stale-balance warning while retaining
+balances. UI Relink completed; native Healthy and provider error-null/Investments-only
+checks pass. UI unlink immediately showed Nothing linked yet; API confirmed zero
+accounts, Items, transactions, spending and net worth. Another cold launch showed
+the empty dashboard and household net worth0. This interactive run did not query
+the revoked provider Item after unlink; separate integration evidence covers that.
+
+Initial Betterment login reached App Password Required; erasing/retyping public
+Sandbox credentials allowed completion. No root cause is claimed. A Finish without
+saving selector timed out on the initial connection, but native Bank connected
+and independent persisted API readback proved completion. Relink's same selector
+passed. No real credentials, production data, paid action or store submission.
+
+Evidence: docs/evidence/2026-09-23/ios-investment-artifact.json. The original
+September24 reminder Simulator remains separate. Android2a2aee67 was freshly
+IN_QUEUE this turn. Next: native OAuth, remaining current-artifact banking/planning
+mutations, Android when ready, and Mac stale-rendering diagnosis.
