@@ -1,0 +1,25 @@
+{
+  "verifiedAt": "2026-09-23T16:27:02.370621+00:00",
+  "shellArchiveSha256": "b05fa072cb447e09ebaeba8bcffa606b23ff7e60c3b585a577f3ccecd6276217",
+  "shellSourceParity": "all7runtime files match521d9d8 parent fc766ca; previous static verification",
+  "origin": "https://worthlane-beta-desktop.vercel.app",
+  "environment": "isolated hosted Sandbox",
+  "flow": "Betterment standard investment connection through exact signed Mac package",
+  "passed": [
+    "synthetic fresh login and navigation",
+    "Connect investments with public Sandbox credentials",
+    "Finish without saving Plaid credentials",
+    "2Personalinvestment accounts; net23952.74; zero spending and transactions via independent API",
+    "Sync and full UI reload",
+    "Quit with exact main process absent; relaunch restored same identity and balances without credentials",
+    "native UI Unlink confirmation and zero-state UI/API readback",
+    "Sign out returned to empty email/password login form"
+  ],
+  "providerAccountSelection": "Plaid offered3accounts including cash management; Worthlane saved only2investment accounts",
+  "limitations": [
+    "Not investment OAuth or forced repair on this Mac artifact",
+    "Provider revocation not independently queried after this unlink",
+    "Earlier stale-window and lost-session cause remains unproven; did not reproduce in this run",
+    "No notarization/publication, live bank or store submission"
+  ]
+}

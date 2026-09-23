@@ -281,3 +281,21 @@ readback; calendar OS read retained exactly one owner-matched September23 9am
 Phoenix reminder. This is launch/cancel/retry acceptance, not OAuth completion.
 Evidence: `evidence/2026-09-22/native-launch-guard.json`. PR20 remains unmerged;
 no phone, production release or store submission.
+
+## September 23 — signed Mac investment lifecycle verified
+
+Exact signed Mac package completed hosted Sandbox Betterment investment connection,
+sync, full reload, quit/relaunch with saved session, and UI unlink. Independent
+fresh API readbacks retained exact two account/Item IDs, $23,952.74 net worth and
+zero spending/transactions, then zero accounts/Items after unlink. Plaid offered
+three accounts including cash management; Worthlane persisted only two investments.
+The prior stale-window/session issue did not reproduce, but its cause remains
+unproven. This is standard Link, not Mac investment OAuth or forced repair.
+Evidence: `evidence/2026-09-23/mac-investment-lifecycle.json`.
+
+The Mac restarted before September23 9am Phoenix and Simulator was shut down on
+inspection at9:21. Its archive retained the exact overdue pending notification
+and no delivered notification. Calendar delivery remains unobserved; this cannot
+be counted as an on-time pass. Restore the laptop environment and schedule a new
+real future check. Evidence: `evidence/2026-09-23/calendar-delivery-unobserved.json`.
+No production change, paid build, phone access or store submission.
