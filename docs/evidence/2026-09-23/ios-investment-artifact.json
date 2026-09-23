@@ -17,8 +17,8 @@
   ],
   "installed": true,
   "limits": [
-    "Alex saved-journey readback only; second-login, banking/investment lifecycle and mutation checks on this artifact remain",
-    "Cold-launch accessibility tree was empty; fresh screenshot verifies rendered result",
+    "Current artifact banking/investment lifecycle and mutation checks remain",
+    "Cold-launch accessibility tree was empty; fresh screenshots verify rendered results",
     "No physical device or store build acceptance"
   ],
   "runtimeCheckedAt": "2026-09-23T16:58:19.122503+00:00",
@@ -46,5 +46,16 @@
     "coldLaunch": "Terminated and relaunched exact bundle; screenshot confirms restored dashboard without login",
     "passwordSheet": "Dismissed Not Now with authorized Maestro; assertion passed",
     "originalReminderSimulator": "Unchanged; fresh API/OS confirms one September24 09:00 Phoenix reminder"
+  },
+  "secondReviewerCheckedAt": "2026-09-23T17:03:47.325957+00:00",
+  "secondReviewer": {
+    "alexSignOutClearsForm": true,
+    "samLogin": "passed",
+    "privateNetWorth": 900,
+    "alexBillAbsent": true,
+    "sharedPlanExact": true,
+    "ownerOnlyEditControls": true,
+    "coldLaunch": "Restored Sam dashboard without login; fresh screenshot900/no upcoming items",
+    "apiVerification": "Both fresh reviewer logins preserve exact owned account IDs,245000minor shared plan, private debt404 and hidden bill"
   }
 }

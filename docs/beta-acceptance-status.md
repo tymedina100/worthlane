@@ -373,3 +373,26 @@ zero-account state. Preserve the open rendering/reconciliation issue; no specula
 source patch or claim of successful visual sign-out. Raw local process samples
 remain .tmp/mac-main-stall-sample.txt and .tmp/mac-renderer-stall-sample.txt.
 No production change, paid action or store submission.
+
+## September 23 — current iOS second-login privacy and persistence pass
+
+On installed aced2d4e/86001c0, Alex sign-out returned an empty email/password form.
+Separate Sam login showed private $900, zero spending/income and no upcoming
+items (Alex's $25 bill absent). Actual household view retained exact groceries
+300/300, Sam-owned utilities150 and rent1020/680, with category editing restricted
+to the owner. Cold terminate/relaunch restored Sam dashboard without credentials;
+fresh screenshot confirms900/no upcoming bill despite an empty accessibility tree.
+Maestro independently asserted900 and absence of Alex's bill after dismissing the
+system password sheet without saving credentials.
+
+Fresh API login checks confirm each reviewer has exactly their own account ID,
+matching household245000minor, and no cross-owner bill/debt access (Sam404 for
+Alex's plan). Full existing hosted regression also passed: exact owner53/partner396
+transaction ledgers, no repeat-sync duplication, private125.50 manual fallback,
+2450responsibilities, saved zero-APR plan and idempotent due-date handoff.
+Evidence: current-reviewers-readback.json and updated ios-investment-artifact.json.
+
+This closes current-candidate two-login readback/restart coverage, not its banking
+lifecycle or fresh interactive mutations. Native OAuth, Mac stale rendering,
+actual calendar delivery and release/provider gates remain. No production or store
+action; current Simulator remains signed in as synthetic Sam.
