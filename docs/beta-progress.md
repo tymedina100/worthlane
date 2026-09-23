@@ -5521,3 +5521,21 @@ production action, spending or store submission. Original September24 09:00Phoen
 reminder Simulator untouched. Next: remaining native debt/separate-login checks,
 OAuth repair comparison after pending Chrome terms approval, scheduled reminder
 observation and live-provider/distribution gates.
+
+## September 23 — Android saved debt-plan lifecycle passes
+
+Current Android86001c0 created a synthetic avalanche plan starting2026-09,
+monthly budget100, current balance1000, statement800, minimum25, APR0 and
+confirmed due2026-09-27. Native Saved shows payoff2027-06,0interest,total1000,
+first payment100. Independent API asserts all distinct input fields and the
+10-month schedule. After force-stop/start, signed-in Goals→Debt payoff→Open
+restored the same saved estimate. Separate Sam reviewer cannot list/read it
+(direct ID404; different household). API netWorth23952.74,0spending/transactions.
+
+Assumptions remain visible, no payments are made. Synthetic plan retained for
+strategy edit and idempotent minimum-to-Upcoming checks. First unsaved draft was
+discarded after automation back navigation; re-entry used keyboard-state guards.
+Evidence: evidence/2026-09-23/android-investment-artifact.json. No runtime code,
+production, paid service, store or original-reminder Simulator changes.
+Next: native strategy/due handoff and separate-login checks; existing OAuth repair,
+calendar observation and provider/distribution gates remain.

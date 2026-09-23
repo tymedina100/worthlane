@@ -52,5 +52,15 @@
     "limits": "Actual scheduled reminder delivery and remaining native debt/second-login journey are still open.",
     "edit": "Native edit changed amount150 to175.25 and confirmed due date2026-09-25 to2026-09-26; Saved confirmation, then force-stop/start restored session and exact Upcoming card. Fresh API verifies175.25/date/unpaid/active/BILL/reminderNONE.",
     "delete": "Native Delete confirmation yielded Nothing is due yet; fresh API confirms saved bill ID absent and zero upcoming items."
+  },
+  "debtPlan": {
+    "checkedAt": "2026-09-23T18:54:00.762923+00:00",
+    "nativeCreate": "Android payoff acceptance; avalanche, start2026-09, budget100; Test card current1000, statement800, minimum25, APR0, confirmed due2026-09-27. Native Saved.",
+    "estimate": "UI and independent saved-plan API agree: payoff2027-06, interest0,totalPaid1000,10months; first payment100. Assumptions describe month-end payments and no new fees/purchases.",
+    "coldLaunch": "Force-stop/start restored session; Goals\u2192Debt payoff\u2192Open Android payoff acceptance loaded saved plan with same estimate.",
+    "privacy": "Separate Sam reviewer cannot list plan; direct ID GET returns404. Different household; not same-household native check.",
+    "ledger": "Fresh API netWorth23952.74,spending0,transactions0 after plan save.",
+    "fixture": "Synthetic saved plan retained for strategy editing and idempotent minimum-to-Upcoming check.",
+    "limits": "No actual payment; zero-APR single-debt UI case does not substitute for multi-debt algorithm tests. First unsaved draft was discarded after automation back navigation; re-entered with keyboard-state guard."
   }
 }
