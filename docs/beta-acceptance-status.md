@@ -571,8 +571,8 @@ Quick add. Native Saved and Upcoming exact date/amount agree with fresh API;
 reminderTimingNONE. Native Paid moved it to Recently paid, APIisPaid/statusPAID.
 Force-stop/start preserved signed-in session and Recently paid card. Native Unpaid
 restored Upcoming/APIisPaidfalse. Separate Sam reviewer cannot list this obligation
-(different household). Investment IDs/Item/netWorth23952.74 and0spending/transactions
-remain unchanged. Retained unpaid test bill for later edit/privacy coverage. This
+(different household). The final post-toggle ledger helper receivedHTTP429 on fresh login, so that
+recheck is pending cooldown; prior baseline is not a final ledger proof. Retained unpaid test bill for later edit/privacy coverage. This
 is not actual calendar reminder delivery, date editing or deletion acceptance.
 
 Removed668MiB logical obsolete test binaries/download cache: duplicate ad-hoc Mac
