@@ -1,4 +1,5 @@
 "use client";
+import { sessionFetch } from "@/src/lib/session-fetch";
 
 import Link from "next/link";
 import { type FormEvent, useEffect, useRef, useState } from "react";
@@ -31,7 +32,7 @@ export default function PasswordRecoveryPage() {
     }
     setBusy(true);
     try {
-      const response = await fetch(`/api/auth/${step === "email" ? "forgot-password" : "reset-password"}`, {
+      const response = await sessionFetch(`/api/auth/${step === "email" ? "forgot-password" : "reset-password"}`, {
         method: "POST", credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(step === "email" ? { email: email.trim() } : { token: token.trim().toUpperCase(), newPassword: password }),

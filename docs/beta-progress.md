@@ -3441,3 +3441,2293 @@ PR19 initial CI180 has passed PostgreSQL17/18 and native Windows jobs; general C
 was still running when checked. The new Sandbox test is run explicitly with
 Sandbox credentials, not by ordinary CI. This closes provider revocation evidence
 for local Sandbox account deletion; release-service deletion remains unverified.
+
+
+### September 18, 2026 — standalone iOS persisted two-login checkpoint
+
+EAS iOS artifact `bb102818-1876-422c-ac62-6055de147467` restored Avery's account,
+bill and reminder, presented a fresh test notification, cleared its history on
+logout, and admitted Morgan's separate account without Avery's private data.
+Morgan's native Sandbox sync and an independent hosted verifier passed. Source
+copy now distinguishes the total unpaid payment count from the next-seven-day
+amount; mobile typecheck passed, next artifact visual check remains. Full
+artifact identity, evidence and limits are in hosted-sandbox.md. Android EAS
+`c9853f0d-37bc-49d9-aa11-2c58d0b82397` is still queued; no replacement job started.
+
+### September 18 — Android Sandbox connection milestone
+
+Standalone Android release completed interactive First Platypus Bank Link and returned Healthy with 14 accounts. Fresh-login verification passed the partner's complete 392-transaction ledger, repeat-sync idempotency, preserved $125.50 manual fallback and $42.75 bill, isolation from the owner's 49-row ledger, and existing responsibility/debt persistence. See `docs/hosted-sandbox.md` for artifact and emulator-recovery limits. Next: native repair/OAuth/unlink, reminder checks and final candidate parity; no production change or store submission.
+
+### September18 — Android reminder acceptance
+
+Signed standalone Android Sandbox build delivered its DATE test reminder to the notification shade with the correct icon and generic content. OS AlarmManager confirmed the persisted one-day-before bill reminder at September20 09:00 (one-hour inexact window). Native logout reached sign-in and removed all pending Worthlane alarms and notification records. See hosted-sandbox.md for evidence and timing limits. Recovered677MiB of reproducible build output;3.8GiB disk free. Next remains hosted OAuth/error/unlink and final artifact parity; no production or store submission.
+
+### September 18 — current native parity and honest desktop freshness
+
+Current Android artifact22734e79 (source1dd2196) passes Chase OAuth, selective
+unlink/provider revocation, forced repair and reminder/logout cleanup. Current
+iOS Simulator artifacteb664bae passes standard Link/import/sync/unlink, forced
+repair and reminder cleanup; Simulator OAuth remains unverified. Exact packaged
+Mac OAuth, cancellation/retry, forced repair and selective unlink passed; the
+full owner49/partner392 transaction baseline was restored with privacy intact.
+Native shell23 tests and package9 assets/8 fuses/signature checks passed; all four
+CI jobs passed on a0fe748. Detailed artifact evidence is in hosted-sandbox.md.
+
+Desktop headers now use the financial summary asOf rather than the household
+edit timestamp, with date and household timezone. Bank retrieval dates remain
+separate. Demo says Demo snapshot and absent timestamps say unavailable. Local
+frontend against hosted Sandbox visibly verified overview/accounts timestamps
+and separate retrieval dates, demo wording, and a 390px accounts layout with
+390px scroll width. Desktop typecheck and diff checks passed.
+
+Next: isolated fully hosted frontend (prepared Vercel project awaits approval
+for its specific proxy-secret destination), public Mac signing/notarization,
+iOS OAuth and privacy/store gates. Existing Vercel previews target production
+and must not receive synthetic accounts. No merge, production change or store
+submission is authorized by this milestone.
+
+### September 18 — reproducible hosted acceptance setup
+
+Resolved PR20 review finding: hosted fixture creation now uses the existing Next
+environment loader, supporting documented apps/api/.env, .env.local precedence
+and shell overrides. Sandbox environment and required credentials are validated
+before any remote test-data creation; credential values are never used in error
+messages. Three offline regression tests (six isolated subprocess cases) pass
+for file/shell precedence, production rejection and missing credentials. Added
+this check to CI; script syntax and diff checks pass. Existing fixtures were not
+changed. Isolated hosted frontend approval and release gates remain unchanged.
+
+### September 18 — packaged privacy declarations
+
+Inspected14 privacy manifests inside the current standalone iOS Simulator
+artifact eb664bae/source1dd2196. Committed exact declarations and file hashes;
+store draft now distinguishes Plaid UserID, RevenueCat purchase-history and
+Sentry diagnostic declarations from runtime feature gates. No final store
+privacy answers, network-audit claims or provider-setting changes made. Final
+device archive/disclosure alignment remains open. CI35389472877 is live on
+af072f5; PostgreSQL17/18 persisted checks passed, final job conclusions pending.
+
+### September 18 — bounded native Refresh
+
+Observed intermittent blank windows after the native Refresh menu, including a
+signed-out page. Temporary lifecycle diagnostics showed no renderer-crash or
+load-failure event, and a later attempt succeeded; exact root cause is not proven.
+The menu's Electron reload role bypassed Worthlane's existing bounded navigation
+path. Refresh now loads the current allowed-origin URL through that same
+15-second timeout/connection-recovery path, falling back to the configured URL
+when on the internal recovery page. No origin/security permissions were widened.
+
+All23 native tests and syntax checks pass, including stalled-load recovery,
+origin pinning and OAuth-window isolation. Interactive development runtime
+against local frontend/hosted Sandbox passed signed-out Refresh and authenticated
+Morgan Refresh, retaining the $2450 household plan and current snapshot. This
+mitigation has not yet been replayed in a newly packaged artifact or a fully
+hosted frontend; do not describe the intermittent root cause as resolved.
+
+### September 18 — Mac rendering comparison
+
+Exact bfe8cb3 local package ASAR98578d64ab1be6418bfbc3dae0702fbe76bfbe34b99c96d9d83a5882bb4f7600
+passed assets/fuses/signature, but normal rendering repeatedly blanked after
+Refresh. Waiting beyond15s did not restore it; native resize restored the
+already-loaded household twice without login/reload. Reopening the same package
+with --disable-gpu retained the session and completed two dashboard refreshes
+and an accounts-page refresh without resizing; accounts route, Healthy bank
+connection and $2450 plan persisted. The first observation was briefly empty
+but subsequently rendered by itself, unlike the earlier persistent blank state.
+
+Added the supported app.disableHardwareAcceleration() before readiness on macOS
+only, retaining Windows behavior and all security settings. This is a measured
+compatibility workaround, not proof of a specific upstream GPU bug. Software
+rendering may cost CPU/battery; exact new packaged replay and bank-popup parity
+are still required. API reference: https://www.electronjs.org/docs/latest/api/app#appdisablehardwareacceleration
+
+### September 18 — exact software-rendering Mac package replay
+
+Source2a50752 local package `.tmp/mac-software-fixed/mac-arm64/Worthlane.app`
+(ASAR `b8d3719a9b1fa89236c02040926f1d70d14c2064e4816512314d1eb6030c69bd`)
+passes9 assets/8 hardened fuses/strict signature checks. All4 source CI jobs
+passed in35391591517. After the macOS authorization process cleared, the
+existing recovery Retry restored Morgan without restarting. Native Refresh on
+overview and Accounts then rendered normally without resizing, retaining the
+saved session, route, privacy and $2450 plan.
+
+Exact package also completed Chase Sandbox OAuth popup, simulated MFA and one
+checking account selection, returned to Link and saved the connection. Separate
+API verification confirmed1 new account/148 imports and all197 owner transaction
+objects unchanged on repeat sync; partner15 accounts/392 IDs remained private.
+The first verification hit409 while initial sync was still active; retry passed.
+Selected native unlink removed only that added Chase connection. A guarded
+provider observer confirmed database removal and ITEM_NOT_FOUND. Full fresh-login
+`WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-sandbox.mjs --verify`
+then passed original owner49/partner392 ledgers, manual fallback, responsibilities
+and debt/due-date idempotency. UI returned to15 accounts/one institution.
+
+This closes the current local-package Refresh and OAuth-popup regression. It
+does not establish CPU/battery performance across Macs, final device-store
+acceptance or fully hosted frontend behavior. The package is ad-hoc signed and
+pins localhost3403 against the isolated hosted Sandbox API. Fully hosted frontend
+credential-destination approval, public signing, iOS OAuth and privacy/store
+gates remain open. No production changes or store submission.
+
+### September 18 — approved isolated Vercel frontend created
+
+Tyler approved creation/deployment of `worthlane-beta-desktop` on the existing
+Hobby team and transfer of the existing Railway beta-sandbox proxy secret into
+that exact project. Created with root `apps/desktop`, Next.js, and only two
+project environment variables: `WORTHLANE_API_URL` pointing to
+`https://worthlane-beta-sandbox.up.railway.app/api` and
+`WORTHLANE_DESKTOP_PROXY_SECRET`. Both are sensitive values for this project's
+Production/Preview environments. Source credential was validated against exact
+Sandbox project/environment/service IDs and `PLAID_ENV=sandbox`; its value was
+transferred in memory without writing it to source or evidence.
+
+Set this new project's primary branch to `codex/hosted-sandbox-acceptance` and
+created deployment `6o3N9QAGtZUsj21zEdQEscYdwDkE` from CI-green `aa3e488`.
+Canceled the superseded initial main import `opMba9sPBo9cPGhyaExKJAPTqovt`.
+Target primary origin is `https://worthlane-beta-desktop.vercel.app`.
+Existing production projects, API, database, Plaid settings and paid plans were
+not changed; PR20 remains unmerged and nothing was submitted to a store.
+
+Candidate remains QUEUED, with no successful build/runtime acceptance claimed.
+Vercel's official status page reports a Build & Deploy partial outage,
+"Elevated Errors Triggering Deployments", investigated since September18
+20:32UTC and updated20:56UTC: https://www.vercel-status.com/ . Older team builds
+also remain initializing/queued. Do not create duplicate deployments or upgrade
+plans as a workaround. After recovery, verify the candidate deployment and
+persisted synthetic browser sessions, then package/verify the Mac app pinned to
+this HTTPS origin. Local-package OAuth/Refresh evidence remains separate from
+fully hosted acceptance. Public Mac signing, iOS OAuth and privacy/store gates
+remain open.
+
+### September 21 — isolated HTTPS browser acceptance
+
+Verified clean local source `9d84d1ee2024efbda6b6b4f2a2162addf7ec5178`.
+Vercel dashboard independently shows Ready deployment
+`3H6K6JGD4WHpB6NDsjM6FoJ93uZQ`, that same source, at
+`https://worthlane-beta-desktop.vercel.app`. The former deployment outage is no
+longer the blocker. Origin verification passed the desktop identity header.
+
+`WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-desktop.mjs`
+completed successfully against that HTTPS origin using only the existing0600
+local synthetic fixture. It verified anonymous401, cross-origin403, protected
+host-only HttpOnly/Secure cookies, both saved logins, disjoint private accounts
+and complete ledgers, the2450 household responsibility total, refresh rotation,
+and logout refresh-token revocation. Credentials/tokens were not exported.
+
+Actual IAB Morgan login rendered the saved household,300/300 Groceries,
+Avery150 Utilities,1020/680 Rent, and private100 manual fallback. Chase Sandbox
+OAuth handoff exposed no popup in this IAB inventory; canceled and observed
+"Bank linking closed". This is not successful hosted OAuth evidence.
+
+Actual standard First Platypus Sandbox Link completed, saved14 new accounts,
+and displayed29 total accounts/two institutions. Independent API checks found
+439 complete owner transactions (49 existing +390 added), all stable across
+repeat sync, with exact original account/transaction objects retained. Partner
+15 accounts/392 transaction IDs remained unchanged and private. Visible Sync
+completed. Healthy Reconnect completed in update mode with the same Item,
+account and transaction IDs. Guarded provider reset affected only the added
+Item; visible Sync showed Needs Relink and incomplete-spending warning. Password
+reauthentication returned Healthy with all439 records stable and partner privacy
+preserved. Selected unlink removed only the added Item. A guarded in-memory
+provider observer independently confirmed database removal and ITEM_NOT_FOUND.
+Reload retained Morgan's original15 accounts/one institution and manual100;
+see `docs/evidence/2026-09-21/hosted-browser-restored.txt`.
+
+A subsequent full-login rerun hit HTTP429 after repeated synthetic logins; this
+is recorded as a rate-limit interruption, not a successful post-cleanup run.
+No rate-limit setting was weakened. Initial full BFF run passed before linking.
+
+Local Mac test package from9d84d1e pins the verified HTTPS origin, developmentOnly
+true, appId com.worthlane.desktop.sandbox; nine assets/eight hardened fuses pass.
+ASAR SHA256:
+`b01e30cd54fb97671db299626607e1b866441a8d7e09987d69299563bbb26749`.
+Path `.tmp/mac-hosted-20260921/mac-arm64/Worthlane.app`. This uses local ad-hoc
+packaging, no Developer ID credential, notarization or store distribution.
+Startup coincided with SecurityAgent; requested user handling without inspecting
+it. After that process disappeared, native app remained on recovery. Native
+View/Refresh changed title to hosted login, but screenshot and AX retained the
+recovery frame until the window's zoom action. Zoom exposed actual HTTPS login.
+This rendering/recovery regression contradicts a claim of complete hosted Mac
+parity; authentication/cold-launch/OAuth remain unverified for this exact package.
+No implementation fix, merge, production configuration or store submission here.
+
+
+### September 21 continuation: post-unlink and Mac session checks
+
+The guarded full hosted BFF verifier completed successfully after the login
+cooldown (session 57150, exit 0): protected cookies, cross-origin rejection,
+persisted two-login privacy/totals, refresh rotation and logout revocation.
+This closes the earlier post-cleanup HTTP429 verification gap without changing
+rate limits.
+
+The exact local Mac Sandbox package above authenticated Morgan. Initially the
+window title advanced while accessibility content and screenshots remained
+stale; a window zoom exposed the saved dashboard in accessibility. Native
+menu Quit followed by a full launch then visibly restored Morgan's saved
+session, household 2450 plan and private100 manual account without resizing.
+Cold-launch persistence is now observed, but the earlier rendering/recovery
+failure is unresolved and is not claimed fixed. Mac OAuth remains unverified.
+
+After that restart, Accounts & privacy navigation also rendered correctly in
+both AX and screenshot: 15 original accounts, one institution, zero attention,
+private100 manual fallback. This recovery does not establish a root cause or
+prove the initial stale-frame problem cannot recur.
+
+
+### September 21 hosted Mac OAuth connection and healthy reconnect
+
+Using the exact ad-hoc Sandbox Mac package recorded above, Connect bank →
+Continue without phone number → Chase → Continue to log in opened the separate
+cdn.plaid.com simulated OAuth window. Public Sandbox credentials/code and all
+14 test accounts completed simulated consent; the popup closed, Plaid returned
+to Worthlane, and Finish without saving produced Connection saved. The native
+accounts page showed29 accounts/two institutions/zero attention, Chase Healthy.
+
+An independent API verifier initially collided with the in-progress initial
+sync (409); its later successful run confirmed14 new accounts and439 complete
+owner transactions (49 original +390 added), exact original transaction objects
+retained, no repeated-sync duplicates, and partner15 accounts/392 transaction
+IDs unchanged/private. No rate-limit or concurrency safeguard was weakened.
+
+Healthy Reconnect repeated the actual OAuth popup/challenge/consent/return
+flow. After the final Finish without saving returned Connection saved, a fresh
+independent run (session23378, exit0) verified the same Item,14 account IDs and
+390 added transaction IDs,439 stable owner rows, and unchanged private partner
+ledger. See `docs/evidence/2026-09-21/hosted-mac-oauth-saved.txt`.
+
+This establishes hosted Mac OAuth connect and healthy reconnect, not forced
+login-required repair or selected unlink for this new Item; those remain next.
+The local0600 `.tmp/hosted-mac-sep21-link-fixture.json` identifies the added
+synthetic Chase Item for scoped follow-up. Initial stale-frame/recovery behavior
+also remains unresolved. No production banking, merge, store submission or
+release signing occurred.
+
+
+### Verification correction: transaction-ID selection
+
+During forced Mac repair verification, the temporary lifecycle helper was found
+to use transaction.accountId although the API returns transaction.account.id.
+Its added-bank transaction-ID subset was empty. Earlier full-ledger repeat-sync
+comparisons, original-row checks and complete partner-ledger comparisons remain
+valid, but the claimed preservation of the390 added transaction IDs across
+reconnect/repair was not established by that helper. This correction supersedes
+those specific ID-preservation claims above.
+
+The Mac did show Needs Relink/14attention with retained balances after scoped
+Sandbox reset, and actual OAuth reauthentication returned Healthy/zeroattention.
+Database check confirmed HEALTHY, needsRelink false, errorCode null. The separate
+API check initially hit429; no limits changed. After cooldown, corrected committed
+`scripts/test-hosted-linked-bank.mjs --capture` with explicit Sandbox opt-in
+passed:14accounts,390nonempty added transaction IDs,439stable full owner rows,
+original objects and partner15accounts/392transaction IDs preserved. The new
+verifier uses account.id and refuses an empty historical transaction baseline.
+Syntax and no-approval guard checks pass.
+
+Next: repeat forced repair against this corrected nonempty baseline with
+`WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-linked-bank.mjs --verify`,
+then selected unlink/provider revocation. The added Chase Item remains present
+for that test. Failed observer attempts were terminal and did not unlink or
+mutate data. Initial Mac rendering reliability remains unresolved.
+
+
+### September 21 corrected Mac repair and unlink complete
+
+Repeated guarded provider login reset on only the added Chase Item. Native Sync
+showed Needs Relink/14attention, then actual OAuth login/challenge/account
+selection/simulated consent/return/Finish without saving restored Healthy.
+`WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-linked-bank.mjs --verify`
+passed after final return (session3060): exact same Item,14accounts and all390
+nonempty baseline transaction IDs;439full owner rows stable across repeat sync;
+original rows and partner15accounts/392transaction IDs preserved/private. This
+new run closes the empty-subset evidence gap for this Mac repair, without
+retroactively strengthening the earlier browser helper's claims.
+
+A scoped provider observer independently verified HEALTHY/relinkfalse/errornull
+and the exact14account/390transaction IDs before removal. Native Unlink on the
+added Chase row and its confirmation returned Chase was unlinked and15original
+accounts/oneinstitution/zeroattention. Observer58590 exited0 after confirming
+database removal and Plaid ITEM_NOT_FOUND for the former token (memory only).
+Full post-cleanup hosted BFF verifier16470 exited0: both persisted logins,
+privacy/totals, protected cookies, refresh rotation and logout revocation.
+See `docs/evidence/2026-09-21/hosted-mac-unlinked.txt`. The local Chase fixture
+now identifies a deleted Item and must not be reused as an active connection.
+
+Remaining Mac reliability findings: this run unexpectedly returned to login
+before Sync; signing back into the synthetic account recovered it. Cause not
+established. Earlier initial stale-frame recovery also remains unresolved.
+Successful banking lifecycle does not close these session/rendering findings,
+public Mac signing/notarization, iOS OAuth or other recorded release gates.
+
+
+### September21 reproducible hosted session race
+
+Isolated diagnostic68726 used a new synthetic login, removed only its access
+cookie, then issued four concurrent requests with the same refresh cookie:
+accounts200, householdsummary401, transactions401, debtplans401. Only test-created
+sessions were cleaned up. No financial data changed. This reproduces unexpected
+logout at the BFF layer independently of native painting.
+
+Source confirms workspace-page.tsx loads six endpoints in Promise.all. The BFF
+refreshFlights map deduplicates only within one process/route instance; API
+rotateRefreshSession consumes each credential once and revokes the family on
+reuse. That protection must remain. Sequential refresh tests cannot establish
+concurrent hosted session recovery. Added guarded regression
+`scripts/test-hosted-refresh-concurrency.mjs` requires all four requests to recover;
+the current hosted implementation does not meet it. Syntax check passed.
+
+Next implementation: coordinate refresh for requests sharing browser cookies
+across tabs/windows and serverless routes, preserve HttpOnly credentials and API
+replay protection, then test parallel expiry and logout races before replaying
+the Mac session. Do not treat bank lifecycle completion as session reliability.
+
+
+### September21 concurrent refresh fix candidate
+
+Code f294826 replaces automatic refresh in ordinary BFF requests with an
+explicit same-origin JSON session endpoint. All desktop API callers use a shared
+Web Lock for ordinary parallel requests and an exclusive lock for refresh and
+login/logout; a nonsecret local epoch prevents replaying an old user's queued
+mutation after an identity change. HttpOnly credentials and API family replay
+revocation remain unchanged. Logout revokes refresh directly even with expired
+access. Refresh429 becomes retryable502 without clearing cookies.
+
+Local desktop build/typecheck,22 desktop-session/Plaid tests and16 native/auth
+privacy tests pass. The password-recovery integration runner was not configured
+with its isolated database and refused to run; it is not claimed passed here.
+Vercel Sandbox deploymentAFWEGC1TFC5sCacehCX4iSA4UysZ is Ready at f294826 with
+worthlane-beta-desktop.vercel.app current alias. Initial hosted replay exposed a
+missingJSON header; corrected client now supplies JSON and a regression assertion
+covers it. With corrected local client against deployed BFF, hosted run56280
+passes all four coordinated endpoints200, plus a further rotation proving the
+family remains usable. Ordinary concurrent401s do not change cookies.
+
+The hosted runner tests the real BFF with two client instances and a shared lock
+model; actual browser/Mac cross-window expiry after the header correction is
+still required. CI228/35639331950 was in progress at last check. No production
+merge, API schema/auth-policy change, or store submission occurred.
+
+
+### September21 actual two-tab expiry recovery
+
+Vercel current alias was independently observed Ready at78823cd; CI229
+35639651360 completed all4jobs successfully. Actual IAB synthetic login and
+second accounts tab shared cookies. Removed only __Host-worthlane-access via
+origin-scoped developer controls, retained refresh, and reloaded both tabs:
+both recovered Morgan's saved household without signing in again. Repeated
+access-cookie removal and simultaneous visible Refresh buttons exercised the
+six workspace requests plus overview. Captured statuses show all initial401s
+followed by session200 and retried financial endpoints200, retained15accounts
+and saved2450plan. No token values were read/exported. Evidence:
+`docs/evidence/2026-09-21/browser-parallel-session-recovery.json`.
+
+Logout in the second tab completed, but the first retained its private snapshot
+until the next refresh. New SessionBoundary now synchronously hides children
+on another window's session-epoch storage event and navigates to signin. The
+nonsecret epoch already changes under exclusive lock before login/register/logout.
+Local build/typecheck and11desktop-session tests pass, including immediate
+private-tree removal. Interactive verification of this follow-up and Mac expiry
+remain pending; do not conflate the passed78823cdCI with this newer change.
+
+### September 21 cross-tab sign-out verified on deployed cd03cc9
+
+Vercel deployment 6GawVcZ3cyJT5g912nBG9kJxNb2E was Ready with the Sandbox
+alias on cd03cc9. CI run 35640283270 passed all four jobs. Reloaded both IAB
+clients, signed into the approved Morgan synthetic account, and confirmed the
+persisted $2,450 household plan in both dashboard tabs. Signing out in tab 1
+immediately returned tab 5 to the login screen without a manual refresh or
+remaining financial snapshot; tab 1 subsequently completed logout as well.
+This verifies the SessionBoundary follow-up separately from prior expiry tests.
+The Mac client is at sign-in; current Mac expiry/recovery remains pending.
+No main merge, production activation, or store submission occurred.
+
+### September 21 Mac rendering and saved-session checkpoint
+
+The existing hosted Mac package opened the current client at sign-in. Login
+succeeded (title changed to household dashboard), while screenshot still showed
+the old empty login form and AX temporarily exposed no HTML subtree. Native
+menu Quit followed by full relaunch restored the saved Morgan household without
+entering credentials. Screenshot and AX agreed on $2,450 plan and private $100
+manual checking. Subsequent logout visibly cleared the dashboard; another login
+and Accounts navigation rendered correctly with 15 accounts, one institution,
+zero needing attention. Initial stale-frame root cause remains unknown; no
+speculative native change was made.
+
+The new synthetic Mac session was signed in before 2026-09-21 18:51 UTC. Source
+confirms access lifetime and cookie age are 15 minutes. Leave this session open;
+verify current snapshot/Refresh planning data after 19:06 UTC without signing in
+again, then cold-launch/read back. This pending observation is not yet an expiry
+pass. Browser cross-tab expiry and logout evidence does not substitute for Mac.
+
+### September 21 storage cleanup during Mac expiry observation
+
+Disk check found 7.3 GiB free. Removed six superseded generated Worthlane.app
+bundles from .tmp after confirming none was running. Removed bundle paths,
+allocated sizes and ASAR hashes are recorded in
+`evidence/2026-09-21/generated-build-cleanup.json`; current mac-hosted-20260921,
+source, credentials, fixtures, Android emulators, logs and committed evidence
+were preserved. About 1.61 GiB of generated bundles removed; fresh df shows
+8.9 GiB free. These old executable bundles must be rebuilt if needed; their
+historical evidence remains. No claim that this resolves Mac rendering.
+
+App Store Connect redirected to login; owner chose to continue other work, so
+Apple preparation is deferred without another sign-in request. Sentry privacy
+switch approval remains pending. Mac session stays open for normal expiry
+verification after 19:06 UTC.
+
+## September 21 approved Sentry IP privacy change
+
+Owner approved enabling Prevent Storing of IP Addresses in worthlane-api and
+worthlane-mobile. Both previously-off switches were enabled through the signed-in
+Sentry project Security & Privacy pages. Autosave completed, then both pages were
+reloaded: each IP-prevention control remained checked (1); server-side scrubbing
+and default scrubbers also remained checked. Verified at 18:57 UTC. This closes
+the pending two-switch approval gate. It applies to new events only; no claim
+of historical IP deletion or a completed final App Store privacy declaration.
+No paid plan, credential, application deployment or store submission changed.
+
+### September 21 store-format Sandbox preparation
+
+Added sandbox-store EAS profile to close the configuration gap between tested
+internal/Simulator builds and a future review archive. Extended the fail-closed
+Sandbox guard and regression matrix. Seven release-config tests pass; installed
+EAS18.3.0 schema/resolver confirms inherited preview environment and fixed Sandbox
+API on both platforms, iOS device/store and Android app-bundle. No remote build,
+credential change, store upload or submission started. Final artifact verification
+still required, and mobile source-parity note now excludes this configuration-only
+addition (existing app runtime/shared business code remains unchanged).
+
+### September 21 signed Sandbox archive preparation started
+
+Prepared guarded sandbox-store profile at da5677c;7tests and EAS schema resolution
+passed. Verified included Expo Free capacity (3/15 iOS builds, $0 estimate), then
+queued iOS build28,31792944-ceec-473a-ab52-3c8515650b14, using existing remote
+credentials without auto-submit. EAS readback confirms IN_QUEUE/STORE/sandbox-store
+at exact da5677cd862f7b8385c63387b16b03532edd52cf. No Apple portal verification or
+App Store upload/submission; final archive checks remain. Mac session expiry
+observation after19:06UTC is still pending.
+
+### September21 Mac normal expiry and cold launch PASS
+
+The synthetic Mac login established before18:51UTC remained open beyond its
+15-minute access-token lifetime. At19:06:16UTC the native accounts screen still
+showed15accounts; clicked Refresh planning data, observed disabled/loading then
+reenabled button and fresh12:06PM MST snapshot. Screenshot confirms15accounts,
+one institution, zero attention and preserved household. No re-login or cookie
+mutation was performed. Native menu Quit/full relaunch then loaded the saved
+Morgan household at12:07PM with2450plan/private100. This closes the current normal
+Mac expiry/relaunch gap; initial pre-quit stale-frame root cause remains unknown.
+
+### September21 iOS archive signing failure isolated
+
+EAS build31792944 is terminal ERRORED/XCODE_BUILD_ERROR: cached provisioning
+profile lacks Associated Domains entitlement. No archive produced or retry started.
+Live Apple personal team5FBXR5M5PJ confirms com.worthlane.mobile has Associated
+Domains enabled, but existing AppStore profileCW5LLD8366 is Invalid. Edit form
+prepared using the same app ID and selected existing distribution certificate;
+owner approval requested to regenerate and replace EAS cached profile. No new
+certificate, capability toggle, agreement acceptance or store submission occurred.
+Apple review notes refreshed/saved/reloaded; private credentials empty, no build
+attached, manual release retained. App Privacy crash-data setup remains unfinished.
+
+### September21 approved signing-profile repair
+
+Owner approved regeneration and EAS replacement. Saved Apple profileCW5LLD8366
+with the unchanged com.worthlane.mobile app ID and selected existing certificate.
+Apple returned Download and Install for App Store/personal team, expiryMarch16,2027.
+No new capability or certificate was created. EAS cached profile has not yet been
+replaced: browser download event exposes no local path and Computer Use blocks
+Codex's own download dialog. Requested owner save .mobileprovision to Downloads;
+inspect entitlements before uploading to the approved EAS destination. Interactive
+EAS credentials session62519 is at Build Credentials menu, sandbox-store selected,
+Apple CLI login declined. Do not delete cached profile until replacement is usable.
+CI236/35642096195 at da5677c completed all four jobs successfully.
+
+### September21 approved EAS profile replacement complete
+
+Downloaded regenerated profile found in Downloads and copied to private0600
+.tmp/approved-worthlane-store.mobileprovision. CMS plist checks confirm exact
+personal-team/app ID, Associated Domains entitlement, App Store distribution
+(no provisioned devices/get-task-allow), and same existing certificate serial.
+SHA256:30cae4ec1df11a79541e5010681a5ac12447f4850604de2a56755c5f6c4fd37e.
+Removed only the obsolete EAS App Store profile association using credentials CLI.
+CLI setup required another Apple login, so uploaded/attached the approved profile
+using the installed EAS credential API with the existing authenticated Expo session.
+No private key was exported or logged. Server readback bytes match the approved
+profile hash, statusactive, same certificate retained. Apple capabilities unchanged.
+
+Retried included-capacity iOS Sandbox build29:
+95aeed0d-68aa-434d-b879-f2ba35540eb5, exactsource
+2c8693102d94cea516e04b104e0c12f18fabcc1a, sandbox-store. Readback IN_QUEUE; no
+archive success or store readiness claimed. Earlier build28 remains ERRORED.
+Private Apple review notes now refer to build29/source2c86931; saved without
+Add for Review. Nothing uploaded/submitted to Apple. Next inspect completed
+archive entitlements, signature, API/SDK configuration and privacy manifests.
+
+
+### September21 signing follow-through and current Mac refresh
+
+EAS build29/95aeed0d-68aa-434d-b879-f2ba35540eb5 is authoritatively
+IN_PROGRESS. Old build28 is terminal; corrected store-listing guidance to monitor
+the new job. Reloaded Apple draft retains build29/source2c86931 notes, disabled
+Save and Prepare for Submission. No upload or submission.
+
+Current packaged Mac session also passed View > Refresh: both the accessibility
+tree and screenshot rendered Morgan's household,2450plan and private100manual
+account. This narrows the current symptom but does not resolve or explain the
+earlier stale-frame incident. No rendering code was changed.
+
+
+### September21 build29 archive verification passed
+
+Build29 finished19:21:40UTC. Downloaded21,803,499-byte IPA SHA256
+1c6a03c61ec318460202d1dc437f1a41a8e295de734601bb8bf12586d52776ea.
+Strict deep codesign verification passes; actual embedded profile exactly matches
+the approved replacement. Signed app ID, personal team, Associated Domains,
+production APS and get-task-allow=false verified. iPhoneOS1.0.0/build29 targets
+iPhone with minimumiOS15.1. Sandbox API literal present. Packaged non-string
+Sentry DSN is rejected by the inspected runtime configString guard; build guard
+requires optional credentials absent and AI/paywall disabled. All14 packaged
+privacy manifests exactly match the previously inventoried Simulator archive.
+See evidence/2026-09-21/ios-store-29-archive.json. This is static archive evidence,
+not runtime network or physical-device acceptance. No upload/submission occurred.
+
+
+### September21 server image dependency remediation
+
+Fresh pnpm audit --prod reported60high/24moderate/3low advisories, including
+Sharp0.34.5's libvips/libheif issues (GHSA-f88m-g3jw-g9cj and
+GHSA-rgj7-g3m4-5g8c). Confirmed the latter against the maintainer advisory.
+Added a scoped Sharp<0.35.4 override to0.35.4 while preserving all existing
+workspace security overrides. Frozen install succeeds. Next's real image optimizer
+resizes/encodes PNG,WebP,AVIF correctly in API,desktop andweb (3 tests passed);
+the same regression check is now in LinuxCI. Updated audit has zero Sharp findings
+and58high/24moderate/3low remaining. Registry findings do not establish runtime
+exploitability; Expo's production graph also includes development tooling.
+Remaining module/path evidence is in evidence/2026-09-21/dependency-audit.json.
+Do not attest that vulnerability management is complete. No production merge,
+deployment approval, app-store upload or new security attestation occurred.
+
+
+### September21 dependency caller triage and compatible tooling patches
+
+Traced remaining registry paths: most findings are Expo/Metro/CLI or Sentry build
+plugins; OpenTelemetry is server diagnostics and decode-uri-component is the mobile
+router path. Do not equate all audit findings with exposed application endpoints.
+Applied same-family updates: xmldom0.8.15, forge1.4.0, PostCSS8.5.23, nanoid3.3.18,
+shell-quote1.9.0 and tar7.5.21. Existing unrelated security overrides preserved.
+Frozen install passes; all10 release-config/image-adapter tests pass; Expo plist
+roundtrip preserves app ID, Associated Domains,boolean andinteger values. The first
+ad-hoc plist check used the wrong CommonJS export; corrected to the package's
+default export and passed. Isolated no-dotenv iOS export passes with7.05MB Hermes
+bundle. None of the patched modules remain in the new audit:32high/18moderate/3low
+remain, down from58high/24moderate/3low. Snapshot:
+evidence/2026-09-21/dependency-audit-tooling-patches.json. Full candidate CI pending.
+Earlier Sharp-only CI243 has both PostgreSQL17/18 jobs passed and core/API/privacy/
+image checks passed; build jobs were still running when inspected. No production
+merge, store submission or new Plaid security attestation. Existing build29 remains
+its recorded earlier source; these tooling changes are not retroactive artifact proof.
+
+
+### September21 compatible dependency patch sweep
+
+Sharp-only CI243/35645191576 at86a2a0b completed SUCCESS. Subsequent same-major
+patches cover brace-expansion1/2/5, picomatch2/3, yaml2,ws6/7/8,joi17,js-yaml3/4,
+Babel7,fast-uri3,browserslist4 andbaseline-browser-mapping2. Frozen install succeeds.
+Initially broad picomatch overrides narrowed fdir's optional peer; replaced them
+with exact caller overrides for Expo CLI and jest-util, eliminating that new warning.
+Only the prior React type peer warning remains. Isolated iOS export passes, as do
+13 release-config/image-optimizer/diagnostic checks. Full CI for this sweep pending.
+
+Fresh registry audit now3high/6moderate/0low. Remaining callers: fast-xml-parser in
+Android CLI manifest parsing; image-size in Metro asset processing; uuid in build
+tooling; decode-uri-component in mobile router query-string; OpenTelemetry core in
+server diagnostics. Registry findings are not automatically runtime exploitability.
+Do not blanket-ignore them: decode-uri-component0.5 is ESM while its installed
+query-string caller uses CommonJS; it needs an integration-safe fix. fast-xml-parser
+CLI caller inspected uses XMLParser, not XMLBuilder; the builder advisory requires
+separate reachability evaluation. image-size registry currently reports no fixed
+range. Full module/path snapshot:dependency-audit-compatible-patches.json.
+No production merge, store submission or organizational security attestation.
+
+
+### September21 router decoding and server telemetry hardening
+
+CI244/35645550201 at92bd57e completed SUCCESS. Updated fast-xml-parser within4.x
+to4.5.5 and OpenTelemetry core within2.x to2.8.0. Backported upstream
+decode-uri-component0.5.0's bounded decoder into0.2.2 using a reproducible pnpm patch,
+preserving CommonJS and plus-to-space behavior required by query-string. Upstream
+MIT package/source provenance and SHA256 recorded in dependency-audit-runtime-patches.json.
+No audit ignore was added. The registry continues to flag the original package
+version; do not report its advisory as absent.
+
+Original registry0.2.2 timed out on3000 malformed percent-encoded groups after2s
+in a disposable child; child terminated. Actual installed router/query-string path
+completed equivalent test in52ms and preserves Unicode,plus signs,repeated keys and
+partially malformed bytes. Regression runs child with5s deadline to prevent CIhang.
+12 router/release/diagnostic tests pass, frozen install passes, isolated no-dotenv
+iOS export passes. Latest full CI still needed.
+
+Registry now2high/4moderate/0low: Metro image-size two high parser findings (registry
+has no patched range); unused-by-inspected-caller XMLBuilder; build UUID; and locally
+mitigated decoder. Continue caller-specific triage. Earlier build29 is unchanged and
+does not include this JavaScript change. No production merge, submission or security
+attestation.
+
+
+### September21 image parser mitigation and final caller triage
+
+CI245/35645909432 at811a7ab completed SUCCESS. Inspected actual Metro asset-size
+call: filename extension gating does not prevent parser selection by content. Added
+reproducible image-size1.2.1 patch requiring valid advancing ICNS entry headers and
+ISO boxes. Zero-size ISO boxes now consume remaining input instead of returning a
+zero-sized match to JXL partial-stream iteration. Four actual Metro/router tests
+pass: malformedICNS/JXL/HEIF buffers reject promptly; realPNG/AVIF and validICNS
+dimensions remain correct. Frozen install and isolated iOS export pass. Full CI
+for this new patch pending. Registry flags remain because versions are unchanged;
+no audit ignore. Detailed remaining-caller disposition:dependency-security-status.md.
+Inspected XML caller only parses/validates manifest, UUID callers usev4 without
+provided buffers; remaining advisories affect different operations. This is scoped
+reachability evidence, not an organization-wide attestation or a clean audit claim.
+
+
+### September21 refreshed laptop native candidates started
+
+Live Expo billing shows Free/$0,4of15iOS and5of15Android builds used, estimate$0.
+Started refreshed Sandbox laptop candidates fromb75245cea938caaa56b756575ac58f5aa254adec
+using included capacity, no paid plan or submission:
+- iOS sandbox-simulator: c6e4b91a-4f9a-4229-865c-a9a0d37188bd (IN_PROGRESS,build29).
+- Android sandbox-preview:307fcac1-78fe-4655-adb1-5d793346a2be (accepted by EAS).
+Both42.5MB archives uploaded. No preview environment variables were returned by
+EAS; only guarded profile settings loaded. Android reused its existing remote
+keystore. Exact candidate signatures/configuration/installed journeys remain
+pending; monitor these jobs, do not restart on an observation timeout.
+CI246 at29dcf25 completed SUCCESS; latestCI247 atb75245c was still running.
+
+
+### September21 current candidate CI green and cache housekeeping
+
+CI247/35646773858 atb75245c completed all4jobs SUCCESS, including PostgreSQL17/18,
+new router/Metro regressions, all builds and Windows packaging. Native EAS artifact
+inspection/installed parity still pending.
+
+Under prior owner storage-cleanup request, pnpm store prune removed cached metadata
+and73,907 files/1,689 cached packages. Store was2.0GB; free APFS space increased
+from6.4to6.9GiB (only0.5GiB actually reclaimed; do not claim2GB free). Installed
+workspace dependencies remained intact: all4 Metro/router tests passed afterward.
+No project/source,credentials,fixture database,AVD or installed app was removed.
+Cached dependencies can be downloaded again by pnpm when needed.
+
+
+### September21 refreshed iOS security candidate installed
+
+iOS EAS c6e4b91a finished from b75245c. Archive/hash, strict deep signature,
+Sandbox endpoint, patched decoder bundle markers and14 privacy manifests checked;
+installed in place on laptop iPhone16Pro Simulator. Actual Info.plist build is7
+although EAS remote metadata reports29; this is not a device App Store artifact.
+Synthetic Morgan sign-in loaded saved net worth -77,064.15, spending213.10,
+received500,25 card-minimum obligation and household with Avery. Apple password
+save sheet dismissed without saving; explicit dashboard assertion passed. Initial
+Overview assertion was incorrect for the Today screen, not evidence of login failure.
+Household navigation passed after using its actual accessibility label
+Open household details. Saved Avery membership, privacy-qualified total and
+Groceries/Utilities/Rent edit controls rendered. Further parity checks remain pending. Android307fcac1
+is IN_PROGRESS. No store upload/submission or production merge.
+See evidence/2026-09-21/ios-refreshed-artifact.json.
+
+
+### September21 refreshed iOS allocation and cold-launch readback
+
+On c6e4b91a/b75245c, actual native household screenshots show600 groceries
+allocated300/300,150 utilities entirely to Avery, and1700 rent allocated
+1020Morgan/680Avery. Responsibility/payer/privacy copy is visible. Maestro
+stopApp/launchApp preserved Morgan session and saved dashboard/bill. Initial
+swipe did not move; scrollUntilVisible succeeded. Evidence: ios-refreshed-
+groceries/rent/coldlaunch PNGs under evidence/2026-09-21.
+
+The dashboard screenshot revealed long household names pushing View household
+outside the card. Source now stacks that action below the full-width name and
+gives it a44-point minimum hit target. This layout correction is not in the
+currently tested EAS artifact; visual verification remains pending. Android
+307fcac1 remains IN_PROGRESS. Free disk space6.4GiB; no additional deletion.
+
+
+### September21 refreshed Android artifact and layout CI
+
+Android EAS307fcac1 finished atb75245c. Downloaded100,427,975-byte APK;
+apksigner v2 verifies with the existing certificate. Packagecom.worthlane.mobile
+version1.0.0/code4, min26/target36. Actual bundle contains isolated Sandbox
+API and patched decoder markers; old decoder marker absent. Sentry environment
+sandbox-preview with no configured DSN. See android-refreshed-artifact.json.
+
+iOS Simulator shut down to conserve memory before booting preserved WorthlaneRelease
+AVD. Android boot completed; adb install -r is still live (session49221), no restart
+or data wipe. Installed package readback still shows September18, so new installed
+acceptance is not claimed. Disk5.7GiB free. Continue exact install handle.
+CI251/35649405929 on9bf9dc5 passed all4jobs, including PG17/18, Linux tests/builds
+and Windows packaging. Layout visual verification remains pending.
+
+Install session49221 subsequently finished SUCCESS; package lastUpdateTime now
+September21 13:15:47. First launch screenshot instead shows Android Process system
+is not responding. No app launch acceptance claimed. Emulator recovery under
+owner restart instruction begun; no data wipe.
+
+
+### September21 Android emulator recovery diagnosis
+
+2048MB cold boot completed but subsequent System UI ANR confirms broader runtime
+failure. Worthlane process1986 ran main and reached session spinner; no JS fatal
+was captured. UIAutomator itself timed out connecting and exited137. An app-only
+restart did not establish acceptance. Guest MemAvailable~1.2GB and host free
+memory40% were observed; do not assume simple RAM exhaustion. Boot log also
+reported Failed to find ColorBuffer. After verified emulator exit, restarted the
+same preserved AVD with supported -gpu software, no snapshot/wipe, session95722.
+Current saved-journey acceptance remains open. Next: observe this boot once; if
+system failure recurs, switch to independent layout/store work rather than keep
+repeating identical emulator restarts.
+
+
+## September21 Crash Data draft completed, not published
+
+App Store Connect live App Privacy questionnaire saved Crash Data with App
+Functionality purpose, not linked to identity and not used for tracking. The
+resulting preview lists Diagnostics under Data Not Linked to You; Publish is now
+enabled but was not clicked. Other six collected types retain account linkage.
+Basis: mobile diagnostic-privacy.ts reconstructs a generic allowlist with bundle
+positions, without user/request/context/breadcrumbs/raw messages; sentry.ts disables
+native capture, sessions, traces, screenshots and default PII. Earlier approved
+provider IP-storage prevention was verified in both Sentry projects. Current
+Sandbox artifact has no usable DSN; the draft conservatively retains crash
+collection for the configured backend/possible release diagnostics. Reconcile
+against the exact final selected build and services before publishing. No claim
+of historical data deletion or broad organizational compliance is made.
+
+Apple still has no attached build or reviewer credentials; release remains manual.
+This finishes one draft questionnaire section, not store preparation or submission.
+
+
+### September21 recoverable native session startup
+
+Software-renderer Android still displayed the session-loading spinner. Source
+inspection found hydrate has no rejection handling or bound on secure-store/native
+notification initialization. This does not isolate the emulator's root cause, but
+shows a real missing recovery path. Startup now times out after15seconds into a
+plain-language Retry screen, preserves credentials/data, and keeps protected
+screens closed. Attempt generations ignore stale storage and late native results;
+optional telemetry remains nonblocking. Secure-store reads run concurrently.
+
+Six real-store adapter tests pass, including read failure/retry, stalled native
+cleanup, late completion after a signed-out retry, and late storage not changing
+reminder ownership. Mobile typecheck and diff check pass. New code is not in the
+installed b75245c artifacts; rendered recovery/layout verification and final
+artifact parity remain pending. No production merge or release.
+
+
+### September21 current recovery/layout Simulator candidate queued
+
+Expo billing freshly confirms Free/$0 estimate with5/15iOS and6/15Android builds
+used. Started exactly one included iOS sandbox-simulator build:
+1fbc6a09-88a3-4c84-80c4-268236211a77, sourceb61b36c, now IN_PROGRESS.
+43.7MB archive uploaded; no EAS preview environment variables returned, only
+guarded Sandbox profile environment loaded. No store upload/submission.
+
+Before that, current Metro web bundle1693modules loaded the intentional mobile
+web handoff page atlocalhost8084. This is correct behavior, not native recovery
+verification: _layout.web.tsx deliberately never mounts SecureStore/auth. Stopped
+that local server afterward. Android software-renderer still showed loading;
+closed the test emulator without wiping data to avoid repeated identical restarts.
+CI256/35651378064: PG17,PG18 andWindows pass; Linux job still running.
+Next: inspect this exact iOS candidate then test saved-session/layout and recovery.
+
+
+### September21 dedicated reviewer preparation and CI256 green
+
+Created dedicated Alex/Sam synthetic reviewer logins only in the isolated hosted
+Sandbox, separate from ongoing bank/deletion test fixtures. Household consent and
+2450plan, private manual accounts1500/900, and Alex zero-APR300 debt with100monthly
+payment and25January31 due item persisted across fresh sessions. Sam receives404
+for Alex debt and cannot see its due item or private account. No live bank/email
+was connected. Random credentials stay in .tmp/reviewer-sandbox-access.json0600,
+not source or Apple. Native reviewer walkthrough remains pending.
+CI256/35651378064 atb61b36c now all4jobs SUCCESS. Simulator1fbc6a09 still monitored;
+no duplicate build, production merge or store submission. See sanitized
+evidence/2026-09-21/reviewer-access-preparation.json.
+
+
+### September21 recovery/layout Simulator artifact verified and installed
+
+Build1fbc6a09-88a3-4c84-80c4-268236211a77 atb61b36c FINISHED.
+Downloaded27,358,971bytes, strict deep signature PASS; Sandbox endpoint, startup
+Retry and timeout markers present;14 privacy manifests. Actual Simulator bundle
+version remains7 (remote EAS version is separate). Installed in place successfully
+on laptop iPhone16Pro Simulator, preserving existing data. See
+evidence/2026-09-21/ios-recovery-artifact.json for exact hashes.
+
+Computer Use reports the Mac locked; requested manual unlock. No native visual
+acceptance claimed for this new artifact yet. TylerOS project and baseline task
+updated. Repeated lock checks confirmed the remaining interactive work requires
+manual laptop unlock. Batched artifact/signature/privacy evidence is preserved in
+one commit; no production merge/submission. All14 manifests exactly match store29,
+and the packaged Sandbox Sentry DSN is empty.
+
+
+### September21 current native saved-session/layout and reviewer parity
+
+Laptop unlock restored Computer Use. Installed1fbc6a09/b61b36c cold launch
+restored Morgan dashboard (networth-77064.15,spent213.10,received500,25bill).
+Long household name and View household action now fit inside card; screenshot
+ios-recovery-household-layout.png. Exact600equal/150Avery/1700at60:40 readback
+passes. No injected startup failure was exercised; Retry has unit-test evidence.
+
+Dedicated reviewer Alex native login shows private1500checking and25bill due
+2027-01-31. Saved zero-interest plan reopens balance300/statement280/minimum25,
+100monthly and March2027 payoff with assumptions. Sign out and separate Sam
+login show900privatechecking, no Alex bill or saved payoff plan, and identical
+shared600/150/1700 responsibilities. Account section lists only Sam checking.
+Sam cold launch briefly displays launch background, then restores900dashboard
+without login. Screenshot ios-reviewer-sam-private.png. Credentials remain local
+and restricted; Apple private review fields are not yet populated. No submission.
+
+
+Owner approved storing the two synthetic reviewer logins in Apple private review
+fields. Saved Alex primary credentials and Sam credentials in private notes, plus
+current walkthrough/artifact limitations. Browser protected input values appeared
+empty to AX/DOM despite accepting typing; repeated attempts triggered username
+length validation. Replaced all four private/contact inputs using select-all,
+clear and one type. Save then succeeded; reload confirms saved notes, no errors,
+Save disabled, Prepare for Submission and manual release. Primary protected-value
+readback is unavailable, so exact readback is not claimed. No build attached,
+privacy published, or app submitted.
+
+
+### September21 current Android/store builds and screenshot refresh
+
+Fresh Expo billing: Free,0estimated bill,6/15Android and6/15iOS used. Started
+Android Sandbox e474ea38-6384-4f73-9ef0-3d8817314fa6 and iOS sandbox-store
+e47249aa-9e37-4cf9-a35f-14c7de692cdc/build30, both source74c6bbf. Existing
+signing credentials retained; guarded profiles have no external EAS preview
+variables and disable production telemetry/paid AI. Last observation Android
+IN_QUEUE/iOS IN_PROGRESS. No Apple upload/submission.
+
+Updated existing iPhone16ProMax Simulator in place with tested1fbc6a09/b61b36c,
+stopping the smaller Simulator to limit resource use. Alex reviewer native
+sign-in passed. Four unmodified1320x2868 captures are prepared under
+evidence/2026-09-21/store-current: personal overview, household privacy, custom
+60/40 responsibility and saved explainable payoff. Manifest records hashes and
+source. They are not yet uploaded to Apple; match to verified store30 first.
+Mac existing saved plan renders correctly on inspection; this does not explain
+the earlier initial stale-frame incident.
+
+
+### September21 store30 verified and current screenshots saved
+
+EAS e47249aa-9e37-4cf9-a35f-14c7de692cdc FINISHED at74c6bbf. Downloaded
+21,805,183bytes, SHA37a3e75f01f9b87b37b957cfd1636f0fe35f69953a17c8048402e2d5184d0f7c.
+Strict deep signature PASS, actual Info.plist build30/iPhoneOS, approved team/app
+and Associated Domains, embedded regenerated profile f21c88e8-1e6b-4090-bbd1-4a86eefe1709,
+Sandbox endpoint/startup recovery and empty Sandbox Sentry DSN verified. All14
+privacy manifests match tested Simulator. No application/dependency diff between
+b61b36c tested source and74c6bbf archive. Static checks are not device execution.
+See ios-store-30.json. Archive remains local, not uploaded to Apple.
+
+Uploaded four current1320x2868 synthetic screenshots into Apple6.9-inch draft.
+Replaced three superseded draft captures (original files retained), ordered
+overview/household/custom responsibility/payoff, and reloaded to verify all four
+persist. Review notes saved with current build30/static/runtime limitations and
+existing approved reviewer credentials preserved. Save disabled, no errors, still
+Prepare for Submission/manual release. No privacy publication or submission.
+
+Android e474ea38 remains IN_PROGRESS at latest poll. Stopped iOS Simulator and
+idle Mac test app before Android-only boot; boot_completed1 and no am_anr/am_crash
+events observed so far. Launcher screenshot was still loading. This is not app
+startup acceptance; wait for current APK, preserve AVD data and verify UI.
+
+
+### September21 current Android startup and two-login parity
+
+Android e474ea38/74c6bbf FINISHED. APK100,429,519bytes, v2 signature PASS with
+existing signer; Sandbox endpoint, startup recovery/timeout and empty diagnostic
+DSN verified. Installed in place, preserving AVD data. With iOS stopped and idle
+Mac app closed, Android-only boot/software renderer exposes normal launcher and
+app sign-in. No am_anr/am_crash events observed for this boot.
+
+Alex native sign-in shows1500privatechecking and25bill. Household readback proves
+600equal300/300,150Sam100%,1700Alex1020/Sam680. Force-stop/start restored Alex
+1500dashboard without login. Initial UIAutomator cold-start dump returnednullroot
+and retained staleXML; that read was excluded and actual fresh screenshot proves
+the cold-launch result. Sign out returns empty login; separate Sam sign-in shows
+900privatebalance and no Alex bill. Evidence android-recovery-artifact.json and
+three screenshots record the results. Earlier host ANRs remain unexplained; this
+is current-session success, not root-cause proof. Native Retry failure injection,
+current banking replay and final store/publication gates remain distinct.
+
+
+### September21 native banking source/entitlement audit
+
+Compared tested banking candidate1dd2196 with current74c6bbf: only mobile
+app.config.js, eas.json, dashboard.tsx, _layout.tsx and auth.ts changed within
+mobile/API/shared scope. Banking, debt, reminder implementations and mobile
+package versions are unchanged. Prior lifecycle evidence remains relevant; this
+is not a fresh banking replay. Dependency patches and startup have their own
+tests/current native reviewer checks.
+
+An initial codesign-only read showed no Simulator entitlement fields. Deeper
+Mach-O inspection corrects that incomplete result: arm64 __TEXT,__entitlements
+contains approved5FBXR5M5PJ.com.worthlane.mobile andapplinks:worthlane.app. No
+signing modification was made. Store30 separately has the signed entitlement.
+This rules out the hypothesized missing Simulator entitlement, not all OAuth
+causes. Plaid troubleshooting explicitly recommends physical-device testing for
+Universal Links; phone work remains excluded. See native-banking-parity-audit.json
+and https://plaid.com/docs/link/troubleshooting/.
+
+Requested scoped permission to upload verified build30 only to the private Apple
+build list for processing/draft attachment, with no App Review submission, public
+release or tester invitation. Approval pending; no upload initiated.
+
+
+### September 21 — approved private build 30 upload
+
+Tyler approved the prepared upload for private processing and draft attachment.
+EAS Submit job `a693881e-2254-4a81-b1fe-c4edc1c614e9` succeeded at 14:44 MST,
+using the existing EAS-hosted App Store Connect API key. Apple independently
+lists version 1.0.0 build 30 as **Processing** (build ID
+`2208b168-2933-459e-b64f-0f16400262f1`). The archive is the verified
+`e47249aa-9e37-4cf9-a35f-14c7de692cdc` from `74c6bbf`.
+
+The draft build picker still exposes only older processed builds, so none was
+selected. Processing and attachment remain pending; upload success is not
+App Review submission or native device execution. No tester group assignment
+or invitation was requested. App Review remains unsubmitted. Next: once Apple
+finishes processing, select exact build 30, update the private walkthrough's
+old not-uploaded wording, save and verify the preparation draft.
+Evidence: `evidence/2026-09-21/ios-store-30-upload.json`.
+
+
+### September 21 — Sandbox privacy configuration reconciled
+
+Read-only Railway UI verification confirmed empty SENTRY_DSN and
+POSTHOG_PROJECT_KEY on the exact beta-sandbox API service. Values were hidden
+after inspection; no service configuration changed. This matches store30's
+empty mobile DSN and its build-time prohibition on Sentry/PostHog settings.
+Bundled manifests were re-read: Sentry describes possible diagnostics, but the
+actual candidate disables native SDK/tracing and lacks a JavaScript collector;
+LinkKit declares linked UserID. Purchase history remains disclosed for financial
+transactions regardless of the disabled paywall.
+
+Removed the unsupported Crash Data category from the unpublished Apple privacy
+draft. Save and reload now show six categories: Name, Email Address, Other
+Financial Info, Other User Content, UserID and Purchase History. Existing
+functionality/linked/no-tracking purposes remain; Publish was untouched. This
+is candidate configuration evidence, not historical retention or production
+service evidence. See sandbox-telemetry-configuration.json.
+
+Private reviewer notes now truthfully say build30 was uploaded and is processing.
+Save disabled confirms the notes save. Apple's build30 processing job remains
+live; exact attachment is still pending and no older build was substituted.
+
+
+### September 21 — Mac cold-start investigation and mobile brand provenance
+
+With Android emulator stopped to reduce contention, the exact hosted Mac app
+was launched from its existing package. Its accessible loading state transitioned
+to Morgan's saved household; a fresh screenshot independently matched the
+current dashboard at 14:55 MST, including -77064.15 visible net worth and2450
+plan. No Worthlane/Electron/GPU-named crash report was found in the user's
+DiagnosticReports directory. Stale-frame behavior did not reproduce; no rendering
+fix or established root cause is claimed. The app was quit after the check.
+
+All four mobile brand PNGs exactly match the raw rendered pixels of the local
+vector generator, without file writes. Its source history establishes technical
+provenance (ab8122e/37184a4); separate provider and trademark rights remain outside
+that proof. Evidence: mobile-brand-provenance.json. Apple build30 processing was
+rechecked and remains live, so no different build was substituted.
+
+
+### September 21 — preserve laptop storage during release preparation
+
+Official SDK manager removed the unused2.4GiB temporary Android NDK after
+checking no local compiler/build process was running. Emulator data and verified
+archives remain. Available disk space is9.3GiB, versus5.6GiB before emulator
+shutdown/cleanup; not all reclaimed space is attributed to the NDK. Restore
+command and exact scope: evidence/2026-09-21/storage-cleanup.md. A future local
+native Android build must reinstall that compiler; EAS and emulator runtime
+are unaffected. Apple build30 processing remains live.
+
+
+### September 21 — build 30 processed and attached to the Apple draft
+
+Apple completed processing exact build30/2208b168-2933-459e-b64f-0f16400262f1.
+Selected it in Add Build, updated the private walkthrough to reflect completed
+upload/attachment and saved. Reload independently confirms build30, Save
+disabled, Prepare for Submission and manual release selected. App Review was
+not submitted and privacy Publish remains untouched.
+
+Apple automatically associated build30 with existing Team (Expo), whose only
+member is the owner's Tyler account. Its setting is Automatic for Xcode Builds.
+No group assignment/new tester invitation was requested by the agent and no
+external testers were added. The automatic internal access is now explicitly
+recorded rather than describing the uploaded build as having no tester access.
+Portal installation metadata does not substitute for physical-device testing,
+which remains outside the laptop-only scope. See ios-store-30-upload.json.
+
+PR20's two existing inline review threads are resolved: standard API .env loading
+is fixed byaf072f5 and the canonical log includes hosted/native evidence. The
+three synthetic credential-loader tests pass freshly; CI268/35660470071 on
+01319f8 completed successfully. No merge was performed.
+
+### September 22 — Developer ID signed Mac session persists
+
+With Tyler's scoped approval, created the personal-team Developer ID Application
+certificate, imported its key into login Keychain and signed the local arm64
+Sandbox package. Deep/strict signature, hardened runtime, timestamp, nine archived
+assets and eight hardened fuses pass. Temporary private-key PEM was removed.
+See `evidence/2026-09-21/mac-developer-id-signing.json`.
+
+After Tyler handled the Keychain prompt, Alex sign-in succeeded. On September22,
+visually inspected the dashboard, quit using the app menu, verified the exact
+main process was absent and relaunched the signed package. Alex's authenticated
+dashboard restored without entering credentials: private checking1500, household
+plan2450, groceries600 equal, utilities150 Sam, rent1700 Alex60/Sam40. Sam's private
+account was absent. Initial connection-recovery cause remains unproven.
+
+No notarization upload, public distribution, live bank connection, main merge or
+store submission occurred. Continue provider-rights/compliance and scoped release
+verification; do not treat this package check as production banking acceptance.
+
+### September 22 — institution coverage and live Link configuration guard
+
+Read-only Worthlane Plaid dashboard inspection now shows Chase and Charles Schwab
+OAuth Enabled (superseding the earlier Schwab access-request state). Wells Fargo
+ins_127991 and Desert Financial ins_114213 detail panels list Transactions and
+Balance support. Coverage is not a successful live connection or a claim that all
+institution entitlements are approved. Transactions and Balance remain Enabled;
+Investments and Liabilities are not enabled. Compliance Center still says Action
+required. No product activation, paid call or real account connection occurred.
+
+Source audit: account import already maps investment accounts and their balances,
+but Link requires Transactions and sync always calls transactions/sync. Holdings
+and investment activity are not implemented. Brokerage/retirement support needs
+an explicit product-aware connection/sync path and separate acceptance; do not
+promise it based on the account enum or institution OAuth status. Plaid documents
+that Investments initialization can incur a Holdings subscription even before
+calling its data endpoint: https://plaid.com/docs/link/initializing-products/.
+
+Added validateLiveLinkConfiguration before provider Link-token creation. Production
+requires credentials/encryption key, HTTPS webhook and platform return settings;
+unknown environments and malformed/credential-bearing callbacks are rejected
+without echoing their values. Sandbox defaults remain unchanged. This validates
+configuration shape/presence only, not DNS reachability, credential validity,
+provider allowlists or delivery. It deliberately leaves production blocked when
+required configuration is missing rather than creating an unusable live session.
+
+Validation: API suite190/190 passed before adding one provider-boundary regression;
+then focused24/24 and API typecheck passed. The additional regression proves a
+missing production webhook prevents calling Plaid. No schema or production changes.
+Next: complete scoped production configuration review and investment connection
+implementation, then persisted Sandbox/UI checks before requesting live rollout.
+
+### September 22 — investment-only balance connections implemented
+
+Added explicit banking/investments Link purpose, separate desktop/mobile Connect
+investments controls and strict desktop proxy validation. Investment creation
+requests Investments only, so brokerage-only users do not need a checking account.
+Production requires PLAID_INVESTMENTS_ENABLED=true in addition to normal live
+configuration; it remains unset/unmodified here. No provider product was enabled.
+
+Sync derives initialized products from Plaid's accounts response, not client
+assertions. Investment-only connections save account balances and a distinct
+INVESTMENT_BALANCES_ONLY history state without calling transactions/sync or
+transactions/refresh. Mixed Items retain ordinary spending sync. Holdings update
+webhooks trigger account refresh. UI notices state the snapshot limitation and
+that holdings/trades are not imported, with a stale retrieval warning after a day.
+This delivers the balance connection path; it does not implement a holdings or
+investment-performance product. No schema migration is needed. Generic Link
+configuration errors no longer expose internal variable names to end users.
+
+Verified commands/results:
+- API/core tests:198/52 passed; API/mobile/desktop/core typechecks passed.
+- `bash scripts/test-postgres.sh --sandbox`:13 isolated PostgreSQL tests and3 real
+  Plaid Sandbox tests passed. New investment test creates Link, exchanges/saves,
+  repeats refresh with stable account IDs and zero spending rows, verifies Plaid
+  has not added the Transactions product, rejects the other login and unlinks with
+  provider ITEM_NOT_FOUND verification. Existing banking and deletion tests pass.
+- `pnpm --filter @worthlane/desktop build`:passed.
+- React checklist reviewed; no new eager provider SDK or effect-driven requests.
+
+Interactive new-control/Link acceptance on desktop and native remains open; do
+not infer it from API tests. These Sandbox tests do not prove Schwab Production
+coverage. Next run the actual investment UI journey, then prepare scoped provider
+activation/pricing and production configuration approval. No main merge, live
+bank Item, paid product activation or store submission.
+
+### September 22 — interactive investment connection, filtering fix and unlink
+
+Current local desktop/API ran against the isolated synthetic PostgreSQL cluster
+and real Plaid Sandbox. Solo Casey onboarding completed through the browser. The
+in-app browser left Plaid's frame blank and correctly reached Worthlane's bounded
+retry message; native Chrome completed the same flow using only published Sandbox
+credentials, without saving a phone/provider login. Native Chrome accessibility
+controls required fitting the provider dialog to the small window; zoom was
+restored afterward.
+
+Interactive selection exposed that Sandbox returned all account types even for
+an investment-only Item. Fixed import to retain only investment account types and
+reject a connection with none, with focused regression coverage. This avoids
+importing unrelated checking/loan balances through the investment-only flow.
+Also renamed the combined data-coverage heading so investment notices do not
+falsely imply missing spending history.
+
+Actual saved UI: private Plaid IRA320.76 +401k23631.98 =23952.74. Repeat UI Sync,
+reload and logout/new sign-in retained the exact total/accounts. Independent
+PostgreSQL read confirmed exactly2 investment accounts and0 spending rows. UI
+Unlink returned0 accounts/net worth and no connection; PostgreSQL confirms0
+accounts/Items. Test tabs and local servers/cluster were stopped after cleanup.
+Evidence: `evidence/2026-09-22/investment-browser.json`.
+
+After the filter change, isolated regression rerun on separate port55440 passed
+13 PostgreSQL tests plus3 real Plaid Sandbox tests, including all-investment
+account-type assertions, stable IDs, no Transactions initialization, owner
+isolation and provider revocation. Focused unit4/4 and API/desktop typechecks pass.
+Native investment UI and investment OAuth return remain open; ordinary bank/native
+prior evidence does not substitute. No production changes or paid calls occurred.
+
+### 2026-09-22 — Native investment test boundary and restoration
+
+Tried a local copy of the existing Simulator release package with the current
+investment JavaScript bundle. The release export failed at the API URL guard;
+a development export then failed because the release binary lacks DevSettings.
+Neither attempt qualifies as native investment acceptance. Release URL safeguards
+were preserved; no production configuration changed and no remote build started.
+
+Restored the original `.tmp/eas-ios-recovery/Worthlane.app` in place, preserving
+Simulator data. Interactive verification shows the saved synthetic household
+with Alex, 900 visible net worth and the 600 groceries budget. Local test API and
+PostgreSQL were stopped. Native investment testing requires a proper rebuilt
+client; investment OAuth return and production Investments entitlement/pricing
+remain open. TylerOS project and Plaid task updated with this boundary.
+
+### 2026-09-22 — Proper native investment development client building
+
+Added guarded `sandbox-development-simulator` profile for local API3101,
+Simulator development modules and disabled telemetry/AI/paywall. It explicitly
+uses EAS's isolated preview environment. Eight release/configuration tests pass;
+full API regression now passes199/199. Changes pushed at7f3a386.
+
+Expo billing currently shows Free,7/15 iOS and7/15 Android builds before this
+attempt, with a0 estimate. First build0844ba4d-0a5f-4cdc-8350-6afb8876accb inherited
+shared development telemetry settings; canceled successfully before using any
+artifact. Corrected profile uses preview, which EAS reports has no plain/sensitive
+environment variables. No production settings were changed.
+
+Clean tracked-source archive uploaded; new internal iOS build
+95061ba9-de4d-485a-a828-df072e9b57d2 is verified IN_PROGRESS. This is a local
+Simulator development client, not a store submission. Install and native investment
+acceptance remain pending. TylerOS project/Plaid task updated.
+
+### 2026-09-22 — Native investment build ready; OAuth retry remains open
+
+EAS95061ba9-de4d-485a-a828-df072e9b57d2 FINISHED and installed on the laptop
+Simulator. Current local Metro8087/API3101 loads successfully; synthetic Casey
+sign-in works and Settings renders the separate Connect investments control and
+balance-only explanation. Existing stale session was rejected against local auth.
+CI35751119011 at97aaba6 passed all four jobs, including both PostgreSQL versions,
+mobile bundle, API/desktop/web builds and Windows packaging.
+
+Native Connect investments opened Plaid. Using the authorized Maestro fallback
+for inaccessible Simulator sheets, First Platypus OAuth App2App opened Safari,
+accepted published Sandbox credentials/MFA, and reached confirmation. Its return
+reopened native Plaid but looped back to Continue to login rather than completing.
+Account label taps were not independently verified as checked, and confirmation
+showed no cash accounts; the cause remains unknown. Do not count this as linked,
+selected-account enforcement, or investment OAuth acceptance. Sandbox selection
+behavior also differs from Production per Plaid documentation.
+
+Exited Link via its confirmation. Native Settings remains usable and says Nothing
+linked yet; fresh API read confirms zero accounts and zero Items for this test
+login. Next: standard native investment lifecycle, then focused OAuth retry with
+verified checkbox state. API/Metro/isolated database remain running for that check.
+No production changes, store submission, or real banking occurred.
+
+### 2026-09-22 — Standard native investment lifecycle passes
+
+Current development Simulator client completed First Platypus standard Link,
+exchange and sync. Exactly two investment accounts persisted (IRA320.76,
+401k23631.98), with $23,952.74 net worth and0 spending/income. Repeat native Sync
+completed, and a full terminate/relaunch preserved those totals. Native Unlink
+confirmation removed the connection; a second full restart shows0 visible net
+worth. Fresh API reads and independent PostgreSQL counts confirm0 accounts,
+0 Items and0 transactions for this test login. Evidence:
+`evidence/2026-09-22/investment-native-standard.json`.
+
+The first typed credential attempt was rejected; clearing, retyping and visibly
+verifying the published test password resolved it. Tests used no real bank login.
+Found and fixed misleading native dashboard/Household wording that called all
+bank-data notices incomplete history, including healthy investment snapshots.
+The dashboard's corrected coverage/freshness wording was rendered interactively;
+mobile typecheck passed. Investment OAuth remains open after the previous loop;
+this standard-flow result does not substitute for that acceptance check.
+
+### 2026-09-22 — Recovered storage after interrupted OAuth retry
+
+The resumed Maestro job terminated with selector failure and explicit
+No space left on device errors. Disk inspection showed only114MiB free. This
+attempt adds no OAuth acceptance evidence; storage exhaustion does not establish
+the cause of the earlier completed-return loop.
+
+Within Tyler's cleanup authorization, removed seven regenerable old/failed build
+copies and the inactive WorthlaneLaptop synthetic Android development fixture.
+No Android emulator process was running. Retained WorthlaneRelease, all iOS
+devices, current development/recovery packages, signed Mac package, credentials,
+source and databases. Available space increased to3.5GiB. Exact removal inventory
+is local `.tmp/storage-cleanup-20260922.json`.
+
+Stopped only the current local API/Metro processes and isolated PostgreSQL cluster
+while recovering space; restored generated next-env noise. Restart those services
+before resuming native investment OAuth. Latest completed standard-native
+lifecycle evidence remains unchanged; goal and OAuth gate remain open.
+
+### 2026-09-22 — Investment repair preparation and local diagnostic privacy
+
+Pushed `36ef044`. Extended the real Plaid Sandbox investment integration to force
+login expiration: the Item stays NEEDS_RELINK while saved balances/account IDs
+and lastSyncAt remain unchanged. Only the owner can request update-mode tokens;
+default and explicit investment requests do not initialize Transactions. Token
+creation does not falsely clear the error. Zero spending and cross-login privacy
+remain intact, and unlink still revokes the provider token. The focused test
+passed against a fresh PostgreSQL17 cluster on port55441, which was then stopped.
+Actual investment Link reauthentication remains a separate interactive gate.
+
+Added development-only native Link diagnostics with fixed event/view/error
+vocabularies. Raw URLs, provider free text, names, masks and identifiers are never
+copied; release builds return before inspecting metadata. `node --test
+scripts/test-mobile-diagnostics.mjs` passes5/5, mobile typecheck and the expanded
+API/integration TypeScript check pass. Independent review found no blocker and
+added the explicit INCORRECT_OAUTH_NONCE vocabulary.
+
+Local API3101/Metro8087/database restarted after storage recovery;4.8GiB free
+was observed. Native retry now visibly verifies both IRA/401k checkboxes before
+authorization. No completed OAuth exchange is claimed yet. TylerOS project and
+Plaid task updated. Main freshly rechecked at4b22bec; CI281/35765231000 on36ef044
+is running, not yet a pass. No production deployment or store submission.
+
+### 2026-09-22 — Verified selection still reproduces native investment OAuth loop
+
+The fresh diagnostic retry visibly checked IRA and401k, continued through the
+Sandbox bank's authorization, and returned to native Plaid. It again showed
+Continue to login, without successful exchange. Clean Yes-exit returned to usable
+Settings/Nothing linked yet. Fresh API read has0accounts/Items/net worth/spending.
+Fourteen fixed-vocabulary events were captured through EXIT with no error code;
+no FAIL_OAUTH or ERROR event was observed. This is a recorded incomplete flow,
+not a successful OAuth connection or a proven root cause. Evidence:
+`evidence/2026-09-22/investment-native-oauth-retry.json`.
+
+Plaid's current official troubleshooting page warns Universal Links may not always
+work in Simulator and recommends physical-device verification. This does not
+diagnose this failure; Tyler's laptop-only boundary remains in force. Continuing
+independent saved-session startup/retry verification rather than counting another
+return-to-app as acceptance.
+
+CI281/35765231000 on36ef044 completed successfully in all four jobs: PostgreSQL17,
+PostgreSQL18, shared/client/API regressions and typechecks/mobile bundle/API +
+desktop + web builds, and Windows packaging. Main remains4b22bec; no merge.
+
+### 2026-09-22 — Native saved-session failure and Retry verified
+
+Temporarily injected a first-attempt rejection at the hydration read boundary
+in the local development bundle, before SecureStore reads. After full launch,
+Computer Use showed the saved-session error, reassurance and Try again button.
+Maestro tapped Retry; the existing Investment test household reappeared without
+credential entry. Restored auth.ts byte-for-byte (SHA256ff8fb2e0…a8e10ff and empty
+git diff), then full stop/launch again reopened the same saved household. Both
+Maestro assertions and independent screenshots passed. No persisted credential
+was edited or deleted; no failure-injection code is committed.
+
+Evidence: `evidence/2026-09-22/native-startup-retry.json`. This proves the local
+native recovery UI for a read rejection; it is not an actual Keychain outage,
+15-second timeout observation or store-format execution. Earlier startup/ANR
+causes remain unknown. Disk remains4.5GiB free.
+
+Read-only OAuth configuration cross-check: installed development executable equals
+the downloaded95061ba9 artifact. Its arm64 Mach-O entitlements contain exact
+5FBXR5M5PJ.com.worthlane.mobile and applinks:worthlane.app. Website and Apple CDN
+AASA both return200 application/json without redirects and map /plaid-oauth to
+that same ID. No association mismatch was found. Per-device cache, the actual
+failed-session redirect parameter and SDK state handling remain unproven.
+
+Repair regression reproducibility: focused Vitest arguments were `run --config
+vitest.sandbox.config.ts integration/plaid.sandbox.ts -t "persists investment
+balances"` from apps/api, with a fresh loopback PostgreSQL17 database, migrated
+schema, explicit Sandbox credentials and disabled email/telemetry/paid AI. Safe
+standard full rerun is `WORTHLANE_TEST_PORT=55441 bash scripts/test-postgres.sh
+--sandbox`; that repeats the full isolated suite rather than only the focused case.
+Expanded TypeScript validation explicitly included integration/plaid.sandbox.ts
+in the API program with noEmit and incremental:false because normal configuration
+excludes it. Test cluster55441 was stopped; current local UI services remain live.
+
+### 2026-09-22 — Production preparation: refresh billing and webhook classification
+
+Added an explicit production-only opt-in for the separately billed Transactions
+Refresh call. Without it, manual sync retrieves available scheduled updates;
+Sandbox refresh remains testable. Unsupported Refresh products may fall back to
+sync, but authentication and institution failures are no longer swallowed.
+
+Corrected webhook routing by exact type/code: informational ITEM notices do not
+become login failures, LOGIN_REPAIRED is reachable without advancing lastSyncAt,
+and institution outages use ERROR rather than falsely asking for credentials.
+Revocation notices still retain previous imports: provider-derived data removal
+on account revocation needs separate implementation/verification. Hosted signed
+webhook delivery is also still unproven.
+
+Validation: API 248/248 and API TypeScript passed; a fresh isolated PostgreSQL run
+passed 13/13, followed by real Plaid Sandbox 3/3 (including investment repair
+preparation and provider revocation on unlink/deletion). No production calls,
+configuration changes, product activation, merge or store submission occurred.
+
+Read-only Plaid dashboard: Worthlane approved for Production; current Pay As You
+Go plan has no monthly minimum. Transactions enabled at $0.30/Item/month and
+Balance at $0.10/call in current Contracts & Rates. Investments not enabled and
+not priced there. Viewing/selecting its card was undone without Add products.
+Checking and investment scopes remain separate; private web live acceptance can
+be completed independently of store distribution, after hosted OAuth/webhook,
+privacy, persistence and approved live-pilot gates. Native OAuth remains open.
+
+Native investment update-mode attempt: seeded a known two-account Investments-only
+Sandbox Item via API (not an interactive creation), forced ITEM_LOGIN_REQUIRED,
+and observed Needs relink with retained balances in the development Simulator.
+Relink reached First Platypus Bank's password screen. Published pass_good was
+visually checked after entry, but repeated submission showed Incorrect credentials;
+actual repair is NOT passed and the cause remains unproven. Independent API,
+Prisma and provider readback retains the same Item/account IDs and balances,
+$23,952.74 net worth, zero transactions/spending, Investments-only billed products,
+and ITEM_LOGIN_REQUIRED. Evidence: investment-native-repair-incomplete.json.
+
+CI283 at code45e7e37 completed SUCCESS:
+https://github.com/tymedina100/worthlane/actions/runs/35768141270.
+
+### 2026-09-22 — Bank-side revocation privacy and stale-sync protection
+
+Implemented account-specific and full-Item revocation cleanup behind existing
+webhook signature verification. Malformed account IDs fail closed without widening
+the deletion. Imported rows and derived displays are removed; authored manual
+transactions move to a private zero-balance account. Other accounts/logins and
+manual bills/debt plans remain. Cached historical net-worth aggregates are cleared
+because they cannot be separated by revoked source account. New consentRevision
+migration prevents older in-flight sync commits/statuses from restoring data.
+Derived predictions/notices/net-worth writes now run serializably against their
+source reads. No push occurs before its planning-notice transaction commits.
+
+Verification: 252 API tests and API TypeScript pass. Fresh PostgreSQL14/14 includes
+partial/full revocation, unknown IDs, repeated notices, manual retention, other
+owner preservation, stale account/transaction snapshot rejection, cached-data
+removal and regenerated current totals. Real Plaid Sandbox3/3 passed after the
+core revocation changes; the final notices/manual-retention refinements then
+passed the full local PostgreSQL14/14 suite. Existing native repair/OAuth failures
+remain separate open checks. Migration applied only to local synthetic DB55439
+and disposable test clusters; no production migration/deployment/merge.
+
+### 2026-09-22 — Signed hosted-webhook preparation
+
+Read-only SSH verified exact approved Railway beta-sandbox project/environment/API,
+PLAID_ENV=sandbox, disabled email/paid AI, and missing configured webhook URL. Its
+active API is still baseline4b22bec. Removed the unsigned-Sandbox webhook exception:
+Plaid signs Sandbox deliveries too, and public test endpoints must authenticate
+revocation notices. All34 route tests and API TypeScript pass. Added a guarded
+remote test that creates only a disposable synthetic owner/Investments Item,
+rejects unsigned/invalid requests, fires a real provider revocation, checks persisted
+cleanup and removes its fixture. Syntax/negative local guard checks pass; its
+positive hosted run and candidate deployment have NOT run yet.
+
+### 2026-09-22 — Hosted signed webhook and preserved household acceptance PASS
+
+CI285/69553f4 and CI286/df12257 passed. Approved isolated Railway deployment
+1a78264d-5201-407b-8825-2cc74de4af73 is SUCCESS/ready on df12257 with source hashes
+matching and consentRevision migration applied. Set only its Sandbox webhook URL.
+Actual provider-signed full-Item revocation passed after unsigned/invalid requests
+were rejected401; two disposable investment accounts were removed and all test
+fixture/provider cleanup completed. Existing two-login journeys passed before
+and after deployment and again after the webhook test. Owner53/partner396 complete
+ledgers, $2,450 plan, private manual fallback and saved debt/due item persisted.
+Four scheduled Sandbox rows required a disclosed, audited additive fixture update
+before deployment; all392 prior partner IDs were retained. See hosted-sandbox.md
+and evidence/2026-09-22/hosted-signed-webhook.json. No production/store changes.
+
+## September 22 — native investment repair verified
+
+First Platypus non-OAuth investment update mode now passes in the laptop iOS
+development Simulator. An API-created, forced-expired Sandbox Item was repaired
+interactively; clearing/retyping the public test password resolved the prior
+rejection. Worthlane displayed Connection repaired and Healthy. Independent
+API/DB/provider readback preserved exact account IDs/balances: two investment
+accounts, $23,952.74 net worth, zero transactions/spending, Investments product
+only, and no remaining provider login error. Repeat native sync and cold launch
+preserved totals and the signed-in session. Fixture retained for further checks.
+
+This supersedes the earlier non-OAuth repair blocker, not the native OAuth return
+blocker. No live bank, paid product, production deployment, main merge, or store
+submission occurred. [Evidence](evidence/2026-09-22/investment-native-repair.json).
+
+## September 22 — investment account-selection scope
+
+Investment Link now requests Plaid's investment/all account filter. Repair derives
+purpose from the owned Item's established investment-only history marker, so old
+clients or a conflicting client purpose cannot switch that established scope.
+Ordinary banking behavior is preserved. API260/260 and TypeScript pass; actual
+Sandbox link-token metadata verifies create/update filters and iOS callback.
+
+Native update selection displayed IRA, 401(k), and cash management, followed by
+Connection repaired / Healthy. Plaid still returns the depository cash-management
+account despite the requested filter; do not claim access to only two accounts.
+Worthlane preserves its existing two investment IDs/balances ($23,952.74) and zero
+transactions/spending. Cash-management spending uses the separate banking flow.
+[Evidence](evidence/2026-09-22/investment-account-filter.json).
+
+Read-only Simulator swcd logs show approved service association for the expected
+app/domain; this narrows but does not resolve native OAuth.
+[Diagnostic](evidence/2026-09-22/ios-associated-domain-diagnostic.json).
+Remaining privacy audit: verify account deselection during Link update removes
+previously imported data even without a revocation webhook; current save logic
+upserts returned accounts. No production deployment or product activation.
+
+## September 22 — account-selection cleanup
+
+Completed the missing-account privacy reconciliation identified in c65efda. A
+successful complete provider account snapshot now atomically removes missing
+accounts and their imports/derived caches, preserving authored transactions in a
+private zero-balance manual ledger. Every complete snapshot advances the existing
+consent revision; older account snapshots and transaction batches cannot restore
+the removed data. Sync uses the returned revision for subsequent writes. Failed
+provider reads do not imply an empty snapshot. No new database migration.
+
+API260/260, TypeScript, PostgreSQL15/15, and real Plaid Sandbox3/3 pass. Database
+cases cover empty/repeated selection, partner/manual preservation, stale snapshot
+rejection and rollback when account ownership conflicts. Native Sync now removed
+a seeded stale synthetic bank account and its $20 import while retaining a private
+$7 manual entry. Cold launch showed unchanged $23,952.74 investment net worth and
+$7 spending, with exact investment IDs preserved in independent readback. This
+proves stale-account cleanup through native sync, not clicking deselect at a live
+bank. [Evidence](evidence/2026-09-22/account-selection-cleanup.json).
+
+Storage fell to ~200MiB during testing. Removed three stopped disposable database
+clusters (retaining logs) and writable data layers of the stopped synthetic Android
+emulator; ~3GiB became available. Active database, source, credentials and signed
+artifacts preserved. Android test data will reinitialize; old evidence does not
+claim the emulator still holds its former state.
+
+Remaining: native OAuth, intended-client/hosted candidate parity, actual calendar
+reminder delivery, live pricing/access/security and release gates. No production
+deployment, paid activation or store submission occurred. Prior c65efda CI289
+completed successfully; this new commit requires its own CI.
+
+## September 22 — hosted account-selection candidate verified
+
+CI290 (`35777068765`) passed all four jobs for `e985af8`. Deployed the committed
+archive to the already-approved isolated API as
+`c2fb95ea-9c6e-47e7-af23-d6e1382e33e8`; SUCCESS, ready health, four runtime source
+hashes and explicit Sandbox/email-off/paid-AI-off checks pass. No new migration.
+
+Actual Plaid-signed full-Item revocation and unsigned/invalid rejection pass on
+this candidate. A separate guarded hosted test seeded a missing synthetic account
+with an import and authored entry, then called real provider-backed sync. The
+missing account/import were removed; its private $7 manual entry and exact
+investment IDs/balances were preserved, including repeat sync. Both disposable
+fixtures and provider Items were cleaned up. This is snapshot-reconciliation
+evidence, not a live bank's deselect screen. Reproducible guarded scripts:
+`test-hosted-signed-webhook.cjs` and `test-hosted-account-selection.cjs`.
+
+`WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-sandbox.mjs --verify`
+passed before deployment, after deployment, and after disposable tests: exact
+53/396 ledgers, separate-login privacy, private $125.50 fallback, $2,450 agreed
+responsibilities, saved zero-APR payoff plan and idempotent unpaid due-date handoff.
+[Deployment evidence](evidence/2026-09-22/hosted-selection-cleanup.json).
+
+This updates hosted API acceptance, not the frontend/native artifact versions.
+Native OAuth, intended-client parity, calendar-time reminder observation and
+separate live-provider/distribution preparation remain open. No production
+deployment, paid plan/product activation, public release or store submission.
+
+## September 22 — real calendar reminder prepared
+
+Created a synthetic $1 bill through local API3101 with reminders off after
+unreliable Simulator text entry was discarded unsaved. In the native Upcoming
+editor, selected On due date and saved; native Saved confirmation showed no
+permission/scheduling warning. Independent fresh API login readback confirms
+exactly one active, unpaid bill due September 23 with DUE_DATE timing. Expected
+trigger is September 23 at 9 a.m. Phoenix time. Keep this synthetic Simulator
+session signed in for observation; logout cancels its device reminders.
+
+This is preparation, **not observed delivery** or independent OS queue proof.
+Evidence: `evidence/2026-09-22/calendar-reminder-preparation.json`. The temporary
+local readback helper is `.tmp/calendar-reminder-readback.cjs`.
+
+Also corrected Quick add's success copy when the selected reminder time has
+already passed: it now explicitly says no reminder was scheduled, matching the
+editor. `corepack pnpm --filter @worthlane/mobile typecheck` and `git diff --check`
+pass. That new past-time message has not been interactively exercised. No new
+build, production deploy, paid activation or store submission occurred.
+
+## September 22 — native return boundary and hosted BFF recheck
+
+At source402387e, Plaid's documented direct `simctl openurl` test for
+https://worthlane.app/plaid-oauth visibly opened protected Settings from Upcoming
+in the existing signed-in development Simulator. This verifies direct registered
+URL routing only; no active Plaid session existed. A synthetic-query probe command
+also completed, but the Mac locked before visual observation, so that result is
+unverified. Native OAuth remains incomplete. Two routing/privacy tests passed;
+the prepared calendar reminder remained persisted. See
+`evidence/2026-09-22/native-return-boundary.json`.
+
+`WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-desktop.mjs`
+passed against the isolated HTTPS frontend and current Sandbox API: protected
+cookies, cross-origin rejection, exact saved two-login accounts/household totals,
+refresh rotation and logout revocation. This is HTTP integration evidence, not a
+fresh interactive investment replay. Vercel connector returned403 for the team;
+exact frontend deployment source remains unverified. CI292 run35779631915 at
+402387e was still building web clients at last observation; PostgreSQL17/18 and
+Windows packaging jobs passed. No production changes or store submission.
+
+## September 22 — preserve reminders when deletion fails
+
+Found a native reliability defect during release review: Upcoming canceled the
+local reminder before asking the API to delete the saved obligation. A failed
+network/server request could therefore leave the obligation saved without its
+reminder. Deletion now awaits API confirmation before canceling; native cleanup
+failure reports Item deleted with a cleanup warning instead of reporting the
+server deletion as failed. Late error/refresh callbacks are suppressed after a
+login change. Foreground reminder reconciliation remains the cleanup retry.
+
+Four failure-path tests execute the actual mutation callbacks with controlled
+network/native adapters. They cover pending/failed deletion, confirmed deletion,
+cleanup failure and login changes. They fail against pre-change source and pass
+against this change. `corepack pnpm test:auth-privacy`:23/23 pass;
+`corepack pnpm --filter @worthlane/mobile typecheck` and `git diff --check` pass.
+The new tests are wired into existing CI. Interactive failure injection remains
+unverified because the Mac is locked. The September23 calendar fixture was not
+deleted or modified. Prior runtime402387e CI292 completed all four jobs
+successfully; this new change needs its own CI. No production/store actions.
+
+## September 22 — independent OS calendar schedule confirmed
+
+Read the booted iOS Simulator UserNotifications archive without mutation. Resolve
+Worthlane's folder through the bundle-ID map, then match pending userInfo to the
+bill ID and owner returned by a fresh synthetic API login. Exactly one pending
+notification matches; generic title Upcoming payment, not repeating. Its native
+TimeInterval plus RequestDate resolves to September23 16:00:00.046UTC (09:00Phoenix),
+within two seconds of the requested time. The API bill remains $1, unpaid, active,
+DUE_DATE. This upgrades native queue evidence, not actual delivery acceptance.
+No token or private identifiers are retained in the evidence JSON.
+
+Evidence: `evidence/2026-09-22/calendar-reminder-os.json`; read-only local verifier
+`.tmp/verify-calendar-os.py`. Mac remains locked for UI checks. CI294 at8a5adc0
+is live: PostgreSQL17/18 and Windows packaging passed, main job still building.
+No deployment, financial action, test fixture mutation or store submission.
+
+## September 22 — native deletion recovery verified interactively
+
+Mac became accessible; resumed local synthetic testing. Seeded a disposable $1
+bill with DUE_DATE timing separately from tomorrow's calendar acceptance fixture.
+Cold launch exposed a reminder-refresh timeout warning; native Retry cleared it,
+and independent OS archive/API matching confirmed the disposable reminder queued.
+A temporary local development/Sandbox-only API503 for this bill exercised actual
+native Delete/confirmation. Error was visible; saved bill and matching OS reminder
+remained. Restored API source byte-for-byte, retried native deletion, observed only
+the original calendar bill remaining, and independently verified deleted fixture
+absent plus exactly one pending OS notification belonging to original calendar bill.
+
+Evidence: `evidence/2026-09-22/native-deletion-recovery.json`. Temporary API guard
+is absent (`git diff --exit-code` on route passed); disposable fixture cleaned.
+This closes interactive deletion-server-failure acceptance for this development
+candidate, not store-build parity or actual scheduled delivery. Current source
+bc331be had all four CI295 jobs pass before this evidence-only change. No
+production deployment, live banking, paid activation or store submission.
+
+## September 22 — current hosted frontend version and two-login UI verified
+
+Authenticated Vercel dashboard shows isolated worthlane-beta-desktop Ready at
+3d6dc16, deploymentG2Lx6w6kjQ6wWyY52VCX7GGsqwNx. Branch pushes update this approved
+Sandbox project automatically. This resolves the unknown frontend source despite
+the connector403. Current frontend now demonstrably contains investment controls.
+
+Fresh Morgan login showed private owned account and exact $2450 category shares.
+Connect investments opened actual Plaid Sandbox Link; confirmed exit restored
+controls without exchange. Logout reached empty sign-in. Separate Avery login
+showed private$125.50 fallback, no Morgan private checking, same $2450 plan, and
+retained correct visibility/totals on reload; logout confirmed. HTTP hosted desktop
+regression also passed cookies/CSRF/privacy/refresh/logout. Full hosted investment
+connect/sync/repair/unlink remains separate; startup/cancel is not that lifecycle.
+No native artifact parity, live banking or production rollout claim. Evidence:
+`evidence/2026-09-22/current-hosted-client.json`. Temporary verification tabs closed.
+
+## September 22 — hosted investment connection and update verified
+
+Fresh synthetic solo onboarding on the isolated hosted frontend completed without
+an invitation. IAB Plaid Sandbox Betterment connection saved exactly IRA $320.76
+and 401k $23,631.98, both Personal. UI Sync, reload and Reconnect/update-mode selection
+completed. Fresh API login verified exact account/Item IDs and balances retained,
+ $23,952.74 net worth, zero spending/transactions and INVESTMENT_BALANCES_ONLY.
+CI 297 for 0849086 passed. No runtime source changed in this milestone.
+
+Unlink is pending the IAB JavaScript confirmation; browser dialog APIs could not
+observe/accept it, so user assistance was requested. Forced-expiration hosted
+repair and OAuth are separate unresolved checks. Platypus OAuth did not open its
+authorization window. Chrome remained blank after dismissing its storage notice;
+4.9 GiB free, no browser data deleted. Evidence:
+`evidence/2026-09-22/hosted-investment-ui.json`. No production/store action.
+
+## September 22 — hosted investment OAuth and expired repair pass
+
+Chrome recovered after toolbar reload. A fresh synthetic solo owner completed
+Platypus OAuth Sandbox bank authorization, selecting only IRA and 401k. Returning
+to Worthlane saved two Personal investment accounts totaling $23,952.74, with no
+spending or transaction imports. A guarded helper inside the isolated Railway
+service forced ITEM_LOGIN_REQUIRED only for this verified synthetic Item. UI Sync
+showed Needs Relink while preserving balances. UI Reconnect repeated OAuth login
+and simulated consent, returning to Healthy. Fresh API and hosted database/provider
+readback verified identical account/Item IDs and balances, Investments-only product,
+zero spending/transactions and no remaining provider error. Repeat sync and full
+reload passed. UI unlink in Chrome removed all accounts/Items; fresh API readback
+confirmed zero net worth, spending and transactions. Provider revocation after
+unlink was not independently queried in this run.
+
+Found and fixed inaccurate connection-error copy: investments now warn that saved
+balances may be outdated, rather than claiming missing spending. Shared core tests
+52/52, core typecheck and diff check pass. This copy change still needs hosted UI
+verification after the approved isolated branch deployment. Evidence:
+`evidence/2026-09-22/hosted-investment-oauth.json`. The prior IAB Betterment unlink
+dialog remains separate; no native iOS OAuth, production or store claim.
+
+## September 22 — native standard OAuth boundary and candidate CI
+
+All four CI299 jobs passed for f5b3688 (35787930646). PR20 now reflects hosted
+Chrome OAuth/forced repair, native deletion recovery and remaining release gates;
+it remains open and unmerged.
+
+Retried native investment linking with standard Platypus OAuth Bank, distinct
+from the earlier App2App attempt. Both Computer Use and an authorized Maestro
+native touch emitted OPEN_OAUTH but showed no bank login screen. Independent
+Maestro screenshot confirmed the same view. No cause is established; this is not
+a native OAuth pass. Explicit cancellation returned to Settings. Fresh API/provider
+readback confirms the original two accounts remain Healthy with identical IDs and
+balances, $23,952.74 net worth and zero transactions/spending. The reminder queue
+was independently reconfirmed for September23 09:00 Phoenix after a transient
+local API read timeout; delivery remains unobserved. No phone or production action.
+Evidence: `evidence/2026-09-22/native-standard-oauth-attempt.json`.
+
+## September 22 — deployed investment warning verified
+
+Isolated API deployment `5d5bd98d-7ee4-49bf-bfb1-531fa221ccba` from `cd40dd9`
+completed successfully. Ready health, runtime shared-core source hash and Sandbox
+configuration passed; email and paid-AI keys are absent. CI300 succeeded.
+The API and hosted browser now show the investment-specific stale-balance warning.
+Exact two-account/Item IDs and $23,952.74 were retained with zero spending/imports.
+The complete hosted two-login regression passed: 53/396-row ledgers, private
+$125.50 manual fallback, $2,450 responsibilities, saved debt and idempotent due date.
+Guarded API unlink removed the disposable Betterment connection; fresh readback
+confirms zero accounts/Items/net worth/spending/transactions. This cleanup was
+through the API, not browser unlink. The earlier stuck IAB confirmation was closed
+and no longer requires Tyler. Native OAuth, final artifacts and actual calendar
+reminder delivery remain open. No production or store action occurred.
+Evidence: `evidence/2026-09-22/hosted-investment-warning.json`.
+
+## September 22 — native launch race and dependency recheck
+
+Repeated Connect bank/Connect investments/Repair taps could overlap token requests
+and SDK session creation; SDK13.2.0 resets its global callbacks on each create.
+A synchronous ref guard now prevents overlapping startup, with disabled/busy
+controls and release on success, failure or a stale login. This guard ends after
+native presentation; it is not a claim to manage the entire native session.
+Tests execute the actual profile launch function. The old source produces three
+requests instead of one; current tests pass for overlap during token/SDK creation,
+token/presentation failure retries and a login change. Auth/privacy suite26/26
+and mobile typecheck pass. Interactive rapid-tap verification remains pending.
+This is a separately demonstrated race, not a proven cause or fix for OAuth.
+
+Fresh production dependency audit still reports2high/4moderate, no criticals.
+All four actual Metro-image/router-decoder mitigation tests pass. No advisories
+were suppressed; caller limitations in dependency-security-status.md still apply.
+Plaid documentation still cautions that Simulator Universal Links can fail:
+https://plaid.com/docs/link/troubleshooting/. The installed session integration
+uses the supported create/open API. Native OAuth remains unverified; no phone
+access, SDK upgrade, production deployment or store submission occurred.
+
+## September 22 — native launch guard interactive acceptance
+
+Candidate b0bec35 passed all four CI302 jobs (35790783973). Laptop Simulator
+interaction observed all three connection controls disabled/busy during startup,
+then Plaid opened normally. Explicit cancellation restored enabled Settings. A
+fresh second launch also opened Plaid; explicit cancellation and Maestro assertions
+returned to Settings. Rapid concurrent-request suppression is separately proved
+by the source-executing regression, not inferred from sequential UI taps.
+The existing two investment accounts remained unchanged on the initial independent
+readback; calendar OS read retained exactly one owner-matched September23 9am
+Phoenix reminder. This is launch/cancel/retry acceptance, not OAuth completion.
+Evidence: `evidence/2026-09-22/native-launch-guard.json`. PR20 remains unmerged;
+no phone, production release or store submission.
+
+## September 22 — exact Mac package and mobile artifact comparison
+
+The signed Mac archive SHA256 remains
+`b05fa072cb447e09ebaeba8bcffa606b23ff7e60c3b585a577f3ccecd6276217`.
+All seven runtime source files extracted from app.asar match current fc766ca
+byte-for-byte; deep/strict signing and nine-asset/eight-fuse verification pass.
+Its configured origin is the isolated hosted Sandbox. No Mac shell source rebuild
+is needed solely to obtain the new hosted investment page. Interactive investment
+acceptance is still required. Initial Accounts navigation retained a stale
+dashboard, refresh exposed empty content, and clean quit/relaunch reached login
+rather than restoring Alex. Causes remain unproven. The Mac then locked before
+synthetic credential entry; unlock requested. No session persistence pass claimed.
+Evidence: `evidence/2026-09-22/mac-current-source-parity.json`.
+
+Apple build30 remains sourced from74c6bbf. Comparing that source to fc766ca shows
+eight changed mobile files: investment launch/diagnostics and data-coverage copy,
+reminder deletion ordering and past-time feedback, and local Simulator configuration.
+A new installable mobile candidate must include these changes and the updated
+shared banking rules; the old store artifact cannot close those checks. This
+comparison starts no build, spends nothing and submits nothing.
+
+## September 23 — signed Mac investment lifecycle verified
+
+Exact signed Mac package completed hosted Sandbox Betterment investment connection,
+sync, full reload, quit/relaunch with saved session, and UI unlink. Independent
+fresh API readbacks retained exact two account/Item IDs, $23,952.74 net worth and
+zero spending/transactions, then zero accounts/Items after unlink. Plaid offered
+three accounts including cash management; Worthlane persisted only two investments.
+The prior stale-window/session issue did not reproduce, but its cause remains
+unproven. This is standard Link, not Mac investment OAuth or forced repair.
+Evidence: `evidence/2026-09-23/mac-investment-lifecycle.json`.
+
+The Mac restarted before September23 9am Phoenix and Simulator was shut down on
+inspection at9:21. Its archive retained the exact overdue pending notification
+and no delivered notification. Calendar delivery remains unobserved; this cannot
+be counted as an on-time pass. Restore the laptop environment and schedule a new
+real future check. Evidence: `evidence/2026-09-23/calendar-delivery-unobserved.json`.
+No production change, paid build, phone access or store submission.
+
+## September 23 — restored local runtime and rescheduled calendar acceptance
+
+Confirmed local PG55439/API3101/Metro8087 were stopped after reboot before
+restarting the existing cluster and guarded Sandbox launchers. API ready and
+Metro listening; no database reset or new credentials. Booted the existing laptop
+Simulator and launched installed development client. Saved login restored with
+$23,952.74 private investment net worth and zero spending/income.
+
+Guarded API edit changed only the existing synthetic $1 calendar bill from
+September23 to September24 using its current version. Native dashboard showed
+Tomorrow. Independent OS archive and fresh API login verified exactly one matching
+owner/bill notification, trigger September24 16:00UTC (09:00Phoenix), non-repeating,
+and correct saved DUE_DATE timing. This demonstrates restored-session scheduling,
+not observed delivery. Keep this test session and Simulator running; logout clears
+reminders. Evidence: `evidence/2026-09-23/calendar-rescheduled-os.json`.
+
+## September 23 — updated mobile Sandbox candidates queued
+
+Authenticated Expo billing showed Free/$0 estimated bill, 8/15 iOS and 7/15
+Android builds used. Started one included Android sandbox-preview APK build
+(2a2aee67-deaa-4571-874b-2f57fb0f6e2a) and one iOS sandbox-simulator build
+(aced2d4e-8af7-4324-9aab-ca977c115613), both from pushed source 86001c0.
+Provider readback reports IN_QUEUE for both; they are not completed or installed.
+No upgrade, payment, production configuration, store upload or submission.
+
+CI306/35889254734 for that exact source succeeded. Sixteen focused mobile
+release-configuration and native launch-state tests passed. Inspected the EAS
+archive: 721 files, all 670 included tracked files match source, no private
+environment files, fixture directory or signing exports. EAS reported no preview
+environment variables; guarded Sandbox profile values and existing Android
+signing credentials were used.
+
+The original Simulator remains booted and signed in. Fresh API/OS readback still
+finds exactly one owner-matched reminder for September24 09:00 Phoenix. Do not
+replace that app/session before observation; use another Simulator for the new
+artifact. Delivery remains unobserved. Next: inspect completed artifacts and
+verify investment, banking recovery and persisted journeys. Native OAuth and
+live provider requirements remain open.
+Evidence: `evidence/2026-09-23/mobile-candidate-builds.json`.
+
+## September 23 — signed Mac investment OAuth/repair and current iOS artifact
+
+Signed Mac app completed real Plaid Sandbox OAuth in its isolated bank popup.
+Only IRA/401k were selected; fresh API baseline confirmed two private investments,
+$23,952.74 net worth and zero spending/transactions. A guarded provider reset
+forced ITEM_LOGIN_REQUIRED. Native Sync showed Needs Relink and stale-balance
+copy while preserving data. Interactive OAuth repair returned Healthy; independent
+provider read confirmed no error and Investments-only product. Exact account/Item
+IDs and balances survived repair, repeat sync and full UI reload.
+
+UI unlink removed accounts/Item on the server (fresh API confirmed all zero), but
+the Mac retained old balances and disabled controls until explicit Refresh planning
+data. That refresh showed zero and the unlink confirmation. Do not count automatic
+unlink reconciliation as passed; investigate this delay. No provider revocation
+query was performed after this unlink. Evidence: mac-investment-oauth.json.
+
+iOS build aced2d4e from86001c0 finished. Downloaded archive SHA256
+6c973360580b4facb9299ec09134796f77ce104dc318ee078ac5be95a538015a; strict deep
+signature passes, bundle com.worthlane.mobile/build7, embedded hosted Sandbox
+origin and investment/launch-guard markers present. Not installed or UI-accepted.
+Android2a2aee67 remains IN_QUEUE; its laptop emulator booted successfully. Keep
+original iOS reminder Simulator intact. Evidence: ios-investment-artifact.json.
+No production change, spending, store upload or submission.
+
+## September 23 — current iOS artifact installed and saved journey read back
+
+Installed completed aced2d4e/86001c0 build7 in a separate named Simulator
+D9057EC1-22AE-4C7A-AD66-7E3409256EEB, preserving the original reminder device.
+Actual Alex reviewer sign-in against hosted Sandbox showed private $1,500, zero
+spending/income and the saved $25 bill. Household readback showed exact $600
+groceries split300/300, $150 utilities assigned to Sam, and $1,700 rent1020/680.
+Terminating/relaunching the exact bundle restored the signed-in dashboard without
+credentials. Fresh screenshot verifies this; the post-launch accessibility tree
+was empty and must not be treated as an app failure. Maestro dismissed the OS
+Save Password sheet without saving test credentials.
+
+Independent read-only verification still finds exactly one original owner-matched
+September24 9amPhoenix notification. The Android emulator is booted, but remote
+APK2a2aee67 remains IN_QUEUE at last provider read. Second-login, current-artifact
+banking/mutations and native OAuth remain unverified. Evidence updated in
+evidence/2026-09-23/ios-investment-artifact.json.
+
+Mac follow-up: title/accessibility/rendered image disagree after sign-out; sampled
+main and renderer processes are alive in event waits, not proof of a specific
+deadlock. Screenshot retained older investment content while accessibility had
+zero-account state. Preserve the open rendering/reconciliation issue; no speculative
+source patch or claim of successful visual sign-out. Raw local process samples
+remain .tmp/mac-main-stall-sample.txt and .tmp/mac-renderer-stall-sample.txt.
+No production change, paid action or store submission.
+
+## September 23 — current iOS second-login privacy and persistence pass
+
+On installed aced2d4e/86001c0, Alex sign-out returned an empty email/password form.
+Separate Sam login showed private $900, zero spending/income and no upcoming
+items (Alex's $25 bill absent). Actual household view retained exact groceries
+300/300, Sam-owned utilities150 and rent1020/680, with category editing restricted
+to the owner. Cold terminate/relaunch restored Sam dashboard without credentials;
+fresh screenshot confirms900/no upcoming bill despite an empty accessibility tree.
+Maestro independently asserted900 and absence of Alex's bill after dismissing the
+system password sheet without saving credentials.
+
+Fresh API login checks confirm each reviewer has exactly their own account ID,
+matching household245000minor, and no cross-owner bill/debt access (Sam404 for
+Alex's plan). Full existing hosted regression also passed: exact owner53/partner396
+transaction ledgers, no repeat-sync duplication, private125.50 manual fallback,
+2450responsibilities, saved zero-APR plan and idempotent due-date handoff.
+Evidence: current-reviewers-readback.json and updated ios-investment-artifact.json.
+
+This closes current-candidate two-login readback/restart coverage, not its banking
+lifecycle or fresh interactive mutations. Native OAuth, Mac stale rendering,
+actual calendar delivery and release/provider gates remain. No production or store
+action; current Simulator remains signed in as synthetic Sam.
+
+## September 23 — current iOS investment lifecycle passes
+
+Installed standalone Simulator build aced2d4e/86001c0 completed Betterment
+Sandbox investment connect, repeat sync, cold launch, forced-expiration repair,
+post-repair sync and UI unlink against the hosted Sandbox. Plaid offered IRA,
+401k and cash management; server filtering retained exactly two investments
+totaling $23,952.74, with zero spending/transactions. API comparisons preserved
+exact account and Item IDs through sync and repair. Native restart restored the
+saved balance without login.
+
+Guarded Sandbox expiration produced ITEM_LOGIN_REQUIRED. Native Settings showed
+Needs relink and the investment-specific stale-balance warning while retaining
+balances. UI Relink completed; native Healthy and provider error-null/Investments-only
+checks pass. UI unlink immediately showed Nothing linked yet; API confirmed zero
+accounts, Items, transactions, spending and net worth. Another cold launch showed
+the empty dashboard and household net worth0. This interactive run did not query
+the revoked provider Item after unlink; separate integration evidence covers that.
+
+Initial Betterment login reached App Password Required; erasing/retyping public
+Sandbox credentials allowed completion. No root cause is claimed. A Finish without
+saving selector timed out on the initial connection, but native Bank connected
+and independent persisted API readback proved completion. Relink's same selector
+passed. No real credentials, production data, paid action or store submission.
+
+Evidence: docs/evidence/2026-09-23/ios-investment-artifact.json. The original
+September24 reminder Simulator remains separate. Android2a2aee67 was freshly
+IN_QUEUE this turn. Next: native OAuth, remaining current-artifact banking/planning
+mutations, Android when ready, and Mac stale-rendering diagnosis.
+
+## September 23 — Mac stale rendering reproduced and fixed in local package
+
+The original signed package reproduced login navigation with a dashboard window
+title but the old login page in both screenshot and accessibility. Raise/Tab did
+not fix it; native window zoom immediately revealed the loaded dashboard.
+The main Mac BrowserWindow now disables background throttling so frames continue
+updating while covered. Windows retains its previous behavior. Existing software
+rendering, sandbox, context isolation, origin pinning and packaged fuse settings
+remain intact. Electron documents that this option controls frame drawing/swapping
+as well as timers: https://www.electronjs.org/docs/latest/api/browser-window.
+
+A fresh local ad-hoc package passed all23 native tests, syntax,9asset/8fuse checks
+and strict deep signature verification. Interactive login, sign-out and account
+navigation updated without resizing. Real Betterment Sandbox connect returned
+automatically to2private investments/$23,952.74. UI unlink then automatically
+removed balances and controls and displayed its confirmation, without Refresh
+or resize. Screenshot and AX agreed; API independently confirmed zero accounts,
+Items, transactions, spending and net worth. Evidence: mac-rendering.json.
+
+Limits: local test package only; updated Developer ID package still needs build
+and acceptance. Initial startup reached a timeout recovery page; normal Retry
+restored the saved session, with no proven cause. Disabling background throttling
+can increase rendering work while covered; battery impact was not measured.
+Android2a2aee67 remains IN_QUEUE at fresh provider check. No production deployment,
+notarization, paid service or store submission.
+
+## September 23 — Developer ID rendering candidate verified; signing launcher fixed
+
+Built bdb7e29 runtime with the existing Developer ID Application certificate
+(team5FBXR5M5PJ), hardened runtime and timestamp. Strict deep verification and
+9asset/8fuse package verification passed. The signed app.asar hash matches the
+previously tested ad-hoc package exactly; all7runtime files match source. Cold
+launch restored the saved disposable Sandbox dashboard without login or Retry.
+Signed UI manual create42.17, edit43.17 and delete0 each updated automatically;
+independent API confirmed values, zero spending/transactions and final cleanup.
+Sign-out rendered an empty login form; screenshot and AX agree without resizing.
+Signed-package banking was not rerun; identical archive parity and prior local
+connect/unlink evidence are recorded separately in mac-rendering.json.
+
+Found and corrected a distribution-script mismatch: our preflight requires the
+explicit Developer ID Application label, but electron-builder rejects that prefix
+in CSC_NAME. The new launcher validates the full identity, then supplies only the
+builder-compatible name in the child environment. Ad-hoc/development/ambiguous
+identities still fail validation. Target architectures, forced signing and
+publish-never behavior are retained. All24native tests pass, including the new
+identity-normalization regression; syntax and diff checks pass. Actual signed
+packaging succeeded with the equivalent normalized identity. No notarization,
+production deployment, paid action or store submission.
+
+## September 23 — current iOS OAuth failure isolated and clean exit verified
+
+Standalone aced2d4e/86001c0 build7 reached Platypus OAuth Bank mock login,
+verification and final confirmation. After enabling and tapping the actual final
+button, native Plaid displayed Couldn't connect to Platypus OAuth Bank. Text
+selectors had earlier matched explanatory copy; fresh screenshot coordinates
+resolved that automation error. IRA/401k labels were tapped, but their checked
+states were not captured together, so this run does not prove final selection.
+
+Yes, exit returned to usable Worthlane Settings with Nothing linked yet. Fresh
+API readback confirms zero accounts, Items, net worth, spending and transactions.
+The earlier same-artifact direct Universal Link opened Settings from Safari;
+hosted API reports Sandbox and the expected HTTPS redirect, and SDK13.2 uses its
+session API. These checks narrow the investigation, not prove the provider return
+or a root cause. No speculative runtime patch was made. Next: inspect provider
+session diagnostics and distinguish selection/auth failure from callback handling.
+
+Android2a2aee67 remains IN_QUEUE at fresh provider check. Original reminder device
+was not changed. Evidence: evidence/2026-09-23/ios-investment-artifact.json.
+No production changes, spending, real-bank credentials or store submission.
+
+## September 23 — current iOS OAuth connect and cold launch pass
+
+Provider logs show prior attempt EXIT/REQUIRES_OAUTH; session debugger returned
+Invalid request/No item found. Plaid documentation says this status can follow a
+bank error or access not granted, so it does not establish a callback bug.
+A bounded retry directly clicked IRA and401k checkboxes; fresh screenshot proved
+both checked and neighboring accounts unchecked. Final mock confirmation returned
+Plaid Success/two accounts, then Worthlane Bank connected/Healthy. Fresh API login
+confirmed2INVESTMENT accounts,1Item,$23,952.74,0spending/transactions and
+INVESTMENT_BALANCES_ONLY. Cold terminate/relaunch restored dashboard23952.74 and
+zero spent/received without credentials; exact IDs/balances remained unchanged.
+
+This supersedes current-candidate OAuth connection failure, not the full lifecycle.
+No runtime code changed and the prior failure cause is unproven. Text selectors
+were unreliable; final state and independent readbacks support acceptance. The
+Sync every institution action was invoked, but timestamp advancement was not
+independently compared. Keep the disposable Item for stronger repeat-sync proof,
+forced-expiration OAuth repair, privacy and unlink. No actual-bank acceptance.
+
+Android2a2aee67 completed. Downloaded APK SHA256
+95a68eb02b896e4daa9e5a7c2c2b6f718f8fe3af1937aee43654dacab08d3ea3;
+apksigner verifies the existing signer, packagecom.worthlane.mobile/version4,
+and embedded hosted Sandbox origin/investment markers. Not installed/tested yet.
+CI313 for c438a9a passed all4jobs (CI,PG17,PG18,Windows). Evidence:
+ios-investment-artifact.json,android-investment-artifact.json,mac-rendering.json.
+No production change, spending, store submission or reminder-device changes.
+
+## September 23 — OAuth repeat-sync/privacy pass; repair remains open
+
+Current iOS candidate native Sync every institution advanced both saved account
+lastSyncedAt timestamps. Exact account/Item IDs,$23,952.74,0spending/transactions
+and Healthy state remained unchanged. A separate Sam reviewer login could not list
+these accounts/Item; update-token,targeted sync and unlink each returned404.
+That login is in a different household; same-household privacy is separate evidence.
+
+Guarded real Sandbox reset confirmed ITEM_LOGIN_REQUIRED with Investments-only
+product. Native sync showed Could not sync/relink required and the investment
+stale-balance warning; exact IDs and balances remained intact. Native Relink then
+completed mock login/verification, visibly checked IRA/401k and final confirmation,
+but returned to Plaid's login prompt. Provider readback confirms ITEM_LOGIN_REQUIRED
+still present. No successful repair is claimed. Yes, exit returned usable Settings
+with the warning and unchanged balances. Keep this disposable expired connection
+for a controlled comparison in the finished Android candidate before unlinking.
+
+Evidence: ios-investment-artifact.json. No runtime patch, production action,
+spending, store submission or original-reminder Simulator change.
+
+## September 23 — Android candidate installed; manual fallback lifecycle passes
+
+Installed signed APK2a2aee67/source86001c0/version4 in laptop emulator5554.
+Existing disposable hosted Sandbox login showed23952.74 and0spending/income;
+force-stop/start restored session and balances. Settings shows same2investments,
+Needs relink and honest stale-balance warning. Relink opened Plaid and bank
+Continue to login reached Chrome first-run Terms of Service. Scoped confirmation
+requested; still pending. No Android OAuth repair outcome is claimed.
+
+Independent work: native manual Checking account Android manual acceptance
+created42.17 (netWorth23994.91), edited43.17 (23995.91), persisted after cold launch,
+then deleted through native confirmation. UI refreshed and API independently
+confirmed every aggregate and final exact original2investment/Item baseline,
+23952.74,0spending/transactions,NEEDS_RELINK. This proves current-artifact manual
+fallback mutations while retaining the expired OAuth fixture for comparison.
+
+Evidence: android-investment-artifact.json. Original reminder Simulator preserved.
+No production action, new paid service, real-bank credentials or store submission.
+Next: Chrome confirmation for Android repair, or independent remaining planning
+and separate-login checks while that input is pending.
+
+## September 23 — Android upcoming lifecycle and bounded storage cleanup
+
+Current Android86001c0 candidate created a synthetic150 bill due2026-09-25 via
+Quick add. Native Saved and Upcoming exact date/amount agree with fresh API;
+reminderTimingNONE. Native Paid moved it to Recently paid, APIisPaid/statusPAID.
+Force-stop/start preserved signed-in session and Recently paid card. Native Unpaid
+restored Upcoming/APIisPaidfalse. Separate Sam reviewer cannot list this obligation
+(different household). The final post-toggle ledger helper receivedHTTP429 on fresh login, so that
+recheck is pending cooldown; prior baseline is not a final ledger proof. Retained unpaid test bill for later edit/privacy coverage. This
+is not actual calendar reminder delivery, date editing or deletion acceptance.
+
+Removed668MiB logical obsolete test binaries/download cache: duplicate ad-hoc Mac
+package (ASAR identical to retained signed candidate), old iOS recovery extraction
+(archive kept),2superseded Android APKs and Electron download ZIP. Executable-path
+guard confirmed none running; source,credentials,current artifacts,logs/screenshots,
+SDK/AVD and reminder Simulator retained. Free space2.5→3.1GiB. Exact manifest:
+evidence/2026-09-23/storage-cleanup.json. Native evidence:android-investment-artifact.json.
+
+Chrome terms confirmation remains pending for Android OAuth comparison. iOS OAuth
+repair, remaining current planning/separate-login coverage, calendar observation,
+live-provider and distribution gates remain. No production/spending/store action.
+
+## September 23 — Android bill edit, persistence and deletion pass
+
+Current Android86001c0 native editor changed the synthetic bill from150 dueSept25
+to175.25 due2026-09-26. Saved confirmation followed by force-stop/start restored
+the session and exact Upcoming card. Fresh API verified amount/date, unpaid active
+BILL/reminderNONE; separate Sam reviewer cannot list the obligation (different
+household). Native Delete confirmation yielded the empty Upcoming screen; fresh
+API confirms the saved ID absent and zero upcoming items.
+
+After both edit and deletion, independent API reads confirm exact original two
+investment accounts/Item,23952.74netWorth,0spending/transactions,NEEDS_RELINK and
+INVESTMENT_BALANCES_ONLY. This resolves the earlier rate-limited final ledger
+check. The synthetic bill is removed; expired OAuth fixture is retained.
+Evidence: evidence/2026-09-23/android-investment-artifact.json. No app code change,
+production action, spending or store submission. Original September24 09:00Phoenix
+reminder Simulator untouched. Next: remaining native debt/separate-login checks,
+OAuth repair comparison after pending Chrome terms approval, scheduled reminder
+observation and live-provider/distribution gates.
+
+## September 23 — Android saved debt-plan lifecycle passes
+
+Current Android86001c0 created a synthetic avalanche plan starting2026-09,
+monthly budget100, current balance1000, statement800, minimum25, APR0 and
+confirmed due2026-09-27. Native Saved shows payoff2027-06,0interest,total1000,
+first payment100. Independent API asserts all distinct input fields and the
+10-month schedule. After force-stop/start, signed-in Goals→Debt payoff→Open
+restored the same saved estimate. Separate Sam reviewer cannot list/read it
+(direct ID404; different household). API netWorth23952.74,0spending/transactions.
+
+Assumptions remain visible, no payments are made. Synthetic plan retained for
+strategy edit and idempotent minimum-to-Upcoming checks. First unsaved draft was
+discarded after automation back navigation; re-entry used keyboard-state guards.
+Evidence: evidence/2026-09-23/android-investment-artifact.json. No runtime code,
+production, paid service, store or original-reminder Simulator changes.
+Next: native strategy/due handoff and separate-login checks; existing OAuth repair,
+calendar observation and provider/distribution gates remain.
+
+## September 23 — Android strategy editing and duplicate-safe due handoff
+
+Current Android86001c0 switched the saved plan to Snowball and saved. Native Saved
+and explanation agree with fresh API SNOWBALL; distinct1000current/800statement/
+25minimum/0APR and100budget persist, estimate2027-06/0interest/1000total unchanged.
+First native minimum-to-Upcoming handoff created exactly one25 obligation due
+2026-09-27 with reminderNONE. Full first API check also passed ledger and separate
+reviewer plan privacy. Second native handoff still yields exactly one unpaid25
+obligation with same due date/reminderNONE; Manage Upcoming displays one card.
+Later checks in that second helper hitHTTP429, so do not claim a complete repeated
+privacy/ledger pass. Retain synthetic saved plan/obligation for persistence/cleanup.
+
+Evidence: evidence/2026-09-23/android-investment-artifact.json. Single zero-APR
+debt verifies native strategy persistence, not multi-debt ordering (tested separately).
+No code, production, spending, store submission or original-reminder device change.
+Next: remaining separate-login/persistence coverage; OAuth repair comparison,
+actual scheduled reminder observation, provider/distribution gates remain.
+
+## September 23 — failed OAuth repair provider diagnostics
+
+Authenticated Plaid Developers Logs now inspected for the specific11:21:37AM
+repair exit, not the earlier create failure. It reports EXIT/onExit and
+REQUIRES_OAUTH, Sandbox/ins_127287. The exact session debugger again returns
+Invalid request / No item found. Session/request references are retained in
+ios-investment-artifact.json; no credentials copied.
+
+Code review confirms update mode derives investment scope from the owned saved
+Item, omits create products, supplies access token/account selection and the iOS
+redirect. Official update-mode/OAuth docs support this flow; account-selection
+enablement is not evidence of a defect. No speculative runtime patch made.
+Next: controlled same-expired-Item comparison on another client; Android Chrome
+terms confirmation remains pending. Native persistence/calendar/provider/release
+gates remain. Storage2.7GiB free; no large build started. No production changes.
+
+## September 23 — Android account switching and partner plan readback
+
+After cold restart, the first synthetic login retained exactly one25 minimum
+obligation dueSept27. Native Sign Out confirmation cleared to empty credential
+form. Native Sam reviewer login then showed900 net worth/0activity, empty Upcoming,
+only Sam review checking900 in Settings and no saved debt plans. Prior investment
+fixture data did not carry across accounts (different household).
+Sam household view shows visible netWorth900, groceries600→300each, utilities150
+assigned entirely toSam, rent1700→Alex1020/Sam680, and owner-management plus
+responsibility/payer/privacy explanations. Existing same-household fixture evidence
+provides the other private balance; this native view does not expose it.
+
+Evidence: evidence/2026-09-23/android-investment-artifact.json. No extra API login
+helpers run; earlier second-helper throttled check is not reclassified. Android
+now signed in as Sam. First fixture's plan/obligation and expired OAuth Item remain
+for further checks; original reminder Simulator untouched. No production/spending
+or store submission. Next: controlled OAuth comparison, reminder observation,
+remaining release/provider gates and fixture cleanup.
+
+## September 25 — interruption recovery and reminder outcome remains unverified
+
+Resumed after interruption. Git clean at5934e4e; prior Maestro handle97229 is
+missing and no simulator was booted. No result inferred from the interrupted
+iOS repair attempt. Original reminder Simulator D7C7C0D2 booted successfully.
+Read-only OS archives before/after boot show the September24 09:00Phoenix
+notification still pending and no delivered entries. Neither on-time nor overdue
+delivery is proved; shutdown timing is unknown. Original app/login/fixture was
+not launched, changed, logged out or rescheduled. This replaces any future-tense
+plan to observe September24 with an explicit incomplete result.
+
+Storage dropped to146MB free during recovery. With no active compiler/build
+process, removed only748MiB Xcode intermediate files and622MiB npm content cache;
+free space recovered to1.46GiB. Preserved source, built app products, dependency
+checkouts, credentials, simulator state and evidence. Exact evidence/manifests:
+evidence/2026-09-25/calendar-reminder-recovery.json and storage-cleanup.json.
+
+No production, spending, store action or successful OAuth repair claimed. Next:
+complete controlled native OAuth comparison; establish a fresh bounded reminder
+observation without repeating an unattended overnight assumption; remaining
+provider/distribution gates stay open.
+
+## September 25 — planning recheck passes; native OAuth repair reproduced
+
+Current iOS86001c0 restored saved23952.74/0activity and the Android-created25
+obligation after boot. Full android-debt-handoff-check.cjs now passes: saved
+Snowball inputs/exact estimate,one25 unpaid dueSept27/reminderNONE, unchanged
+ledger and other-login plan denial. This resolves the earlier429 verification gap.
+
+Fresh iOS OAuth repair completed public mock login/1234, visibly selected only
+IRA/401k, left optional identity/routing unchecked, checked mock confirmation and
+submitted. Again returned to Plaid login, not Success. API/provider confirm exact
+original accounts/Item and23952.74,0activity,Investments-only,ITEM_LOGIN_REQUIRED.
+Verified clean exit returns Settings with Needs relink/original balances.
+No runtime patch or root cause claim. Next comparison should change the mock
+account-selection path or client, not repeat this identical failing flow.
+
+Two test-driver attempts encountered disk-full errors. Bounded cleanup removed
+obsolete app extractions/regenerable Swift caches and unused Android system-image
+package. Android AVD data/currentAPK retained, but image reinstall is needed for
+Android testing. Current iOS/Mac artifacts/source/credentials/evidence retained.
+Finalfree4.3GiB. Original reminder device was shut down after preserving its
+pending/undelivered evidence so only the current candidate runs.
+Evidence: evidence/2026-09-25/native-recovery-and-repair.json and two additional
+storage manifests. No production/spending/store actions. Scheduled calendar
+delivery, OAuth repair and provider/distribution gates remain open.
+
+## September 25 — alternative mock OAuth repair also loops
+
+On the same current iOS candidate and expired Sandbox investment Item, disabled
+the mock bank account-selection simulation before final confirmation. The return
+again showed Continue to login rather than Success. This rules out skipping that
+simulation as a sufficient workaround; it does not establish a callback root cause.
+Independent API/provider readback retains exact two account IDs/one Item,
+$23,952.74, zero spending/transactions, Investments only and ITEM_LOGIN_REQUIRED.
+Clean exit restored native Settings with Needs relink and original balances.
+Evidence: evidence/2026-09-25/oauth-alternative-repair.json. Next: compare the same
+Item through hosted browser update mode; bounded calendar-reminder observation
+remains separate. No runtime, production, spending or store changes.
+
+## September 25 — same-Item browser OAuth repair passes
+
+Native Chrome completed hosted Sandbox OAuth repair of the exact Item that
+repeatedly looped in iOS. Public mock login/code, IRA+401k-only selection, final
+mock confirmation and Finish without saving led to Connection saved and Healthy.
+Reload retains Healthy, personal visibility and original two balances. Independent
+API/provider checks confirm exact baseline IDs, one Item, $23,952.74, zero spending/
+transactions, Investments only, and cleared provider login error.
+
+The in-app browser rendered Link but did not complete the observed popup handoff;
+its temporary test tab was closed. This successful Chrome control narrows the
+next investigation to differences in the native return/update path, without
+claiming a root cause or native fix. Item is now healthy. Evidence:
+evidence/2026-09-25/oauth-browser-repair.json. No runtime, production, paid service
+or store changes. Reminder observation and remaining release gates stay open.
+
+## September 25 — native post-repair sync and configuration isolation
+
+After browser repair, actual iOS Sync now changes Needs relink to Healthy and
+removes the error, preserving both balances. API checks retain exact two account
+IDs/one Item,$23,952.74,zero activity; separate reviewer list/access/update/sync/
+unlink denial passes (different household). This is cross-client recovery, not
+completion of native OAuth repair.
+
+Both simulator binary slices embed the matching application identifier and
+associated domain; live website AASA matches. Empty codesign entitlements alone
+would have been misleading for this simulator binary. Current SDK retains its
+native session; official OAuth docs require no separate JS resume call.
+Development diagnostic vocabulary now preserves the observed REQUIRES_OAUTH
+code while still dropping raw metadata. Five privacy/release-silence tests pass;
+diff check passes. Evidence: evidence/2026-09-25/native-repair-isolation.json.
+No release behavior fix or production change claimed. Next: capture development
+native event sequence; independent calendar reminder observation remains open.
+
+## September 25 — development OAuth trace prepared; Mac lock interruption
+
+Restored existing local PG55439/API3101/Metro8087 and installed development
+client95061ba9. Saved session restored; reminder refresh warning cleared through
+actual Retry after API startup. No calendar delivery observed. Added/expired a
+separate local synthetic OAuth investment Item while preserving original control
+and hosted repaired Item. Four local investment accounts now total$47,905.48,
+zero activity; guarded exact-ID/balance check passes.
+
+Filtered events reach OPEN_OAUTH. Second handoff opens mock bank; public login/
+code complete and IRA/401k visibly selected. Computer Use then reports Mac locked,
+so final confirmation/return trace remain pending user unlock. No bypass attempted.
+Storage fell below300MiB; no active compiler/build found, removed three regenerable
+Xcode downloaded-artifact caches (~2.6GiB logical), retaining source checkouts and
+built products. Free space3.0GiB. Evidence:
+evidence/2026-09-25/development-oauth-preparation.json. Runtime handles API23660/
+Metro19307 last confirmed live. No production/build spending/store actions.
+Next: fresh UI inspection after unlock, finish pending mock confirmation and
+provider/event readback; preserve current test state and avoid duplicate seeding.
+
+## September 25 — CI completion and dependency refresh
+
+CI330 at26617f1 passed all four jobs. Fresh production dependency audit remains
+2high/4moderate/0critical; four actual-caller parser/decoder regressions pass.
+Upstream image-size2.0.3 is now listed fixed, but isolated inspection proves its
+CommonJS export is not callable as existing Metro callers expect. Retain tested
+local patches pending a compatible migration; no dependency mutation or security
+clearance claimed. See dependency-security-status.md and
+ evidence/2026-09-25/dependency-refresh.json.
+Mac lock still blocks pending native OAuth confirmation; calendar/provider/
+distribution gates remain. The earlier planning ledger429 was resolved by the
+September25 full recheck. No production, spending or store action.
+
+## September 25 — upstream image parser fixes adopted
+
+Upgraded all Metro image-size edges to upstream2.0.3, replacing parser backports
+with a small CommonJS/filename compatibility adapter. Upstream parser logic is
+unchanged. Expanded actual-caller tests cover all three reachable Metro versions,
+including file-backed metadata;11tests pass. Frozen install and complete iOS
+export(1958modules/42assets) pass. Fresh production audit now0high/0critical/
+4moderate, with no suppressions. This supersedes the earlier deferred migration.
+Evidence: evidence/2026-09-25/upstream-image-parser.json. Mac still locked; native
+OAuth/calendar/provider/distribution gates remain. No deployment/spending/store
+action. Next: native trace after unlock and current-candidate release checks.

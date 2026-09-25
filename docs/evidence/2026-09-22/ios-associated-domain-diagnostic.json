@@ -1,0 +1,11 @@
+{
+  "date": "2026-09-22",
+  "source": "Read-only simulator swcd log inspection",
+  "app": "5FBXR5M5PJ.com.worthlane.mobile",
+  "domain": "worthlane.app",
+  "observed": "swcd records applinks service approval sa=approved with patternCount=1, user approval unspecified, followed by CDN data tasks after app changes.",
+  "latestMatchingTimestamp": "2026-09-22 09:08:15 -0700",
+  "conclusion": "Missing service association is not supported by these logs. They do not prove successful OAuth callback delivery or establish the failure cause.",
+  "limitations": "No callback URL, token, or raw provider metadata retained. Current native OAuth still unverified.",
+  "sourceReference": "https://plaid.com/docs/link/troubleshooting/"
+}

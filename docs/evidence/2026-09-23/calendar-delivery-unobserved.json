@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-09-23T16:23:16.022782+00:00",
+  "simulatorState": "shutdown; simctl reports no booted devices",
+  "macUptime": "1h16m at09:21Phoenix, indicating restart before scheduled time",
+  "pendingCount": 1,
+  "derivedTriggerUtc": "2026-09-23T16:00:00.014369+00:00",
+  "deliveredArchiveEmpty": true,
+  "result": "calendar delivery not observed; required running Simulator was unavailable",
+  "scope": "Read-only check before any Simulator boot or reminder mutation",
+  "next": "Restore laptop test environment and schedule another real future calendar-time check; do not count late boot delivery as on-time acceptance"
+}

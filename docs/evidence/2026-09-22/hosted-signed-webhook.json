@@ -1,0 +1,33 @@
+{
+  "date": "2026-09-22",
+  "candidate": "df122572a5a53d01bd8aba55a6fcf681c606ba6b",
+  "deployment": "1a78264d-5201-407b-8825-2cc74de4af73",
+  "environment": "isolated Railway beta-sandbox",
+  "ci": {
+    "run": 35771600522,
+    "result": "success"
+  },
+  "migration": "20260922190000_plaid_consent_revision",
+  "health": "ready",
+  "sourceHashes": {
+    "webhook": "b9cfd1a37cab2d3fa9ad8ab1d7ba070d73461d7260824bfa4ff619e5aae12319",
+    "revocation": "eb80352e78435cf96b87b21d51af6ec87f53836ac1a79c021d8c018cc4f3d04b",
+    "schema": "b07997204227eddaded9fbfd9689552be816713b124e0d9700ecb57cfa4f93c7"
+  },
+  "providerSignedFullItemRevocation": "passed",
+  "unsignedRequest": 401,
+  "invalidSignatureRequest": 401,
+  "fixtureAccountsBefore": 2,
+  "fixtureAccountsAfter": 0,
+  "fixtureCleanup": "completed",
+  "preAndPostDeploymentPersistedJourneys": "passed",
+  "ownerLedgerRows": 53,
+  "partnerLedgerRows": 396,
+  "baselineNote": "Original392 partner rows retained;4 scheduled Sandbox transactions arrived before deployment. Original fixture preserved; a second sync was stable.",
+  "limitations": [
+    "Sandbox full-Item revocation; not real-bank acceptance",
+    "Account-specific revocation covered by database tests, not this hosted provider test",
+    "Native investment repair and OAuth remain incomplete",
+    "Production unchanged; no store submission"
+  ]
+}

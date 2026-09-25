@@ -2,12 +2,13 @@ import {
   PlaidItemStatus,
   prisma,
 } from "@worthlane/db";
+import { Products } from "plaid";
 import { applyPlaidSyncBatch } from "./plaid-reconciliation";
-import { savePlaidAccounts } from "./plaid-accounts";
+import { reconcilePlaidAccountSnapshot } from "./plaid-accounts";
 import { bankHistoryStatus } from "@worthlane/core";
 import {
   decryptPlaidAccessToken,
-  getAccounts,
+  getAccountSnapshot,
   PlaidIntegrationError,
   refreshTransactions,
   syncTransactions,
@@ -27,11 +28,19 @@ async function upsertAccountsForItem(item: {
   itemId: string;
   institution: string | null;
   accessTokenEncrypted: string;
+  consentRevision?: number;
 }) {
   const accessToken = decryptPlaidAccessToken(item.accessTokenEncrypted);
-  const plaidAccounts = await getAccounts(accessToken);
-  const accountMap = await savePlaidAccounts(item, plaidAccounts);
-  return { accessToken, accountMap };
+  const snapshot = await getAccountSnapshot(accessToken);
+  // Provider product metadata is authoritative. Never initialize Transactions
+  // on a brokerage-only connection merely because the user pressed Sync.
+  const investmentOnly = snapshot.products.includes(Products.Investments) && !snapshot.products.includes(Products.Transactions);
+  if (!investmentOnly && !snapshot.products.includes(Products.Transactions)) {
+    throw new PlaidIntegrationError("This connection has no supported data product. Reconnect with the intended account type.", { code: "PLAID_PRODUCT_MISSING", status: 409 });
+  }
+  const selectedAccounts = investmentOnly ? snapshot.accounts.filter(account => account.type === "investment") : snapshot.accounts;
+  const { accountMap, consentRevision } = await reconcilePlaidAccountSnapshot(item, snapshot.accounts, selectedAccounts);
+  return { accessToken, accountMap, investmentOnly, consentRevision };
 }
 
 export async function syncPlaidItemById(
@@ -90,20 +99,38 @@ export async function syncPlaidItemRecord(
     institution: string | null;
     accessTokenEncrypted: string;
     syncCursor: string | null;
+    consentRevision?: number;
   },
   options: { refresh?: boolean } = {}
 ) {
   const now = new Date();
 
   try {
-    const { accessToken, accountMap } = await upsertAccountsForItem(item);
+    const { accessToken, accountMap, investmentOnly, consentRevision } = await upsertAccountsForItem(item);
+    item = { ...item, consentRevision };
+    if (investmentOnly && accountMap.size === 0) {
+      throw new PlaidIntegrationError("No investment accounts were shared. Reconnect and select a brokerage or retirement account.", { code: "NO_ACCOUNTS", status: 422 });
+    }
+
+    if (investmentOnly) {
+      const saved = await prisma.plaidItem.updateMany({ where: { id: item.id, consentRevision: item.consentRevision ?? 0 }, data: {
+        transactionHistoryStatus: "INVESTMENT_BALANCES_ONLY", lastSyncAt: now,
+        status: "HEALTHY", needsRelink: false, errorCode: null, errorMessage: null,
+      } });
+      if (!saved.count) throw new PlaidIntegrationError("Bank access changed while syncing. Retry sync.", { code: "SYNC_CONFLICT", status: 409 });
+      return { plaidItemId: item.id, added: 0, modified: 0, removed: 0 };
+    }
 
     if (options.refresh) {
       try {
         await refreshTransactions(accessToken);
       } catch (error) {
-        // Manual refresh should still fall back to sync if Plaid won't do a forced refresh.
-        if (!(error instanceof PlaidIntegrationError)) throw error;
+        // Some Items cannot use the optional Refresh product. Still retrieve
+        // their scheduled updates, but never hide auth or institution failures.
+        if (!(error instanceof PlaidIntegrationError) ||
+          !["PRODUCTS_NOT_SUPPORTED", "PRODUCT_NOT_ENABLED"].includes(error.code)) {
+          throw error;
+        }
       }
     }
 
@@ -166,8 +193,8 @@ export async function syncPlaidItemRecord(
     };
   } catch (error) {
     if (error instanceof PlaidIntegrationError && error.code !== "SYNC_CONFLICT") {
-      await prisma.plaidItem.update({
-        where: { id: item.id },
+      await prisma.plaidItem.updateMany({
+        where: { id: item.id, consentRevision: item.consentRevision ?? 0 },
         data: {
           status: statusForPlaidError(error),
           needsRelink: error.needsRelink,

@@ -24,6 +24,14 @@ const {
   waitForNavigationToSettle,
 } = require("./navigation.cjs");
 
+const { attachBankWindows } = require("./bank-window.cjs");
+
+// The tested macOS compositor can leave a loaded page blank after Refresh
+// until the window is resized. Software rendering passed the same packaged
+// dashboard/accounts refresh checks. Keep Windows on its existing renderer.
+// Electron requires this setting before app readiness.
+if (process.platform === "darwin") app.disableHardwareAcceleration();
+
 const WINDOW_MIN_WIDTH = 900;
 const WINDOW_MIN_HEIGHT = 640;
 const DEFAULT_BOUNDS = Object.freeze({ width: 1440, height: 920 });
@@ -126,6 +134,16 @@ function navigate(route) {
   void loadApplicationUrl(new URL(route, configuredApp.origin).toString());
 }
 
+function refreshApplication() {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  const currentUrl = mainWindow.webContents.getURL();
+  // Use the same bounded load/recovery path as startup. The native reload role
+  // bypasses that path, including its timeout and retry screen.
+  const target = isAllowedNavigation(currentUrl, configuredApp.origin)
+    ? currentUrl : configuredApp.href;
+  void loadApplicationUrl(target);
+}
+
 function buildApplicationMenu() {
   const navigationItems = [
     ["Overview", "/dashboard"],
@@ -163,7 +181,7 @@ function buildApplicationMenu() {
     {
       label: "View",
       submenu: [
-        { role: "reload", label: "Refresh", accelerator: "CmdOrCtrl+R" },
+        { label: "Refresh", accelerator: "CmdOrCtrl+R", click: refreshApplication },
         { type: "separator" },
         { role: "resetZoom", label: "Actual size" },
         { role: "zoomIn", label: "Zoom in" },
@@ -253,10 +271,7 @@ function attachSecurityPolicy(window) {
     event.preventDefault();
     if (isSafeExternalUrl(targetUrl)) void shell.openExternal(targetUrl);
   });
-  webContents.setWindowOpenHandler(({ url }) => {
-    if (isSafeExternalUrl(url)) void shell.openExternal(url);
-    return { action: "deny" };
-  });
+  attachBankWindows(window, { isSafeExternalUrl, openExternal: url => shell.openExternal(url) });
   webContents.on("will-attach-webview", (event) => event.preventDefault());
   webContents.on("before-input-event", (event, input) => {
     const key = input.key.toLowerCase();
@@ -307,6 +322,10 @@ function createMainWindow() {
       allowRunningInsecureContent: false,
       devTools: !app.isPackaged,
       spellcheck: true,
+      // On macOS an occluded window can retain the previous finance screen
+      // after navigation until a resize. Keep frame delivery active so returning
+      // from bank authorization or signing out does not leave stale balances.
+      backgroundThrottling: process.platform !== "darwin",
     },
   });
   mainWindow = window;

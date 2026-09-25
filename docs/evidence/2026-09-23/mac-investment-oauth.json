@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-09-23T16:50:43.187011+00:00",
+  "surface": "Exact Developer ID signed Mac Sandbox package",
+  "package": ".tmp/mac-signed-sandbox-20260921/mac-arm64/Worthlane.app",
+  "institution": "Platypus OAuth Bank",
+  "data": "disposable hosted-investment-ui synthetic owner",
+  "oauth": {
+    "popupOpened": true,
+    "selectedAccounts": [
+      "IRA",
+      "401k"
+    ],
+    "callbackSaved": true,
+    "accounts": 2,
+    "netWorth": 23952.74,
+    "spending": 0,
+    "transactions": 0,
+    "privacy": "Personal"
+  },
+  "forcedRepair": {
+    "providerExpiration": "ITEM_LOGIN_REQUIRED",
+    "uiNeedsRelink": true,
+    "investmentStaleBalanceWarning": true,
+    "sameAccountAndItemIds": true,
+    "oauthReauthenticationCompleted": true,
+    "uiHealthy": true,
+    "providerErrorCleared": true,
+    "providerProducts": [
+      "investments"
+    ],
+    "repeatSyncAndReloadPassed": true
+  },
+  "unlink": {
+    "uiRequested": true,
+    "freshApiAccounts": 0,
+    "freshApiItems": 0,
+    "freshApiNetWorth": 0,
+    "freshApiSpending": 0,
+    "freshApiTransactions": 0,
+    "automaticUiReconciliation": "Not passed: old balances and disabled controls persisted until explicit Refresh planning data",
+    "manualRefresh": "Displayed zero accounts/net worth and unlinked confirmation",
+    "providerRevocationQueriedAfterUnlink": false
+  },
+  "limits": [
+    "Mac OAuth/repair pass does not close iOS OAuth",
+    "Investigate unlink UI delay; no root cause established",
+    "No live bank or production mutation"
+  ]
+}

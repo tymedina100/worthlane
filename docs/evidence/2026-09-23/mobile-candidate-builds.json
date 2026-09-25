@@ -1,0 +1,53 @@
+{
+  "checkedAt": "2026-09-23T16:37:49.896Z",
+  "source": "86001c0c437a04c0f7ee1a8504e61824de4d32bb",
+  "billing": {
+    "observedVia": "authenticated Expo billing UI",
+    "plan": "Free",
+    "monthlyEstimateUsd": 0,
+    "includedIos": 15,
+    "usedIosBefore": 8,
+    "includedAndroid": 15,
+    "usedAndroidBefore": 7,
+    "startedIos": 1,
+    "startedAndroid": 1,
+    "upgradeOrPayment": false
+  },
+  "preflight": {
+    "ciRun": 35889254734,
+    "ciConclusion": "success",
+    "focusedMobileTests": 16,
+    "archiveFiles": 721,
+    "matchingTrackedFiles": 670,
+    "privateEnvironmentAndFixtureFilesExcluded": true
+  },
+  "builds": [
+    {
+      "id": "2a2aee67-deaa-4571-874b-2f57fb0f6e2a",
+      "status": "IN_QUEUE",
+      "platform": "ANDROID",
+      "profile": "sandbox-preview",
+      "source": "86001c0c437a04c0f7ee1a8504e61824de4d32bb",
+      "url": "https://expo.dev/accounts/tymedina100/projects/worthlane/builds/2a2aee67-deaa-4571-874b-2f57fb0f6e2a"
+    },
+    {
+      "id": "aced2d4e-8af7-4324-9aab-ca977c115613",
+      "status": "IN_QUEUE",
+      "platform": "IOS",
+      "profile": "sandbox-simulator",
+      "source": "86001c0c437a04c0f7ee1a8504e61824de4d32bb",
+      "url": "https://expo.dev/accounts/tymedina100/projects/worthlane/builds/aced2d4e-8af7-4324-9aab-ca977c115613"
+    }
+  ],
+  "reminder": {
+    "simulatorStillBooted": true,
+    "pendingMatchingOwnerBillCount": 1,
+    "triggerPhoenix": "2026-09-24T09:00:00-07:00",
+    "deliveryObserved": false
+  },
+  "limits": [
+    "Queued builds are not installed artifact acceptance",
+    "No production environment, store submission, or paid plan change",
+    "Preserve existing reminder Simulator when testing new artifact"
+  ]
+}

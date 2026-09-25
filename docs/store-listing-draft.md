@@ -108,6 +108,7 @@ and its enabled backend/SDK services. Do not select "Data Not Collected".
 | Data / purpose | Current source evidence | Release disclosure decision |
 | --- | --- | --- |
 | Email and user identifier / authentication | User.email, User.id, passwordHash and refresh-session records in Prisma | Collected and linked to the account for app functionality. Password hashes are retained; no plaintext password-storage claim. |
+| Plaid Link SDK user identifier / bank linking | September18 source package13.2.0 contains LinkKit7.1.2; its device framework PrivacyInfo.xcprivacy declares UserID, linked=true, tracking=false, purpose=AppFunctionality | Include SDK collection in the final questionnaire even when Worthlane analytics are disabled. This is bundled-manifest evidence, not a network audit or a complete statement of Plaid server-side data use. Recheck the final packaged artifact. |
 | Household display names and invited email / collaboration | HouseholdMember and invitation/acceptance flows | Account-linked collaboration data; partner disclosure follows explicit invitation and visibility choices. |
 | Financial data / planning | Account, Transaction, DebtPlanEntry, Budget, UpcomingObligation and household responsibility models | Account-linked financial data for app functionality, including manually entered data. Transactions contain purchase history; map the exact Apple categories during final questionnaire review. |
 | Push destination / reminders | Optional User.pushToken and push service | App functionality when registered; distinguish remote push tokens from local-only scheduled notifications. |
@@ -175,6 +176,10 @@ Recent EAS history includes completed production/store Android build4 from
 candidate and are not evidence that current code is packaged or ready to upload.
 No new build, submission or paid service was started during this inspection.
 
+## September18 — current internal candidates
+
+Source `1dd2196986b708b4f977f5cf7f396a81cee07084` pins Plaid13.2.0 and includes the dashboard unpaid-payment wording and Settings safe-area fixes. Internal Android build `22734e79-123e-40cf-9d57-1ffd463f2f10` and laptop-only iOS Simulator build `eb664bae-4ce2-40c0-bed0-bcd91aabffb8` were uploaded to EAS using verified included Free capacity. Both builds finished; exact artifacts passed signature and Sandbox-origin checks. Android passes saved sessions, Chase OAuth/import/repeat sync/selective unlink, forced repair, reminder delivery and queued/delivered logout cleanup. iOS Simulator passes saved sessions, standard Link/import/repeat sync/selective unlink, forced repair and reminder delivery/history cleanup. iOS OAuth remains unverified after two unsuccessful Simulator attempts; physical phones are outside the authorized scope. See docs/hosted-sandbox.md for artifact IDs, hashes and provider/data readback. These internal/Simulator artifacts are not App Store attachments or current store-ready device builds. No submission was made.
+
 
 ## Hosted Mac candidate — September15
 
@@ -207,3 +212,213 @@ PR18 merged2e34881 under explicit approval. Both Vercel production deployments
 succeeded (desktop6465691175, site6465684233). Railway skipped unchanged API files;
 PR16 remains Active. Main CI35007532665 has passed PostgreSQL17/18 and Windows;
 the general CI job was still running at this checkpoint.
+
+## September 18 packaged Simulator privacy inventory
+
+Inspected all14 PrivacyInfo.xcprivacy files in actual EAS artifact
+`eb664bae-4ce2-40c0-bed0-bcd91aabffb8`, source `1dd2196`. Paths, SHA256 hashes
+and exact declarations are preserved in
+[evidence/2026-09-18/ios-sandbox-privacy-manifests.json](evidence/2026-09-18/ios-sandbox-privacy-manifests.json).
+
+- LinkKit declares account-linked UserID for app functionality, not tracking.
+- RevenueCat declares unlinked purchase history for app functionality. Its
+  presence does not establish collection: the Sandbox profile disables paywall
+  and source configure() is guarded by that flag and a key. Final enabled store
+  configuration still needs a purchase-data disclosure review.
+- Sentry declares unlinked crash, performance and other diagnostic data for app
+  functionality. Source disables native SDK/traces and Sandbox disables its DSN;
+  these controls do not remove bundled declarations or prove vendor retention.
+- No manifest lists tracking domains or a true tracking declaration. Some omit
+  the top-level tracking key; omission is not independent proof of no tracking.
+- App-level required-reason categories include file timestamps, user defaults,
+  system boot time and disk space. Reason codes are preserved in the inventory.
+
+This closes the packaged Simulator manifest inspection gap only. Repeat against
+the final device/store archive, compare enabled services and complete Apple
+privacy answers before submission. No questionnaire or production setting was
+changed. Earlier September14 support-mailbox/deletion gaps are historical; later
+email and deletion acceptance evidence supersedes them, not this manifest audit.
+
+## September 21 content-rights and mobile source parity review
+
+Read-only source comparison from packaged mobile source `1dd2196` to `3bb0edc`
+shows no changes under apps/mobile, packages/core, packages/contracts or
+packages/types. Thus the recent desktop session fixes do not themselves require
+another mobile build. This does not turn a Simulator archive into a signed device
+archive or close the iOS OAuth gap.
+
+Visible third-party material includes Plaid's bank-link interface, institution
+branding, and account/transaction data returned under user consent. The mobile
+UI also uses Ionicons via @expo/vector-icons. Its installed package and vendored
+react-native-vector-icons both include MIT license notices; retain applicable
+notices in distribution. SDK/open-source licensing and the authorization to
+access financial content are distinct checks. Source inspection found system
+fonts and no remote photo/video loading in the app/app-source TSX paths searched;
+that limited negative search does not establish ownership of every asset.
+Worthlane brand assets are present locally; their filenames alone do not prove
+provenance or worldwide rights.
+
+Installed direct runtime dependency versions, declared licenses and license-file
+names are inventoried in
+`evidence/2026-09-21/mobile-direct-dependency-licenses.json`. This inventory omits
+transitive/native frameworks and is not a complete license-compliance finding.
+No App Store content-rights certification was saved. Apple's content-rights field
+requires the necessary rights or legal permission for third-party material in
+each distributed region; do not answer “no third-party content” merely because
+there are no third-party articles or videos. Review the actual Plaid agreement,
+asset provenance and intended territories before making the final declaration.
+
+Reference inspected September21:
+https://developer.apple.com/help/app-store-connect/reference/app-information/app-information
+
+Sentry live settings were also rechecked: both worthlane-api and
+worthlane-mobile have server-side/default scrubbing enabled and IP-storage
+prevention disabled. Scoped owner approval has been requested for only those
+two IP switches; no setting changed during this inspection.
+
+## September 21 approved Sentry IP privacy change
+
+Owner approved enabling Prevent Storing of IP Addresses in worthlane-api and
+worthlane-mobile. Both previously-off switches were enabled through the signed-in
+Sentry project Security & Privacy pages. Autosave completed, then both pages were
+reloaded: each IP-prevention control remained checked (1); server-side scrubbing
+and default scrubbers also remained checked. Verified at 18:57 UTC. This closes
+the pending two-switch approval gate. It applies to new events only; no claim
+of historical IP deletion or a completed final App Store privacy declaration.
+No paid plan, credential, application deployment or store submission changed.
+
+## Prepared store-format Sandbox build profile
+
+`sandbox-store` inherits the guarded sandbox-preview environment but produces
+store-format signed device artifacts: iOS simulator=false and Android app-bundle.
+It uses remote build-number increments and has no matching submit profile.
+It still targets only the isolated hosted Sandbox API and rejects inherited
+production URLs, analytics/diagnostic credentials, AI or paywall activation.
+The production profile is unchanged. This is preparation, not a built, uploaded,
+submitted, or accepted store candidate.
+
+Seven mobile-release configuration tests pass, including malicious/inherited
+setting rejection for this new profile. The installed EAS18.3.0 schema/resolver
+independently resolves both platforms to distribution=store, environment=preview
+and the isolated API; iOS resolves simulator=false and Android app-bundle.
+Reference: https://docs.expo.dev/eas/json/ . Before building, verify included
+capacity and authorized signing; do not use --auto-submit or eas submit.
+
+### September 21 iOS store-format archive queued
+
+Expo billing UI showed Free/$0, 3 iOS builds used of 15 included and a $0 estimate.
+Using included capacity, invoked `eas build --platform ios --profile sandbox-store
+--non-interactive --no-wait` at source da5677cd862f7b8385c63387b16b03532edd52cf.
+EAS reused existing remote personal-team credentials and incremented build28.
+No new credentials were generated. Non-interactive mode skipped fresh Apple
+certificate/profile validation, so cached active metadata is not that proof.
+Root gitignore excluded .tmp, environment files and native generated output;
+upload was42.5MB. EAS reports build31792944-ceec-473a-ab52-3c8515650b14 IN_QUEUE,
+IOS/STORE/sandbox-store. No --auto-submit, eas submit or App Store upload occurred.
+
+This attempt subsequently failed signing because its cached profile lacked Associated
+Domains. It is terminal and must not be monitored or restarted. The corrected
+build29 below supersedes this attempt. A store-format Sandbox archive is not live banking.
+
+### September 21 Apple draft refreshed after owner sign-in
+
+Owner restored Apple access. Updated private App Review notes to reflect current
+hosted native Sandbox evidence, explicit iOS OAuth limitation, and build28 still
+being prepared rather than verified/uploaded. Saved and reloaded: notes persisted,
+Save disabled, Prepare for Submission, manual release selected, Add Build still
+shown (no attached build). Reviewer username/password remain empty.
+
+App Privacy currently lists seven collected types: Name, Email Address, Other
+Financial Info, Other User Content, User ID, Purchase History and Crash Data.
+The first six show app functionality and account linkage; Crash Data still says
+Set Up Crash Data and Publish is disabled. This is a live preparation-state read,
+not a completed final declaration. Review actual build28 enabled services and
+backend before finalizing diagnostics; do not infer collection solely from a
+bundled SDK manifest. No privacy publication or review submission occurred.
+
+
+### September 21 corrected signing and current archive
+
+Under owner approval, regenerated the existing Apple App Store provisioning profile
+and replaced only its cached EAS association. Exact-byte readback of the uploaded
+profile matched SHA256
+`30cae4ec1df11a79541e5010681a5ac12447f4850604de2a56755c5f6c4fd37e`.
+The existing distribution certificate and personal team5FBXR5M5PJ were preserved.
+The replacement includes Associated Domains; no capabilities were broadened.
+
+Current job: **95aeed0d-68aa-434d-b879-f2ba35540eb5**, build29, source
+`2c8693102d94cea516e04b104e0c12f18fabcc1a`, profile sandbox-store.
+EAS finished at19:21:40UTC on September21. Downloaded21.8MB IPA passes
+strict deep codesign verification. Its embedded profile exactly matches the approved
+replacement; signed app/team, Associated Domains and get-task-allow=false pass.
+The actual bundle contains the fixed Sandbox API; all14 privacy manifests exactly
+match the tested Simulator archive. Packaged Sentry DSN is a non-string object,
+which configString rejects; guarded build settings require analytics/diagnostics
+credentials absent and AI/paywall disabled. This static check is not a network
+audit or a physical-device launch. Evidence: evidence/2026-09-21/ios-store-29-archive.json.
+
+Reloading App Store Connect confirmed the saved review notes name build29/source
+2c86931, Save is disabled and the version remains Prepare for Submission.
+No build was uploaded or submitted. The privacy questionnaire is still unfinished.
+
+
+## September21 Crash Data draft completed, not published
+
+App Store Connect live App Privacy questionnaire saved Crash Data with App
+Functionality purpose, not linked to identity and not used for tracking. The
+resulting preview lists Diagnostics under Data Not Linked to You; Publish is now
+enabled but was not clicked. Other six collected types retain account linkage.
+Basis: mobile diagnostic-privacy.ts reconstructs a generic allowlist with bundle
+positions, without user/request/context/breadcrumbs/raw messages; sentry.ts disables
+native capture, sessions, traces, screenshots and default PII. Earlier approved
+provider IP-storage prevention was verified in both Sentry projects. Current
+Sandbox artifact has no usable DSN; the draft conservatively retains crash
+collection for the configured backend/possible release diagnostics. Reconcile
+against the exact final selected build and services before publishing. No claim
+of historical data deletion or broad organizational compliance is made.
+
+Apple still has no attached build or reviewer credentials; release remains manual.
+This finishes one draft questionnaire section, not store preparation or submission.
+
+
+## September 21 — exact Sandbox telemetry configuration
+
+Read-only Railway UI inspection of beta-sandbox / worthlane confirmed
+`SENTRY_DSN` and `POSTHOG_PROJECT_KEY` are both empty. Each value was revealed
+only for this check and then hidden; no configuration was changed. The service
+was Sleeping and no pending changes were visible. Current store30 artifact
+independently has an empty mobile Sentry DSN, and its Sandbox build guard rejects
+nonempty mobile Sentry/PostHog settings.
+
+This candidate therefore has no configured Sentry or PostHog collector on the
+inspected mobile/API pair. The unpublished Crash Data answer was removed after this reconciliation;
+the saved draft now has six data types and Publish remains untouched.
+Source support for optional diagnostics alone does not prove collection in this candidate. Do not infer that no data is
+collected: authentication, financial records, consented household details and
+Plaid SDK collection remain in scope. This check does not establish historical
+retention, other app versions, production telemetry, or a full network audit.
+Evidence: `evidence/2026-09-21/sandbox-telemetry-configuration.json`.
+
+
+## September 21 — mobile brand source provenance
+
+All four current mobile PNGs (icon, adaptive icon, splash and notification icon)
+match the in-memory rendered pixels from `scripts/generate-mobile-brand.mjs`.
+The generator authors a geometric vector path with explicit colors/transforms
+and reads no outside artwork. Its original commit is `ab8122e`; `37184a4`
+updated transparent Android notifications. `brand-mark.svg` exposes the same
+path. No asset was changed by verification. This resolves the earlier unknown
+source of these four mobile assets; it is not a trademark clearance or a
+certification of Plaid/institution content rights. See mobile-brand-provenance.json.
+
+
+## September 21 — processed build 30 attached
+
+Apple build2208b168-2933-459e-b64f-0f16400262f1 /1.0.0(30) completed processing.
+Exact build30 is attached to the saved version1.0 draft; reload confirms manual
+release and Prepare for Submission. Private reviewer notes now match this state.
+Four current screenshots and six-type unpublished privacy draft remain saved.
+Apple's existing owner-only Team (Expo) internal group automatically received
+the build. No external tester was added or App Review submitted. This closes
+processing/attachment, not physical-device execution, content rights, privacy
+publication approval or public Mac signing. Evidence: ios-store-30-upload.json.

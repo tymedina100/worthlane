@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-09-25T16:42:37.614315+00:00",
+  "comparison": "Native completion posts sync refresh for existing Item; browser completion does same after session validation. Current native SDK retains session and manages OAuth internally. No proven runtime defect identified.",
+  "configuration": {
+    "embeddedSimulatorApplicationId": "5FBXR5M5PJ.com.worthlane.mobile",
+    "embeddedAssociatedDomain": "applinks:worthlane.app",
+    "liveAasaMatches": true,
+    "returnPath": "/plaid-oauth",
+    "note": "Simulator codesign output is empty; __TEXT __entitlements carries these values in both binary slices."
+  },
+  "nativeAfterWebRepair": "iOS Sync now completed and changed Needs relink to Healthy, removed error, retained IRA320.76/401k23631.98. This is not native OAuth repair acceptance.",
+  "apiAfterNativeSync": {
+    "exactBaselineIdsPreserved": true,
+    "accounts": 2,
+    "items": 1,
+    "netWorth": 23952.74,
+    "spending": 0,
+    "transactions": 0,
+    "status": "HEALTHY"
+  },
+  "privacy": "Separate reviewer cannot list Item/accounts; update-token, sync and unlink each404. Different household; same-household privacy is separate evidence.",
+  "diagnosticChange": "Allowlist REQUIRES_OAUTH in development-only event diagnostics; keep raw metadata/identifiers filtered and release logging disabled. No change to release repair behavior.",
+  "validation": "node --test scripts/test-mobile-diagnostics.mjs:5/5 pass; git diff --check passes.",
+  "sources": [
+    "https://plaid.com/docs/link/react-native/",
+    "https://plaid.com/docs/link/oauth/"
+  ],
+  "next": "Capture development native OAuth event sequence against current confirmed link configuration; calendar delivery remains independently unverified."
+}

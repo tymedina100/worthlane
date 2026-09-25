@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-22",
+  "origin": "https://worthlane-beta-desktop.vercel.app",
+  "apiOrigin": "https://worthlane-beta-sandbox.up.railway.app",
+  "sourceContext": "Branch HEAD 0849086; previously verified frontend3d6dc16; API e985af8. No new runtime changes.",
+  "ci": {
+    "head": "08490864b12b5ea3b63d771f6f841375b08550a6",
+    "run": 35784527112,
+    "conclusion": "success"
+  },
+  "observations": [
+    "Fresh synthetic solo onboarding completed without invitation",
+    "In-app browser Link token confirmed Sandbox; Betterment public test credentials connected",
+    "Provider offered IRA,401k,cash-management; Worthlane retained exactly two investment accounts",
+    "Visible net worth23952.74; both accounts Personal; Healthy; balances-only disclosure",
+    "UI Sync completed; reload retained account balances and ownership",
+    "UI Reconnect completed update-mode account selection and returned Connection saved",
+    "Fresh API login before/after confirms same account IDs, Item ID, balances,23952.74networth,0transactions,0spending,HEALTHY and INVESTMENT_BALANCES_ONLY"
+  ],
+  "unlink": "Pending native JavaScript confirmation; user assistance requested after browser dialog controls could not observe/accept it",
+  "limits": [
+    "No forced-expiration repair in this hosted run",
+    "Platypus OAuth Continue to login did not open bank window in IAB; no OAuth acceptance",
+    "Chrome test tab blank after storage dialog dismissal; no browsing data deleted;4.9GiB free",
+    "No live banking, production change or store submission"
+  ]
+}

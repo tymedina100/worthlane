@@ -1,0 +1,50 @@
+{
+  "checkedAt": "2026-09-23T17:34:24.949568+00:00",
+  "baseline": "Signed Mac login advanced native title to dashboard while AX and screenshot retained login; Raise and Tab did not reconcile. Native window zoom immediately showed loaded dashboard.",
+  "change": "On macOS only, main BrowserWindow backgroundThrottling=false; existing software rendering/security options retained.",
+  "reference": "https://www.electronjs.org/docs/latest/api/browser-window",
+  "localPackage": ".tmp/mac-render-check/mac-arm64/Worthlane.app",
+  "archiveSha256": "d8f2c58501bf69c352f9bde052d84b9e3215e6d9e3678e9344aeb447d6f920bc",
+  "checks": {
+    "nativeTests": 23,
+    "syntax": "passed",
+    "packagedAssets": 9,
+    "hardenedFuses": 8,
+    "strictDeepSignature": "passed, ad-hoc only",
+    "loginLogoutNavigation": "Passed without resizing; screenshot and AX agree on loaded dashboard",
+    "bankUnlink": "Passed: real Betterment Sandbox UI connect and automatic return showed2private investments/$23,952.74. UI unlink automatically showed0accounts/$0 and confirmation without Refresh or resize; screenshot agrees and API confirms0accounts/Items/spending/transactions."
+  },
+  "limits": [
+    "Developer ID candidate now built and saved-session/manual-mutation/logout verified; full signed banking and release approval remain",
+    "Initial startup timed out; normal Retry restored saved session; cause not established",
+    "Disabling background throttling can increase background rendering work; no battery benchmark",
+    "No production deployment or notarization"
+  ],
+  "developerIdCandidate": {
+    "checkedAt": "2026-09-23T17:40:53.143170+00:00",
+    "path": ".tmp/mac-signed-render-fix/mac-arm64/Worthlane.app",
+    "runtimeSource": "bdb7e29",
+    "archiveSha256": "d8f2c58501bf69c352f9bde052d84b9e3215e6d9e3678e9344aeb447d6f920bc",
+    "sourceParity": "All seven runtime files byte-identical to source",
+    "signature": "Developer ID Application: TYLER ANDREW MEDINA (5FBXR5M5PJ); timestamp/hardened runtime; strict deep verification passed",
+    "packaging": "9 assets and8 hardened fuses verified",
+    "savedSession": "Cold launch restored disposable hosted Sandbox dashboard without login or Retry",
+    "manualMutation": "UI create42.17, update43.17, delete0 automatically rendered; independent API verified each balance and zero spending/transactions",
+    "signOut": "Empty login form rendered without refresh/resize; screenshot and AX agree",
+    "bankLifecycleLimit": "Same app.asar as ad-hoc bank connect/unlink acceptance; bank lifecycle not rerun under new signature",
+    "notarized": false,
+    "published": false
+  },
+  "signingFixCI": {
+    "commit": "c438a9aa11e9903757efa6aacb0c602fbc6a9290",
+    "run": 35897279932,
+    "conclusion": "success",
+    "jobs": [
+      "ci",
+      "postgres-integration (17)",
+      "postgres-integration (18)",
+      "native-windows"
+    ],
+    "url": "https://github.com/tymedina100/worthlane/actions/runs/35897279932"
+  }
+}

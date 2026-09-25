@@ -1,0 +1,31 @@
+{
+  "date": "2026-09-22",
+  "environment": "local isolated PostgreSQL and real Plaid Sandbox",
+  "client": "iOS 18.3 laptop Simulator, EAS development build 95061ba9-de4d-485a-a828-df072e9b57d2 with current Metro bundle",
+  "institution": "First Platypus Bank, standard non-OAuth",
+  "interaction": "Computer Use plus explicitly authorized Maestro fallback",
+  "result": "standard native lifecycle passed; OAuth remains unproven",
+  "observed": {
+    "successAlert": "Bank connected",
+    "connectionStatus": "Healthy",
+    "investmentAccountsOnly": true,
+    "accountCount": 2,
+    "iraBalance": 320.76,
+    "retirementBalance": 23631.98,
+    "netWorth": 23952.74,
+    "monthlySpending": 0,
+    "monthlyIncome": 0,
+    "repeatSyncCompleted": true,
+    "fullRestartPreservedTotals": true,
+    "unlinkConfirmedInNativeUI": true,
+    "fullRestartAfterUnlinkNetWorth": 0,
+    "finalDatabaseCounts": { "accounts": 0, "plaidItems": 0, "transactions": 0 }
+  },
+  "limitations": [
+    "Initial typed password attempt was rejected; cleared, retyped and visibly verified published Sandbox credentials before retry succeeded.",
+    "Provider revocation is covered by earlier real Sandbox integration tests; this UI run independently checked local removal, not a second provider itemGet call.",
+    "Investment OAuth and account-selection enforcement are not proven by this non-OAuth test.",
+    "Development Simulator evidence is not store-build or physical-device evidence."
+  ],
+  "fix": "Native dashboard and Household now refer to bank data coverage and freshness rather than claiming incomplete transaction history for investment-only notices. Dashboard wording visually verified; mobile typecheck passed."
+}

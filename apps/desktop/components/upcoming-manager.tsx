@@ -1,9 +1,10 @@
 "use client";
+import { sessionFetch } from "@/src/lib/session-fetch";
 import { useEffect, useState, type FormEvent } from "react";
 import type { UpcomingObligation } from "@worthlane/types";
 import { upcomingInputSchema } from "@worthlane/contracts";
 async function request<T>(path = "", body?: unknown, method = "GET"): Promise<T> {
-  const response = await fetch(`/api/upcoming${path}`, { method, headers: { "Content-Type": "application/json" }, ...(body ? { body: JSON.stringify(body) } : {}), cache: "no-store" });
+  const response = await sessionFetch(`/api/upcoming${path}`, { method, headers: { "Content-Type": "application/json" }, ...(body ? { body: JSON.stringify(body) } : {}), cache: "no-store" });
   const payload = await response.json();
   if (!response.ok) throw new Error(payload.error?.message ?? "Could not load upcoming items.");
   return payload.data;

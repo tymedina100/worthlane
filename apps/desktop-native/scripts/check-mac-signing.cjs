@@ -5,5 +5,11 @@ function checkMacSigning(env) {
     throw new Error("Set CSC_NAME to the explicitly selected Worthlane Developer ID Application identity before Mac distribution. Local ad-hoc builds use pack:mac:local.");
   }
 }
+function macBuilderEnvironment(env) {
+  checkMacSigning(env);
+  // Keep the explicit certificate class in our public configuration, but the
+  // builder selects that class itself and rejects it in CSC_NAME.
+  return { ...env, CSC_NAME: env.CSC_NAME.replace(/^Developer ID Application: /, "") };
+}
 if (require.main === module) checkMacSigning(process.env);
-module.exports = { checkMacSigning };
+module.exports = { checkMacSigning, macBuilderEnvironment };

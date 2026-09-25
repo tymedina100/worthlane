@@ -48,3 +48,43 @@ for (const configured of [true, false]) test(`mobile SDK initializes safely with
   assert.equal(options.beforeSendTransaction({ request: { data: 'private' } }), null);
   assert(!JSON.stringify(options.beforeSend({ message: 'PRIVATE', extra: { value: 'PRIVATE' } })).includes('PRIVATE'));
 });
+
+
+test('Plaid local diagnostics retain only fixed event vocabulary', () => {
+  const calls = [];
+  const { tracePlaidDevelopmentEvent } = load('../apps/mobile/src/lib/plaid-development-diagnostics.ts', {}, {
+    __DEV__: true, console: { info: (...args) => calls.push(args) },
+  });
+  const secret = 'PRIVATE-FINANCIAL-DATA';
+  tracePlaidDevelopmentEvent({ eventName: 'FAIL_OAUTH', metadata: {
+    viewName: 'OAUTH', errorCode: 'INVALID_CREDENTIALS', errorMessage: secret,
+    accountNumberMask: secret, institutionName: secret, institutionSearchQuery: secret,
+    linkSessionId: secret, requestId: secret, metadataJson: secret, selection: secret,
+  } });
+  assert.equal(calls.length, 1);
+  assert(!JSON.stringify(calls).includes(secret));
+  assert.equal(calls[0][1].eventName, 'FAIL_OAUTH');
+  assert.equal(calls[0][1].viewName, 'OAUTH');
+  assert.equal(calls[0][1].errorCode, 'INVALID_CREDENTIALS');
+  tracePlaidDevelopmentEvent({ eventName: secret, metadata: { viewName: secret, errorCode: secret } });
+  assert(!JSON.stringify(calls).includes(secret));
+  assert.equal(calls[1][1].eventName, 'OTHER');
+  tracePlaidDevelopmentEvent({ eventName: 'ERROR', metadata: { errorCode: 'INCORRECT_OAUTH_NONCE' } });
+  assert.equal(calls[2][1].errorCode, 'INCORRECT_OAUTH_NONCE');
+  // The observed repair failure must remain distinguishable from unknown errors,
+  // without retaining the provider's raw session identifiers or free text.
+  tracePlaidDevelopmentEvent({ eventName: 'FAIL_OAUTH', metadata: {
+    errorCode: 'REQUIRES_OAUTH', errorMessage: secret, linkSessionId: secret,
+    requestId: secret, metadataJson: secret,
+  } });
+  assert.equal(calls[3][1].errorCode, 'REQUIRES_OAUTH');
+  assert.equal(calls[3][1].hasError, true);
+  assert(!JSON.stringify(calls).includes(secret));
+});
+
+test('Plaid diagnostics do not inspect events or log in release builds', () => {
+  const { tracePlaidDevelopmentEvent } = load('../apps/mobile/src/lib/plaid-development-diagnostics.ts', {}, {
+    __DEV__: false, console: { info: () => assert.fail('release logging') },
+  });
+  tracePlaidDevelopmentEvent({ get metadata() { assert.fail('release metadata access'); } });
+});

@@ -1,0 +1,49 @@
+{
+  "verifiedAt": "2026-09-22T22:03:33.824596+00:00",
+  "source": "cd40dd9f366408c5df41001ce4510e3de69283b2",
+  "deployment": "5d5bd98d-7ee4-49bf-bfb1-531fa221ccba",
+  "environment": "isolated Railway Sandbox",
+  "deploymentStatus": "SUCCESS",
+  "health": "ready",
+  "runtimeBankingSourceHash": "matched local committed packages/core/src/banking.ts",
+  "config": {
+    "plaid": "sandbox",
+    "emailKeyAbsent": true,
+    "paidAIKeysAbsent": true
+  },
+  "ci": {
+    "run": 35789137732,
+    "number": 300,
+    "conclusion": "success"
+  },
+  "investmentWarning": {
+    "api": "passed",
+    "browser": "passed",
+    "copy": "Investment updates need attention. Saved balances may be out of date. Holdings and trades are not imported or counted as spending.",
+    "retainedExactAccountAndItemIds": true,
+    "accounts": 2,
+    "netWorth": 23952.74,
+    "transactions": 0,
+    "spending": 0
+  },
+  "householdRegression": {
+    "command": "WORTHLANE_HOSTED_SANDBOX_APPROVED=true node scripts/test-hosted-sandbox.mjs --verify",
+    "passed": true,
+    "ownerLedger": 53,
+    "partnerLedger": 396,
+    "responsibilitiesTotal": 2450,
+    "privateManualFallback": 125.5,
+    "debtAndDueDateIdempotency": "passed"
+  },
+  "cleanup": {
+    "method": "guarded synthetic-owner API unlink",
+    "freshApiReadback": "zero accounts, Items, net worth, transactions and spending",
+    "providerRevocationIndependentlyQueried": false,
+    "browserReadback": "0 accounts, 0 connected institutions and $0.00 visible net worth"
+  },
+  "limits": [
+    "No native OAuth completion",
+    "No production rollout or store submission",
+    "Actual September23 calendar reminder delivery still pending"
+  ]
+}

@@ -1,0 +1,799 @@
+{
+  "checkedAt": "2026-09-21T19:32:43.733591+00:00",
+  "command": "pnpm audit --prod --json",
+  "vulnerabilities": {
+    "info": 0,
+    "low": 3,
+    "moderate": 18,
+    "high": 32,
+    "critical": 0
+  },
+  "remaining": [
+    {
+      "module_name": "fast-xml-parser",
+      "severity": "high",
+      "github_advisory_id": "GHSA-8gc5-j5rx-235r",
+      "findings": [
+        {
+          "version": "4.5.4",
+          "paths": [
+            "apps__mobile>react-native>@react-native/community-cli-plugin>@react-native-community/cli>@react-native-community/cli-doctor>@react-native-community/cli-platform-android>fast-xml-parser"
+          ]
+        }
+      ],
+      "patched_versions": ">=4.5.5",
+      "url": "https://github.com/advisories/GHSA-8gc5-j5rx-235r"
+    },
+    {
+      "module_name": "brace-expansion",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-f886-m6hf-6m8v",
+      "findings": [
+        {
+          "version": "1.1.12",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>@react-native/dev-middleware>chromium-edge-launcher>rimraf>glob>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "patched_versions": ">=1.1.13",
+      "url": "https://github.com/advisories/GHSA-f886-m6hf-6m8v"
+    },
+    {
+      "module_name": "brace-expansion",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-f886-m6hf-6m8v",
+      "findings": [
+        {
+          "version": "2.0.2",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "patched_versions": ">=2.0.3",
+      "url": "https://github.com/advisories/GHSA-f886-m6hf-6m8v"
+    },
+    {
+      "module_name": "brace-expansion",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-f886-m6hf-6m8v",
+      "findings": [
+        {
+          "version": "5.0.4",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/bundler-plugin-core>glob>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "patched_versions": ">=5.0.5",
+      "url": "https://github.com/advisories/GHSA-f886-m6hf-6m8v"
+    },
+    {
+      "module_name": "picomatch",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-3v7f-55p6-f55p",
+      "findings": [
+        {
+          "version": "2.3.1",
+          "paths": [
+            "apps__mobile>expo>@expo/metro>metro>jest-worker>jest-util>picomatch"
+          ]
+        }
+      ],
+      "patched_versions": ">=2.3.2",
+      "url": "https://github.com/advisories/GHSA-3v7f-55p6-f55p"
+    },
+    {
+      "module_name": "picomatch",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-3v7f-55p6-f55p",
+      "findings": [
+        {
+          "version": "3.0.1",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>picomatch"
+          ]
+        }
+      ],
+      "patched_versions": ">=3.0.2",
+      "url": "https://github.com/advisories/GHSA-3v7f-55p6-f55p"
+    },
+    {
+      "module_name": "picomatch",
+      "severity": "high",
+      "github_advisory_id": "GHSA-c2c7-rcm5-vvqj",
+      "findings": [
+        {
+          "version": "2.3.1",
+          "paths": [
+            "apps__mobile>expo>@expo/metro>metro>jest-worker>jest-util>picomatch"
+          ]
+        }
+      ],
+      "patched_versions": ">=2.3.2",
+      "url": "https://github.com/advisories/GHSA-c2c7-rcm5-vvqj"
+    },
+    {
+      "module_name": "picomatch",
+      "severity": "high",
+      "github_advisory_id": "GHSA-c2c7-rcm5-vvqj",
+      "findings": [
+        {
+          "version": "3.0.1",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>picomatch"
+          ]
+        }
+      ],
+      "patched_versions": ">=3.0.2",
+      "url": "https://github.com/advisories/GHSA-c2c7-rcm5-vvqj"
+    },
+    {
+      "module_name": "yaml",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-48c2-rrv3-qjmp",
+      "findings": [
+        {
+          "version": "2.8.2",
+          "paths": [
+            "apps__mobile>expo>@expo/metro>metro-config>yaml"
+          ]
+        }
+      ],
+      "patched_versions": ">=2.8.3",
+      "url": "https://github.com/advisories/GHSA-48c2-rrv3-qjmp"
+    },
+    {
+      "module_name": "fast-xml-parser",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-jp2q-39xq-3w4g",
+      "findings": [
+        {
+          "version": "4.5.4",
+          "paths": [
+            "apps__mobile>react-native>@react-native/community-cli-plugin>@react-native-community/cli>@react-native-community/cli-doctor>@react-native-community/cli-platform-android>fast-xml-parser"
+          ]
+        }
+      ],
+      "patched_versions": ">=4.5.5",
+      "url": "https://github.com/advisories/GHSA-jp2q-39xq-3w4g"
+    },
+    {
+      "module_name": "fast-xml-parser",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-gh4j-gqv2-49f6",
+      "findings": [
+        {
+          "version": "4.5.4",
+          "paths": [
+            "apps__mobile>react-native>@react-native/community-cli-plugin>@react-native-community/cli>@react-native-community/cli-doctor>@react-native-community/cli-platform-android>fast-xml-parser"
+          ]
+        }
+      ],
+      "patched_versions": ">=5.7.0",
+      "url": "https://github.com/advisories/GHSA-gh4j-gqv2-49f6"
+    },
+    {
+      "module_name": "ws",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-58qx-3vcg-4xpx",
+      "findings": [
+        {
+          "version": "8.19.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>ws"
+          ]
+        }
+      ],
+      "patched_versions": ">=8.20.1",
+      "url": "https://github.com/advisories/GHSA-58qx-3vcg-4xpx"
+    },
+    {
+      "module_name": "uuid",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-w5hq-g745-h8pq",
+      "findings": [
+        {
+          "version": "9.0.1",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/webpack-plugin>uuid"
+          ]
+        },
+        {
+          "version": "7.0.3",
+          "paths": [
+            "apps__mobile>expo>@expo/config-plugins>xcode>uuid"
+          ]
+        }
+      ],
+      "patched_versions": ">=11.1.1",
+      "url": "https://github.com/advisories/GHSA-w5hq-g745-h8pq"
+    },
+    {
+      "module_name": "brace-expansion",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-jxxr-4gwj-5jf2",
+      "findings": [
+        {
+          "version": "5.0.4",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/bundler-plugin-core>glob>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "patched_versions": ">=5.0.6",
+      "url": "https://github.com/advisories/GHSA-jxxr-4gwj-5jf2"
+    },
+    {
+      "module_name": "joi",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-q7cg-457f-vx79",
+      "findings": [
+        {
+          "version": "17.13.3",
+          "paths": [
+            "apps__mobile>react-native>@react-native/community-cli-plugin>@react-native-community/cli>@react-native-community/cli-config>joi"
+          ]
+        }
+      ],
+      "patched_versions": ">=17.13.4",
+      "url": "https://github.com/advisories/GHSA-q7cg-457f-vx79"
+    },
+    {
+      "module_name": "js-yaml",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-h67p-54hq-rp68",
+      "findings": [
+        {
+          "version": "3.14.2",
+          "paths": [
+            "apps__mobile>react-native>@react-native/community-cli-plugin>metro-config>cosmiconfig>js-yaml"
+          ]
+        }
+      ],
+      "patched_versions": ">=3.15.0",
+      "url": "https://github.com/advisories/GHSA-h67p-54hq-rp68"
+    },
+    {
+      "module_name": "js-yaml",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-h67p-54hq-rp68",
+      "findings": [
+        {
+          "version": "4.1.1",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>@expo/xcpretty>js-yaml"
+          ]
+        }
+      ],
+      "patched_versions": ">=4.2.0",
+      "url": "https://github.com/advisories/GHSA-h67p-54hq-rp68"
+    },
+    {
+      "module_name": "ws",
+      "severity": "high",
+      "github_advisory_id": "GHSA-96hv-2xvq-fx4p",
+      "findings": [
+        {
+          "version": "8.19.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>ws"
+          ]
+        }
+      ],
+      "patched_versions": ">=8.21.0",
+      "url": "https://github.com/advisories/GHSA-96hv-2xvq-fx4p"
+    },
+    {
+      "module_name": "ws",
+      "severity": "high",
+      "github_advisory_id": "GHSA-96hv-2xvq-fx4p",
+      "findings": [
+        {
+          "version": "7.5.10",
+          "paths": [
+            "apps__mobile>expo>@expo/metro>metro>ws"
+          ]
+        }
+      ],
+      "patched_versions": ">=7.5.11",
+      "url": "https://github.com/advisories/GHSA-96hv-2xvq-fx4p"
+    },
+    {
+      "module_name": "ws",
+      "severity": "high",
+      "github_advisory_id": "GHSA-96hv-2xvq-fx4p",
+      "findings": [
+        {
+          "version": "6.2.3",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>@react-native/dev-middleware>ws"
+          ]
+        }
+      ],
+      "patched_versions": ">=6.2.4",
+      "url": "https://github.com/advisories/GHSA-96hv-2xvq-fx4p"
+    },
+    {
+      "module_name": "@babel/core",
+      "severity": "low",
+      "github_advisory_id": "GHSA-4x5r-pxfx-6jf8",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/bundler-plugin-core>@babel/core"
+          ]
+        }
+      ],
+      "patched_versions": ">=7.29.6",
+      "url": "https://github.com/advisories/GHSA-4x5r-pxfx-6jf8"
+    },
+    {
+      "module_name": "brace-expansion",
+      "severity": "high",
+      "github_advisory_id": "GHSA-3jxr-9vmj-r5cp",
+      "findings": [
+        {
+          "version": "2.0.2",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "patched_versions": ">=2.1.2",
+      "url": "https://github.com/advisories/GHSA-3jxr-9vmj-r5cp"
+    },
+    {
+      "module_name": "brace-expansion",
+      "severity": "high",
+      "github_advisory_id": "GHSA-3jxr-9vmj-r5cp",
+      "findings": [
+        {
+          "version": "1.1.12",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>@react-native/dev-middleware>chromium-edge-launcher>rimraf>glob>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "patched_versions": ">=1.1.16",
+      "url": "https://github.com/advisories/GHSA-3jxr-9vmj-r5cp"
+    },
+    {
+      "module_name": "brace-expansion",
+      "severity": "high",
+      "github_advisory_id": "GHSA-3jxr-9vmj-r5cp",
+      "findings": [
+        {
+          "version": "5.0.4",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/bundler-plugin-core>glob>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "patched_versions": ">=5.0.7",
+      "url": "https://github.com/advisories/GHSA-3jxr-9vmj-r5cp"
+    },
+    {
+      "module_name": "js-yaml",
+      "severity": "high",
+      "github_advisory_id": "GHSA-52cp-r559-cp3m",
+      "findings": [
+        {
+          "version": "4.1.1",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>@expo/xcpretty>js-yaml"
+          ]
+        }
+      ],
+      "patched_versions": ">=4.3.0",
+      "url": "https://github.com/advisories/GHSA-52cp-r559-cp3m"
+    },
+    {
+      "module_name": "js-yaml",
+      "severity": "high",
+      "github_advisory_id": "GHSA-52cp-r559-cp3m",
+      "findings": [
+        {
+          "version": "3.14.2",
+          "paths": [
+            "apps__mobile>react-native>@react-native/community-cli-plugin>metro-config>cosmiconfig>js-yaml"
+          ]
+        }
+      ],
+      "patched_versions": ">=3.15.0",
+      "url": "https://github.com/advisories/GHSA-52cp-r559-cp3m"
+    },
+    {
+      "module_name": "fast-uri",
+      "severity": "high",
+      "github_advisory_id": "GHSA-v2hh-gcrm-f6hx",
+      "findings": [
+        {
+          "version": "3.1.0",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/webpack-plugin>webpack>schema-utils>ajv>fast-uri"
+          ]
+        }
+      ],
+      "patched_versions": ">=3.1.4",
+      "url": "https://github.com/advisories/GHSA-v2hh-gcrm-f6hx"
+    },
+    {
+      "module_name": "brace-expansion",
+      "severity": "high",
+      "github_advisory_id": "GHSA-mh99-v99m-4gvg",
+      "findings": [
+        {
+          "version": "1.1.12",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>@react-native/dev-middleware>chromium-edge-launcher>rimraf>glob>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "patched_versions": ">=1.1.17",
+      "url": "https://github.com/advisories/GHSA-mh99-v99m-4gvg"
+    },
+    {
+      "module_name": "brace-expansion",
+      "severity": "high",
+      "github_advisory_id": "GHSA-mh99-v99m-4gvg",
+      "findings": [
+        {
+          "version": "2.0.2",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "patched_versions": ">=2.1.3",
+      "url": "https://github.com/advisories/GHSA-mh99-v99m-4gvg"
+    },
+    {
+      "module_name": "brace-expansion",
+      "severity": "high",
+      "github_advisory_id": "GHSA-mh99-v99m-4gvg",
+      "findings": [
+        {
+          "version": "5.0.4",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/bundler-plugin-core>glob>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "patched_versions": ">=5.0.8",
+      "url": "https://github.com/advisories/GHSA-mh99-v99m-4gvg"
+    },
+    {
+      "module_name": "fast-uri",
+      "severity": "high",
+      "github_advisory_id": "GHSA-7p8r-x3mc-p8w7",
+      "findings": [
+        {
+          "version": "3.1.0",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/webpack-plugin>webpack>schema-utils>ajv>fast-uri"
+          ]
+        }
+      ],
+      "patched_versions": ">=3.1.5",
+      "url": "https://github.com/advisories/GHSA-7p8r-x3mc-p8w7"
+    },
+    {
+      "module_name": "brace-expansion",
+      "severity": "high",
+      "github_advisory_id": "GHSA-rgw5-rvv9-x895",
+      "findings": [
+        {
+          "version": "5.0.4",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/bundler-plugin-core>glob>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "patched_versions": ">=5.0.9",
+      "url": "https://github.com/advisories/GHSA-rgw5-rvv9-x895"
+    },
+    {
+      "module_name": "brace-expansion",
+      "severity": "high",
+      "github_advisory_id": "GHSA-rgw5-rvv9-x895",
+      "findings": [
+        {
+          "version": "2.0.2",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "patched_versions": ">=2.1.4",
+      "url": "https://github.com/advisories/GHSA-rgw5-rvv9-x895"
+    },
+    {
+      "module_name": "brace-expansion",
+      "severity": "high",
+      "github_advisory_id": "GHSA-rgw5-rvv9-x895",
+      "findings": [
+        {
+          "version": "1.1.12",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>@react-native/dev-middleware>chromium-edge-launcher>rimraf>glob>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "patched_versions": ">=1.1.18",
+      "url": "https://github.com/advisories/GHSA-rgw5-rvv9-x895"
+    },
+    {
+      "module_name": "js-yaml",
+      "severity": "high",
+      "github_advisory_id": "GHSA-5p4m-2wfm-xmqj",
+      "findings": [
+        {
+          "version": "3.14.2",
+          "paths": [
+            "apps__mobile>react-native>@react-native/community-cli-plugin>metro-config>cosmiconfig>js-yaml"
+          ]
+        }
+      ],
+      "patched_versions": ">=3.15.1",
+      "url": "https://github.com/advisories/GHSA-5p4m-2wfm-xmqj"
+    },
+    {
+      "module_name": "js-yaml",
+      "severity": "high",
+      "github_advisory_id": "GHSA-5p4m-2wfm-xmqj",
+      "findings": [
+        {
+          "version": "4.1.1",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>@expo/xcpretty>js-yaml"
+          ]
+        }
+      ],
+      "patched_versions": ">=4.3.1",
+      "url": "https://github.com/advisories/GHSA-5p4m-2wfm-xmqj"
+    },
+    {
+      "module_name": "image-size",
+      "severity": "high",
+      "github_advisory_id": "GHSA-w3rx-r6r6-pgpr",
+      "findings": [
+        {
+          "version": "1.2.1",
+          "paths": [
+            "apps__mobile>expo>@expo/metro>metro>image-size"
+          ]
+        }
+      ],
+      "patched_versions": "<0.0.0",
+      "url": "https://github.com/advisories/GHSA-w3rx-r6r6-pgpr"
+    },
+    {
+      "module_name": "image-size",
+      "severity": "high",
+      "github_advisory_id": "GHSA-5p2g-fcmc-qvqq",
+      "findings": [
+        {
+          "version": "1.2.1",
+          "paths": [
+            "apps__mobile>expo>@expo/metro>metro>image-size"
+          ]
+        }
+      ],
+      "patched_versions": "<0.0.0",
+      "url": "https://github.com/advisories/GHSA-5p2g-fcmc-qvqq"
+    },
+    {
+      "module_name": "fast-uri",
+      "severity": "high",
+      "github_advisory_id": "GHSA-q3j6-qgpj-74h6",
+      "findings": [
+        {
+          "version": "3.1.0",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/webpack-plugin>webpack>schema-utils>ajv>fast-uri"
+          ]
+        }
+      ],
+      "patched_versions": ">=3.1.1",
+      "url": "https://github.com/advisories/GHSA-q3j6-qgpj-74h6"
+    },
+    {
+      "module_name": "decode-uri-component",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-vcc3-ghjq-m6fr",
+      "findings": [
+        {
+          "version": "0.2.2",
+          "paths": [
+            "apps__mobile>expo-router>query-string>decode-uri-component"
+          ]
+        }
+      ],
+      "patched_versions": ">=0.5.0",
+      "url": "https://github.com/advisories/GHSA-vcc3-ghjq-m6fr"
+    },
+    {
+      "module_name": "fast-uri",
+      "severity": "high",
+      "github_advisory_id": "GHSA-v39h-62p7-jpjc",
+      "findings": [
+        {
+          "version": "3.1.0",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/webpack-plugin>webpack>schema-utils>ajv>fast-uri"
+          ]
+        }
+      ],
+      "patched_versions": ">=3.1.2",
+      "url": "https://github.com/advisories/GHSA-v39h-62p7-jpjc"
+    },
+    {
+      "module_name": "browserslist",
+      "severity": "high",
+      "github_advisory_id": "GHSA-c83g-rgw3-j3cx",
+      "findings": [
+        {
+          "version": "4.28.1",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/bundler-plugin-core>@babel/core>@babel/helper-compilation-targets>browserslist"
+          ]
+        }
+      ],
+      "patched_versions": ">=4.28.7",
+      "url": "https://github.com/advisories/GHSA-c83g-rgw3-j3cx"
+    },
+    {
+      "module_name": "browserslist",
+      "severity": "high",
+      "github_advisory_id": "GHSA-73wf-gq98-2v4g",
+      "findings": [
+        {
+          "version": "4.28.1",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/bundler-plugin-core>@babel/core>@babel/helper-compilation-targets>browserslist"
+          ]
+        }
+      ],
+      "patched_versions": ">=4.28.7",
+      "url": "https://github.com/advisories/GHSA-73wf-gq98-2v4g"
+    },
+    {
+      "module_name": "@opentelemetry/core",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-8988-4f7v-96qf",
+      "findings": [
+        {
+          "version": "2.6.1",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/node>@opentelemetry/core"
+          ]
+        }
+      ],
+      "patched_versions": ">=2.8.0",
+      "url": "https://github.com/advisories/GHSA-8988-4f7v-96qf"
+    },
+    {
+      "module_name": "fast-uri",
+      "severity": "high",
+      "github_advisory_id": "GHSA-f65p-4m7j-42xc",
+      "findings": [
+        {
+          "version": "3.1.0",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/webpack-plugin>webpack>schema-utils>ajv>fast-uri"
+          ]
+        }
+      ],
+      "patched_versions": ">=3.1.6",
+      "url": "https://github.com/advisories/GHSA-f65p-4m7j-42xc"
+    },
+    {
+      "module_name": "fast-uri",
+      "severity": "high",
+      "github_advisory_id": "GHSA-jqff-g426-hqxp",
+      "findings": [
+        {
+          "version": "3.1.0",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/webpack-plugin>webpack>schema-utils>ajv>fast-uri"
+          ]
+        }
+      ],
+      "patched_versions": ">=3.1.6",
+      "url": "https://github.com/advisories/GHSA-jqff-g426-hqxp"
+    },
+    {
+      "module_name": "joi",
+      "severity": "low",
+      "github_advisory_id": "GHSA-6w3j-5fw6-r9vr",
+      "findings": [
+        {
+          "version": "17.13.3",
+          "paths": [
+            "apps__mobile>react-native>@react-native/community-cli-plugin>@react-native-community/cli>@react-native-community/cli-config>joi"
+          ]
+        }
+      ],
+      "patched_versions": ">=17.13.6",
+      "url": "https://github.com/advisories/GHSA-6w3j-5fw6-r9vr"
+    },
+    {
+      "module_name": "joi",
+      "severity": "low",
+      "github_advisory_id": "GHSA-gg4h-3hg2-grpc",
+      "findings": [
+        {
+          "version": "17.13.3",
+          "paths": [
+            "apps__mobile>react-native>@react-native/community-cli-plugin>@react-native-community/cli>@react-native-community/cli-config>joi"
+          ]
+        }
+      ],
+      "patched_versions": ">=17.13.5",
+      "url": "https://github.com/advisories/GHSA-gg4h-3hg2-grpc"
+    },
+    {
+      "module_name": "baseline-browser-mapping",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-w5vr-8v7q-w6rv",
+      "findings": [
+        {
+          "version": "2.10.0",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/bundler-plugin-core>@babel/core>@babel/helper-compilation-targets>browserslist>baseline-browser-mapping"
+          ]
+        }
+      ],
+      "patched_versions": ">=2.11.0",
+      "url": "https://github.com/advisories/GHSA-w5vr-8v7q-w6rv"
+    },
+    {
+      "module_name": "js-yaml",
+      "severity": "high",
+      "github_advisory_id": "GHSA-2883-xcg3-v3hh",
+      "findings": [
+        {
+          "version": "3.14.2",
+          "paths": [
+            "apps__mobile>react-native>@react-native/community-cli-plugin>metro-config>cosmiconfig>js-yaml"
+          ]
+        }
+      ],
+      "patched_versions": ">=3.15.2",
+      "url": "https://github.com/advisories/GHSA-2883-xcg3-v3hh"
+    },
+    {
+      "module_name": "js-yaml",
+      "severity": "high",
+      "github_advisory_id": "GHSA-2883-xcg3-v3hh",
+      "findings": [
+        {
+          "version": "4.1.1",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>@expo/xcpretty>js-yaml"
+          ]
+        }
+      ],
+      "patched_versions": ">=4.3.2",
+      "url": "https://github.com/advisories/GHSA-2883-xcg3-v3hh"
+    },
+    {
+      "module_name": "fast-uri",
+      "severity": "high",
+      "github_advisory_id": "GHSA-4c8g-83qw-93j6",
+      "findings": [
+        {
+          "version": "3.1.0",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/webpack-plugin>webpack>schema-utils>ajv>fast-uri"
+          ]
+        }
+      ],
+      "patched_versions": ">=3.1.3",
+      "url": "https://github.com/advisories/GHSA-4c8g-83qw-93j6"
+    }
+  ]
+}

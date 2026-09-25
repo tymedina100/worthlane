@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-09-22T15:42:01.211Z",
+  "surface": "Native Chrome UI on localhost:3402",
+  "environment": "isolated PostgreSQL plus real Plaid Sandbox",
+  "accounts": [
+    {
+      "id": "cmucuceoc000910pextnq3qg2",
+      "type": "INVESTMENT",
+      "name": "Plaid IRA",
+      "currentBalance": "320.76"
+    },
+    {
+      "id": "cmucuceos000b10pe4vydhy2a",
+      "type": "INVESTMENT",
+      "name": "Plaid 401k",
+      "currentBalance": "23631.98"
+    }
+  ],
+  "transactionCount": 0,
+  "uiNetWorth": "23952.74",
+  "repeatSync": "PASS",
+  "browserReload": "PASS",
+  "privacy": "Both accounts displayed Personal",
+  "inAppBrowser": "Plaid frame remained blank; bounded retry message shown. Native Chrome completed.",
+  "scope": "Investment balances only; no holdings/trades or live-bank evidence.",
+  "freshSignIn": "PASS: two private investment accounts and23952.74 retained",
+  "uiUnlink": "PASS: zero net worth/accounts/connections displayed; PostgreSQL confirms zero accounts and Items",
+  "fixedDuringCheck": [
+    "Filter investment-only imports to investment account types",
+    "Coverage summary labels both balances and history without implying missing spending"
+  ]
+}

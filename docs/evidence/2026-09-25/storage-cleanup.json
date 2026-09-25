@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-09-25T16:05:31.458728+00:00",
+  "removed": [
+    {
+      "path": "/Users/tylermedina/Library/Developer/Xcode/DerivedData/LoftGolfApp-djtdlvmxfyuuyrdazgoduaencdpt/Build/Intermediates.noindex",
+      "kilobytes": 766368
+    },
+    {
+      "path": "/Users/tylermedina/.npm/_cacache",
+      "kilobytes": 637104
+    }
+  ],
+  "freeBytesBefore": 146255872,
+  "freeBytesAfter": 1566154752,
+  "scope": "Regenerable Xcode intermediates and npm content cache only; source, Xcode products, package checkouts, credentials, simulator data and acceptance evidence preserved."
+}

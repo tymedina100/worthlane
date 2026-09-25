@@ -1,5 +1,5 @@
 import { personalLedger } from "@/lib/personal-ledger";
-import { prisma, RecurringFrequency } from "@worthlane/db";
+import { Prisma, prisma, RecurringFrequency } from "@worthlane/db";
 
 // Recurring-charge detection. Pure heuristics over the user's transaction
 // history: group by normalized merchant, cluster by amount, infer cadence
@@ -152,70 +152,72 @@ export function detectRecurring(transactions: TransactionLike[]): DetectedRecurr
 
 /** Runs detection over the user's last 6 months and syncs RecurringTransaction rows. */
 export async function detectRecurringForUser(userId: string): Promise<void> {
-  const ledger = await personalLedger(userId);
-  const sixMonthsAgo = new Date();
-  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+  await prisma.$transaction(async db => {
+    const ledger = await personalLedger(userId, db);
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
-  const transactions = await prisma.transaction.findMany({
-    where: {
-      ...ledger.transactionWhere,
-      amount: { gt: 0 },
-      merchantName: { not: null },
-      date: { gte: sixMonthsAgo },
-    },
-    select: { amount: true, date: true, merchantName: true, categoryId: true, accountId: true },
-    orderBy: { date: "asc" },
-  });
-
-  const detected = detectRecurring(
-    transactions.map((t) => ({
-      amount: t.amount.toNumber(),
-      date: t.date,
-      merchantName: t.merchantName,
-      categoryId: t.categoryId,
-      accountId: t.accountId,
-    }))
-  );
-
-  const now = new Date();
-  const seenKeys = new Set<string>();
-
-  for (const item of detected) {
-    seenKeys.add(`${item.normalizedMerchant}|${item.frequency}`);
-    await prisma.recurringTransaction.upsert({
+    const transactions = await db.transaction.findMany({
       where: {
-        userId_normalizedMerchant_frequency: {
-          userId,
-          normalizedMerchant: item.normalizedMerchant,
-          frequency: item.frequency,
-        },
+        ...ledger.transactionWhere,
+        amount: { gt: 0 },
+        merchantName: { not: null },
+        date: { gte: sixMonthsAgo },
       },
-      create: { userId, ...item },
-      update: {
-        // Never overwrite user edits to displayName/categoryId or the mute flag.
-        averageAmount: item.averageAmount,
-        lastSeenDate: item.lastSeenDate,
-        nextDueDate: item.nextDueDate,
-        occurrenceCount: item.occurrenceCount,
-        accountId: item.accountId,
-        isActive: true,
-      },
+      select: { amount: true, date: true, merchantName: true, categoryId: true, accountId: true },
+      orderBy: { date: "asc" },
     });
-  }
 
-  // Deactivate entries that stopped recurring: not re-detected and overdue
-  // by more than 1.5 intervals.
-  const existing = await prisma.recurringTransaction.findMany({
-    where: { userId, isActive: true },
-  });
-  for (const row of existing) {
-    if (seenKeys.has(`${row.normalizedMerchant}|${row.frequency}`)) continue;
-    const graceMs = CADENCE_DAYS[row.frequency] * 1.5 * DAY_MS;
-    if (now.getTime() - row.lastSeenDate.getTime() > graceMs) {
-      await prisma.recurringTransaction.update({
-        where: { id: row.id },
-        data: { isActive: false },
+    const detected = detectRecurring(
+      transactions.map((t) => ({
+        amount: t.amount.toNumber(),
+        date: t.date,
+        merchantName: t.merchantName,
+        categoryId: t.categoryId,
+        accountId: t.accountId,
+      }))
+    );
+
+    const now = new Date();
+    const seenKeys = new Set<string>();
+
+    for (const item of detected) {
+      seenKeys.add(`${item.normalizedMerchant}|${item.frequency}`);
+      await db.recurringTransaction.upsert({
+        where: {
+          userId_normalizedMerchant_frequency: {
+            userId,
+            normalizedMerchant: item.normalizedMerchant,
+            frequency: item.frequency,
+          },
+        },
+        create: { userId, ...item },
+        update: {
+          // Never overwrite user edits to displayName/categoryId or the mute flag.
+          averageAmount: item.averageAmount,
+          lastSeenDate: item.lastSeenDate,
+          nextDueDate: item.nextDueDate,
+          occurrenceCount: item.occurrenceCount,
+          accountId: item.accountId,
+          isActive: true,
+        },
       });
     }
-  }
+
+    // Deactivate entries that stopped recurring: not re-detected and overdue
+    // by more than 1.5 intervals.
+    const existing = await db.recurringTransaction.findMany({
+      where: { userId, isActive: true },
+    });
+    for (const row of existing) {
+      if (seenKeys.has(`${row.normalizedMerchant}|${row.frequency}`)) continue;
+      const graceMs = CADENCE_DAYS[row.frequency] * 1.5 * DAY_MS;
+      if (now.getTime() - row.lastSeenDate.getTime() > graceMs) {
+        await db.recurringTransaction.update({
+          where: { id: row.id },
+          data: { isActive: false },
+        });
+      }
+    }
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable, timeout: 30_000 });
 }

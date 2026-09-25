@@ -1,0 +1,42 @@
+{
+  "date": "2026-09-21",
+  "preserved": "current mac-hosted-20260921 bundle, all source, credentials, fixtures, Android emulators, build logs and committed evidence",
+  "removed": [
+    {
+      "path": ".tmp/mac-before-recovery-145759/Worthlane.app",
+      "asarSha256": "c4e39b5551d2ee67d6f6b21d7065330b64b9bb67ccc1dda1db6792b3899565d5",
+      "allocatedKiB": 281608,
+      "kind": "superseded generated application bundle"
+    },
+    {
+      "path": ".tmp/mac-oauth-fixed/mac-arm64/Worthlane.app",
+      "asarSha256": "b6f630b914cb72796e3df7830b3ccb5b3d1fc78091d300e015a2138c44792a05",
+      "allocatedKiB": 281612,
+      "kind": "superseded generated application bundle"
+    },
+    {
+      "path": ".tmp/mac-refresh-fixed/mac-arm64/Worthlane.app",
+      "asarSha256": "98578d64ab1be6418bfbc3dae0702fbe76bfbe34b99c96d9d83a5882bb4f7600",
+      "allocatedKiB": 281612,
+      "kind": "superseded generated application bundle"
+    },
+    {
+      "path": ".tmp/mac-sandbox/mac-arm64/Worthlane.app",
+      "asarSha256": "2b807dbc4d0c086dc0ed14c7fe3c7287ea1d34f2f7a368d51d5582973ffa62d2",
+      "allocatedKiB": 281608,
+      "kind": "superseded generated application bundle"
+    },
+    {
+      "path": ".tmp/mac-software-fixed/mac-arm64/Worthlane.app",
+      "asarSha256": "b8d3719a9b1fa89236c02040926f1d70d14c2064e4816512314d1eb6030c69bd",
+      "allocatedKiB": 281612,
+      "kind": "superseded generated application bundle"
+    },
+    {
+      "path": ".tmp/mac-startup-installed-backup/Worthlane.app",
+      "asarSha256": "5e84e69597bf1e695bd343039f1539237dfd302adbc8875284ba00cb53b7715d",
+      "allocatedKiB": 281608,
+      "kind": "superseded generated application bundle"
+    }
+  ]
+}

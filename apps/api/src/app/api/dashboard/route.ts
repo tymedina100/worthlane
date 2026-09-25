@@ -3,7 +3,7 @@ import { spendingWhere, incomeWhere } from "@/lib/spending-treatment";
 import { NextRequest } from "next/server";
 import { prisma } from "@worthlane/db";
 import { getAuthUser } from "@/lib/auth";
-import { computeNetWorth, startOfToday } from "@/lib/net-worth";
+import { computeNetWorth, startOfToday, snapshotUserNetWorth } from "@/lib/net-worth";
 import { ok, unauthorized } from "@/lib/response";
 import { budgetPeriod, financialTimeZone } from "@/lib/budget-period";
 import { obligationStatus, householdCalendarDay, toDateOnly } from "@/lib/upcoming";
@@ -107,11 +107,7 @@ export async function GET(req: NextRequest) {
   ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 
   const [, netWorthSnapshots] = await Promise.all([
-    prisma.netWorthSnapshot.upsert({
-      where: { userId_date: { userId, date: today } },
-      create: { userId, date: today, netWorth },
-      update: { netWorth },
-    }),
+    snapshotUserNetWorth(userId),
     prisma.netWorthSnapshot.findMany({
       where: { userId, date: { gte: ninetyDaysAgo } },
       orderBy: { date: "asc" },

@@ -1,4 +1,5 @@
 "use client";
+import { sessionFetch } from "@/src/lib/session-fetch";
 
 import { useEffect, useState } from "react";
 import { responsibilityHistoryPageSchema, type ResponsibilityHistoryPage } from "@worthlane/contracts";
@@ -17,7 +18,7 @@ export function ResponsibilityHistory() {
     setError(false);
     void (async () => {
       try {
-        const response = await fetch(`/api/household/manage/responsibility-history${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ""}`, { cache: "no-store", signal: controller.signal });
+        const response = await sessionFetch(`/api/household/manage/responsibility-history${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ""}`, { cache: "no-store", signal: controller.signal });
         if (!response.ok) throw new Error("History unavailable");
         const payload = await response.json();
         const result = responsibilityHistoryPageSchema.parse(payload.data);

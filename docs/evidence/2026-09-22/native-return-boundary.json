@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-22",
+  "source": "402387e70f0f4f8344959c378d00ea894c40e15c",
+  "environment": "iOS18.3 laptop Simulator / development client95061ba9 / local Sandbox",
+  "directRegisteredUrl": "https://worthlane.app/plaid-oauth",
+  "command": "xcrun simctl openurl D7C7C0D2-5966-476B-8234-80B80FCAF7B8 https://worthlane.app/plaid-oauth",
+  "observed": "Worthlane navigated from Upcoming to protected Settings while retaining synthetic signed-in session",
+  "syntheticQueryProbe": "Command completed, but screenshot unavailable because Mac locked; not interactively verified",
+  "routingTests": {
+    "command": "node scripts/test-native-bank-return.mjs",
+    "passed": 2
+  },
+  "reminderReadback": "One active/unpaid $1 September23 DUE_DATE obligation still persisted",
+  "limits": [
+    "No active Plaid session during direct URL probe.",
+    "Does not verify OAuth state handoff, success/exchange or root cause.",
+    "Full native investment OAuth remains incomplete."
+  ],
+  "reference": "https://plaid.com/docs/link/troubleshooting/#oauth-redirects-not-working"
+}

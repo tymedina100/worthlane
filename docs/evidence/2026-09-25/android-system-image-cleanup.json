@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-09-25T16:15:54.525262+00:00",
+  "removedPath": "/Users/tylermedina/worthlane-beta-work/.tmp/android-sdk/system-images",
+  "kilobytes": 4467948,
+  "freeBytesBefore": 315834368,
+  "freeBytesAfter": 4892299264,
+  "packageManifests": [
+    {
+      "relativePath": "android-36/google_apis/arm64-v8a/package.xml",
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><ns2:repository xmlns:ns2=\"http://schemas.android.com/repository/android/common/02\" xmlns:ns3=\"http://schemas.android.com/repository/android/common/01\" xmlns:ns4=\"http://schemas.android.com/repository/android/generic/01\" xmlns:ns5=\"http://schemas.android.com/repository/android/generic/02\" xmlns:ns6=\"http://schemas.android.com/sdk/android/repo/repository2/04\" xmlns:ns7=\"http://schemas.android.com/sdk/android/repo/repository2/01\" xmlns:ns8=\"http://schemas.android.com/sdk/android/repo/repository2/02\" xmlns:ns9=\"http://schemas.android.com/sdk/android/repo/repository2/03\" xmlns:ns10=\"http://schemas.android.com/sdk/android/repo/addon2/01\" xmlns:ns11=\"http://schemas.android.com/sdk/android/repo/addon2/02\" xmlns:ns12=\"http://schemas.android.com/sdk/android/repo/addon2/03\" xmlns:ns13=\"http://schemas.android.com/sdk/android/repo/addon2/04\" xmlns:ns14=\"http://schemas.android.com/sdk/android/repo/sys-img2/05\" xmlns:ns15=\"http://schemas.android.com/sdk/android/repo/sys-img2/04\" xmlns:ns16=\"http://schemas.android.com/sdk/android/repo/sys-img2/03\" xmlns:ns17=\"http://schemas.android.com/sdk/android/repo/sys-img2/02\" xmlns:ns18=\"http://schemas.android.com/sdk/android/repo/sys-img2/01\"><license id=\"license-8B4B06FB\" type=\"text\"/><localPackage path=\"system-images;android-36;google_apis;arm64-v8a\" obsolete=\"false\"><type-details xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns14:sysImgDetailsType\"><api-level>36</api-level><extension-level>17</extension-level><base-extension>true</base-extension><tag><id>google_apis</id><display>Google APIs</display></tag><vendor><id>google</id><display>Google Inc.</display></vendor><abi>arm64-v8a</abi><abis>arm64-v8a</abis></type-details><revision><major>7</major></revision><display-name>Google APIs ARM 64 v8a System Image</display-name><uses-license ref=\"license-8B4B06FB\"/></localPackage></ns2:repository>"
+    }
+  ],
+  "preserved": "WorthlaneRelease AVD data, current APK, SDK tools, source and evidence; Android testing requires system-image reinstall"
+}

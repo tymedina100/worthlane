@@ -4,13 +4,14 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 // vi.hoisted ensures mockPrisma is available inside the vi.mock factory (which is hoisted to top)
 const { mockPrisma } = vi.hoisted(() => {
   const mockPrisma = {
+    $transaction: vi.fn(),
     user: { findUnique: vi.fn(), update: vi.fn() },
     householdMember: { findFirst: vi.fn() },
     budget: { findMany: vi.fn() },
     streak: { findMany: vi.fn() },
     goal: { findMany: vi.fn() },
     transaction: { aggregate: vi.fn(), findFirst: vi.fn() },
-    nudge: { findFirst: vi.fn(), create: vi.fn() },
+    nudge: { findFirst: vi.fn(), createMany: vi.fn() },
     recurringTransaction: { findMany: vi.fn() },
   };
   return { mockPrisma };
@@ -18,6 +19,7 @@ const { mockPrisma } = vi.hoisted(() => {
 
 vi.mock("@worthlane/db", () => ({
   prisma: mockPrisma,
+  Prisma: { TransactionIsolationLevel: { Serializable: "Serializable" } },
   NudgeType: {
     BUDGET_WARNING: "BUDGET_WARNING",
     STREAK_AT_RISK: "STREAK_AT_RISK",
@@ -54,11 +56,12 @@ function aggResult(amount: number, count = 0) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mockPrisma.$transaction.mockImplementation((fn: (db: unknown) => unknown) => fn(mockPrisma));
   mockPrisma.householdMember.findFirst.mockResolvedValue(null);
   // No push token by default → sendPushToUser is a no-op in tests
   mockPrisma.user.findUnique.mockResolvedValue(null);
   mockPrisma.nudge.findFirst.mockResolvedValue(null);
-  mockPrisma.nudge.create.mockResolvedValue({});
+  mockPrisma.nudge.createMany.mockResolvedValue({ count: 1 });
   mockPrisma.transaction.aggregate.mockResolvedValue(aggResult(0));
   mockPrisma.transaction.findFirst.mockResolvedValue(null);
   mockPrisma.recurringTransaction.findMany.mockResolvedValue([]);
@@ -108,8 +111,8 @@ describe("BUDGET_WARNING nudge", () => {
 
     await generateNudgesForUser(USER_ID);
 
-    expect(mockPrisma.nudge.create).toHaveBeenCalledOnce();
-    const call = mockPrisma.nudge.create.mock.calls[0][0];
+    expect(mockPrisma.nudge.createMany).toHaveBeenCalledOnce();
+    const call = mockPrisma.nudge.createMany.mock.calls[0][0];
     expect(call.data.type).toBe("BUDGET_WARNING");
     expect(call.data.message).toContain("over");
   });
@@ -122,8 +125,8 @@ describe("BUDGET_WARNING nudge", () => {
 
     await generateNudgesForUser(USER_ID);
 
-    expect(mockPrisma.nudge.create).toHaveBeenCalledOnce();
-    const call = mockPrisma.nudge.create.mock.calls[0][0];
+    expect(mockPrisma.nudge.createMany).toHaveBeenCalledOnce();
+    const call = mockPrisma.nudge.createMany.mock.calls[0][0];
     expect(call.data.type).toBe("BUDGET_WARNING");
     expect(call.data.message).toContain("left");
   });
@@ -136,7 +139,7 @@ describe("BUDGET_WARNING nudge", () => {
 
     await generateNudgesForUser(USER_ID);
 
-    expect(mockPrisma.nudge.create).not.toHaveBeenCalled();
+    expect(mockPrisma.nudge.createMany).not.toHaveBeenCalled();
   });
 });
 
@@ -154,8 +157,8 @@ describe("STREAK_AT_RISK nudge", () => {
 
     await generateNudgesForUser(USER_ID);
 
-    expect(mockPrisma.nudge.create).toHaveBeenCalledOnce();
-    const call = mockPrisma.nudge.create.mock.calls[0][0];
+    expect(mockPrisma.nudge.createMany).toHaveBeenCalledOnce();
+    const call = mockPrisma.nudge.createMany.mock.calls[0][0];
     expect(call.data.type).toBe("STREAK_AT_RISK");
     expect(call.data.message).toContain("5-day");
   });
@@ -166,7 +169,7 @@ describe("STREAK_AT_RISK nudge", () => {
 
     await generateNudgesForUser(USER_ID);
 
-    expect(mockPrisma.nudge.create).not.toHaveBeenCalled();
+    expect(mockPrisma.nudge.createMany).not.toHaveBeenCalled();
   });
 
   it("does not generate nudge when streak count is less than 2", async () => {
@@ -176,7 +179,7 @@ describe("STREAK_AT_RISK nudge", () => {
 
     await generateNudgesForUser(USER_ID);
 
-    expect(mockPrisma.nudge.create).not.toHaveBeenCalled();
+    expect(mockPrisma.nudge.createMany).not.toHaveBeenCalled();
   });
 });
 
@@ -196,8 +199,8 @@ describe("GOAL_MILESTONE nudge", () => {
 
     await generateNudgesForUser(USER_ID);
 
-    expect(mockPrisma.nudge.create).toHaveBeenCalledOnce();
-    const call = mockPrisma.nudge.create.mock.calls[0][0];
+    expect(mockPrisma.nudge.createMany).toHaveBeenCalledOnce();
+    const call = mockPrisma.nudge.createMany.mock.calls[0][0];
     expect(call.data.type).toBe("GOAL_MILESTONE");
     expect(call.data.message).toContain(`${milestone}%`);
   });
@@ -207,7 +210,7 @@ describe("GOAL_MILESTONE nudge", () => {
 
     await generateNudgesForUser(USER_ID);
 
-    expect(mockPrisma.nudge.create).not.toHaveBeenCalled();
+    expect(mockPrisma.nudge.createMany).not.toHaveBeenCalled();
   });
 });
 
@@ -223,8 +226,8 @@ describe("WEEKLY_SUMMARY nudge", () => {
 
     await generateNudgesForUser(USER_ID);
 
-    expect(mockPrisma.nudge.create).toHaveBeenCalledOnce();
-    const call = mockPrisma.nudge.create.mock.calls[0][0];
+    expect(mockPrisma.nudge.createMany).toHaveBeenCalledOnce();
+    const call = mockPrisma.nudge.createMany.mock.calls[0][0];
     expect(call.data.type).toBe("WEEKLY_SUMMARY");
     expect(call.data.message).toContain("4 impulse");
     expect(call.data.message).toContain("$89");
@@ -235,7 +238,7 @@ describe("WEEKLY_SUMMARY nudge", () => {
 
     await generateNudgesForUser(USER_ID);
 
-    expect(mockPrisma.nudge.create).not.toHaveBeenCalled();
+    expect(mockPrisma.nudge.createMany).not.toHaveBeenCalled();
   });
 });
 
@@ -255,8 +258,8 @@ describe("IMPULSE_FLAG nudge", () => {
 
     await generateNudgesForUser(USER_ID);
 
-    expect(mockPrisma.nudge.create).toHaveBeenCalledOnce();
-    const call = mockPrisma.nudge.create.mock.calls[0][0];
+    expect(mockPrisma.nudge.createMany).toHaveBeenCalledOnce();
+    const call = mockPrisma.nudge.createMany.mock.calls[0][0];
     expect(call.data.type).toBe("IMPULSE_FLAG");
     expect(call.data.message).toContain("Starbucks");
     expect(call.data.message).toContain("$7");
@@ -270,8 +273,8 @@ describe("IMPULSE_FLAG nudge", () => {
 
     await generateNudgesForUser(USER_ID);
 
-    expect(mockPrisma.nudge.create).toHaveBeenCalledOnce();
-    const call = mockPrisma.nudge.create.mock.calls[0][0];
+    expect(mockPrisma.nudge.createMany).toHaveBeenCalledOnce();
+    const call = mockPrisma.nudge.createMany.mock.calls[0][0];
     expect(call.data.type).toBe("IMPULSE_FLAG");
     expect(call.data.message).toContain("a purchase");
   });
@@ -281,12 +284,12 @@ describe("IMPULSE_FLAG nudge", () => {
 
     await generateNudgesForUser(USER_ID);
 
-    expect(mockPrisma.nudge.create).not.toHaveBeenCalled();
+    expect(mockPrisma.nudge.createMany).not.toHaveBeenCalled();
   });
 });
 
 describe("nudge deduplication", () => {
-  it("swallows the unique-constraint error when a nudge already exists for today", async () => {
+  it("skips a duplicate without aborting the transaction or sending a notification", async () => {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     mockPrisma.budget.findMany.mockResolvedValue([]);
@@ -294,14 +297,10 @@ describe("nudge deduplication", () => {
     mockPrisma.goal.findMany.mockResolvedValue([]);
     mockPrisma.transaction.aggregate.mockResolvedValue(aggResult(0));
 
-    // Dedup is enforced by the (userId, type, day) unique constraint:
-    // the duplicate create rejects with P2002 and must not throw out.
-    mockPrisma.nudge.create.mockRejectedValue(
-      Object.assign(new Error("Unique constraint failed"), { code: "P2002" })
-    );
+    mockPrisma.nudge.createMany.mockResolvedValue({ count: 0 });
 
     await expect(generateNudgesForUser(USER_ID)).resolves.toBeUndefined();
-    expect(mockPrisma.nudge.create).toHaveBeenCalledOnce();
+    expect(mockPrisma.nudge.createMany).toHaveBeenCalledOnce();
     // The push for the duplicate nudge must not be sent.
     expect(mockPrisma.user.findUnique).not.toHaveBeenCalled();
   });
@@ -314,7 +313,7 @@ describe("nudge deduplication", () => {
     mockPrisma.goal.findMany.mockResolvedValue([]);
     mockPrisma.transaction.aggregate.mockResolvedValue(aggResult(0));
 
-    mockPrisma.nudge.create.mockRejectedValue(new Error("db down"));
+    mockPrisma.nudge.createMany.mockRejectedValue(new Error("db down"));
 
     await expect(generateNudgesForUser(USER_ID)).rejects.toThrow("db down");
   });
@@ -327,7 +326,7 @@ it('labels recurring predictions explicitly instead of claiming a confirmed bill
   mockPrisma.transaction.aggregate.mockResolvedValue(aggResult(0));
   mockPrisma.recurringTransaction.findMany.mockResolvedValue([{ displayName: 'Internet', averageAmount: { toNumber: () => 85.25 }, nextDueDate: new Date(Date.now() + 86400000) }]);
   await generateNudgesForUser(USER_ID);
-  const message = mockPrisma.nudge.create.mock.calls[0][0].data.message;
+  const message = mockPrisma.nudge.createMany.mock.calls[0][0].data.message;
   expect(message).toContain('estimated $85.25');
   expect(message).toContain('not a confirmed due date');
   expect(message).not.toMatch(/overdraft|pure loss|hits tomorrow/);

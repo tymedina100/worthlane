@@ -1,4 +1,5 @@
 "use client";
+import { sessionFetch } from "@/src/lib/session-fetch";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,7 +40,7 @@ export default function RegisterPage() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/auth/register", {
+      const response = await sessionFetch("/api/auth/register", {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },

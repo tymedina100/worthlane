@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -25,6 +25,7 @@ import { useAuthStore } from "@/store/auth";
 import { ApiError, api } from "@/lib/api";
 import { completePlaidLink } from "@/lib/plaid-completion";
 import { plaidExitError } from "@/lib/plaid-exit";
+import { tracePlaidDevelopmentEvent } from "@/lib/plaid-development-diagnostics";
 import { useSubscription } from "@/hooks/useSubscription";
 import {
   ACCOUNT_TYPES,
@@ -217,6 +218,8 @@ function ManualAccountModal({
 }
 
 export default function ProfileScreen() {
+  const plaidLaunching = useRef(false);
+  const [openingPlaid, setOpeningPlaid] = useState(false);
   const { addAccount } = useLocalSearchParams<{ addAccount?: string }>();
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
@@ -351,14 +354,18 @@ export default function ProfileScreen() {
     ].map((key) => queryClient.invalidateQueries({ queryKey: [key] })));
   };
 
-  const launchPlaid = async (mode: "create" | "update", plaidItemId?: string) => {
+  const launchPlaid = async (mode: "create" | "update", plaidItemId?: string, purpose: "banking" | "investments" = "banking") => {
     const linkingUserId = useAuthStore.getState().userId;
-    if (!linkingUserId) return;
+    if (!linkingUserId || plaidLaunching.current) return;
+    // The SDK replaces session listeners on create; do not race two launches.
+    plaidLaunching.current = true;
+    setOpeningPlaid(true);
     try {
       const { linkToken } = await api.post<{ linkToken: string }>("/plaid/link-token", {
         platform: Platform.OS === "ios" ? "ios" : "android",
         mode,
         plaidItemId,
+        purpose,
       });
       if (useAuthStore.getState().userId !== linkingUserId) return;
 
@@ -366,7 +373,7 @@ export default function ProfileScreen() {
       const { createPlaidLinkSession } = require("react-native-plaid-link-sdk") as typeof import("react-native-plaid-link-sdk");
       const session = await createPlaidLinkSession({
         token: linkToken,
-        onEvent: () => {},
+        onEvent: tracePlaidDevelopmentEvent,
         onSuccess: async (success: LinkSuccess) => {
           await handlePlaidSuccess(success, mode, linkingUserId, plaidItemId);
         },
@@ -378,6 +385,9 @@ export default function ProfileScreen() {
       await session.open();
     } catch (error) {
       if (useAuthStore.getState().userId === linkingUserId) Alert.alert("Plaid unavailable", bankActionErrorMessage(error));
+    } finally {
+      plaidLaunching.current = false;
+      setOpeningPlaid(false);
     }
   };
 
@@ -574,7 +584,8 @@ export default function ProfileScreen() {
 
   return (
     <>
-      <ScrollView style={styles.container} contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.md }]}>
+      <View style={[styles.container, { paddingTop: insets.top }]}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <Text style={styles.title}>Settings</Text>
         <TouchableOpacity style={styles.secondaryButton} onPress={() => router.push("/onboarding")} accessibilityRole="button"><Text style={styles.secondaryButtonText}>Continue guided setup</Text></TouchableOpacity>
 
@@ -595,7 +606,9 @@ export default function ProfileScreen() {
           <View style={styles.actionRow}>
             {PLAID_ENABLED ? (
               <TouchableOpacity
-                style={styles.primaryButton}
+                style={[styles.primaryButton, openingPlaid && styles.buttonDisabled]}
+                disabled={openingPlaid}
+                accessibilityState={{ busy: openingPlaid }}
                 onPress={() => {
                   if (!isPremium && plaidItems.length >= 1) {
                     router.push("/paywall" as any);
@@ -604,7 +617,7 @@ export default function ProfileScreen() {
                   launchPlaid("create");
                 }}
               >
-                <Text style={styles.primaryButtonText}>Connect bank</Text>
+                <Text style={styles.primaryButtonText}>{openingPlaid ? "Opening bank connection..." : "Connect bank"}</Text>
               </TouchableOpacity>
             ) : null}
             <TouchableOpacity
@@ -616,6 +629,18 @@ export default function ProfileScreen() {
               </Text>
             </TouchableOpacity>
           </View>
+
+          {PLAID_ENABLED ? (
+            <View>
+              <TouchableOpacity accessibilityRole="button" disabled={openingPlaid} accessibilityState={{ busy: openingPlaid }} style={[styles.secondaryButton, openingPlaid && styles.buttonDisabled]} onPress={() => {
+                if (!isPremium && plaidItems.length >= 1) { router.push("/paywall" as any); return; }
+                launchPlaid("create", undefined, "investments");
+              }}>
+                <Text style={styles.secondaryButtonText}>Connect investments</Text>
+              </TouchableOpacity>
+              <Text style={styles.sectionSubtitle}>Connect brokerage and retirement balances for net worth. Holdings and trades are not imported. Connect checking separately for spending.</Text>
+            </View>
+          ) : null}
 
           {PLAID_ENABLED || plaidItems.length > 0 ? (
             <TouchableOpacity
@@ -686,7 +711,7 @@ export default function ProfileScreen() {
                       >
                         <Text style={styles.inlineButtonText}>Sync now</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity style={styles.inlineButton} onPress={() => launchPlaid("update", item.id)}>
+                      <TouchableOpacity disabled={openingPlaid} accessibilityState={{ busy: openingPlaid }} style={[styles.inlineButton, openingPlaid && styles.buttonDisabled]} onPress={() => launchPlaid("update", item.id)}>
                         <Text style={styles.inlineButtonText}>{item.needsRelink ? "Relink" : "Repair"}</Text>
                       </TouchableOpacity>
                       <TouchableOpacity style={styles.inlineDangerButton} onPress={() => confirmUnlink(item)}>
@@ -859,6 +884,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      </View>
 
       <ManualAccountModal
         visible={manualModalVisible}

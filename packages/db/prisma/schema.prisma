@@ -327,6 +327,7 @@ model PlaidItem {
   errorMessage         String?
   syncCursor           String?
   transactionHistoryStatus String @default("UNKNOWN")
+  consentRevision      Int @default(0) // invalidates in-flight snapshots after provider revocation
   lastSyncAt           DateTime?
   lastWebhookAt        DateTime?
   createdAt            DateTime        @default(now())

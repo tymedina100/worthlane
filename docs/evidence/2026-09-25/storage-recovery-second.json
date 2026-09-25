@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-09-25T16:14:38.397614+00:00",
+  "removed": [
+    {
+      "path": "/Users/tylermedina/Library/Caches/org.swift.swiftpm/artifacts",
+      "kilobytes": 212024
+    },
+    {
+      "path": "/Users/tylermedina/Library/Caches/org.swift.swiftpm/repositories",
+      "kilobytes": 340540
+    },
+    {
+      "path": "/Users/tylermedina/worthlane-beta-work/.tmp/eas-investment-development/Worthlane.app",
+      "kilobytes": 174440
+    },
+    {
+      "path": "/Users/tylermedina/worthlane-beta-work/.tmp/mac-signed-sandbox-20260921/mac-arm64",
+      "kilobytes": 281612
+    }
+  ],
+  "freeBytesBefore": 205180928,
+  "freeBytesAfter": 894164992,
+  "preserved": "Current signed Mac and current iOS candidate, older development archive, source/checkouts, simulator installed apps and evidence"
+}

@@ -1,0 +1,54 @@
+{
+  "date": "2026-09-22",
+  "source": "e985af829b79738c1faf755a9352b5697eba3041",
+  "ci": {
+    "run": 35777068765,
+    "number": 290,
+    "jobs": "all four passed"
+  },
+  "environment": "approved isolated Railway beta-sandbox",
+  "deployment": "c2fb95ea-9c6e-47e7-af23-d6e1382e33e8",
+  "deploymentStatus": "SUCCESS",
+  "health": "ready",
+  "runtimeSourceHashes": {
+    "apps/api/src/lib/plaid-accounts.ts": "cfddbf881da92a21dd9f24dc2d22d319e84aa03cfd2ebc3c614dca3f5445d6de",
+    "apps/api/src/lib/plaid-revocation.ts": "50fd8dd71a8fc5a785a95a2f0fe37d3dec09bf4b67085795f7f071dffefd7433",
+    "apps/api/src/lib/plaid-sync.ts": "4af049eaa5e24d9b8c0a6bb8e31036310c08f5926cf68b452884e243f5cc8132",
+    "apps/api/src/app/api/plaid/link-token/route.ts": "556b175992f50f366f749247cfdede08533e63fad4bc3de0749cf543ae794d88"
+  },
+  "runtimeSafety": {
+    "plaid": "sandbox",
+    "emailKeyPresent": false,
+    "paidAiKeyPresent": false
+  },
+  "signedWebhook": {
+    "actualProviderSignedRevocation": "passed",
+    "unsignedAndInvalidRejected": true,
+    "disposableFixtureCleanup": "completed"
+  },
+  "missingAccountCleanup": {
+    "staleSyntheticAccountAndImportRemoved": true,
+    "manualAmountPreserved": 7,
+    "manualPrivate": true,
+    "sameInvestmentIdsAndBalances": true,
+    "repeatSyncStable": true,
+    "disposableFixtureCleanup": "completed"
+  },
+  "persistedCouple": {
+    "beforeDeploy": "passed",
+    "afterDeploy": "passed",
+    "afterDisposableChecks": "passed",
+    "ownerLedger": 53,
+    "partnerLedger": 396,
+    "exactFinancialFieldsAndIds": true,
+    "householdResponsibilityTotal": 2450,
+    "privateManualFallback": 125.5,
+    "debtPlan": "three100payments at zero APR",
+    "dueHandoff": "one unpaid25 January31 item, reminders off, no payment transaction"
+  },
+  "limits": [
+    "Hosted API and HTTP evidence; not replay of every hosted browser/native screen.",
+    "Missing-account test seeds a stale synthetic record; not live-bank deselection.",
+    "No production deployment, live Plaid activation, paid plan change, public release or store submission."
+  ]
+}
