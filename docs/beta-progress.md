@@ -5706,3 +5706,16 @@ evidence/2026-09-25/development-oauth-preparation.json. Runtime handles API23660
 Metro19307 last confirmed live. No production/build spending/store actions.
 Next: fresh UI inspection after unlock, finish pending mock confirmation and
 provider/event readback; preserve current test state and avoid duplicate seeding.
+
+## September 25 — CI completion and dependency refresh
+
+CI330 at26617f1 passed all four jobs. Fresh production dependency audit remains
+2high/4moderate/0critical; four actual-caller parser/decoder regressions pass.
+Upstream image-size2.0.3 is now listed fixed, but isolated inspection proves its
+CommonJS export is not callable as existing Metro callers expect. Retain tested
+local patches pending a compatible migration; no dependency mutation or security
+clearance claimed. See dependency-security-status.md and
+ evidence/2026-09-25/dependency-refresh.json.
+Mac lock still blocks pending native OAuth confirmation; calendar/provider/
+distribution gates remain. The earlier planning ledger429 was resolved by the
+September25 full recheck. No production, spending or store action.
