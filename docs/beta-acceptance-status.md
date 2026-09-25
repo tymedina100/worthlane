@@ -751,3 +751,21 @@ next investigation to differences in the native return/update path, without
 claiming a root cause or native fix. Item is now healthy. Evidence:
 evidence/2026-09-25/oauth-browser-repair.json. No runtime, production, paid service
 or store changes. Reminder observation and remaining release gates stay open.
+
+## September 25 — native post-repair sync and configuration isolation
+
+After browser repair, actual iOS Sync now changes Needs relink to Healthy and
+removes the error, preserving both balances. API checks retain exact two account
+IDs/one Item,$23,952.74,zero activity; separate reviewer list/access/update/sync/
+unlink denial passes (different household). This is cross-client recovery, not
+completion of native OAuth repair.
+
+Both simulator binary slices embed the matching application identifier and
+associated domain; live website AASA matches. Empty codesign entitlements alone
+would have been misleading for this simulator binary. Current SDK retains its
+native session; official OAuth docs require no separate JS resume call.
+Development diagnostic vocabulary now preserves the observed REQUIRES_OAUTH
+code while still dropping raw metadata. Five privacy/release-silence tests pass;
+diff check passes. Evidence: evidence/2026-09-25/native-repair-isolation.json.
+No release behavior fix or production change claimed. Next: capture development
+native event sequence; independent calendar reminder observation remains open.

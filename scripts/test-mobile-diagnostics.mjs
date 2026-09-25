@@ -71,6 +71,15 @@ test('Plaid local diagnostics retain only fixed event vocabulary', () => {
   assert.equal(calls[1][1].eventName, 'OTHER');
   tracePlaidDevelopmentEvent({ eventName: 'ERROR', metadata: { errorCode: 'INCORRECT_OAUTH_NONCE' } });
   assert.equal(calls[2][1].errorCode, 'INCORRECT_OAUTH_NONCE');
+  // The observed repair failure must remain distinguishable from unknown errors,
+  // without retaining the provider's raw session identifiers or free text.
+  tracePlaidDevelopmentEvent({ eventName: 'FAIL_OAUTH', metadata: {
+    errorCode: 'REQUIRES_OAUTH', errorMessage: secret, linkSessionId: secret,
+    requestId: secret, metadataJson: secret,
+  } });
+  assert.equal(calls[3][1].errorCode, 'REQUIRES_OAUTH');
+  assert.equal(calls[3][1].hasError, true);
+  assert(!JSON.stringify(calls).includes(secret));
 });
 
 test('Plaid diagnostics do not inspect events or log in release builds', () => {
