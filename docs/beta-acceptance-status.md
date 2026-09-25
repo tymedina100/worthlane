@@ -1,4 +1,4 @@
-# Beta acceptance status — updated September 23, 2026
+# Beta acceptance status — updated September 25, 2026
 
 Source of requirements: [Worthlane brief](https://app.notion.com/p/3d57f32d407581d9a9eafcdb4d5ac152).
 The beta goal remains **active, not complete**. This index summarizes dated
@@ -675,3 +675,25 @@ now signed in as Sam. First fixture's plan/obligation and expired OAuth Item rem
 for further checks; original reminder Simulator untouched. No production/spending
 or store submission. Next: controlled OAuth comparison, reminder observation,
 remaining release/provider gates and fixture cleanup.
+
+## September 25 — interruption recovery and reminder outcome remains unverified
+
+Resumed after interruption. Git clean at5934e4e; prior Maestro handle97229 is
+missing and no simulator was booted. No result inferred from the interrupted
+iOS repair attempt. Original reminder Simulator D7C7C0D2 booted successfully.
+Read-only OS archives before/after boot show the September24 09:00Phoenix
+notification still pending and no delivered entries. Neither on-time nor overdue
+delivery is proved; shutdown timing is unknown. Original app/login/fixture was
+not launched, changed, logged out or rescheduled. This replaces any future-tense
+plan to observe September24 with an explicit incomplete result.
+
+Storage dropped to146MB free during recovery. With no active compiler/build
+process, removed only748MiB Xcode intermediate files and622MiB npm content cache;
+free space recovered to1.46GiB. Preserved source, built app products, dependency
+checkouts, credentials, simulator state and evidence. Exact evidence/manifests:
+evidence/2026-09-25/calendar-reminder-recovery.json and storage-cleanup.json.
+
+No production, spending, store action or successful OAuth repair claimed. Next:
+complete controlled native OAuth comparison; establish a fresh bounded reminder
+observation without repeating an unattended overnight assumption; remaining
+provider/distribution gates stay open.
