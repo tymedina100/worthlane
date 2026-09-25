@@ -5652,3 +5652,19 @@ Clean exit restored native Settings with Needs relink and original balances.
 Evidence: evidence/2026-09-25/oauth-alternative-repair.json. Next: compare the same
 Item through hosted browser update mode; bounded calendar-reminder observation
 remains separate. No runtime, production, spending or store changes.
+
+## September 25 — same-Item browser OAuth repair passes
+
+Native Chrome completed hosted Sandbox OAuth repair of the exact Item that
+repeatedly looped in iOS. Public mock login/code, IRA+401k-only selection, final
+mock confirmation and Finish without saving led to Connection saved and Healthy.
+Reload retains Healthy, personal visibility and original two balances. Independent
+API/provider checks confirm exact baseline IDs, one Item, $23,952.74, zero spending/
+transactions, Investments only, and cleared provider login error.
+
+The in-app browser rendered Link but did not complete the observed popup handoff;
+its temporary test tab was closed. This successful Chrome control narrows the
+next investigation to differences in the native return/update path, without
+claiming a root cause or native fix. Item is now healthy. Evidence:
+evidence/2026-09-25/oauth-browser-repair.json. No runtime, production, paid service
+or store changes. Reminder observation and remaining release gates stay open.
