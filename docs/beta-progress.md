@@ -5639,3 +5639,16 @@ pending/undelivered evidence so only the current candidate runs.
 Evidence: evidence/2026-09-25/native-recovery-and-repair.json and two additional
 storage manifests. No production/spending/store actions. Scheduled calendar
 delivery, OAuth repair and provider/distribution gates remain open.
+
+## September 25 — alternative mock OAuth repair also loops
+
+On the same current iOS candidate and expired Sandbox investment Item, disabled
+the mock bank account-selection simulation before final confirmation. The return
+again showed Continue to login rather than Success. This rules out skipping that
+simulation as a sufficient workaround; it does not establish a callback root cause.
+Independent API/provider readback retains exact two account IDs/one Item,
+$23,952.74, zero spending/transactions, Investments only and ITEM_LOGIN_REQUIRED.
+Clean exit restored native Settings with Needs relink and original balances.
+Evidence: evidence/2026-09-25/oauth-alternative-repair.json. Next: compare the same
+Item through hosted browser update mode; bounded calendar-reminder observation
+remains separate. No runtime, production, spending or store changes.
