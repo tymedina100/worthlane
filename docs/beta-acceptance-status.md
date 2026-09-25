@@ -802,3 +802,15 @@ clearance claimed. See dependency-security-status.md and
 Mac lock still blocks pending native OAuth confirmation; calendar/provider/
 distribution gates remain. The earlier planning ledger429 was resolved by the
 September25 full recheck. No production, spending or store action.
+
+## September 25 — upstream image parser fixes adopted
+
+Upgraded all Metro image-size edges to upstream2.0.3, replacing parser backports
+with a small CommonJS/filename compatibility adapter. Upstream parser logic is
+unchanged. Expanded actual-caller tests cover all three reachable Metro versions,
+including file-backed metadata;11tests pass. Frozen install and complete iOS
+export(1958modules/42assets) pass. Fresh production audit now0high/0critical/
+4moderate, with no suppressions. This supersedes the earlier deferred migration.
+Evidence: evidence/2026-09-25/upstream-image-parser.json. Mac still locked; native
+OAuth/calendar/provider/distribution gates remain. No deployment/spending/store
+action. Next: native trace after unlock and current-candidate release checks.

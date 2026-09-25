@@ -1,0 +1,19 @@
+diff --git a/dist/cjs/index.js b/dist/cjs/index.js
+--- a/dist/cjs/index.js
++++ b/dist/cjs/index.js
+@@ -7,3 +7,15 @@
+ Object.defineProperty(exports, "default", { enumerable: true, get: function () { return lookup_1.imageSize; } });
+ var types_1 = require("./types");
+ Object.defineProperty(exports, "types", { enumerable: true, get: function () { return types_1.types; } });
++
++// Metro 0.83 callers use a callable CommonJS export and synchronous filenames.
++// Keep that build-tool boundary compatible without changing the upstream parsers.
++const metroImageSize = (input) => lookup_1.imageSize(
++    typeof input === "string" ? require("node:fs").readFileSync(input) : input
++);
++module.exports = Object.assign(metroImageSize, {
++    imageSize: lookup_1.imageSize,
++    default: metroImageSize,
++    disableTypes: lookup_1.disableTypes,
++    types: types_1.types,
++});

@@ -1,14 +1,13 @@
-# Dependency security review — September 21, 2026
+# Dependency security review — updated September 25, 2026
 
 This is a dependency/caller review, not a certification of organization-wide
 security controls. The original production dependency audit reported60high,
-24moderate and3low findings. Compatible upgrades removed most findings. The
-registry still reports2high/4moderate because it evaluates package versions,
-including locally patched packages. No advisory ignore was added.
+24moderate and3low findings. Compatible upgrades removed most findings. The latest registry audit reports zero high/critical and four moderate findings
+after the image-size 2.0.3 migration below. No advisory ignore was added.
 
 | Remaining package | Caller and disposition | Evidence / limit |
 | --- | --- | --- |
-| image-size1.2.1 (two high findings) | Metro build-time asset dimensions. Content sniffing means a renamed PNG can reach ICNS/JXL/HEIF parsers. Locally patched ICNS entry lengths and ISO box progress/header bounds. | `patches/image-size@1.2.1.patch`; actual Metro tests reject malformed buffers within child deadlines and preserve real PNG/AVIF and ICNS dimensions. Frozen install and iOS export pass. The September 25 registry now lists 2.0.3 as fixed; it still flags this locally patched 1.2.1 version. See the compatibility check below. |
+| image-size2.0.3 (high findings cleared) | Metro uses the fixed upstream parsers. A small CommonJS adapter preserves its synchronous byte/filename calls. | `patches/image-size@2.0.3.patch`; tests cover all three reachable Metro versions, real images, file-backed metadata, and malformed image termination. |
 | decode-uri-component0.2.2 | Expo Router → query-string. Backported upstream0.5 bounded decoding while retaining CommonJS/plus semantics. | Original version timed out on the synthetic malformed query; patched actual caller passes Unicode/plus/repeated-key/malformed-input tests. Registry warning retained. |
 | fast-xml-parser4.5.5 | React Native Android CLI `getMainActivity` uses XMLParser/XMLValidator on AndroidManifest.xml, not XMLBuilder. The remaining finding concerns XMLBuilder comment/CDATA serialization. | Inspected installed caller; affected operation not found in this path. This does not declare every possible use safe. Revisit if builder use is introduced. |
 | uuid7/9 | Xcode project generation and Sentry Webpack plugin call v4 without a caller-provided output buffer. The advisory concerns v3/v5/v6 with a buffer. | Inspected `xcode/lib/pbxProject.js` and `@sentry/webpack-plugin/dist/cjs/index.js`; vulnerable operation not used by these callers. Revisit with dependency/caller changes. |
@@ -42,3 +41,19 @@ The former statement that no patched range exists is superseded.
 Inspected the official npm 2.0.3 package in an isolated temporary directory without changing the workspace install. Its CommonJS export is an object containing `imageSize`/`default`; calling the export itself throws. Existing Metro callers expect a callable CommonJS export. Therefore a blind major-version override is not compatible; a future upstream migration must adapt and verify the actual callers and mobile bundling. Existing local patches remain in place with no advisory suppression.
 
 `node --test scripts/test-router-query-decoder.mjs scripts/test-metro-image-parsers.mjs` passes all four tests again: real PNG/AVIF/ICNS dimensions, malformed ICNS/JXL/HEIF termination, and normal/malformed router queries. No production deployment or dependency mutation was performed. Evidence: `evidence/2026-09-25/dependency-refresh.json`.
+
+## September 25 upstream parser migration
+
+Supersedes the earlier decision to defer migration. All Metro image-size edges
+now resolve to 2.0.3. Replaced the old parser backports with a CommonJS adapter
+that keeps the callable default and synchronous filename inputs used by Metro;
+the upstream parser implementations are unchanged. Named `imageSize` and ESM
+exports keep the upstream byte-input API. No asynchronous filename API is added.
+
+Expanded the actual-caller regressions to Metro 0.83.1, 0.83.3 and 0.83.5,
+including file-backed asset metadata (missed by the former buffer-only coverage).
+All eleven parser/router tests pass. Frozen install and the full iOS export
+(1,958 modules, 42 assets) succeed. A fresh production
+audit reports zero high, zero critical and four moderate findings; the moderate
+dispositions above remain applicable. This is dependency evidence, not native
+banking acceptance, organization-wide security certification or deployment.

@@ -19,6 +19,7 @@ overrides:
   fast-xml-parser@>=4.0.0 <4.5.5: 4.5.5
   form-data@>=4.0.0 <4.0.6: 4.0.6
   jest-util>picomatch: 2.3.2
+  metro>image-size: 2.0.3
   joi@>=17.0.0 <17.13.6: 17.13.6
   js-yaml@>=3.0.0 <3.15.2: 3.15.2
   js-yaml@>=4.0.0 <4.3.2: 4.3.2
@@ -39,9 +40,9 @@ patchedDependencies:
   decode-uri-component@0.2.2:
     hash: 03916a0d49e4b6a7e732e355cb818634b1a564c5429c69913b85e38bb05575f8
     path: patches/decode-uri-component@0.2.2.patch
-  image-size@1.2.1:
-    hash: be0f2a6c5d8f4c16a375d998d5e13421d26c4cb69d7804601074ed33cbfa328a
-    path: patches/image-size@1.2.1.patch
+  image-size@2.0.3:
+    hash: 680e549a30e66ab7ee8741a661edaf772d91fe45b3be8729907977901714ab9c
+    path: patches/image-size@2.0.3.patch
 
 importers:
 
@@ -4471,9 +4472,9 @@ packages:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
 
-  image-size@1.2.1:
-    resolution: {integrity: sha512-rH+46sQJ2dlwfjfhCyNx5thzrv+dtmBIhPHk0zgRUukHzZ/kRueTJXoYYsclBaKcSMBWuGbOFXtioLpzTb5euw==}
-    engines: {node: '>=16.x'}
+  image-size@2.0.3:
+    resolution: {integrity: sha512-9BJAtVCBth+76NwqnEfWr3PiRnYhbquk6K/USuQ1GQajz5NgLzO7tNsnoNjHfO7LuftgkBf+CCH6j28hjMbIYQ==}
+    engines: {node: '>=18'}
     hasBin: true
 
   import-fresh@2.0.0:
@@ -5803,9 +5804,6 @@ packages:
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
-
-  queue@6.0.2:
-    resolution: {integrity: sha512-iHZWu+q3IdFZFX36ro/lKBkSvfkztY5Y7HMiPlOUjhupPcG2JMfst2KKEpu5XndviX/3UhFbRngUPNKtgvtZiA==}
 
   quick-lru@5.1.1:
     resolution: {integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==}
@@ -11890,9 +11888,7 @@ snapshots:
 
   ignore@5.3.2: {}
 
-  image-size@1.2.1(patch_hash=be0f2a6c5d8f4c16a375d998d5e13421d26c4cb69d7804601074ed33cbfa328a):
-    dependencies:
-      queue: 6.0.2
+  image-size@2.0.3(patch_hash=680e549a30e66ab7ee8741a661edaf772d91fe45b3be8729907977901714ab9c): {}
 
   import-fresh@2.0.0:
     dependencies:
@@ -12830,7 +12826,7 @@ snapshots:
       flow-enums-runtime: 0.0.6
       graceful-fs: 4.2.11
       hermes-parser: 0.29.1
-      image-size: 1.2.1(patch_hash=be0f2a6c5d8f4c16a375d998d5e13421d26c4cb69d7804601074ed33cbfa328a)
+      image-size: 2.0.3(patch_hash=680e549a30e66ab7ee8741a661edaf772d91fe45b3be8729907977901714ab9c)
       invariant: 2.2.4
       jest-worker: 29.7.0
       jsc-safe-url: 0.2.4
@@ -12877,7 +12873,7 @@ snapshots:
       flow-enums-runtime: 0.0.6
       graceful-fs: 4.2.11
       hermes-parser: 0.32.0
-      image-size: 1.2.1(patch_hash=be0f2a6c5d8f4c16a375d998d5e13421d26c4cb69d7804601074ed33cbfa328a)
+      image-size: 2.0.3(patch_hash=680e549a30e66ab7ee8741a661edaf772d91fe45b3be8729907977901714ab9c)
       invariant: 2.2.4
       jest-worker: 29.7.0
       jsc-safe-url: 0.2.4
@@ -12924,7 +12920,7 @@ snapshots:
       flow-enums-runtime: 0.0.6
       graceful-fs: 4.2.11
       hermes-parser: 0.33.3
-      image-size: 1.2.1(patch_hash=be0f2a6c5d8f4c16a375d998d5e13421d26c4cb69d7804601074ed33cbfa328a)
+      image-size: 2.0.3(patch_hash=680e549a30e66ab7ee8741a661edaf772d91fe45b3be8729907977901714ab9c)
       invariant: 2.2.4
       jest-worker: 29.7.0
       jsc-safe-url: 0.2.4
@@ -13505,10 +13501,6 @@ snapshots:
       strict-uri-encode: 2.0.0
 
   queue-microtask@1.2.3: {}
-
-  queue@6.0.2:
-    dependencies:
-      inherits: 2.0.4
 
   quick-lru@5.1.1: {}
 
