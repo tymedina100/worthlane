@@ -697,3 +697,28 @@ No production, spending, store action or successful OAuth repair claimed. Next:
 complete controlled native OAuth comparison; establish a fresh bounded reminder
 observation without repeating an unattended overnight assumption; remaining
 provider/distribution gates stay open.
+
+## September 25 — planning recheck passes; native OAuth repair reproduced
+
+Current iOS86001c0 restored saved23952.74/0activity and the Android-created25
+obligation after boot. Full android-debt-handoff-check.cjs now passes: saved
+Snowball inputs/exact estimate,one25 unpaid dueSept27/reminderNONE, unchanged
+ledger and other-login plan denial. This resolves the earlier429 verification gap.
+
+Fresh iOS OAuth repair completed public mock login/1234, visibly selected only
+IRA/401k, left optional identity/routing unchecked, checked mock confirmation and
+submitted. Again returned to Plaid login, not Success. API/provider confirm exact
+original accounts/Item and23952.74,0activity,Investments-only,ITEM_LOGIN_REQUIRED.
+Verified clean exit returns Settings with Needs relink/original balances.
+No runtime patch or root cause claim. Next comparison should change the mock
+account-selection path or client, not repeat this identical failing flow.
+
+Two test-driver attempts encountered disk-full errors. Bounded cleanup removed
+obsolete app extractions/regenerable Swift caches and unused Android system-image
+package. Android AVD data/currentAPK retained, but image reinstall is needed for
+Android testing. Current iOS/Mac artifacts/source/credentials/evidence retained.
+Finalfree4.3GiB. Original reminder device was shut down after preserving its
+pending/undelivered evidence so only the current candidate runs.
+Evidence: evidence/2026-09-25/native-recovery-and-repair.json and two additional
+storage manifests. No production/spending/store actions. Scheduled calendar
+delivery, OAuth repair and provider/distribution gates remain open.
