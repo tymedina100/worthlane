@@ -769,3 +769,23 @@ code while still dropping raw metadata. Five privacy/release-silence tests pass;
 diff check passes. Evidence: evidence/2026-09-25/native-repair-isolation.json.
 No release behavior fix or production change claimed. Next: capture development
 native event sequence; independent calendar reminder observation remains open.
+
+## September 25 — development OAuth trace prepared; Mac lock interruption
+
+Restored existing local PG55439/API3101/Metro8087 and installed development
+client95061ba9. Saved session restored; reminder refresh warning cleared through
+actual Retry after API startup. No calendar delivery observed. Added/expired a
+separate local synthetic OAuth investment Item while preserving original control
+and hosted repaired Item. Four local investment accounts now total$47,905.48,
+zero activity; guarded exact-ID/balance check passes.
+
+Filtered events reach OPEN_OAUTH. Second handoff opens mock bank; public login/
+code complete and IRA/401k visibly selected. Computer Use then reports Mac locked,
+so final confirmation/return trace remain pending user unlock. No bypass attempted.
+Storage fell below300MiB; no active compiler/build found, removed three regenerable
+Xcode downloaded-artifact caches (~2.6GiB logical), retaining source checkouts and
+built products. Free space3.0GiB. Evidence:
+evidence/2026-09-25/development-oauth-preparation.json. Runtime handles API23660/
+Metro19307 last confirmed live. No production/build spending/store actions.
+Next: fresh UI inspection after unlock, finish pending mock confirmation and
+provider/event readback; preserve current test state and avoid duplicate seeding.
