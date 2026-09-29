@@ -12,6 +12,25 @@ This starts API port 3301 and desktop port 3303. Mobile uses `EXPO_PUBLIC_API_UR
 
 `test-http.mjs --interactive --sandbox` is different: it creates temporary connections and revokes them on completion. It now removes their local account/transaction records too. Existing records from older test runs are not silently deleted; they may reference previously revoked Sandbox Items. Use a fresh synthetic login for persistent testing until those old fixtures are cleaned up.
 
+## Transaction sync and optional paid refresh
+
+The app's Sync action retrieves available banking transaction updates through
+`/transactions/sync`. Production skips `/transactions/refresh` unless
+`PLAID_TRANSACTIONS_REFRESH_ENABLED` is exactly `true`. Leave it unset or `false`
+until product access, current pricing and spending approval are confirmed. This
+setting does not enable the provider product or configure any live environment.
+Sandbox keeps forced refresh available for synthetic lifecycle/recovery tests,
+regardless of the production opt-in value; investment-only Items never use it.
+
+Plaid's normal update schedule continues without forced refresh. Optional refresh
+errors `PRODUCTS_NOT_SUPPORTED` and `PRODUCT_NOT_ENABLED` fall back to sync;
+authentication, consent, institution and other failures remain visible rather
+than being overwritten by a successful cached read. A successful sync means
+available updates were retrieved, not that the institution was fetched in real
+time. Sources: [Transactions API](https://plaid.com/docs/api/products/transactions/#transactionsrefresh),
+[refresh billing](https://plaid.com/docs/account/billing/#per-request-flat-fee),
+[Item errors](https://plaid.com/docs/errors/item/).
+
 ## iOS association — approved website routes published
 
 The user confirmed ownership of `worthlane.app`. The local personal Apple Development certificate has organizational unit/team ID `5FBXR5M5PJ`. This does not prove paid-program membership or entitlement availability. Do not use the separate company signing identity for Worthlane without user direction.
@@ -98,3 +117,31 @@ to127.0.0.1:3301 and must not be mistaken for a phone-accessible localhost URL.
 Tyler subsequently signed into Xcode and Plaid. Later September 10 progress records a successful personal-team signed build and installation; see `beta-progress.md`. These are historical results. Current work is laptop-only, and the original failed-build prerequisite above is no longer an active blocker.
 
 A historical Chrome extension UI interruption was not bypassed. Desktop Sandbox acceptance later completed; current native interaction uses the laptop simulator through Maestro.
+
+## Bank-side consent revocation
+
+Verified ITEM/USER_ACCOUNT_REVOKED notices require a nonempty provider account ID;
+ITEM/USER_PERMISSION_REVOKED applies to the whole stored Item. The owner comes
+from the stored Item, never webhook user fields. Revocation removes affected
+imported accounts/activity, household access/match links, related recurring
+predictions, and the owner's generated planning notices and net-worth history
+cache. Historical aggregate snapshots cannot be separated by source account, so
+that cache is discarded and current totals are rebuilt from remaining accounts.
+Manually entered transactions are moved to a private, zero-balance “Saved manual
+entries” account. Other accounts, logins, manual bills and saved debt plans remain.
+
+Migration `20260922190000_plaid_consent_revision` must precede this API rollout.
+Each revocation increments the Item's consent revision; stale account saves,
+transaction batches and investment/error status writes cannot override it.
+Recurring predictions, notices and net-worth snapshots use serializable database
+transactions so concurrent revocation cannot leave stale derived writes behind.
+A subsequent sync fetches a fresh authorized account snapshot from Plaid; user
+re-granting access at the provider may make those accounts available again.
+This is not proof of signed hosted webhook delivery or real-bank behavior.
+Reference: https://plaid.com/docs/api/items/#user_account_revoked
+
+Webhook signatures are required in every environment, including Sandbox. Trigger
+provider-signed deliveries with Plaid's Sandbox webhook endpoint. The guarded
+`scripts/test-hosted-signed-webhook.cjs` runs only inside the approved isolated
+Railway API with WORTHLANE_HOSTED_SANDBOX_APPROVED=true; it creates and removes a
+disposable synthetic fixture and does not use existing reviewers' bank Items.

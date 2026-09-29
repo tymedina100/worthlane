@@ -7,7 +7,7 @@ import { calendarDateInTimeZone } from "@worthlane/core";
 // Bank-derived spending uses posted transactions. Pending authorizations can
 // change amount or ID; a posted replacement removes any legacy pending row.
 export async function applyPlaidSyncBatch(
-  item: { id: string; userId: string; syncCursor: string | null },
+  item: { id: string; userId: string; syncCursor: string | null; consentRevision?: number },
   accountMap: Map<string, string>,
   changes: { added: Transaction[]; modified: Transaction[]; removed: Array<{ transaction_id: string }> },
   nextCursor: string,
@@ -26,7 +26,7 @@ export async function applyPlaidSyncBatch(
       const membership = await db.householdMember.findFirst({ where: { userId: item.userId, status: "ACTIVE" }, select: { household: { select: { timezone: true } } } });
       const timeZone = membership?.household.timezone ?? "UTC";
       const current = await db.plaidItem.findFirst({ where: { id: item.id, userId: item.userId } });
-      if (!current || current.syncCursor !== item.syncCursor) throw new PlaidIntegrationError("Another sync finished. Refresh and try again.", { code: "SYNC_CONFLICT", status: 409 });
+      if (!current || current.syncCursor !== item.syncCursor || current.consentRevision !== (item.consentRevision ?? 0)) throw new PlaidIntegrationError("Another sync finished. Refresh and try again.", { code: "SYNC_CONFLICT", status: 409 });
       for (const { transaction: tx, accountId, categoryId } of prepared) {
         if (tx.pending) {
           await db.transaction.deleteMany({ where: { userId: item.userId, accountId, plaidTransactionId: tx.transaction_id } });

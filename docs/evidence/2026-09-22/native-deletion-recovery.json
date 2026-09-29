@@ -1,0 +1,63 @@
+{
+  "date": "2026-09-22",
+  "source": "bc331be",
+  "surface": "iOS18.3 laptop development Simulator / local API3101 / synthetic account",
+  "fault": "Temporary development-and-Sandbox-only 503 for disposable bill name; route restored byte-for-byte SHA256 602defbb4acc1f5e501ae854ae3fd9eb7e9eea1297216d0d07e4fb1261b3eb5b",
+  "observed": [
+    "Startup reminder refresh warning exposed timeout; native Retry cleared warning and queued reminder before test",
+    "Native Delete confirmation returned Could not update item / synthetic outage",
+    "Failed deletion retained saved bill and exactly one matching OS reminder",
+    "After removing fault, native retry removed disposable bill",
+    "Original calendar fixture preserved; no orphan pending notification"
+  ],
+  "afterFailedDeletion": {
+    "checkedAt": "2026-09-22T20:59:17.331611+00:00",
+    "source": "iOS Simulator UserNotifications pending archive, resolved by Worthlane bundle identifier",
+    "pendingMatchingBillCount": 1,
+    "ownerMatchesFreshSyntheticLogin": true,
+    "savedDueDate": "2026-09-23",
+    "savedReminderTiming": "DUE_DATE",
+    "savedAmount": 1,
+    "isPaid": false,
+    "nativeTriggerType": "TimeInterval",
+    "nativeRepeats": false,
+    "derivedTriggerUtc": "2026-09-23T16:00:00.001638+00:00",
+    "expectedPhoenixTime": "2026-09-23T09:00:00-07:00",
+    "withinTwoSecondsOfExpected": true,
+    "title": "Upcoming payment",
+    "deliveryObserved": false,
+    "limits": [
+      "Read-only OS scheduling proof, not actual delivery",
+      "Keep Simulator running and synthetic login intact; logout cancels reminders",
+      "No phone or production banking involved"
+    ]
+  },
+  "afterSuccessfulRetry": {
+    "checkedAt": "2026-09-22T21:00:42.531232+00:00",
+    "source": "iOS Simulator UserNotifications pending archive, resolved by Worthlane bundle identifier",
+    "pendingMatchingBillCount": 1,
+    "ownerMatchesFreshSyntheticLogin": true,
+    "savedDueDate": "2026-09-23",
+    "savedReminderTiming": "DUE_DATE",
+    "savedAmount": 1,
+    "isPaid": false,
+    "nativeTriggerType": "TimeInterval",
+    "nativeRepeats": false,
+    "derivedTriggerUtc": "2026-09-23T16:00:00.014369+00:00",
+    "expectedPhoenixTime": "2026-09-23T09:00:00-07:00",
+    "withinTwoSecondsOfExpected": true,
+    "title": "Upcoming payment",
+    "disposableBillRemoved": true,
+    "noOrphanPendingReminder": true,
+    "deliveryObserved": false,
+    "limits": [
+      "Read-only OS scheduling proof, not actual delivery",
+      "Keep Simulator running and synthetic login intact; logout cancels reminders",
+      "No phone or production banking involved"
+    ]
+  },
+  "limits": [
+    "Actual September23 delivery remains unobserved",
+    "No physical phone, production changes or store submission"
+  ]
+}

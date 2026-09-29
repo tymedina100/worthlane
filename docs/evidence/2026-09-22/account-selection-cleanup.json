@@ -1,0 +1,38 @@
+{
+  "date": "2026-09-22",
+  "implementation": "Complete successful provider account snapshots remove missing accounts and imported/derived data atomically, preserve authored transactions in private zero-balance manual accounts, and advance consentRevision to reject superseded snapshots. Sync carries the resulting revision into transaction/status writes.",
+  "validation": {
+    "apiTests": 260,
+    "typecheck": "passed",
+    "postgresTests": 15,
+    "realSandboxRegressions": 3,
+    "databaseCases": [
+      "partial selection",
+      "empty selection",
+      "repeated selection",
+      "no-change revision advancement",
+      "manual and partner preservation",
+      "stale account/transaction snapshot rejection",
+      "atomic rollback on ownership conflict"
+    ]
+  },
+  "nativeTest": {
+    "setup": "Locally seeded a deliberately stale synthetic provider account plus $20 import and $7 authored transaction on the existing Sandbox investment fixture. A complete real provider response excludes this seeded account.",
+    "readback": {
+      "removedStaleAccount": true,
+      "removedImportedTransaction": true,
+      "manualAmount": 7,
+      "manualPrivate": true,
+      "manualBalance": 0,
+      "investmentIdsUnchanged": true,
+      "netWorth": 23952.74,
+      "monthlySpending": 7,
+      "accounts": 3,
+      "at": "2026-09-22T19:54:54.901Z"
+    },
+    "scope": "Native Sync now exercised cleanup. This is a seeded stale-account reconciliation test, not proof of clicking deselect on a real bank consent page.",
+    "dashboard": "Cold launch visibly retained authenticated session, net worth23952.74, spent7, received0; Settings showed two investment accounts and Saved manual entries balance0.",
+    "cleanup": "Disposable preserved manual entry/account removed under synthetic-test guard; independent readback restored two original investment accounts, zero transactions/spending, net worth23952.74, Healthy."
+  },
+  "release": "No new migration, production deployment, paid product activation or store submission."
+}

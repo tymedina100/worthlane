@@ -1,9 +1,11 @@
 import crypto from "crypto";
+import { validateLiveLinkConfiguration } from "./plaid-link-configuration";
 import jwt from "jsonwebtoken";
 import {
   Configuration,
   CountryCode,
   LinkTokenCreateRequest,
+  InvestmentAccountSubtype,
   PlaidApi,
   PlaidEnvironments,
   Products,
@@ -181,17 +183,27 @@ export async function createLinkToken(
     mode: PlaidLinkMode;
     accessToken?: string;
     includeLiabilities?: boolean;
+    purpose?: "banking" | "investments";
   }
 ) {
+  validateLiveLinkConfiguration(options.platform);
+  if (options.purpose === "investments" && !isPlaidSandbox() && process.env.PLAID_INVESTMENTS_ENABLED !== "true") {
+    throw new PlaidIntegrationError("Investment connections are not enabled here. Use manual entry.", { status: 503, code: "INVESTMENTS_DISABLED" });
+  }
   const request: LinkTokenCreateRequest = {
     user: { client_user_id: userId },
     client_name: "Worthlane",
-    products: options.mode === "create" ? [Products.Transactions] : undefined,
+    products: options.mode === "create" ? [options.purpose === "investments" ? Products.Investments : Products.Transactions] : undefined,
     additional_consented_products: options.includeLiabilities ? [Products.Liabilities] : undefined,
+    // Keep investment consent aligned with the balances-only connection.
+    // Checking and cards use the separate banking flow.
+    account_filters: options.purpose === "investments"
+      ? { investment: { account_subtypes: [InvestmentAccountSubtype.All] } }
+      : undefined,
     country_codes: [CountryCode.Us],
     language: "en",
     webhook: getWebhookUrl(),
-    transactions: options.mode === "create" ? { days_requested: 730 } : undefined,
+    transactions: options.mode === "create" && options.purpose !== "investments" ? { days_requested: 730 } : undefined,
   };
 
   if (options.platform === "ios") {
@@ -249,6 +261,14 @@ export async function syncTransactions(accessToken: string, cursor?: string) {
 }
 
 export async function refreshTransactions(accessToken: string) {
+  // Refresh is a separately billed add-on, unlike retrieving available updates
+  // with /transactions/sync. Sandbox remains available for recovery tests.
+  const environment = process.env.PLAID_ENV ?? "sandbox";
+  if (environment !== "sandbox" &&
+    !(environment === "production" && process.env.PLAID_TRANSACTIONS_REFRESH_ENABLED === "true")) {
+    return;
+  }
+
   try {
     await plaidClient.transactionsRefresh({ access_token: accessToken });
   } catch (error) {
@@ -257,9 +277,13 @@ export async function refreshTransactions(accessToken: string) {
 }
 
 export async function getAccounts(accessToken: string) {
+  return (await getAccountSnapshot(accessToken)).accounts;
+}
+
+export async function getAccountSnapshot(accessToken: string) {
   try {
     const response = await plaidClient.accountsGet({ access_token: accessToken });
-    return response.data.accounts;
+    return { accounts: response.data.accounts, products: response.data.item.products ?? response.data.item.billed_products };
   } catch (error) {
     throw toPlaidIntegrationError(error, "Could not load institution accounts right now.");
   }
@@ -322,8 +346,7 @@ export async function verifyPlaidWebhook(
   }
 }
 
-/** Local/sandbox development without the verification header is allowed;
- *  anything else must present a valid signature. */
+/** Identifies the provider environment; webhook signatures are required in both. */
 export function isPlaidSandbox(): boolean {
   return (process.env.PLAID_ENV ?? "sandbox") === "sandbox";
 }

@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-09-25T16:24:12.820951+00:00",
+  "candidate": "iOS aced2d4e/source86001c0, D9057EC1 simulator",
+  "startup": "Cold start restored23952.74 and0spending/income; showed Android-authored25 obligation due in2days.",
+  "planningRecheck": "android-debt-handoff-check.cjs passed completely: persisted SNOWBALL,1000current/800statement/25minimum/100budget/0APR, payoff2027-06/10months/0interest; one25 unpaid dueSept27/reminderNONE; other login cannot list/read plan; netWorth23952.74,0spending/transactions. Earlier429 gap resolved.",
+  "oauthRetry": "Fresh native Relink, public mock login/1234, screenshot-confirmed checked IRA+401k with other accounts unchecked, optional identity/routing unchecked, mock terms checkbox and final confirmation. Returns to Plaid login prompt, no Success.",
+  "providerReadback": "ITEM_LOGIN_REQUIRED; investments-only; exact original2accounts/Item and23952.74 retained,0transactions/spending.",
+  "exit": "Coordinate-confirmed Yes exit returns usable Settings with Needs relink and original320.76/23631.98 balances.",
+  "automation": "CUA native taps unavailable; authorized Maestro used. Text selectors repeatedly reported completed without navigation, so screenshots/coordinates determined actual outcome. One fractional-coordinate parse failure corrected to integer before input. Two disk-full driver failures recorded; no success inferred.",
+  "storage": "Removed unneeded old app extractions and regenerable Swift cache; then unused4.3GiB Android system-image package. Retained AVD data/currentAPK and currentiOS/Mac artifacts; Android needs image reinstall. Finalfree4.3GiB.",
+  "next": "Do not repeat identical flow. Compare mock OAuth with account-selection simulation disabled or another client; preserve investment-only filtering and exact-ID/ledger/privacy assertions. No root cause proven."
+}

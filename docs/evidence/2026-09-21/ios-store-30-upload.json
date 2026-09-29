@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-09-21T22:10:52.759768+00:00",
+  "build": "e47249aa-9e37-4cf9-a35f-14c7de692cdc",
+  "version": "1.0.0",
+  "buildNumber": 30,
+  "source": "74c6bbf0685efefe0e5a5e6f905f3b98d7119998",
+  "submissionJob": "a693881e-2254-4a81-b1fe-c4edc1c614e9",
+  "easUploadStatus": "Succeeded",
+  "appleBuildId": "2208b168-2933-459e-b64f-0f16400262f1",
+  "appleUploadStatus": "Complete",
+  "draftAttached": true,
+  "appReviewSubmitted": false,
+  "testerInvitationsSentByAgent": false,
+  "scope": "User approved uploading verified Sandbox build30 for private processing and draft attachment. Existing EAS-hosted ASC API key reused; no new credential or group assignment requested.",
+  "appleBuildStatus": "Ready to Submit",
+  "draftReloadVerified": true,
+  "draftStatus": "Prepare for Submission",
+  "releaseMode": "Manual",
+  "reviewerNotesUpdated": true,
+  "automaticInternalDistribution": {
+    "group": "Team (Expo)",
+    "existingMembers": 1,
+    "membership": "Owner Tyler only",
+    "setting": "Automatic for Xcode Builds",
+    "assignmentRequestedByAgent": false,
+    "externalTestersAdded": false,
+    "note": "Apple automatically assigned the uploaded build to the pre-existing internal group. This is distinct from App Review submission or adding/inviting new testers. Portal installation metadata is not a physical-device journey verification."
+  }
+}

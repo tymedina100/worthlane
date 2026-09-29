@@ -69,3 +69,62 @@ test('unlink refreshes household and personal totals even after an uncertain req
   f.release(); await completion;
   assert.deepEqual(new Set(f.refreshed), new Set(dependencies));
 });
+
+function launchFixture() {
+  let currentUser = 'avery';
+  const requests = [], sessions = [], opened = [], busy = [], alerts = [];
+  let rejectToken = false, failOpen = false;
+  let releaseToken, releaseCreate;
+  const tokenGate = new Promise(resolve => { releaseToken = resolve; });
+  const createGate = new Promise(resolve => { releaseCreate = resolve; });
+  const exports = {};
+  vm.runInNewContext(ts.transpileModule(`exports.launch = ${print(nodes.get('launchPlaid'))};`, {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+  }).outputText, {
+    exports, plaidLaunching: { current: false }, setOpeningPlaid: value => busy.push(value),
+    useAuthStore: { getState: () => ({ userId: currentUser }) }, Platform: { OS: 'ios' },
+    api: { post: async (...args) => { requests.push(args); await tokenGate; if (rejectToken) throw new Error('Token unavailable'); return { linkToken: 'synthetic' }; } },
+    require: () => ({ createPlaidLinkSession: async options => {
+      sessions.push(options); await createGate;
+      return { open: async () => { if (failOpen) throw new Error('Presentation unavailable'); opened.push(true); } };
+    } }),
+    tracePlaidDevelopmentEvent: () => {}, handlePlaidSuccess: () => {}, handlePlaidExit: () => {},
+    Alert: { alert: (...args) => alerts.push(args) }, bankActionErrorMessage: e => e.message,
+  });
+  return { ...exports, requests, sessions, opened, busy, alerts, releaseToken, releaseCreate,
+    switchUser: () => { currentUser = 'morgan'; }, rejectToken: value => { rejectToken = value; }, failOpen: value => { failOpen = value; } };
+}
+
+test('overlapping bank, investment and repair taps create only one native session', async () => {
+  const f = launchFixture(); const pending = f.launch('create');
+  const investment = f.launch('create', undefined, 'investments');
+  const repair = f.launch('update', 'synthetic-item');
+  const tokenRequests = f.requests.length;
+  f.releaseToken(); await new Promise(resolve => setImmediate(resolve));
+  const createdSessions = f.sessions.length;
+  const another = f.launch('create');
+  const creationRequests = f.requests.length;
+  f.releaseCreate(); await Promise.all([pending, investment, repair, another]);
+  assert.equal(tokenRequests, 1);
+  assert.equal(createdSessions, 1);
+  assert.equal(creationRequests, 1, 'lock remains while the SDK creates its session');
+  assert.equal(f.opened.length, 1);
+  assert.deepEqual(f.busy, [true, false]);
+});
+
+test('token and presentation failures release the launch guard for retry', async () => {
+  for (const failure of ['rejectToken', 'failOpen']) {
+    const f = launchFixture(); f[failure](true); f.releaseToken(); f.releaseCreate();
+    await f.launch('create'); assert.equal(f.alerts.length, 1);
+    f[failure](false); await f.launch('create');
+    assert.equal(f.requests.length, 2); assert.equal(f.opened.length, 1);
+    assert.deepEqual(f.busy, [true, false, true, false]);
+  }
+});
+
+test('login change while obtaining a token skips native launch and releases the guard', async () => {
+  const f = launchFixture(); const pending = f.launch('create'); f.switchUser();
+  f.releaseToken(); f.releaseCreate(); await pending;
+  assert.equal(f.sessions.length, 0); assert.equal(f.alerts.length, 0);
+  await f.launch('create'); assert.equal(f.opened.length, 1);
+});

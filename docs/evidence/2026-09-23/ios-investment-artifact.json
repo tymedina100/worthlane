@@ -1,0 +1,160 @@
+{
+  "checkedAt": "2026-09-23T16:50:43.187011+00:00",
+  "id": "aced2d4e-8af7-4324-9aab-ca977c115613",
+  "source": "86001c0c437a04c0f7ee1a8504e61824de4d32bb",
+  "status": "FINISHED",
+  "profile": "sandbox-simulator",
+  "archiveBytes": 27361220,
+  "archiveSha256": "6c973360580b4facb9299ec09134796f77ce104dc318ee078ac5be95a538015a",
+  "strictDeepSignature": "passed",
+  "bundleId": "com.worthlane.mobile",
+  "bundleVersion": "7",
+  "embeddedMarkers": [
+    "hosted Sandbox API origin",
+    "Connect investments",
+    "Opening bank connection",
+    "INVESTMENT_BALANCES_ONLY"
+  ],
+  "installed": true,
+  "limits": [
+    "Current artifact OAuth, ordinary banking and fresh planning mutation checks remain",
+    "Cold-launch accessibility tree was empty; fresh screenshots verify rendered results",
+    "No physical device or store build acceptance"
+  ],
+  "runtimeCheckedAt": "2026-09-23T16:58:19.122503+00:00",
+  "simulator": "D9057EC1-22AE-4C7A-AD66-7E3409256EEB",
+  "runtime": {
+    "hostedAlexLogin": "passed",
+    "privateNetWorth": 1500,
+    "spending": 0,
+    "income": 0,
+    "savedBill": {
+      "title": "Review card minimum payment",
+      "amount": 25
+    },
+    "householdReadback": {
+      "groceries": [
+        300,
+        300
+      ],
+      "utilitiesSam": 150,
+      "rent": [
+        1020,
+        680
+      ]
+    },
+    "coldLaunch": "Terminated and relaunched exact bundle; screenshot confirms restored dashboard without login",
+    "passwordSheet": "Dismissed Not Now with authorized Maestro; assertion passed",
+    "originalReminderSimulator": "Unchanged; fresh API/OS confirms one September24 09:00 Phoenix reminder"
+  },
+  "secondReviewerCheckedAt": "2026-09-23T17:03:47.325957+00:00",
+  "secondReviewer": {
+    "alexSignOutClearsForm": true,
+    "samLogin": "passed",
+    "privateNetWorth": 900,
+    "alexBillAbsent": true,
+    "sharedPlanExact": true,
+    "ownerOnlyEditControls": true,
+    "coldLaunch": "Restored Sam dashboard without login; fresh screenshot900/no upcoming items",
+    "apiVerification": "Both fresh reviewer logins preserve exact owned account IDs,245000minor shared plan, private debt404 and hidden bill"
+  },
+  "investmentCheckedAt": "2026-09-23T17:25:20.265629+00:00",
+  "investmentStandard": {
+    "institution": "Betterment Sandbox",
+    "connected": true,
+    "accounts": 2,
+    "netWorth": 23952.74,
+    "spending": 0,
+    "transactions": 0,
+    "history": "INVESTMENT_BALANCES_ONLY",
+    "cashManagementFiltered": true,
+    "repeatSync": "Native Sync now completed; API exact account and Item IDs unchanged",
+    "coldLaunch": "Exact bundle terminate/relaunch restored23952.74 with0spending/income without login",
+    "initialRetry": "Initial App Password Required screen cleared after erasing/retyping public Sandbox credentials; cause not proven",
+    "automationLimit": "Finish-without-saving selector timed out; fresh native Bank connected alert and API persistence independently establish completion",
+    "repair": "Native Relink completed with Connection repaired and Healthy; provider error null and Investments-only verified; exact account/Item IDs retained",
+    "oauth": "Separate current-artifact OAuth connect and cold launch passed; see investmentOAuth.verifiedSelectionRetry",
+    "expiration": "Provider ITEM_LOGIN_REQUIRED confirmed; native Needs relink and investment-specific stale warning observed; exact IDs/balances retained",
+    "postRepairSync": "Native repeat Sync now settled with Healthy",
+    "unlink": "Native confirmation removed connection immediately; Nothing linked yet; API zero accounts/Items/transactions/netWorth/spending; cold launch restored empty dashboard and household net worth0",
+    "providerRevocationLimit": "No provider itemGet performed after unlink in this interactive run; separate integration tests cover revocation"
+  },
+  "oauthCheckedAt": "2026-09-23T17:58:30.855133+00:00",
+  "investmentOAuth": {
+    "institution": "Platypus OAuth Bank (Sandbox)",
+    "artifact": "aced2d4e / 86001c0 build7",
+    "result": "FAILED: native Plaid displays Could not connect to Platypus OAuth Bank after mock-bank final confirmation",
+    "flow": "Public Sandbox login and fixed verification code; automation tapped IRA and 401k labels; mock confirmation reached and enabled final button tapped by fresh screenshot coordinates",
+    "selectionLimit": "The selected checkboxes were not captured together in this run; label taps alone do not prove provider selection state",
+    "automationCorrection": "Text selector matched explanatory copy rather than final control; corrected using visible enabled button coordinates",
+    "persistedReadback": {
+      "accounts": 0,
+      "items": 0,
+      "netWorth": 0,
+      "spending": 0,
+      "transactions": 0
+    },
+    "universalLink": "Earlier same-artifact direct HTTPS return opened Worthlane Settings from Safari; this does not prove provider callback completion",
+    "configuration": "Hosted API readback confirmed sandbox and https://worthlane.app/plaid-oauth; SDK13.2.0 uses createPlaidLinkSession/session.open",
+    "rootCause": "Unproven; provider error screen narrows outcome but does not establish Simulator, SDK or configuration cause",
+    "scope": "Synthetic laptop Simulator only; no real bank or production change",
+    "cancellation": "Yes, exit returned to usable Settings with Nothing linked yet",
+    "providerLog": {
+      "checkedDate": "2026-09-23",
+      "eventTimePhoenix": "10:58:27",
+      "environment": "Sandbox",
+      "institution": "ins_127287",
+      "event": "EXIT - onExit",
+      "exitStatus": "REQUIRES_OAUTH",
+      "debugger": "Provider-linked session debugger returned Invalid request / No item found",
+      "interpretation": "Not evidence of a specific callback bug; Plaid OAuth guide lists bank-flow error or access not granted as possible reasons",
+      "reference": "https://plaid.com/docs/link/oauth/"
+    },
+    "verifiedSelectionRetry": {
+      "checkedAt": "2026-09-23T18:05:54.684436+00:00",
+      "selection": "Fresh screenshot visibly confirms purple checked IRA and401k; neighboring CD/credit/money-market/student-loan boxes unchecked",
+      "result": "PASSED connection and cold-launch persistence",
+      "nativeResult": "Plaid Success and two accounts; Finish without saving led to Worthlane Bank connected and Healthy",
+      "api": {
+        "accounts": 2,
+        "items": 1,
+        "netWorth": 23952.74,
+        "spending": 0,
+        "transactions": 0,
+        "status": "HEALTHY",
+        "history": "INVESTMENT_BALANCES_ONLY"
+      },
+      "coldLaunch": "Terminated and launched exact installed bundle; saved login restored23952.74 and0spent/received; API exact account/Item IDs unchanged",
+      "syncLimit": "Resolved: captured both account lastSyncedAt before native Sync every institution; fresh API proves each timestamp advanced with unchanged IDs/balances and Healthy state",
+      "automationLimit": "Finish without saving selector reported timeout despite final native Bank connected and independent saved-account proof; text taps alone are insufficient evidence",
+      "remaining": "OAuth repair completion, unlink, current planning and Android coverage",
+      "conclusion": "Successful verified-checkbox retry supersedes blanket current-candidate OAuth-connect failure. Earlier failure cause is not proven; no app code changed.",
+      "otherLogin": "Separate Sam reviewer API login (different household) cannot list these accounts/Item; update-token, targeted sync and unlink each404. Same-household coverage is separate evidence.",
+      "forcedExpiration": "Guarded real Sandbox reset confirmed ITEM_LOGIN_REQUIRED and Investments-only provider product. Native sync showed Could not sync/relink required and investment stale-balance warning; exact account/Item IDs,23952.74 and0transactions retained.",
+      "repairAttempt": {
+        "result": "NOT PASSED",
+        "steps": "Native Relink, public Sandbox login/verification, visibly checked IRA/401k, final mock confirmation",
+        "nativeReturn": "Returned to Log into Platypus OAuth Bank prompt rather than success",
+        "providerReadback": "ITEM_LOGIN_REQUIRED remains; Investments-only product;2accounts23952.74 and0transactions",
+        "apiReadback": "Exact original account and Item IDs unchanged, NEEDS_RELINK,23952.74netWorth,0spending/transactions",
+        "rootCause": "Unproven. No runtime patch or repeated blind authorization attempt.",
+        "next": "Retain expired disposable connection for comparison using current Android candidate; unlink after lifecycle investigation.",
+        "cancellation": "Yes, exit returned to usable Settings; balances retained with explicit relink/stale warning"
+      }
+    }
+  },
+  "oauthRepairProviderDiagnostic": {
+    "date": "2026-09-23",
+    "source": "Authenticated Plaid dashboard Developers Logs; failed repair event at2026-09-23T18:21:37.631Z",
+    "status": "EXIT - onExit; exitStatus REQUIRES_OAUTH; Sandbox; institution ins_127287; dashboard labels client Web",
+    "requestId": "e6f540400b7df9a",
+    "linkSessionId": "01a0cf79-8c3b-7a5d-b74f-f8db8a9cf133",
+    "debugger": "Following this exact session link returns Invalid request / No item found. No further session details available.",
+    "codeReview": "Update-mode route derives investments purpose from owned saved Item; omits products, supplies access_token, account_selection_enabled true and investment account filter; iOS redirect configured. No proven defect or speculative change.",
+    "officialReferences": [
+      "https://plaid.com/docs/link/update-mode/",
+      "https://plaid.com/docs/link/oauth/"
+    ],
+    "next": "Compare same expired synthetic Item on another client after pending browser prerequisites; correlate actual success callback and provider error clearance. Do not infer native callback root cause from REQUIRES_OAUTH alone."
+  }
+}

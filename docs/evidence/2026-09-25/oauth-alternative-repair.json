@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-09-25T16:32:52.616677+00:00",
+  "candidate": "iOS aced2d4e/source86001c0",
+  "comparison": "Same expired Sandbox investment Item; public mock OAuth account-selection simulation visibly unchecked before confirmation. Optional identity/routing unchecked.",
+  "result": "Final mock confirmation returned to Plaid Continue to login, not Success. Disabling simulated account-selection did not resolve the loop.",
+  "provider": {
+    "error": "ITEM_LOGIN_REQUIRED",
+    "products": [
+      "investments"
+    ]
+  },
+  "api": {
+    "exactBaselineAccountAndItemIdsPreserved": true,
+    "accounts": 2,
+    "items": 1,
+    "netWorth": 23952.74,
+    "spending": 0,
+    "transactions": 0,
+    "status": "NEEDS_RELINK"
+  },
+  "verificationCommands": [
+    "python3 .tmp/ios-oauth-repair-status.py",
+    "node .tmp/hosted-investment-ui.cjs same"
+  ],
+  "exit": "Native Settings restored; Needs relink and IRA320.76/401k23631.98 visible.",
+  "limit": "No root cause established. This alternative does not isolate native callback handling from provider update-mode behavior.",
+  "next": "Compare same Item update mode through the hosted browser client, retaining investment-only guards; separately establish bounded calendar reminder observation."
+}

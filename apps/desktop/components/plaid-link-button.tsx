@@ -33,7 +33,7 @@ function loadSdk() {
 const OAUTH_STORAGE_KEY = "worthlane.plaid.oauth.v1";
 type PendingLink = { linkToken: string; oauthSession: string; itemId?: string; includeLiabilities: boolean; expiresAt: number };
 
-export function PlaidLinkButton({ onManage, itemId, includeLiabilities = false, resume = false }: { onManage: ManagePlaid; itemId?: string; includeLiabilities?: boolean; resume?: boolean }) {
+export function PlaidLinkButton({ onManage, itemId, includeLiabilities = false, resume = false, purpose = "banking" }: { onManage: ManagePlaid; itemId?: string; includeLiabilities?: boolean; resume?: boolean; purpose?: "banking" | "investments" }) {
   const [busy, setBusy] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -88,7 +88,7 @@ export function PlaidLinkButton({ onManage, itemId, includeLiabilities = false, 
         await onManage({ path: "/oauth-session", body: { oauthSession: pending.oauthSession } });
         receivedRedirectUri = window.location.href;
       } else {
-      const { linkToken, oauthSession } = await onManage<{ linkToken: string; oauthSession: string }>({ path: "/link-token", body: { platform: "web", mode: itemId ? "update" : "create", ...(itemId ? { plaidItemId: itemId } : {}), ...(includeLiabilities ? { includeLiabilities: true } : {}) } });
+      const { linkToken, oauthSession } = await onManage<{ linkToken: string; oauthSession: string }>({ path: "/link-token", body: { platform: "web", purpose, mode: itemId ? "update" : "create", ...(itemId ? { plaidItemId: itemId } : {}), ...(includeLiabilities ? { includeLiabilities: true } : {}) } });
       if (!linkToken || !oauthSession) throw new Error("Bank linking could not start. Please try again.");
       pending = { linkToken, oauthSession, itemId, includeLiabilities, expiresAt: Date.now() + 30 * 60 * 1000 };
       if (!current()) return;
@@ -134,7 +134,7 @@ export function PlaidLinkButton({ onManage, itemId, includeLiabilities = false, 
     }
   }
   return <div>
-    <button className="button button--secondary" type="button" disabled={busy} onClick={() => void connect(resume)}>{busy ? saving ? "Saving connection…" : "Connecting…" : resume ? "Resume bank connection" : includeLiabilities ? "Review debt-data consent" : itemId ? "Reconnect" : "Connect bank"}</button>
+    <button className="button button--secondary" type="button" disabled={busy} onClick={() => void connect(resume)}>{busy ? saving ? "Saving connection…" : "Connecting…" : resume ? "Resume bank connection" : includeLiabilities ? "Review debt-data consent" : itemId ? "Reconnect" : purpose === "investments" ? "Connect investments" : "Connect bank"}</button>
     {busy && !saving ? <button className="button button--secondary" type="button" onClick={() => finish("Bank linking cancelled. You can retry or add a manual account.")}>Cancel bank linking</button> : null}
     {message ? <p role="status">{message}</p> : null}
   </div>;

@@ -1,4 +1,5 @@
 "use client";
+import { sessionFetch } from "@/src/lib/session-fetch";
 
 import type { HouseholdPartnerInvitationSummary } from "@worthlane/contracts";
 import { useRouter } from "next/navigation";
@@ -21,7 +22,7 @@ export default function InvitationsPage() {
 
   useEffect(() => {
     let active = true;
-    void fetch("/api/household/manage/invitations", {
+    void sessionFetch("/api/household/manage/invitations", {
       cache: "no-store",
       credentials: "same-origin",
     })
@@ -37,7 +38,7 @@ export default function InvitationsPage() {
           throw new Error(messageFrom(payload, "Partner invitations could not be loaded."));
         }
         if (!payload.data.length) {
-          const summary = await fetch("/api/household/summary", {
+          const summary = await sessionFetch("/api/household/summary", {
             cache: "no-store",
             credentials: "same-origin",
           });
@@ -63,7 +64,7 @@ export default function InvitationsPage() {
     setAcceptingId(invitation.id);
     setError(null);
     try {
-      const response = await fetch("/api/household/manage/invitations/accept", {
+      const response = await sessionFetch("/api/household/manage/invitations/accept", {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
@@ -82,7 +83,7 @@ export default function InvitationsPage() {
   }
 
   async function useAnotherLogin() {
-    await fetch("/api/auth/logout", {
+    await sessionFetch("/api/auth/logout", {
       method: "POST",
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },

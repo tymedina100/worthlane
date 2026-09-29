@@ -1,0 +1,37 @@
+{
+  "date": "2026-09-22",
+  "environment": "Local API3101, isolated PostgreSQL55439, Plaid Sandbox only",
+  "client": "iOS18.3 laptop Simulator; EAS development client95061ba9 with current Metro8087 bundle",
+  "result": "PASS: non-OAuth investment update-mode repair and persistence",
+  "setup": "API-created First Platypus investment fixture, expired with sandboxItemResetLogin; initial connection not created in UI in this run",
+  "observed": [
+    "Expired Item retained two investment accounts and displayed Needs relink",
+    "Cleared password field, entered and visually verified published pass_good; fresh submission succeeded",
+    "Completed account confirmation and Finish without saving; Worthlane displayed Connection repaired and Healthy",
+    "Repeated native Sync now completed",
+    "Cold app terminate/launch restored signed-in dashboard with net worth23952.74, spending0 and received0"
+  ],
+  "independentReadback": {
+    "action": "check",
+    "status": "HEALTHY",
+    "needsRelink": false,
+    "errorCode": null,
+    "history": "INVESTMENT_BALANCES_ONLY",
+    "accounts": 2,
+    "sameAccountsAndBalances": true,
+    "transactions": 0,
+    "netWorth": 23952.74,
+    "monthlySpending": 0,
+    "billedProducts": [
+      "investments"
+    ],
+    "providerErrorCode": null,
+    "at": "2026-09-22T19:30:25.256Z"
+  },
+  "limitations": [
+    "Initial input attempt was rejected; clearing and retyping resolved it. Exact cause of earlier rejection is not proven.",
+    "Non-OAuth Sandbox repair is not native OAuth, real Schwab, production, or store-binary evidence.",
+    "Synthetic fixture retained locally for further testing; this run does not claim unlink.",
+    "Reminder-refresh warning appeared before restart and was absent on cold-launch dashboard; this run does not verify scheduled reminder delivery."
+  ]
+}

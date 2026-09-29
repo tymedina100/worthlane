@@ -1,4 +1,5 @@
 "use client";
+import { sessionFetch } from "@/src/lib/session-fetch";
 
 import { createHouseholdSchema } from "@worthlane/contracts";
 import { useRouter } from "next/navigation";
@@ -31,7 +32,7 @@ export default function HouseholdSetupPage() {
     setIsSaving(true);
     setError(null);
     try {
-      const response = await fetch("/api/household/manage/invitations/accept", {
+      const response = await sessionFetch("/api/household/manage/invitations/accept", {
         method: "POST", credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ invitationCode: invitationCode.trim() }),
@@ -64,7 +65,7 @@ export default function HouseholdSetupPage() {
     }
     setIsSaving(true);
     try {
-      const response = await fetch("/api/household/create", {
+      const response = await sessionFetch("/api/household/create", {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },

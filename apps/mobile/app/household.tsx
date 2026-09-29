@@ -546,7 +546,7 @@ function HouseholdContent({ summary }: { summary: HouseholdSummary }) {
             This total only includes your accounts plus details or summaries your partner chose to share.
           </Text>
         </View>
-        {summary.finances.bankDataNotices.length > 0 ? <Text style={styles.privacyText}>Bank history may be incomplete. Review coverage below.</Text> : null}
+        {summary.finances.bankDataNotices.length > 0 ? <Text style={styles.privacyText}>Review bank data coverage and freshness below.</Text> : null}
       </View>
 
       <HouseholdBudgetEditor summary={summary} key={`${summary.household.id}:${summary.viewerMemberId}`} />

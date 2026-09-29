@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-09-21T21:21:29.368283+00:00",
+  "build": "e47249aa-9e37-4cf9-a35f-14c7de692cdc",
+  "source": "74c6bbf0685efefe0e5a5e6f905f3b98d7119998",
+  "profile": "sandbox-store",
+  "archiveSha256": "37a3e75f01f9b87b37b957cfd1636f0fe35f69953a17c8048402e2d5184d0f7c",
+  "strictDeepSignature": "PASS",
+  "info": {
+    "CFBundleIdentifier": "com.worthlane.mobile",
+    "CFBundleVersion": "30",
+    "CFBundleShortVersionString": "1.0.0",
+    "CFBundleSupportedPlatforms": [
+      "iPhoneOS"
+    ]
+  },
+  "team": [
+    "5FBXR5M5PJ"
+  ],
+  "profileUUID": "f21c88e8-1e6b-4090-bbd1-4a86eefe1709",
+  "profileExpiry": "2027-03-16T19:08:18",
+  "signedApplicationIdentifier": "5FBXR5M5PJ.com.worthlane.mobile",
+  "associatedDomains": [
+    "applinks:worthlane.app"
+  ],
+  "sandboxApiPresent": true,
+  "startupRecoveryPresent": true,
+  "manifestCount": 14,
+  "manifestsMatchTestedSimulator": true,
+  "sentryEnvironment": "sandbox-store",
+  "sentryDsnEmpty": true,
+  "scope": "Static archive verification only; no device execution, App Store upload or submission."
+}

@@ -17,7 +17,7 @@ function req(token: string | undefined, body: unknown) {
 }
 async function data(response: Response, status = 200) {
   expect(response.status).toBe(status);
-  return (await response.json()).data;
+  return (await response.json() as { data: any }).data;
 }
 afterAll(() => prisma.$disconnect());
 
@@ -44,9 +44,10 @@ it("persists encrypted Sandbox Items, repeats sync, isolates owners, records rel
     for (let attempt = 0; attempt < 15; attempt++) {
       const response = await liabilities(req(session.accessToken, {}), { params: Promise.resolve({ id: item.id }) });
       if (response.status === 200) { liabilityData = await data(response); break; }
-      const failure = await response.json();
+      const failure = await response.json() as { error?: { code?: string } };
       if (failure.error?.code !== "PRODUCT_NOT_READY") {
-        const safeCode = /^[A-Z_]+$/.test(failure.error?.code ?? "") ? failure.error.code : "UNKNOWN";
+        const code = failure.error?.code;
+        const safeCode = typeof code === "string" && /^[A-Z_]+$/.test(code) ? code : "UNKNOWN";
         stage = `liabilities response ${response.status} ${safeCode}`; throw new Error("Liabilities unavailable");
       }
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -106,6 +107,114 @@ it("persists encrypted Sandbox Items, repeats sync, isolates owners, records rel
     if (cleanupToken) {
       try { await plaidClient.itemRemove({ access_token: cleanupToken }); }
       catch { throw new Error("Task-created Sandbox Item cleanup failed."); }
+    }
+  }
+});
+
+it("persists investment balances, prepares owner-only repair without Transactions, and revokes on unlink", async () => {
+  let cleanupToken: string | undefined;
+  let ownerId: string | undefined;
+  let stage = "investment registration";
+  try {
+    const session = await data(await register(req(undefined, { email: `invest-${randomUUID()}@worthlane.local`, password: "Synthetic-sandbox-passphrase!2026" })), 201);
+    ownerId = session.user.id;
+    const stranger = await data(await register(req(undefined, { email: `invest-other-${randomUUID()}@worthlane.local`, password: "Synthetic-sandbox-passphrase!2026" })), 201);
+    stage = "investment Link token";
+    const token = await data(await linkToken(req(session.accessToken, { platform: "web", mode: "create", purpose: "investments" })));
+    expect(Boolean(token.linkToken)).toBe(true);
+    const created = await plaidClient.sandboxPublicTokenCreate({ institution_id: "ins_109508", initial_products: [Products.Investments] });
+    stage = "investment exchange";
+    const linked = await data(await exchange(req(session.accessToken, { publicToken: created.data.public_token, institutionName: "Synthetic investment bank" })), 201);
+    const item = await prisma.plaidItem.findUniqueOrThrow({ where: { id: linked.plaidItem.id } });
+    cleanupToken = decryptPlaidAccessToken(item.accessTokenEncrypted);
+    expect(item.transactionHistoryStatus).toBe("INVESTMENT_BALANCES_ONLY");
+    const before = await prisma.account.findMany({ where: { userId: ownerId }, orderBy: { id: "asc" } });
+    expect(before.length).toBeGreaterThan(0);
+    expect(before.every(account => account.type === "INVESTMENT")).toBe(true);
+    stage = "repeat investment sync and privacy";
+    await data(await sync(req(session.accessToken, { plaidItemId: item.id, refresh: true })));
+    const after = await prisma.account.findMany({ where: { userId: ownerId }, orderBy: { id: "asc" } });
+    expect(after.map(account => account.id)).toEqual(before.map(account => account.id));
+    expect(await prisma.transaction.count({ where: { userId: ownerId } })).toBe(0);
+    const providerItem = await plaidClient.itemGet({ access_token: cleanupToken });
+    expect(providerItem.data.item.billed_products).not.toContain(Products.Transactions);
+    expect(providerItem.data.item.billed_products).toContain(Products.Investments);
+    expect((await data(await accounts(req(stranger.accessToken, {})))).accounts).toHaveLength(0);
+    await data(await sync(req(stranger.accessToken, { plaidItemId: item.id })), 404);
+
+    // Plaid's supported reset endpoint only breaks login. Completing repair
+    // requires actual Link update mode; token creation must not claim success.
+    stage = "investment login expiration";
+    const baseline = await prisma.plaidItem.findUniqueOrThrow({ where: { id: item.id } });
+    await plaidClient.sandboxItemResetLogin({ access_token: cleanupToken });
+    const failedSync = await sync(req(session.accessToken, { plaidItemId: item.id, refresh: true }));
+    expect(failedSync.status).toBe(409);
+    const failedBody = await failedSync.json() as { error?: { code?: string } };
+    expect(failedBody.error?.code).toBe("ITEM_LOGIN_REQUIRED");
+    const expired = await prisma.plaidItem.findUniqueOrThrow({ where: { id: item.id } });
+    expect(expired.status).toBe("NEEDS_RELINK");
+    expect(expired.needsRelink).toBe(true);
+    expect(expired.errorCode).toBe("ITEM_LOGIN_REQUIRED");
+    expect(expired.transactionHistoryStatus).toBe("INVESTMENT_BALANCES_ONLY");
+    expect(expired.lastSyncAt).toEqual(baseline.lastSyncAt);
+    expect(await prisma.account.findMany({ where: { userId: ownerId }, orderBy: { id: "asc" } })).toEqual(after);
+
+    stage = "investment owner-only update token";
+    await data(await linkToken(req(stranger.accessToken, { platform: "web", mode: "update", plaidItemId: item.id })), 404);
+    // Native Repair omits purpose. Neither this default nor an explicit
+    // investments purpose may initialize the banking flow's Transactions product.
+    for (const purpose of [undefined, "investments"] as const) {
+      const update = await data(await linkToken(req(session.accessToken, {
+        platform: "web", mode: "update", plaidItemId: item.id,
+        ...(purpose ? { purpose } : {}),
+      })));
+      expect(Boolean(update.linkToken)).toBe(true);
+      const metadata = await plaidClient.linkTokenGet({ link_token: update.linkToken });
+      expect(metadata.data.metadata.initial_products).not.toContain(Products.Transactions);
+    }
+
+    stage = "investment repair remains pending without reauthentication";
+    await data(await sync(req(session.accessToken, { plaidItemId: item.id, refresh: true })), 409);
+    const pending = await prisma.plaidItem.findUniqueOrThrow({ where: { id: item.id } });
+    expect(pending.itemId).toBe(item.itemId);
+    expect(pending.accessTokenEncrypted).toBe(item.accessTokenEncrypted);
+    expect(pending.status).toBe("NEEDS_RELINK");
+    expect(pending.needsRelink).toBe(true);
+    expect(pending.errorCode).toBe("ITEM_LOGIN_REQUIRED");
+    expect(pending.lastSyncAt).toEqual(baseline.lastSyncAt);
+    expect(await prisma.account.findMany({ where: { userId: ownerId }, orderBy: { id: "asc" } })).toEqual(after);
+    expect(await prisma.transaction.count({ where: { userId: ownerId } })).toBe(0);
+    const pendingProvider = await plaidClient.itemGet({ access_token: cleanupToken });
+    expect(pendingProvider.data.item.error?.error_code).toBe("ITEM_LOGIN_REQUIRED");
+    expect(pendingProvider.data.item.billed_products).toContain(Products.Investments);
+    expect(pendingProvider.data.item.billed_products).not.toContain(Products.Transactions);
+    const privateView = await data(await accounts(req(stranger.accessToken, {})));
+    expect(privateView.accounts).toHaveLength(0);
+    expect(privateView.plaidItems).toHaveLength(0);
+    const ownerView = await data(await accounts(req(session.accessToken, {})));
+    expect(ownerView.plaidItems).toHaveLength(1);
+    expect(ownerView.plaidItems[0]).toMatchObject({ status: "NEEDS_RELINK", needsRelink: true, transactionHistoryStatus: "INVESTMENT_BALANCES_ONLY" });
+    expect(ownerView.accounts.every((account: any) => account.plaidNeedsRelink)).toBe(true);
+
+    stage = "investment unlink";
+    const revokedToken = cleanupToken;
+    await data(await unlink(req(session.accessToken, {}), { params: Promise.resolve({ id: item.id }) }));
+    cleanupToken = undefined;
+    expect(await prisma.account.count({ where: { userId: ownerId } })).toBe(0);
+    let revokedCode = "";
+    try { await plaidClient.itemGet({ access_token: revokedToken }); }
+    catch (error: any) { revokedCode = error?.response?.data?.error_code; }
+    expect(revokedCode).toBe("ITEM_NOT_FOUND");
+  } catch {
+    throw new Error(`Investment Sandbox acceptance failed at ${stage}; sensitive responses omitted.`);
+  } finally {
+    if (!cleanupToken && ownerId) {
+      const remaining = await prisma.plaidItem.findFirst({ where: { userId: ownerId } });
+      if (remaining) cleanupToken = decryptPlaidAccessToken(remaining.accessTokenEncrypted);
+    }
+    if (cleanupToken) {
+      try { await plaidClient.itemRemove({ access_token: cleanupToken }); }
+      catch { throw new Error("Task-created investment Sandbox Item cleanup needs retry."); }
     }
   }
 });

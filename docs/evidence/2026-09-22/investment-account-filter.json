@@ -1,0 +1,64 @@
+{
+  "date": "2026-09-22",
+  "environment": "Local API3101 and real Plaid Sandbox",
+  "change": "Investment Link create and known investment repair sessions request only investment subtypes. Repair scope comes from the owned saved Item, overriding client purpose. Banking behavior retained.",
+  "verification": {
+    "apiTests": 260,
+    "apiTypecheck": "passed",
+    "providerTokenReadback": {
+      "create": {
+        "account_filters": {
+          "investment": {
+            "account_subtypes": [
+              "all"
+            ]
+          }
+        },
+        "products": [
+          "investments"
+        ]
+      },
+      "updateWithIncorrectClientPurpose": {
+        "account_filters": {
+          "investment": {
+            "account_subtypes": [
+              "all"
+            ]
+          }
+        },
+        "products": []
+      },
+      "redirect_uri": "https://worthlane.app/plaid-oauth"
+    }
+  },
+  "nativeInteractive": {
+    "result": "PASS: native filtered update returned Connection repaired and Healthy",
+    "selectionShown": [
+      "IRA",
+      "401k",
+      "Cash management"
+    ],
+    "providerAfterSelection": {
+      "investment": 2,
+      "depositoryCashManagement": 1,
+      "ordinaryCheckingSavingsCredit": 0
+    },
+    "savedWorthlaneReadback": {
+      "accounts": 2,
+      "sameIdsAndBalances": true,
+      "netWorth": 23952.74,
+      "transactions": 0,
+      "monthlySpending": 0
+    }
+  },
+  "limits": [
+    "Account type filters may not limit the institution OAuth selection page itself; Plaid documents that excluded accounts will not be added to the Item.",
+    "Native OAuth and real Schwab remain unverified.",
+    "No production deployment or product activation.",
+    "Plaid still included one depository cash-management account despite the investment-only requested filter. Worthlane excludes it from this investment-only import; checking/cash-management spending remains a separate banking connection. Do not claim provider access is limited to two investment accounts."
+  ],
+  "sources": [
+    "https://plaid.com/docs/api/link/",
+    "https://plaid.com/docs/link/update-mode/"
+  ]
+}

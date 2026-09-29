@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-09-22T23:59:42.755Z",
+  "source": "fc766ca31db469d559f1b2fe3d017b6efb53ba64",
+  "archiveSha256": "b05fa072cb447e09ebaeba8bcffa606b23ff7e60c3b585a577f3ccecd6276217",
+  "files": [
+    {
+      "file": "src/bank-window.cjs",
+      "sha256": "284aa8e96dec3bd90f96da33cfcb5b6e4d3b17433603b4cf756f6f44474d7a74",
+      "matches": true
+    },
+    {
+      "file": "src/main.cjs",
+      "sha256": "a819bbd8b4929ed66bd0d7c8a9eebfd91c54155487a58b93282da344b9ab731b",
+      "matches": true
+    },
+    {
+      "file": "src/navigation.cjs",
+      "sha256": "190ee5d44a663535c5a0561b6fe000cef644e2b563e57ef302d76e71a1141d68",
+      "matches": true
+    },
+    {
+      "file": "src/offline.html",
+      "sha256": "fc314512951232d0922f81ec17a207273c68218bf3c0b339596aa7694cc6d0ef",
+      "matches": true
+    },
+    {
+      "file": "src/offline.js",
+      "sha256": "d7c1023a4785fe8e21be5c4bb93cd2e18c03a3bb5186d80ccea7cf245850d879",
+      "matches": true
+    },
+    {
+      "file": "src/recovery-protocol.cjs",
+      "sha256": "97d816a337d1052eb5bc394a00e8ca2f9f53bf1ca94502a90f1125410e208930",
+      "matches": true
+    },
+    {
+      "file": "src/security.cjs",
+      "sha256": "8aeabfcf949a52b8cdb49142112bd615b387863a1cad7614c0e5c8cbcb777783",
+      "matches": true
+    }
+  ],
+  "appUrl": "https://worthlane-beta-desktop.vercel.app/",
+  "developmentOnly": false,
+  "signature": "deep strict verification passed earlier in this check",
+  "packageVerification": "9 assets and8 hardened fuses passed",
+  "interactive": {
+    "initial": "stale dashboard remained after Accounts navigation; refresh produced empty accessibility content",
+    "relaunch": "quit confirmed process exited; exact signed package relaunched to login",
+    "continued": "blocked by locked Mac before synthetic credentials were entered"
+  },
+  "limitations": [
+    "Does not prove current hosted investment lifecycle in signed app",
+    "Earlier Alex session did not restore in this observed relaunch; cause unproven",
+    "Not notarized or publicly distributed"
+  ]
+}

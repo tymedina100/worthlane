@@ -1,4 +1,5 @@
 "use client";
+import { sessionFetch } from "@/src/lib/session-fetch";
 
 import { useEffect, useState } from "react";
 import { transactionDuplicatesSchema, type TransactionDuplicates } from "@worthlane/contracts";
@@ -27,7 +28,7 @@ export function DuplicateReview({ onManagePersonal }: { onManagePersonal: Manage
     setError("");
     void (async () => {
       try {
-        const response = await fetch(`/api/personal/manage/transactions/duplicates${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ""}`, { cache: "no-store", signal: controller.signal });
+        const response = await sessionFetch(`/api/personal/manage/transactions/duplicates${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ""}`, { cache: "no-store", signal: controller.signal });
         if (!response.ok) throw new Error(response.status === 401 ? "Your session expired. Sign in again." : "Review could not be loaded.");
         const result = transactionDuplicatesSchema.parse((await response.json()).data);
         if (!controller.signal.aborted) setPage(result);

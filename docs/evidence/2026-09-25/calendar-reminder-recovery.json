@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-09-25T16:05:46.913417+00:00",
+  "simulatorWasBootedAtStart": false,
+  "interruptedMaestroHandle": "97229 no longer exists; no retry result inferred",
+  "originalReminderDeviceBoot": "D7C7C0D2 bootstatus completed successfully",
+  "matchingPending": 1,
+  "deliveredArchiveCount": 0,
+  "originalDerivedTriggerUtc": "2026-09-24T16:00:00.012922+00:00",
+  "nativeTriggerType": "TimeInterval",
+  "deliveryObserved": false,
+  "result": "Reminder remains pending after simulator boot onSeptember25. No delivery proof; exact shutdown timing unknown. Do not claim on-time or overdue delivery.",
+  "limits": [
+    "Scheduling proof fromSeptember23 remains separate",
+    "No app launch, logout, reschedule, clock change or fixture mutation during this check"
+  ]
+}

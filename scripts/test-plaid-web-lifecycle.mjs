@@ -74,7 +74,7 @@ test('failed bank mutation refreshes persisted connection status before reportin
   const code = ts.transpileModule(`exports.manage = ${body}`, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText;
   const events = []; const exports = {};
   vm.runInNewContext(code, {
-    exports, fetch: async () => ({ status: 400, ok: false, json: async () => ({ error: 'Needs reconnect' }) }),
+    exports, sessionFetch: async () => ({ status: 400, ok: false, json: async () => ({ error: 'Needs reconnect' }) }),
     envelopeData: () => null, errorMessage: payload => payload.error,
     loadWorkspace: async () => { events.push('refreshed'); },
     router: { replace() { assert.fail('must not sign out on a bank error'); }, refresh() {} }, view: 'accounts',

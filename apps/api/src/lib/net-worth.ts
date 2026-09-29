@@ -1,5 +1,5 @@
 import { personalLedger } from "./personal-ledger";
-import { prisma } from "@worthlane/db";
+import { Prisma, prisma } from "@worthlane/db";
 import {
   computeNetWorthBreakdownMinor,
   computeNetWorthMinor,
@@ -46,15 +46,17 @@ export function startOfToday(): Date {
 
 /** Computes the user's current net worth and upserts today's snapshot. */
 export async function snapshotUserNetWorth(userId: string): Promise<number> {
-  const { accounts } = await personalLedger(userId);
-  const netWorth = computeNetWorth(accounts);
-  const today = startOfToday();
+  return prisma.$transaction(async db => {
+    const { accounts } = await personalLedger(userId, db);
+    const netWorth = computeNetWorth(accounts);
+    const today = startOfToday();
 
-  await prisma.netWorthSnapshot.upsert({
-    where: { userId_date: { userId, date: today } },
-    create: { userId, date: today, netWorth },
-    update: { netWorth },
-  });
+    await db.netWorthSnapshot.upsert({
+      where: { userId_date: { userId, date: today } },
+      create: { userId, date: today, netWorth },
+      update: { netWorth },
+    });
 
-  return netWorth;
+    return netWorth;
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable, timeout: 30_000 });
 }

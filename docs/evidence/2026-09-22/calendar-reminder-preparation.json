@@ -1,0 +1,21 @@
+{
+  "name": "Calendar reminder acceptance",
+  "amount": 1,
+  "dueDate": "2026-09-23",
+  "reminderTiming": "DUE_DATE",
+  "isPaid": false,
+  "isActive": true,
+  "checkedAt": "2026-09-22T20:19:19.749Z",
+  "environment": "local synthetic API3101 / iOS18.3 laptop Simulator",
+  "fixtureCreation": "API-created with reminders off after unsaved UI typing was discarded",
+  "nativeAction": "Opened edit screen, selected On due date, saved; native Saved confirmation observed without permission/scheduling error",
+  "expectedDelivery": "2026-09-23T09:00:00-07:00",
+  "deliveryObserved": false,
+  "osPendingQueueIndependentlyVerified": true,
+  "limits": [
+    "Preparation is not delivery acceptance.",
+    "Keep the Simulator fixture signed in; logout cancels device reminders.",
+    "No real financial data, production changes, outbound email or paid products."
+  ],
+  "osEvidence": "calendar-reminder-os.json"
+}

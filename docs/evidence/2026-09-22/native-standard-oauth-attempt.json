@@ -1,0 +1,92 @@
+{
+  "date": "2026-09-22",
+  "candidate": "f5b3688",
+  "surface": "iPhone16Pro iOS18.3 laptop Simulator; development build95061ba9 and Metro8087",
+  "flow": "Connect investments / Platypus OAuth Bank standard OAuth",
+  "observations": [
+    "Native institution selected after searching Platypus",
+    "Continue to login emitted OPEN_OAUTH but no bank authorization screen appeared",
+    "Maestro screenshot confirmed same stalled screen; native touch repeated OPEN_OAUTH with same result"
+  ],
+  "developmentEvents": [
+    {
+      "errorCode": null,
+      "eventName": "OPEN",
+      "hasError": false,
+      "viewName": "CONSENT"
+    },
+    {
+      "errorCode": null,
+      "eventName": "TRANSITION_VIEW",
+      "hasError": false,
+      "viewName": "CONSENT"
+    },
+    {
+      "errorCode": null,
+      "eventName": "TRANSITION_VIEW",
+      "hasError": false,
+      "viewName": "SUBMIT_PHONE"
+    },
+    {
+      "errorCode": null,
+      "eventName": "OTHER",
+      "hasError": false,
+      "viewName": null
+    },
+    {
+      "errorCode": null,
+      "eventName": "TRANSITION_VIEW",
+      "hasError": false,
+      "viewName": "SELECT_INSTITUTION"
+    },
+    {
+      "errorCode": null,
+      "eventName": "OTHER",
+      "hasError": false,
+      "viewName": null
+    },
+    {
+      "errorCode": null,
+      "eventName": "SELECT_INSTITUTION",
+      "hasError": false,
+      "viewName": null
+    },
+    {
+      "errorCode": null,
+      "eventName": "TRANSITION_VIEW",
+      "hasError": false,
+      "viewName": "OAUTH"
+    },
+    {
+      "errorCode": null,
+      "eventName": "OPEN_OAUTH",
+      "hasError": false,
+      "viewName": null
+    },
+    {
+      "errorCode": null,
+      "eventName": "OPEN_OAUTH",
+      "hasError": false,
+      "viewName": null
+    }
+  ],
+  "result": "Incomplete; no root cause established",
+  "baseline": {
+    "accounts": 2,
+    "netWorth": 23952.74,
+    "transactions": 0,
+    "status": "HEALTHY"
+  },
+  "reminderCheck": "OS queue independently reconfirmed one matching September23 09:00Phoenix calendar notification after retrying a transient local API timeout",
+  "ci": {
+    "head": "f5b3688",
+    "run": 35787930646,
+    "allFourJobs": "success"
+  },
+  "cleanup": "Explicit Exit then Yes exit returned to Settings; original two accounts Healthy with unchanged IDs/balances and zero transactions in fresh API/provider readback",
+  "limits": [
+    "Not a native OAuth pass; hosted Chrome OAuth pass is separate",
+    "No raw provider metadata, redirect URLs, credentials or IDs stored",
+    "No phone access or production changes"
+  ]
+}

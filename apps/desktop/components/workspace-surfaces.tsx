@@ -523,6 +523,8 @@ function PlaidConnectionControls({
   return (
     <div className="plaid-connection-controls">
       <PlaidLinkButton onManage={manageLink} />
+      <PlaidLinkButton onManage={manageLink} purpose="investments" />
+      <p>Investment connections add brokerage and retirement balances to net worth. Holdings and trades are not imported. Connect checking separately for spending.</p>
       <p>Imported spending uses posted transactions. Pending bank authorizations are excluded until they post.</p>
       <p>Bank-labeled transfers and credit card payments are excluded from spending and income. You can change this in Transactions.</p>
       {connections.length ? connections.map((connection) => (

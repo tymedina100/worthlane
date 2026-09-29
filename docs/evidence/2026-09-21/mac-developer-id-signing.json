@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-09-21T22:23:03.055437+00:00",
+  "source": "d1bf9337c8f0ab37d34d289356f1ed78f31e7368",
+  "appPath": ".tmp/mac-signed-sandbox-20260921/mac-arm64/Worthlane.app",
+  "certificate": {
+    "portalId": "5N4LCJKN28",
+    "type": "Developer ID Application",
+    "team": "5FBXR5M5PJ",
+    "identity": "Developer ID Application: TYLER ANDREW MEDINA (5FBXR5M5PJ)",
+    "sha256": "1f76096ef785824b3a70da13c9f841427aaeee09ca9a5b3190a6d3f71449fe4a",
+    "expiryUtc": "2031-09-17T00:00:00Z",
+    "csrPublicKeyMatches": true,
+    "privateKeyDestination": "macOS login Keychain",
+    "transientPrivateKeyRemoved": true
+  },
+  "verification": {
+    "deepStrictSignature": "PASS",
+    "hardenedRuntime": true,
+    "timestampPresent": true,
+    "arch": "arm64",
+    "bundleId": "com.worthlane.desktop",
+    "archivedAssets": 9,
+    "hardenedFuses": 8,
+    "packageProductionChecks": "PASS",
+    "appUrl": "https://worthlane-beta-desktop.vercel.app/",
+    "developmentOnly": false,
+    "appAsarSha256": "b05fa072cb447e09ebaeba8bcffa606b23ff7e60c3b585a577f3ccecd6276217"
+  },
+  "notarized": false,
+  "published": false,
+  "runtime": {
+    "checkedAt": "2026-09-22T15:16:00Z",
+    "freshSignIn": "PASS after user handled Keychain prompt",
+    "coldLaunch": "PASS: quit via app menu, verified main process absent, relaunched exact signed package; Alex dashboard restored without credential entry",
+    "visibleAccount": "Alex review checking, personal, $1500; Sam private account absent",
+    "householdPlan": "$2450: groceries $600 equal, utilities $150 Sam, rent $1700 at Alex60/Sam40",
+    "limitations": "Initial recovery cause not proven. This verifies Sandbox session persistence, not notarization, live banking or all signed-package journeys."
+  },
+  "scope": "User approved personal Developer ID certificate, encrypted login-Keychain storage and local Sandbox signing only. No notarization upload, public release, store submission or paid-plan change."
+}

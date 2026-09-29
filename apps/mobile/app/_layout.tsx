@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Stack, usePathname } from "expo-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { Sentry } from "@/lib/sentry";
 import { isPostHogEnabled, posthog } from "@/lib/posthog";
 import { useAuthStore } from "@/store/auth";
@@ -14,9 +14,19 @@ import { ReminderSync } from "@/components/ReminderSync";
 
 function ThemedApp() {
   const { colors, scheme } = useTheme();
-  const { userId, isLoading } = useAuthStore();
+  const { userId, isLoading, startupError, hydrate } = useAuthStore();
 
   if (isLoading) return <View style={{ flex: 1, backgroundColor: colors.bg, justifyContent: "center" }}><ActivityIndicator color={colors.primary} /></View>;
+
+  if (startupError) return (
+    <View style={{ flex: 1, backgroundColor: colors.bg, justifyContent: "center", padding: 24, gap: 16 }}>
+      <Text accessibilityRole="header" style={{ color: colors.text, fontSize: 24, fontWeight: "700" }}>Let’s try opening Worthlane again</Text>
+      <Text accessibilityRole="alert" style={{ color: colors.text, fontSize: 16, lineHeight: 24 }}>{startupError}</Text>
+      <TouchableOpacity accessibilityRole="button" onPress={() => { void hydrate(); }} style={{ backgroundColor: colors.primary, padding: 16, borderRadius: 16, minHeight: 48, alignItems: "center" }}>
+        <Text style={{ color: colors.onPrimary, fontSize: 16, fontWeight: "700" }}>Try again</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
     <ErrorBoundary>

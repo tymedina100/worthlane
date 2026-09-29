@@ -1,0 +1,81 @@
+{
+  "source": "26617f1b6921a803cbec2f7e216300ad81e1ae1f",
+  "ci": {
+    "run": 36163873280,
+    "jobs": {
+      "ci": "success",
+      "native-windows": "success",
+      "postgres-integration (17)": "success",
+      "postgres-integration (18)": "success"
+    }
+  },
+  "audit": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 4,
+      "high": 2,
+      "critical": 0
+    },
+    "dependencies": 1172,
+    "devDependencies": 0,
+    "optionalDependencies": 0,
+    "totalDependencies": 1172
+  },
+  "advisories": [
+    {
+      "package": "fast-xml-parser",
+      "title": "fast-xml-parser XMLBuilder: XML Comment and CDATA Injection via Unescaped Delimiters",
+      "url": "https://github.com/advisories/GHSA-gh4j-gqv2-49f6",
+      "severity": "moderate",
+      "patched": ">=5.7.0"
+    },
+    {
+      "package": "uuid",
+      "title": "uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided",
+      "url": "https://github.com/advisories/GHSA-w5hq-g745-h8pq",
+      "severity": "moderate",
+      "patched": ">=11.1.1"
+    },
+    {
+      "package": "decode-uri-component",
+      "title": "decode-uri-component: Denial of service via exponential decoding of malformed percent-encoded input",
+      "url": "https://github.com/advisories/GHSA-vcc3-ghjq-m6fr",
+      "severity": "moderate",
+      "patched": ">=0.5.0"
+    },
+    {
+      "package": "image-size",
+      "title": "image-size: JXL and HEIF parsers allow denial of service through infinite loops",
+      "url": "https://github.com/advisories/GHSA-5p2g-fcmc-qvqq",
+      "severity": "high",
+      "patched": ">=2.0.3"
+    },
+    {
+      "package": "image-size",
+      "title": "image-size: ICNS parser allows denial of service through an infinite loop",
+      "url": "https://github.com/advisories/GHSA-w3rx-r6r6-pgpr",
+      "severity": "high",
+      "patched": ">=2.0.3"
+    }
+  ],
+  "focusedTests": {
+    "passed": 4,
+    "failed": 0
+  },
+  "isolatedImageSize203": {
+    "commonJsExportType": "object",
+    "namedAndDefaultExports": "function",
+    "directInvocation": "TypeError: x is not a function",
+    "pngDimensions": {
+      "width": 192,
+      "height": 192
+    }
+  },
+  "limitations": [
+    "No dependency install change",
+    "Native OAuth return remains unverified because Mac is locked",
+    "Actual calendar notification delivery unverified",
+    "No production or store action"
+  ]
+}

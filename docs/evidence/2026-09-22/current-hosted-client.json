@@ -1,0 +1,24 @@
+{
+  "date": "2026-09-22",
+  "frontendSource": "3d6dc16bb106a5dc00428f1acb92babf2f70d16a",
+  "deployment": "G2Lx6w6kjQ6wWyY52VCX7GGsqwNx",
+  "alias": "https://worthlane-beta-desktop.vercel.app",
+  "status": "Ready observed in Vercel project dashboard",
+  "apiSource": "e985af8 previously verified in isolated Sandbox",
+  "interactive": [
+    "Fresh Morgan login showed owned private account and exact $2450 shared plan",
+    "Accounts screen included Connect investments and balances-only scope explanation",
+    "Connect investments opened actual Plaid Sandbox phone-entry screen; exit confirmation restored controls without exchange",
+    "Morgan logout reached empty sign-in form",
+    "Separate Avery login showed private125.50 manual fallback, excluded Morgan private account, same exact $2450 category shares",
+    "Reload retained Avery privacy and saved plan",
+    "Avery logout confirmed; temporary browser tabs closed"
+  ],
+  "httpRegression": "test-hosted-desktop.mjs passed protected cookies, CSRF rejection, saved accounts/totals/privacy, refresh rotation and logout revocation",
+  "limits": [
+    "Investment Link startup/cancel is not full connect/sync/repair/unlink acceptance",
+    "No native artifact parity or OAuth success established",
+    "Vercel connector403 persists but authenticated dashboard provided exact deployment evidence",
+    "No production deployment, paid activation or store submission"
+  ]
+}

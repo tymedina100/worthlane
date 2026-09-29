@@ -1,0 +1,38 @@
+{
+  "source": "099edee",
+  "readback": {
+    "action": "status",
+    "status": "NEEDS_RELINK",
+    "needsRelink": true,
+    "errorCode": "ITEM_LOGIN_REQUIRED",
+    "history": "INVESTMENT_BALANCES_ONLY",
+    "accounts": 4,
+    "sameAccountsAndBalances": true,
+    "transactions": 0,
+    "netWorth": 47905.48,
+    "monthlySpending": 0,
+    "billedProducts": [
+      "investments"
+    ],
+    "providerErrorCode": "ITEM_LOGIN_REQUIRED",
+    "at": "2026-09-29T16:37:17.390Z"
+  },
+  "interactive": {
+    "device": "iPhone 16 Pro iOS18.3 laptop Simulator",
+    "savedLoginRestored": true,
+    "visibleNetWorth": 47905.48,
+    "visibleSpending": 0,
+    "visibleIncome": 0,
+    "overdueManualBill": 1
+  },
+  "runtime": {
+    "api": 3101,
+    "metro": 8087,
+    "postgres": 55439
+  },
+  "limitations": [
+    "Local Sandbox only",
+    "OAuth repair still needs completion",
+    "Calendar reminder delivery unverified"
+  ]
+}

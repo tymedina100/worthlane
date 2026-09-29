@@ -32,10 +32,15 @@ export function formatShortDate(value: string | null) {
   }).format(new Date(value));
 }
 
-export function formatUpdatedTime(value: string) {
+export function formatUpdatedTime(value: string, timeZone?: string) {
   return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
     hour: "numeric",
     minute: "2-digit",
+    timeZone,
+    timeZoneName: "short",
   }).format(new Date(value));
 }
 

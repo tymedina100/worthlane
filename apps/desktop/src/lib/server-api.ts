@@ -241,19 +241,20 @@ export function publicServerRequest(
 export async function authenticatedServerRequest(
   cookieStore: CookieStore,
   path: string,
-  init: RequestInit = {}
+  init: RequestInit = {},
+  allowRefresh = false
 ): Promise<Response> {
   const accessToken = cookieStore.get(ACCESS_TOKEN_COOKIE)?.value;
   const refreshToken = cookieStore.get(REFRESH_TOKEN_COOKIE)?.value;
 
   let response = await requestUpstream(path, init, accessToken);
-  if (response.status !== 401 || !refreshToken) return response;
+  if (response.status !== 401 || !refreshToken || !allowRefresh) return response;
 
   const refreshAttempt = await refreshSessionSingleFlight(refreshToken);
   const refreshedTokens = refreshAttempt.tokens;
 
   if (refreshAttempt.status < 200 || refreshAttempt.status >= 300 || !refreshedTokens) {
-    if (refreshAttempt.status >= 400 && refreshAttempt.status < 500) {
+    if (refreshAttempt.status === 401) {
       clearSessionCookies(cookieStore);
       return new Response(
         JSON.stringify({

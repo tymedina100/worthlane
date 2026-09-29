@@ -1,0 +1,128 @@
+[
+  {
+    "tab": 1,
+    "responses": [
+      {
+        "path": "/api/household/summary",
+        "status": 200
+      },
+      {
+        "path": "/api/household/summary",
+        "status": 401
+      },
+      {
+        "path": "/api/auth/session",
+        "status": 200
+      },
+      {
+        "path": "/api/household/summary",
+        "status": 200
+      },
+      {
+        "path": "/api/household/summary",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "tab": 2,
+    "responses": [
+      {
+        "path": "/api/household/summary",
+        "status": 401
+      },
+      {
+        "path": "/api/personal/accounts",
+        "status": 401
+      },
+      {
+        "path": "/api/personal/transactions",
+        "status": 401
+      },
+      {
+        "path": "/api/personal/categories",
+        "status": 401
+      },
+      {
+        "path": "/api/personal/budgets",
+        "status": 401
+      },
+      {
+        "path": "/api/personal/goals",
+        "status": 401
+      },
+      {
+        "path": "/api/auth/session",
+        "status": 200
+      },
+      {
+        "path": "/api/household/summary",
+        "status": 200
+      },
+      {
+        "path": "/api/auth/session",
+        "status": 200
+      },
+      {
+        "path": "/api/personal/accounts",
+        "status": 200
+      },
+      {
+        "path": "/api/auth/session",
+        "status": 200
+      },
+      {
+        "path": "/api/personal/transactions",
+        "status": 200
+      },
+      {
+        "path": "/api/auth/session",
+        "status": 200
+      },
+      {
+        "path": "/api/personal/categories",
+        "status": 200
+      },
+      {
+        "path": "/api/auth/session",
+        "status": 200
+      },
+      {
+        "path": "/api/personal/budgets",
+        "status": 200
+      },
+      {
+        "path": "/api/auth/session",
+        "status": 200
+      },
+      {
+        "path": "/api/personal/goals",
+        "status": 200
+      },
+      {
+        "path": "/api/personal/goals",
+        "status": 200
+      },
+      {
+        "path": "/api/personal/categories",
+        "status": 200
+      },
+      {
+        "path": "/api/personal/accounts",
+        "status": 200
+      },
+      {
+        "path": "/api/personal/transactions",
+        "status": 200
+      },
+      {
+        "path": "/api/personal/budgets",
+        "status": 200
+      },
+      {
+        "path": "/api/household/summary",
+        "status": 200
+      }
+    ]
+  }
+]

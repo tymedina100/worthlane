@@ -1,0 +1,83 @@
+{
+  "date": "2026-09-23",
+  "id": "2a2aee67-deaa-4571-874b-2f57fb0f6e2a",
+  "source": "86001c0c437a04c0f7ee1a8504e61824de4d32bb",
+  "status": "FINISHED",
+  "sha256": "95a68eb02b896e4daa9e5a7c2c2b6f718f8fe3af1937aee43654dacab08d3ea3",
+  "bytes": 100431711,
+  "package": "com.worthlane.mobile",
+  "versionCode": 4,
+  "signature": "apksigner verify passed; existing signer matched September21 evidence",
+  "signerSha256": "bb3fd1e47164421d9d40a4e6594e1ab69c2be8d4056f587dfb0af29b50992432",
+  "bundleMarkers": {
+    "https://worthlane-beta-sandbox.up.railway.app/api": true,
+    "Connect investments": true,
+    "INVESTMENT_BALANCES_ONLY": true
+  },
+  "limits": [
+    "Chrome first-run terms approval pending for OAuth comparison",
+    "Current Android banking lifecycle and remaining planning/second-user coverage open",
+    "No production or store publication"
+  ],
+  "installed": true,
+  "runtimeCheckedAt": "2026-09-23T18:33:44.386460+00:00",
+  "device": "Laptop emulator5554 WorthlaneRelease, software GPU",
+  "runtime": {
+    "installedVersionCode": 4,
+    "login": "Existing disposable Sandbox user authenticated; UI23952.74netWorth and0spending/income",
+    "coldLaunch": "Force-stop/start restored saved session and same balances without credentials",
+    "expiredConnection": "Native Settings shows2accounts/Needs relink, saved-balance warning and exact320.76/23631.98",
+    "repairEntry": "Relink opens Plaid; Continue without phone and bank Continue to login reached Chrome first-run setup",
+    "repairBlocker": "Chrome Terms of Service confirmation requested and pending; no bank login/repair result on Android yet",
+    "manualFallback": {
+      "create": 42.17,
+      "netWorthAfterCreate": 23994.91,
+      "edit": 43.17,
+      "netWorthAfterEdit": 23995.91,
+      "coldLaunch": "Restored23995.91 and0spent/received without login",
+      "delete": "Native Delete confirmation removed synthetic account; fresh API exact original investment IDs/Item retained,23952.74netWorth,0transactions/spending,NEEDS_RELINK"
+    },
+    "limits": "Non-owner privacy checked on API separately; not a current Android banking connect/sync/repair/unlink pass"
+  },
+  "upcomingCheckedAt": "2026-09-23T18:48:23.664973+00:00",
+  "upcoming": {
+    "nativeCreate": "Android calendar acceptance, BILL,150,2026-09-25; native Saved then Upcoming card exact date/amount",
+    "reminderTiming": "NONE confirmed by API; no OS notification requested",
+    "paid": "Native Paid moved to Recently paid; fresh API isPaid=true/statusPAID",
+    "coldLaunch": "Force-stop/start restored login; Upcoming still Recently paid with exact150/date",
+    "unpaid": "Native Unpaid restored Upcoming; fresh API isPaid=false/statusUPCOMING",
+    "privacy": "Separate Sam reviewer API login cannot list this edited obligation; different household, not same-household native proof.",
+    "ledger": "After edit and again after delete, fresh API confirms exact original two investment account IDs/balances and Item ID, netWorth23952.74, spending0, transactions0, NEEDS_RELINK, INVESTMENT_BALANCES_ONLY. Earlier HTTP429 recheck is resolved.",
+    "fixture": "Synthetic bill deleted; expired investment fixture retained for OAuth comparison.",
+    "limits": "Actual scheduled reminder delivery and remaining native debt/second-login journey are still open.",
+    "edit": "Native edit changed amount150 to175.25 and confirmed due date2026-09-25 to2026-09-26; Saved confirmation, then force-stop/start restored session and exact Upcoming card. Fresh API verifies175.25/date/unpaid/active/BILL/reminderNONE.",
+    "delete": "Native Delete confirmation yielded Nothing is due yet; fresh API confirms saved bill ID absent and zero upcoming items."
+  },
+  "debtPlan": {
+    "checkedAt": "2026-09-23T18:54:00.762923+00:00",
+    "nativeCreate": "Android payoff acceptance; avalanche, start2026-09, budget100; Test card current1000, statement800, minimum25, APR0, confirmed due2026-09-27. Native Saved.",
+    "estimate": "UI and independent saved-plan API agree: payoff2027-06, interest0,totalPaid1000,10months; first payment100. Assumptions describe month-end payments and no new fees/purchases.",
+    "coldLaunch": "Force-stop/start restored session; Goals\u2192Debt payoff\u2192Open Android payoff acceptance loaded saved plan with same estimate.",
+    "privacy": "Separate Sam reviewer cannot list plan; direct ID GET returns404. Different household; not same-household native check.",
+    "ledger": "Fresh API netWorth23952.74,spending0,transactions0 after plan save.",
+    "fixture": "Synthetic saved plan retained for strategy editing and idempotent minimum-to-Upcoming check.",
+    "limits": "No actual payment; zero-APR single-debt UI case does not substitute for multi-debt algorithm tests. First unsaved draft was discarded after automation back navigation; re-entered with keyboard-state guard.",
+    "strategyAndHandoff": {
+      "checkedAt": "2026-09-23T18:57:40.418859+00:00",
+      "strategy": "Native Use snowball then Save plan; Saved message and Snowball explanation with same2027-06/0interest/1000total. Independent API asserts persisted SNOWBALL and unchanged distinct input fields.",
+      "firstHandoff": "Native Add Test card25 due2026-09-27 to Upcoming; API returns one named minimum-payment obligation with reminderNONE. Full first-check ledger/other-login privacy assertions passed.",
+      "repeatHandoff": "Second native tap; subsequent API asserts exactly one upcoming item,25,due2026-09-27,reminderNONE,unpaid. Native Manage Upcoming shows one exact card. Later assertion sequence receivedHTTP429, so no complete second-run privacy/ledger pass claimed.",
+      "fixture": "Saved Snowball plan and one synthetic25 obligation retained for persistence/cleanup.",
+      "limits": "Single zero-APR debt does not distinguish multi-debt allocation order; deterministic algorithm coverage exists separately. No payment, production or original reminder-device change."
+    }
+  },
+  "accountSwitch": {
+    "checkedAt": "2026-09-23T19:05:20.540942+00:00",
+    "obligationRestart": "Force-stop/start restored prior login; Upcoming shows one Test card minimum payment25 due2026-09-27.",
+    "logout": "Native Sign Out confirmation returns empty Email/password form, no previous financial screen.",
+    "partnerLogin": "Existing synthetic Sam reviewer authenticated through native form. Dashboard900 net worth,0spending/income; Upcoming empty; Settings only Sam review checking900, no previous investment Item; Debt payoff shows no saved plans.",
+    "household": "Sam native household Review household/Shared with Alex shows visible netWorth900; Groceries600 50/50=300each, Utilities150 Sam100%, Rent1700 Alex60%=1020/Sam40%=680. Owner-manages-assignment explanation and payer/privacy caveats visible.",
+    "limits": "Previous investment fixture belongs to a different household; account-switch cache isolation is distinct from same-household privacy. Sam household excludes private partner balance; existing persisted fixture evidence verifies that balance separately. No fresh API login repeated during this check.",
+    "fixture": "Android remains signed in as Sam reviewer; disposable Snowball plan and25obligation remain owned by investment fixture; iOS candidate retains that fixture for OAuth comparison."
+  }
+}

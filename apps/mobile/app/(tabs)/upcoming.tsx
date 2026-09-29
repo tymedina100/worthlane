@@ -46,9 +46,16 @@ function UpcomingContent({ userId }: { userId: string }) {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["upcoming"] }); qc.invalidateQueries({ queryKey: ["dashboard"] }); },
   });
   const remove = useMutation({
-    mutationFn: async (item: UpcomingObligation) => { await cancelObligationReminder(userId, item.id); return api.delete(`/upcoming/${item.id}`); },
-    onError: (error) => Alert.alert("Could not update item", error instanceof Error ? error.message : "Refresh Upcoming and try again."),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["upcoming"] }); qc.invalidateQueries({ queryKey: ["dashboard"] }); },
+    mutationFn: async (item: UpcomingObligation) => {
+      // Keep the existing reminder if the server refuses or cannot confirm deletion.
+      await api.delete(`/upcoming/${item.id}`);
+      try { await cancelObligationReminder(userId, item.id); }
+      catch {
+        if (useAuthStore.getState().userId === userId) Alert.alert("Item deleted", "Its device reminder could not be removed. Reopen Worthlane to retry reminder cleanup.");
+      }
+    },
+    onError: (error) => { if (useAuthStore.getState().userId === userId) Alert.alert("Could not update item", error instanceof Error ? error.message : "Refresh Upcoming and try again."); },
+    onSuccess: () => { if (useAuthStore.getState().userId === userId) { qc.invalidateQueries({ queryKey: ["upcoming"] }); qc.invalidateQueries({ queryKey: ["dashboard"] }); } },
   });
   const data = query.data?.items ?? [];
   const grouped = groups(data);

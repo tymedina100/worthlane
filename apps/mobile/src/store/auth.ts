@@ -13,6 +13,7 @@ interface AuthState {
   userId: string | null;
   email: string | null;
   isLoading: boolean;
+  startupError: string | null;
   biometricEnabled: boolean;
   rememberedEmail: string | null;
   login: (email: string, password: string) => Promise<void>;
@@ -27,10 +28,13 @@ interface AuthState {
   registerPushToken: () => Promise<void>;
 }
 
+let hydrationAttempt = 0;
+
 export const useAuthStore = create<AuthState>((set) => ({
   userId: null,
   email: null,
   isLoading: true,
+  startupError: null,
   biometricEnabled: false,
   rememberedEmail: null,
 
@@ -50,19 +54,46 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   hydrate: async () => {
-    const token = await SecureStore.getItemAsync("accessToken");
-    const email = await SecureStore.getItemAsync("userEmail");
-    const userId = await SecureStore.getItemAsync("userId");
-    const biometricEnabled = (await SecureStore.getItemAsync("biometricEnabled")) === "true";
-    const rememberedEmail = (await SecureStore.getItemAsync("rememberedEmail")) ?? null;
-    await setReminderSession(token && userId ? userId : null);
-    if (token && userId) {
-      if (isPostHogEnabled) {
-        try { posthog.identify(userId); } catch { /* Optional analytics cannot block sign-in. */ }
+    const attempt = ++hydrationAttempt;
+    set({ isLoading: true, startupError: null, userId: null, email: null });
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const saved = await Promise.race([
+        (async () => {
+          const [token, email, userId, biometric, rememberedEmail] = await Promise.all([
+            SecureStore.getItemAsync("accessToken"),
+            SecureStore.getItemAsync("userEmail"),
+            SecureStore.getItemAsync("userId"),
+            SecureStore.getItemAsync("biometricEnabled"),
+            SecureStore.getItemAsync("rememberedEmail"),
+          ]);
+          // A timed-out or superseded read cannot change the notification owner.
+          if (attempt !== hydrationAttempt) throw new Error("Superseded startup");
+          await setReminderSession(token && userId ? userId : null);
+          return { token, email, userId, biometricEnabled: biometric === "true", rememberedEmail: rememberedEmail ?? null };
+        })(),
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(() => reject(new Error("Startup timed out")), 15000);
+        }),
+      ]);
+      if (attempt !== hydrationAttempt) return;
+      if (saved.token && saved.userId && isPostHogEnabled) {
+        try { posthog.identify(saved.userId); } catch { /* Optional analytics cannot block sign-in. */ }
       }
-      set({ userId, email, isLoading: false, biometricEnabled, rememberedEmail });
-    } else {
-      set({ isLoading: false, biometricEnabled, rememberedEmail });
+      set({
+        userId: saved.token && saved.userId ? saved.userId : null,
+        email: saved.token && saved.userId ? saved.email : null,
+        isLoading: false,
+        startupError: null,
+        biometricEnabled: saved.biometricEnabled,
+        rememberedEmail: saved.rememberedEmail,
+      });
+    } catch {
+      if (attempt !== hydrationAttempt) return;
+      hydrationAttempt++;
+      set({ isLoading: false, userId: null, email: null, startupError: "Your saved session could not be opened. Your saved data has not been changed. Try again when your device is ready." });
+    } finally {
+      if (timer !== undefined) clearTimeout(timer);
     }
   },
 

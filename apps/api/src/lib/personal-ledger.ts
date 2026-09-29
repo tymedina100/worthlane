@@ -1,11 +1,11 @@
-import { prisma } from "@worthlane/db";
+import { Prisma, prisma } from "@worthlane/db";
 import { countedBankAccountIds } from "@worthlane/core";
 
 /** Use only this login's accounts; a partner's feed must never replace its ledger. */
-export async function personalLedger(userId: string) {
-  const accounts = await prisma.account.findMany({ where: { userId } });
+export async function personalLedger(userId: string, db: Prisma.TransactionClient = prisma) {
+  const accounts = await db.account.findMany({ where: { userId } });
   const ids = accounts.map(account => account.id);
-  const pairs = await prisma.householdAccountMatch.findMany({ where: {
+  const pairs = await db.householdAccountMatch.findMany({ where: {
     firstAccountId: { in: ids }, secondAccountId: { in: ids },
     firstConfirmedAt: { not: null }, secondConfirmedAt: { not: null },
     household: { members: { some: { userId, status: "ACTIVE" } } },

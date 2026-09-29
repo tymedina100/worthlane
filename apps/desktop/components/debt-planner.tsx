@@ -1,4 +1,5 @@
 "use client";
+import { sessionFetch } from "@/src/lib/session-fetch";
 import { BankDebtDetails } from "./bank-debt-details";
 import { useEffect, useState, type FormEvent } from "react";
 import { debtPlanInputSchema, type DebtPlanInput } from "@worthlane/contracts";
@@ -7,7 +8,7 @@ import { estimateDebtPayoff, DEBT_ESTIMATE_ASSUMPTIONS, type DebtEstimate } from
 type Plan = { id: string; revision: number; input: DebtPlanInput; estimate?: DebtEstimate };
 const newDebt = (): DebtPlanInput["debts"][number] => ({ id: crypto.randomUUID(), name: "", balanceMinor: 0, minimumPaymentMinor: 0, aprBasisPoints: 0, statementBalanceMinor: null, dueDate: null });
 async function request<T>(path = "", body?: unknown, method = "GET"): Promise<T> {
-  const response = await fetch(`/api/debt-plans${path}`, { method, headers: { "Content-Type": "application/json" }, ...(body ? { body: JSON.stringify(body) } : {}), cache: "no-store" });
+  const response = await sessionFetch(`/api/debt-plans${path}`, { method, headers: { "Content-Type": "application/json" }, ...(body ? { body: JSON.stringify(body) } : {}), cache: "no-store" });
   const payload = await response.json();
   if (!response.ok) throw new Error(payload.error?.message ?? "Could not load the plan.");
   return payload.data;

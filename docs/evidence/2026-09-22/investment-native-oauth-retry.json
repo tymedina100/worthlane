@@ -1,0 +1,140 @@
+{
+  "date": "2026-09-22",
+  "commit": "36ef044",
+  "surface": "iPhone16Pro iOS18.3 laptop Simulator, EAS development build95061ba9 with current Metro8087",
+  "environment": "local API3101 isolated PostgreSQL55439 and Plaid Sandbox only",
+  "flow": "Connect investments / First Platypus Bank OAuth App2App",
+  "verified": [
+    "Published Sandbox username/password and test MFA completed",
+    "IRA and401k checkbox checkmarks visually confirmed before continuing",
+    "Mock-bank authorization returned to native Plaid",
+    "Returned to Continue to login; no success/exchange",
+    "Explicit cancel/Yes exit returned to usable Settings / Nothing linked yet"
+  ],
+  "freshApiReadback": {
+    "accounts": 0,
+    "items": 0,
+    "netWorth": 0,
+    "spending": 0
+  },
+  "filteredDevelopmentEvents": [
+    {
+      "errorCode": null,
+      "eventName": "OPEN",
+      "hasError": false,
+      "viewName": "CONSENT"
+    },
+    {
+      "errorCode": null,
+      "eventName": "TRANSITION_VIEW",
+      "hasError": false,
+      "viewName": "CONSENT"
+    },
+    {
+      "errorCode": null,
+      "eventName": "TRANSITION_VIEW",
+      "hasError": false,
+      "viewName": "SUBMIT_PHONE"
+    },
+    {
+      "errorCode": null,
+      "eventName": "OTHER",
+      "hasError": false,
+      "viewName": null
+    },
+    {
+      "errorCode": null,
+      "eventName": "TRANSITION_VIEW",
+      "hasError": false,
+      "viewName": "SELECT_INSTITUTION"
+    },
+    {
+      "errorCode": null,
+      "eventName": "OTHER",
+      "hasError": false,
+      "viewName": null
+    },
+    {
+      "errorCode": null,
+      "eventName": "OTHER",
+      "hasError": false,
+      "viewName": null
+    },
+    {
+      "errorCode": null,
+      "eventName": "SELECT_INSTITUTION",
+      "hasError": false,
+      "viewName": null
+    },
+    {
+      "errorCode": null,
+      "eventName": "TRANSITION_VIEW",
+      "hasError": false,
+      "viewName": "OAUTH"
+    },
+    {
+      "errorCode": null,
+      "eventName": "OPEN_OAUTH",
+      "hasError": false,
+      "viewName": null
+    },
+    {
+      "errorCode": null,
+      "eventName": "FAIL_OAUTH",
+      "hasError": false,
+      "viewName": null
+    },
+    {
+      "errorCode": null,
+      "eventName": "TRANSITION_VIEW",
+      "hasError": false,
+      "viewName": "OAUTH"
+    },
+    {
+      "errorCode": null,
+      "eventName": "TRANSITION_VIEW",
+      "hasError": false,
+      "viewName": "EXIT"
+    },
+    {
+      "errorCode": null,
+      "eventName": "EXIT",
+      "hasError": false,
+      "viewName": null
+    }
+  ],
+  "result": "Incomplete OAuth, not passed; no saved data added",
+  "unknown": "No cause proven. Verified checkboxes narrow the earlier ambiguity. Absence of a logged error does not prove provider or app correctness.",
+  "boundary": "Official Plaid docs warn iOS Simulator Universal Links may not always work correctly. This is a limitation, not a diagnosis. Phone use remains excluded.",
+  "reference": "https://plaid.com/docs/link/troubleshooting/#oauth-redirects-not-working",
+  "privacy": "Only fixed event/view/error vocabulary retained; no URL, token, provider free text, account masks or session identifiers.",
+  "readOnlyAssociationCheck": {
+    "installedExecutableMatchesDownloadedDevelopmentArtifact": true,
+    "entitlementSource": "arm64 Mach-O __TEXT,__entitlements; codesign alone returns an empty dictionary for this Simulator executable",
+    "applicationIdentifier": "5FBXR5M5PJ.com.worthlane.mobile",
+    "associatedDomains": [
+      "applinks:worthlane.app"
+    ],
+    "websiteAasa": {
+      "url": "https://worthlane.app/.well-known/apple-app-site-association",
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "redirectFollowed": false,
+      "exactPath": "/plaid-oauth",
+      "appIdentifierMatches": true
+    },
+    "appleCdnAasa": {
+      "url": "https://app-site-association.cdn-apple.com/a/v1/worthlane.app",
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "redirectFollowed": false,
+      "exactPath": "/plaid-oauth",
+      "appIdentifierMatches": true
+    },
+    "unproven": [
+      "per-device association cache",
+      "exact failed-session redirect parameter",
+      "Link handling of returned OAuth state"
+    ]
+  }
+}

@@ -11,6 +11,7 @@ files:
   - src/main.cjs
   - src/navigation.cjs
   - src/security.cjs
+  - src/bank-window.cjs
   - src/recovery-protocol.cjs
   - src/offline.html
   - src/offline.js

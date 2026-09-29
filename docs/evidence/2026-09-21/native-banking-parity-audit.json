@@ -1,0 +1,20 @@
+{
+  "simulatorEntitlementSource": "Mach-O arm64 __TEXT,__entitlements; codesign-only output is insufficient for this Simulator artifact",
+  "simulatorEntitlements": {
+    "application-identifier": "5FBXR5M5PJ.com.worthlane.mobile",
+    "aps-environment": "development",
+    "com.apple.developer.associated-domains": [
+      "applinks:worthlane.app"
+    ]
+  },
+  "mobileApiSharedFilesChangedSinceBankingCandidate": [
+    "apps/mobile/app.config.js",
+    "apps/mobile/app/(tabs)/dashboard.tsx",
+    "apps/mobile/app/_layout.tsx",
+    "apps/mobile/eas.json",
+    "apps/mobile/src/store/auth.ts"
+  ],
+  "unchangedScope": "Mobile banking/debt/reminder implementations, mobile package dependencies and API/shared source; newer changes include startup/layout and release configuration. Earlier interactive banking evidence is retained, not claimed as a new current-artifact run.",
+  "iosOAuth": "Still unverified in Simulator. Entitlement check does not explain provider failure. Plaid recommends physical-device verification; user excludes phone work.",
+  "providerReference": "https://plaid.com/docs/link/troubleshooting/"
+}

@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-09-25T16:55:29.062220+00:00",
+  "runtime": "Existing PG55439/API3101/Metro8087 restarted; installed development client95061ba9 restored local session. Release candidate simulator shut down to limit storage.",
+  "reminder": "Startup refresh warning cleared by actual Retry after API compilation. Original Sept24 bill remains overdue; no calendar delivery claim.",
+  "fixture": "Guarded API seed of separate ins_127287 Investments-only Item in existing local synthetic user; expired via Sandbox reset. Original non-OAuth control preserved. Four total investment accounts/$47,905.48/zero transactions. New Item NEEDS_RELINK/ITEM_LOGIN_REQUIRED; exact account IDs and balances stable. Hosted repaired Item untouched.",
+  "events": [
+    {
+      "event": "TRANSITION_VIEW",
+      "view": "CONSENT"
+    },
+    {
+      "event": "TRANSITION_VIEW",
+      "view": "SUBMIT_PHONE"
+    },
+    {
+      "event": "OPEN",
+      "view": "CONSENT"
+    },
+    {
+      "event": "OTHER"
+    },
+    {
+      "event": "TRANSITION_VIEW",
+      "view": "OAUTH"
+    },
+    {
+      "event": "OPEN_OAUTH"
+    },
+    {
+      "event": "OPEN_OAUTH"
+    }
+  ],
+  "ui": "Second handoff opened mock bank; public test login/code completed; IRA/401k visibly selected, other accounts unselected. Scrolled toward Continue. Final confirmation not completed.",
+  "interruption": "Computer Use reports Mac locked and automatic unlock failed. Asked user to unlock; no alternate UI interaction attempted afterward.",
+  "storage": {
+    "freeBefore": "below300MiB",
+    "freeAfter": "3.0GiB",
+    "removed": [
+      {
+        "path": "/Users/tylermedina/Library/Developer/Xcode/DerivedData/LoftGolfApp-cqmiwfasrymwrlcxupcxxcxuyjyg/SourcePackages/artifacts",
+        "logicalKiB": 895772
+      },
+      {
+        "path": "/Users/tylermedina/Library/Developer/Xcode/DerivedData/LoftGolfApp-djtdlvmxfyuuyrdazgoduaencdpt/SourcePackages/artifacts",
+        "logicalKiB": 895772
+      },
+      {
+        "path": "/Users/tylermedina/Library/Developer/Xcode/DerivedData/LoftGolfApp-fmubdgaytdgxztgnyqtkwdcmejpe/SourcePackages/artifacts",
+        "logicalKiB": 895772
+      }
+    ],
+    "preserved": "SourcePackages/checkouts, repositories, Build/Products, current candidates, credentials, database and evidence. No active compiler/build process observed before cleanup."
+  },
+  "next": "After unlock inspect fresh mock-bank screen, complete selection/confirmation, collect filtered return events and guarded provider readback. Do not infer completion from seeded fixture or OPEN_OAUTH."
+}

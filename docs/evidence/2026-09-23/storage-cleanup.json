@@ -1,0 +1,30 @@
+{
+  "removedRegenerableArtifacts": [
+    {
+      "path": ".tmp/mac-render-check/mac-arm64/Worthlane.app",
+      "logicalBytes": 287458538
+    },
+    {
+      "path": ".tmp/eas-ios-recovery/Worthlane.app",
+      "logicalBytes": 89927092
+    },
+    {
+      "path": ".tmp/eas-android-recovery/worthlane.apk",
+      "logicalBytes": 100429519
+    },
+    {
+      "path": ".tmp/eas-android-security/worthlane.apk",
+      "logicalBytes": 100427975
+    },
+    {
+      "path": "Electron downloaded runtime cache",
+      "logicalBytes": 122054683
+    }
+  ],
+  "preserved": "Current signed candidates, iOS recovery archive, screenshots/logs, SDK/AVD, source/credentials, reminder Simulator",
+  "date": "2026-09-23",
+  "freeGiBBefore": 2.5,
+  "freeGiBAfter": 3.1,
+  "guards": "Ad-hoc app.asar identical to retained signed candidate; no enumerated executable running; iOS recovery compressed archive retained; old Android packages superseded by installed/current signed candidate",
+  "scope": "Only exact listed obsolete test binaries and Electron download cache. No general browser/app cache deletion."
+}

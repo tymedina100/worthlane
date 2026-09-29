@@ -9,7 +9,9 @@ function requireReleaseEnv(name, value) {
 
 module.exports = () => {
   const easBuildProfile = process.env.EAS_BUILD_PROFILE ?? "development";
-  const isReleaseProfile = easBuildProfile === "preview" || easBuildProfile === "production";
+  const isSandboxPreview = ["sandbox-preview", "sandbox-simulator", "sandbox-store"].includes(easBuildProfile);
+  const isLocalSandbox = easBuildProfile === "sandbox-development-simulator";
+  const isReleaseProfile = isSandboxPreview || easBuildProfile === "preview" || easBuildProfile === "production";
   const apiUrl = process.env.EXPO_PUBLIC_API_URL?.trim();
   const associatedDomain = process.env.PLAID_IOS_ASSOCIATED_DOMAIN?.trim();
   const appleTeamId = (process.env.APPLE_TEAM_ID || baseConfig.ios?.appleTeamId)?.trim();
@@ -27,6 +29,30 @@ module.exports = () => {
   const sentryUrl = process.env.SENTRY_URL?.trim() || "https://sentry.io/";
 
   const plaidEnabled = process.env.EXPO_PUBLIC_PLAID_ENABLED === "true";
+
+  // A test artifact must never silently inherit production endpoints or SDKs.
+  if (isSandboxPreview || isLocalSandbox) {
+    const expected = {
+      EXPO_NO_DOTENV: "1",
+      SENTRY_DISABLE_AUTO_UPLOAD: "true",
+      EXPO_PUBLIC_API_URL: isLocalSandbox ? "http://localhost:3101/api" : "https://worthlane-beta-sandbox.up.railway.app/api",
+      EXPO_PUBLIC_PLAID_ENABLED: "true",
+      PLAID_IOS_ASSOCIATED_DOMAIN: "worthlane.app",
+      APPLE_TEAM_ID: "5FBXR5M5PJ",
+      EXPO_PUBLIC_ENABLE_AI: "false",
+      EXPO_PUBLIC_ENABLE_PAYWALL: "false",
+    };
+    for (const [name, value] of Object.entries(expected)) {
+      if (process.env[name]?.trim() !== value) {
+        throw new Error(`${name} must match the isolated sandbox-preview configuration.`);
+      }
+    }
+    for (const name of ["EXPO_PUBLIC_POSTHOG_KEY", "EXPO_PUBLIC_SENTRY_DSN", "SENTRY_ORG", "SENTRY_PROJECT", "SENTRY_AUTH_TOKEN"]) {
+      if (process.env[name]?.trim()) {
+        throw new Error(`${name} must be empty for sandbox-preview.`);
+      }
+    }
+  }
 
   if (isReleaseProfile) {
     const releaseApiUrl = requireReleaseEnv("EXPO_PUBLIC_API_URL", apiUrl);

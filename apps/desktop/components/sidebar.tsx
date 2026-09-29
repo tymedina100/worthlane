@@ -1,4 +1,5 @@
 "use client";
+import { sessionFetch } from "@/src/lib/session-fetch";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -75,7 +76,7 @@ export function Sidebar({
 
     setIsSigningOut(true);
     try {
-      await fetch("/api/auth/logout", {
+      await sessionFetch("/api/auth/logout", {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },

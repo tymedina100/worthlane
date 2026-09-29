@@ -43,6 +43,7 @@ async function verifyPackage() {
     "src/offline.html",
     "src/offline.js",
     "src/security.cjs",
+    "src/bank-window.cjs",
     "src/recovery-protocol.cjs",
   ];
   for (const asset of requiredAssets) {

@@ -1,0 +1,106 @@
+{
+  "checkedAt": "2026-09-21T19:39:51.083186+00:00",
+  "command": "pnpm audit --prod --json",
+  "vulnerabilities": {
+    "info": 0,
+    "low": 0,
+    "moderate": 4,
+    "high": 2,
+    "critical": 0
+  },
+  "localMitigation": {
+    "module": "decode-uri-component@0.2.2",
+    "patch": "patches/decode-uri-component@0.2.2.patch",
+    "upstreamVersion": "0.5.0",
+    "upstreamTarballSha256": "f42d289f996e6c9f0e33d8f31de1fe9a7a077c612dca489cafdb2df4cbb6122f",
+    "note": "Registry still reports the original version; backported bounded decoder tested through query-string. No audit ignore added."
+  },
+  "remaining": [
+    {
+      "module_name": "fast-xml-parser",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-gh4j-gqv2-49f6",
+      "title": "fast-xml-parser XMLBuilder: XML Comment and CDATA Injection via Unescaped Delimiters",
+      "findings": [
+        {
+          "version": "4.5.5",
+          "paths": [
+            "apps__mobile>react-native>@react-native/community-cli-plugin>@react-native-community/cli>@react-native-community/cli-doctor>@react-native-community/cli-platform-android>fast-xml-parser"
+          ]
+        }
+      ],
+      "patched_versions": ">=5.7.0",
+      "url": "https://github.com/advisories/GHSA-gh4j-gqv2-49f6"
+    },
+    {
+      "module_name": "uuid",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-w5hq-g745-h8pq",
+      "title": "uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided",
+      "findings": [
+        {
+          "version": "9.0.1",
+          "paths": [
+            "apps__api>@sentry/nextjs>@sentry/webpack-plugin>uuid"
+          ]
+        },
+        {
+          "version": "7.0.3",
+          "paths": [
+            "apps__mobile>expo>@expo/config-plugins>xcode>uuid"
+          ]
+        }
+      ],
+      "patched_versions": ">=11.1.1",
+      "url": "https://github.com/advisories/GHSA-w5hq-g745-h8pq"
+    },
+    {
+      "module_name": "image-size",
+      "severity": "high",
+      "github_advisory_id": "GHSA-w3rx-r6r6-pgpr",
+      "title": "image-size: ICNS parser allows denial of service through an infinite loop",
+      "findings": [
+        {
+          "version": "1.2.1",
+          "paths": [
+            "apps__mobile>expo>@expo/metro>metro>image-size"
+          ]
+        }
+      ],
+      "patched_versions": "<0.0.0",
+      "url": "https://github.com/advisories/GHSA-w3rx-r6r6-pgpr"
+    },
+    {
+      "module_name": "image-size",
+      "severity": "high",
+      "github_advisory_id": "GHSA-5p2g-fcmc-qvqq",
+      "title": "image-size: JXL and HEIF parsers allow denial of service through infinite loops",
+      "findings": [
+        {
+          "version": "1.2.1",
+          "paths": [
+            "apps__mobile>expo>@expo/metro>metro>image-size"
+          ]
+        }
+      ],
+      "patched_versions": "<0.0.0",
+      "url": "https://github.com/advisories/GHSA-5p2g-fcmc-qvqq"
+    },
+    {
+      "module_name": "decode-uri-component",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-vcc3-ghjq-m6fr",
+      "title": "decode-uri-component: Denial of service via exponential decoding of malformed percent-encoded input",
+      "findings": [
+        {
+          "version": "0.2.2",
+          "paths": [
+            "apps__mobile>expo-router>query-string>decode-uri-component"
+          ]
+        }
+      ],
+      "patched_versions": ">=0.5.0",
+      "url": "https://github.com/advisories/GHSA-vcc3-ghjq-m6fr"
+    }
+  ]
+}

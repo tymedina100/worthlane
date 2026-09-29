@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-09-21T21:49:59.910751+00:00",
+  "source": "Railway variables UI; individually reveal and hide only the two named fields",
+  "project": "a2386fda-ce79-4de5-b8c5-aef7ec8e8e3e",
+  "environment": "dbeb62fc-92fb-4bb1-b630-eafa600c897b",
+  "service": "59dc5245-3e9e-4d69-8450-72c4c834aff1",
+  "environmentLabel": "beta-sandbox",
+  "apiHost": "worthlane-beta-sandbox.up.railway.app",
+  "configuredValues": {
+    "SENTRY_DSN": "empty",
+    "POSTHOG_PROJECT_KEY": "empty"
+  },
+  "pendingChangesVisible": false,
+  "serviceState": "Sleeping",
+  "mutationPerformed": false,
+  "mobileArtifactEvidence": "ios-store-30.json: Sentry DSN empty; sandbox build guard rejects nonempty Sentry/PostHog settings",
+  "limit": "Configuration evidence, not an outbound-network audit, historical retention proof, or production service assessment. App privacy disclosures must also include SDK and functionality collection.",
+  "applePrivacyDraft": {
+    "dataTypeCount": 6,
+    "crashDataRemoved": true,
+    "published": false,
+    "reason": "No configured Sentry/PostHog collectors in exact inspected Sandbox mobile/API pair; SDK manifests considered alongside actual disabled initialization.",
+    "reloadVerified": true
+  },
+  "bundledManifestContext": {
+    "Sentry": "Declares CrashData, PerformanceData, OtherDiagnosticData; native SDK and tracing disabled, JavaScript DSN empty",
+    "RevenueCat": "Declares PurchaseHistory; paywall disabled in Sandbox profile; purchases disclosure retained for financial transaction history",
+    "LinkKit": "Declares linked UserID for AppFunctionality; retained"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "base": "a27d382",
+  "change": "Metro image-size dependency upgraded to 2.0.3 with CommonJS synchronous filename compatibility adapter; upstream parser code unchanged",
+  "audit": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "dependencies": 1171,
+    "devDependencies": 0,
+    "optionalDependencies": 0,
+    "totalDependencies": 1171
+  },
+  "tests": {
+    "command": "node --test scripts/test-metro-image-parsers.mjs scripts/test-router-query-decoder.mjs",
+    "passed": 11,
+    "failed": 0,
+    "metroVersions": [
+      "0.83.1",
+      "0.83.3",
+      "0.83.5"
+    ],
+    "coverage": [
+      "Real PNG AVIF ICNS dimensions",
+      "File-backed asset metadata",
+      "Malformed ICNS JXL HEIF terminate",
+      "Router valid and malformed inputs"
+    ]
+  },
+  "frozenInstall": "passed",
+  "iosExport": {
+    "status": "passed",
+    "modules": 1958,
+    "assets": 42
+  },
+  "limitations": [
+    "No native OAuth repair or calendar delivery acceptance",
+    "Mac remains locked",
+    "No production deployment or store submission",
+    "Four moderate audit findings remain"
+  ]
+}

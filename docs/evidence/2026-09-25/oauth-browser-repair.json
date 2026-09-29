@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-09-25T16:38:25.914330+00:00",
+  "environment": "Hosted isolated Sandbox, native Chrome on laptop",
+  "sameItemComparison": true,
+  "flow": "Reconnect; continue without phone; popup public mock login and code; select only IRA/401k; mock confirmation; Finish without saving",
+  "ui": "Connection saved; Healthy; zero accounts need attention. Reload preserves Healthy, Personal visibility, IRA320.76 and401k23631.98.",
+  "provider": {
+    "sandboxRepair": "healthy",
+    "providerError": null,
+    "products": [
+      "investments"
+    ]
+  },
+  "api": {
+    "exactBaselineIdsPreserved": true,
+    "accounts": 2,
+    "items": 1,
+    "netWorth": 23952.74,
+    "spending": 0,
+    "transactions": 0,
+    "status": "HEALTHY"
+  },
+  "commands": [
+    "python3 .tmp/ios-oauth-repair-status.py",
+    "node .tmp/hosted-investment-ui.cjs same"
+  ],
+  "iabLimit": "Plaid rendered, but Continue to login did not open observed popup or advance. Closed temporary IAB test tab. Native Chrome completed the comparison.",
+  "interpretation": "Same Item can repair through web popup flow. Native OAuth repair remains unproven; investigate native versus web return/update configuration instead of assuming provider Item cannot repair.",
+  "next": "Inspect native OAuth return/update behavior using this successful web control. Item is now healthy; any new expired-item test must explicitly reset Sandbox state."
+}
