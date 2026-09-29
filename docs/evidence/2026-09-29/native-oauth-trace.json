@@ -1,0 +1,61 @@
+{
+  "source": "fcd1333",
+  "installedNative": {
+    "build": "7",
+    "linkKit": "7.1.2"
+  },
+  "flow": {
+    "mockLogin": true,
+    "mockCode": true,
+    "selected": [
+      "IRA",
+      "401k"
+    ],
+    "optionalIdentityAndRouting": false,
+    "mockConfirmationSubmitted": true,
+    "returnedTo": "Continue to login",
+    "cleanExitToSettings": true
+  },
+  "safeEvents": [
+    "TRANSITION_VIEW:CONSENT",
+    "TRANSITION_VIEW:SUBMIT_PHONE",
+    "OPEN:CONSENT",
+    "OTHER",
+    "TRANSITION_VIEW:OAUTH",
+    "OPEN_OAUTH",
+    "OPEN_OAUTH",
+    "TRANSITION_VIEW:OAUTH",
+    "TRANSITION_VIEW:EXIT",
+    "EXIT"
+  ],
+  "observedSuccess": false,
+  "observedFailOAuth": false,
+  "exitHasError": false,
+  "readback": {
+    "action": "status",
+    "status": "NEEDS_RELINK",
+    "needsRelink": true,
+    "errorCode": "ITEM_LOGIN_REQUIRED",
+    "history": "INVESTMENT_BALANCES_ONLY",
+    "accounts": 4,
+    "sameAccountsAndBalances": true,
+    "transactions": 0,
+    "netWorth": 47905.48,
+    "monthlySpending": 0,
+    "billedProducts": [
+      "investments"
+    ],
+    "providerErrorCode": "ITEM_LOGIN_REQUIRED",
+    "at": "2026-09-29T16:53:20.735Z"
+  },
+  "publicReturnProbe": {
+    "method": "Maestro Home then openLink https://worthlane.app/plaid-oauth",
+    "observed": "Worthlane Settings",
+    "limitation": "Proves basic app link routing, not active OAuth session completion"
+  },
+  "next": [
+    "Inspect active-session return handling; do not repeat unchanged flow",
+    "Evaluate official SDK13.3.0 native update without treating release notes as OAuth proof"
+  ],
+  "sdkRelease": "https://github.com/plaid/react-native-plaid-link-sdk/releases/tag/v13.3.0"
+}

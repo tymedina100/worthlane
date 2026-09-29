@@ -830,3 +830,21 @@ failed generically during recovery; subsequent readback succeeded. No duplicate
 fixture was seeded. Evidence: evidence/2026-09-29/local-session-recovery.json.
 Next: continue native OAuth diagnostic; calendar delivery and release/provider
 gates remain. No production, spending or store action.
+
+## September 29 — native development OAuth return trace captured
+
+Completed public mock login/code, visibly selected onlyIRA/401k, left optional
+identity/routing unchecked and submitted final mock confirmation. Native Link
+again returned to Continue to login. Filtered trace reaches OPEN_OAUTH twice and
+later OAUTH/EXIT; no observed SUCCESS or FAIL_OAUTH, clean exit has no error.
+API/provider readback retains exact four accounts/balances,$47,905.48,zeroactivity,
+Investments-only and ITEM_LOGIN_REQUIRED. Healthy control connection untouched.
+Installed LinkKit verified7.1.2/build7. From Simulator Home, opening the public
+https://worthlane.app/plaid-oauth URL restores Worthlane Settings: basic app link
+routing works, but this does not prove active OAuth session completion.
+Evidence: evidence/2026-09-29/native-oauth-trace.json. Official SDK13.3.0 released
+September23 includes LinkKit7.2.0/security/native lifecycle fixes with no JS API
+change; release notes do not establish a fix for this failure. Next investigation
+must inspect active-session handling or compare a new native SDK candidate,
+not repeat this unchanged flow. Calendar/provider/distribution gates remain.
+No production, spending or store action.
