@@ -5731,3 +5731,19 @@ export(1958modules/42assets) pass. Fresh production audit now0high/0critical/
 Evidence: evidence/2026-09-25/upstream-image-parser.json. Mac still locked; native
 OAuth/calendar/provider/distribution gates remain. No deployment/spending/store
 action. Next: native trace after unlock and current-candidate release checks.
+
+## September 29 — local native session recovered
+
+After the interruption, repo099edee is clean, PostgreSQL55439 remains live,
+and API3101/Metro8087 were stopped. Restarted only those services and the prior
+D7 development Simulator. Computer Use initially timed out, then screenshots
+recovered; native clicks report noWindowsAvailable, so authorized Maestro opens
+the app and connects to the local dev server. Saved login restores without
+credential entry. Dashboard visibly retains$47,905.48 synthetic investments,
+zero spending/income and the overdue$1 manual bill. Independent successful
+readback verifies exact four accounts/balances, zero transactions, Investments
+only and the diagnostic Item still ITEM_LOGIN_REQUIRED. One concurrent read
+failed generically during recovery; subsequent readback succeeded. No duplicate
+fixture was seeded. Evidence: evidence/2026-09-29/local-session-recovery.json.
+Next: continue native OAuth diagnostic; calendar delivery and release/provider
+gates remain. No production, spending or store action.
