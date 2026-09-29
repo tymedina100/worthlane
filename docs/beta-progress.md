@@ -5765,3 +5765,16 @@ change; release notes do not establish a fix for this failure. Next investigatio
 must inspect active-session handling or compare a new native SDK candidate,
 not repeat this unchanged flow. Calendar/provider/distribution gates remain.
 No production, spending or store action.
+
+## September 29 — Plaid SDK 13.3 candidate prepared
+
+Updated the exact mobile dependency from13.2.0 to13.3.0 and its lockfile.
+Upstream includes LinkKit7.2.0 and Android sdk-core6.2.2 with security/lifecycle
+changes; this is not evidence that the observed OAuth repair loop is fixed.
+Mobile typecheck,29 focused diagnostics/session/bank-state/return/release-config
+tests and frozen offline install pass. Evidence:
+evidence/2026-09-29/plaid-sdk-candidate.json. Installed Simulator still contains
+LinkKit7.1.2; next is a rebuilt candidate and native repair comparison. Local
+free storage is2.9GiB, insufficient headroom for a large native build; inspect
+remote build allowance/cost before requesting any required spending approval.
+No production change, paid build or store submission.

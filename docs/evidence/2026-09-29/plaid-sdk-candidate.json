@@ -1,0 +1,26 @@
+{
+  "date": "2026-09-29",
+  "change": "react-native-plaid-link-sdk 13.2.0 to 13.3.0",
+  "validation": {
+    "mobile_typecheck": "pass",
+    "focused_tests": 29,
+    "focused_test_failures": 0,
+    "frozen_offline_install": "pass"
+  },
+  "test_files": [
+    "scripts/test-mobile-diagnostics.mjs",
+    "scripts/test-native-bank-state.mjs",
+    "scripts/test-native-bank-return.mjs",
+    "scripts/test-mobile-release-config.mjs",
+    "scripts/test-mobile-session.mjs"
+  ],
+  "native_targets": {
+    "ios": "LinkKit 7.2.0 (upstream changelog)",
+    "android": "sdk-core 6.2.2 (installed Gradle dependency)"
+  },
+  "limitations": [
+    "Installed Simulator binary remains LinkKit 7.1.2; native rebuild and OAuth repair verification pending.",
+    "Upstream release notes do not establish a fix for the observed OAuth repair loop.",
+    "No production deployment, paid build or store submission."
+  ]
+}
