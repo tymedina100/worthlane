@@ -5778,3 +5778,16 @@ LinkKit7.1.2; next is a rebuilt candidate and native repair comparison. Local
 free storage is2.9GiB, insufficient headroom for a large native build; inspect
 remote build allowance/cost before requesting any required spending approval.
 No production change, paid build or store submission.
+
+## September 29 — native SDK build and calendar observation prepared
+
+Expo billing verified Free/$0,9of15 iOS builds consumed before request. Started
+Simulator-only local Sandbox development build145d9528-68aa-400d-9a17-e897dd1baf1c
+at0681697; provider confirms IN_PROGRESS. No paid upgrade or store action.
+Rescheduled existing synthetic$1 Calendar reminder acceptance to September30.
+After native restart, OS pending archive contains exactly one matching owned
+reminder, derived trigger September30 09:00Phoenix within two seconds. This
+proves scheduling only, not delivery. Evidence:
+evidence/2026-09-29/calendar-reminder-scheduled.json. Keep Simulator and saved
+session available; verify schedule again after installing new candidate, then
+observe delivery. No physical phone or production data involved.
